@@ -38,7 +38,6 @@ const DefaultLayout: Component<{ children: JSX.Element }> = ({ children }) => {
           <li><a>Contact</a></li>
         </ul>
       </div>
-
     </div>
   )
 }
