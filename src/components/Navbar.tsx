@@ -1,12 +1,10 @@
-import { Component, createMemo } from "solid-js";
+import { Component } from "solid-js";
 import { Link } from "@solidjs/router";
 import { company } from "../config/constants";
 import { authStore, logout } from "../stores/auth";
 
 const Navbar: Component<{}> = () => {
-  const loggedIn = createMemo(() => {
-    return !!authStore.user
-  })
+  const loggedIn = () => !!authStore.user
 
   return (
     <nav class="w-full navbar bg-base-300">
@@ -73,6 +71,11 @@ const Navbar: Component<{}> = () => {
                   </div>
                 </label>
                 <ul tabindex="0" class="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52">
+                <li>
+                    <Link href="/dashboard" class="justify-between">
+                      Dashboard
+                    </Link>
+                  </li>
                   <li>
                     <a class="justify-between">
                       Profile
