@@ -9,3 +9,7 @@ export const oauth = {
     CLIENT_ID: "1444e83bebec2e966ca8"
   }
 }
+
+export const ls_keys = {
+  ACCESS_TOKEN: 'ACCESS_TOKEN'
+}

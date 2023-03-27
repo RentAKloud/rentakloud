@@ -42,7 +42,7 @@ const Navbar: Component<{}> = () => {
               <li><Link href="/products/ruby-cloud-hosting">Ruby</Link></li>
             </ul>
           </li>
-          <li><a>Services</a></li>
+          <li><Link href="/services">Services</Link></li>
           <li><Link href="/about">About</Link></li>
           <li><Link href="/support">Support</Link></li>
         </ul>
