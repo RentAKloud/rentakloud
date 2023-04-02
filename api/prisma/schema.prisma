@@ -1,0 +1,93 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              Int       @id @default(autoincrement())
+  email           String    @unique
+  firstName       String
+  lastName        String?
+  password        String
+  phoneNumber     String?
+  emailVerifiedAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  profile Profile?
+  orders  Order[]
+}
+
+model Profile {
+  user   User @relation(fields: [userId], references: [id])
+  userId Int  @id
+
+  model           Gender?
+  birthDate       DateTime?
+  companyName     String?
+  companyPosition String?
+  preferredTheme  String    @default("system")
+
+  addresses Address[]
+}
+
+model Address {
+  id            Int      @id
+  profile       Profile? @relation(fields: [profileUserId], references: [userId])
+  profileUserId Int?
+
+  firstName String?
+  lastName  String?
+  email     String?
+  address   String?
+  city      String?
+  state     String?
+  zip       String?
+  country   String?
+}
+
+model Product {
+  id               Int         @id @default(autoincrement())
+  name             String
+  shortDescription String?
+  description      String?
+  productType      ProductType @default(OnlineService)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+}
+
+model Order {
+  id     Int  @id @default(autoincrement())
+  user   User @relation(fields: [userId], references: [id])
+  userId Int
+
+  billingFirstName String
+  billingLastName  String
+  billingEmail     String
+  billingAddress   String
+  billingCity      String
+  billingState     String
+  billingZip       String
+  billingCountry   String
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHERS
+  NOT_SPECIFIED
+}
+
+enum ProductType {
+  OnlineService // subscription based
+  Physical // usually shipped
+}
