@@ -1,11 +1,11 @@
 import { Link, useNavigate } from "@solidjs/router";
-import { Component, createSignal } from "solid-js";
+import { Component, createEffect, createSignal } from "solid-js";
 import HeroWithForm from "../components/Hero/HeroWithForm";
 import GithubIcon from "../components/icons/Github";
 import GoogleIcon from "../components/icons/Google";
 import { company, oauth } from "../config/constants";
 import DefaultLayout from "../layouts/DefaultLayout";
-import { register } from "../stores/auth";
+import { authStore, register } from "../stores/auth";
 
 const Register: Component = () => {
   const navigate = useNavigate()
@@ -20,12 +20,18 @@ const Register: Component = () => {
     firstName: "",
     lastName: ""
   })
+  const { access_token, errors } = authStore
 
   function registerHandler() {
     const fd = formData()
     register(fd.email || "", fd.password || "", fd.firstName, fd.lastName)
-    navigate("/dashboard")
   }
+
+  createEffect(() => {
+    if (access_token) {
+      navigate("/dashboard")
+    }
+  })
 
   return (
     <DefaultLayout>
@@ -37,7 +43,9 @@ const Register: Component = () => {
           <input
             type="text" placeholder="First Name" class="input input-bordered input-primary"
             onInput={(e) => setFormData({ ...formData(), firstName: e.currentTarget.value })}
+            required
           />
+          {errors}
         </div>
 
         <div class="form-control">
@@ -47,6 +55,7 @@ const Register: Component = () => {
           <input
             type="text" placeholder="Last Name" class="input input-bordered input-primary"
             onInput={(e) => setFormData({ ...formData(), lastName: e.currentTarget.value })}
+            required
           />
         </div>
 
@@ -57,6 +66,7 @@ const Register: Component = () => {
           <input
             type="email" placeholder="Email" class="input input-bordered input-primary"
             onInput={(e) => setFormData({ ...formData(), email: e.currentTarget.value })}
+            required
           />
         </div>
 
@@ -65,8 +75,9 @@ const Register: Component = () => {
             <span class="label-text">Password</span>
           </label>
           <input
-            type="text" placeholder="Password" class="input input-bordered input-primary"
+            type="password" placeholder="Password" class="input input-bordered input-primary"
             onInput={(e) => setFormData({ ...formData(), password: e.currentTarget.value })}
+            required
           />
 
           <label class="label">

@@ -1,17 +1,17 @@
-import { Component, createSignal } from "solid-js";
+import { Component, createEffect, createSignal } from "solid-js";
 import { Link, useNavigate } from "@solidjs/router";
 import DefaultLayout from "../layouts/DefaultLayout";
 import HeroWithForm from "../components/Hero/HeroWithForm";
 import GithubIcon from "../components/icons/Github";
 import GoogleIcon from "../components/icons/Google";
 import { company, oauth } from "../config/constants";
-import { login } from "../stores/auth";
+import { authStore, login } from "../stores/auth";
 
 const Login: Component = () => {
   const navigate = useNavigate()
   const [formData, setFormData] = createSignal<{
-    email: string|null,
-    password: string|null
+    email: string | null,
+    password: string | null
   }>({
     email: "",
     password: ""
@@ -19,8 +19,13 @@ const Login: Component = () => {
 
   function loginHandler() {
     login(formData().email || "", formData().password || "")
-    navigate("/dashboard")
   }
+
+  createEffect(() => {
+    const { access_token } = authStore
+    if (access_token)
+      navigate("/dashboard")
+  })
 
   return (
     <DefaultLayout>
@@ -31,7 +36,7 @@ const Login: Component = () => {
           </label>
           <input
             type="text" placeholder="Email" class="input input-bordered input-primary"
-            onInput={(e) => setFormData({...formData(), email: e.currentTarget.value})}
+            onInput={(e) => setFormData({ ...formData(), email: e.currentTarget.value })}
           />
         </div>
         <div class="form-control">
@@ -39,8 +44,8 @@ const Login: Component = () => {
             <span class="label-text">Password</span>
           </label>
           <input
-            type="text" placeholder="Password" class="input input-bordered input-primary"
-            onInput={(e) => setFormData({...formData(), password: e.currentTarget.value})}
+            type="password" placeholder="Password" class="input input-bordered input-primary"
+            onInput={(e) => setFormData({ ...formData(), password: e.currentTarget.value })}
           />
 
           <label class="label">

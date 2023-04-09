@@ -31,7 +31,9 @@ const App: Component = () => {
   createEffect(() => {
     if (isLoggedIn()) return
     if (!!localStorage.getItem(ls_keys.ACCESS_TOKEN)) {
-      login('asd', 'asd')
+      // login('asd', 'asd')
+      // TODO check if token expired, then logout
+      // if not then fetch user info
     }
   })
 

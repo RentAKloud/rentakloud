@@ -9,3 +9,8 @@ export type LoginReq = {
   email: string;
   password: string;
 }
+
+export type JwtPayload = {
+  email: string;
+  sub: number | string;
+}
