@@ -8,16 +8,10 @@ const Dashboard: Component<{}> = () => {
       <div class="flex">
         <div class="py-20">
           <ul class="menu bg-base-100 w-56">
-            <li><Link href="/dashboard/overview">Overview</Link></li>
-            <li><Link href="/dashboard/site-ssl">Site & SSL</Link></li>
-            <li><Link href="/dashboard/database">Database/phpMyAdmin</Link></li>
-            <li><Link href="/dashboard/file-manager">File Manager</Link></li>
-            <li><Link href="/dashboard/ssh">Shell/SSH</Link></li>
-            <li><Link href="/dashboard/ftps">FTPS</Link></li>
-            <li><Link href="/dashboard/metrics">Metrics</Link></li>
-            <li><Link href="/dashboard/snapshots">Snapshots</Link></li>
-            <li><Link href="/dashboard/events">Events</Link></li>
-            <li><Link href="/dashboard/guidance-help">Guidance</Link></li>
+            <li><Link href="/dashboard">Home</Link></li>
+            <li><Link href="/dashboard/products">My Products</Link></li>
+            <li><Link href="/dashboard/payments">Payments</Link></li>
+            <li><Link href="/dashboard/settings">Settings</Link></li>
           </ul>
         </div>
 

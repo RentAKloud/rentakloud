@@ -1,7 +1,8 @@
-import { Component } from "solid-js";
+import { Component, For } from "solid-js";
 import { Link } from "@solidjs/router";
 import { company } from "../config/constants";
 import { authStore, logout } from "../stores/auth";
+import { productsMenu } from "../config/data";
 
 const Navbar: Component<{}> = () => {
   const loggedIn = () => !!authStore.user
@@ -26,20 +27,34 @@ const Navbar: Component<{}> = () => {
         <ul class="menu menu-horizontal">
           {/* <!-- Navbar menu content here --> */}
           <li tabindex="0">
-            <Link href="/products">
+            <Link href="/our-products">
               Products
               <svg class="fill-current" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z" /></svg>
             </Link>
-            <ul class="p-2 z-10 bg-base-100">
-              <li><Link href="/products/databases-cloud-hosting">Databases Cloud Hosting</Link></li>
-              <li><Link href="/products/erp-cloud-hosting">ERP Cloud Hosting</Link></li>
-              <li><Link href="/products/crm-cloud-hosting">CRM Cloud Hosting</Link></li>
-              <li><Link href="/products/cms-cloud-hosting">CMS Cloud Hosting</Link></li>
-              <li><Link href="/products/ecommerce-solutions">Ecommerce Cloud Hosting</Link></li>
-              <li><Link href="/products/message-queueing-service-hosting">Message Queuing Services</Link></li>
-              <li><Link href="/products/nodejs-cloud-hosting">NodeJS</Link></li>
-              <li><Link href="/products/python-cloud-hosting">Python</Link></li>
-              <li><Link href="/products/ruby-cloud-hosting">Ruby</Link></li>
+            <ul class="menu p-2 z-10 bg-base-100">
+              <For each={productsMenu}>
+                {
+                  (item) => (
+                    item.submenu ? (
+                      <li tabindex="0">
+                        <Link activeClass="" href={`/our-products/${item.slug}`}>{item.title} <svg xmlns="http://www.w3.org/2000/svg" class="fill-none w-4 h-4" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg></Link>
+
+                        <ul class="bg-base-100 p-0">
+                          <For each={item.submenu}>
+                          {
+                            (subItem) => <li><Link href={`/our-products/${subItem.slug}`}>{subItem.title}</Link></li>
+                          }
+                          </For>
+                        </ul>
+                      </li>
+                    ) : (
+                      <li>
+                        <Link href={`/our-products/${item.slug}`}>{item.title}</Link>
+                      </li>
+                    )
+                  )
+                }
+              </For>
             </ul>
           </li>
           <li><Link href="/services">Services</Link></li>
@@ -71,7 +86,7 @@ const Navbar: Component<{}> = () => {
                   </div>
                 </label>
                 <ul tabindex="0" class="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52">
-                <li>
+                  <li>
                     <Link href="/dashboard" class="justify-between">
                       Dashboard
                     </Link>

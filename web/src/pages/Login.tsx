@@ -22,8 +22,8 @@ const Login: Component = () => {
   }
 
   createEffect(() => {
-    const { access_token } = authStore
-    if (access_token)
+    const { user } = authStore
+    if (user)
       navigate("/dashboard")
   })
 
