@@ -4,11 +4,12 @@ import Card from "../../components/Card/Card"
 import { products } from "../../config/data";
 import DefaultLayout from "../../layouts/DefaultLayout";
 import { Link, useSearchParams } from "@solidjs/router";
-import { ProductCategory } from "../../types/product";
+import { productCategories, ProductCategory } from "../../types/product";
 
 const Products: Component<{}> = () => {
   const [queryParams, setParams] = useSearchParams()
-  
+  const category = () => queryParams.category
+
   const filteredProducts = () => {
     const { category } = queryParams
 
@@ -26,14 +27,24 @@ const Products: Component<{}> = () => {
         subtitle="Lightning Fast. Scalable & Secure. All Your Cloud Computing Needs In One Place."
         actions={
           <div class="flex flex-wrap justify-center gap-3">
-            <button class="btn btn-accent" onClick={() => setParams({ category: "" })}>All</button>
-            <button class="btn btn-outline btn-accent" onClick={() => setParams({ category: "Hardware" })}>Hardware</button>
-            <button class="btn btn-outline btn-accent">Databases</button>
-            <button class="btn btn-outline btn-accent">ERP</button>
-            <button class="btn btn-outline btn-accent">CRM</button>
-            <button class="btn btn-outline btn-accent">CMS</button>
-            <button class="btn btn-outline btn-accent">Ecommerce</button>
-            <button class="btn btn-outline btn-accent">Message Queueing</button>
+            <button
+              class="btn btn-accent" classList={{ 'btn-outline': !!category() }}
+              onClick={() => setParams({ category: "" })}
+            >
+              All
+            </button>
+            <For each={productCategories}>
+              {
+                (c) =>
+                  <button
+                    class="btn btn-outline btn-accent"
+                    classList={{ 'btn-outline': category() !== c }}
+                    onClick={() => setParams({ category: c })}
+                  >
+                    {c}
+                  </button>
+              }
+            </For>
           </div>
         }
         centered

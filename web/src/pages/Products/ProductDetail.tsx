@@ -1,9 +1,9 @@
 import { useParams } from "@solidjs/router"
-import { Component, createEffect, createMemo, Show } from "solid-js"
-import HeroWithBg from "../../components/Hero/HeroWithBg"
+import { Component, Show } from "solid-js"
 import { products } from "../../config/data"
 import DefaultLayout from "../../layouts/DefaultLayout"
 import NotFound from "../error/NotFound"
+import { PhysicalProduct } from "./PhysicalProduct"
 import { ServiceProduct } from "./ServiceProduct"
 
 const ProductDetail: Component<{}> = () => {
@@ -13,17 +13,17 @@ const ProductDetail: Component<{}> = () => {
   }
   const isAHarwareProduct = () => (product()?.categories || []).includes("Hardware")
 
-  if (!product()) {
-    return <NotFound />
-  }
-
   return (
     <DefaultLayout>
-      <Show when={isAHarwareProduct()}>
-        <div>is a hardware product</div>
+      <Show when={!product()}>
+        <NotFound withoutLayout />
       </Show>
 
-      <Show when={!isAHarwareProduct()}>
+      <Show when={isAHarwareProduct()}>
+        <PhysicalProduct product={product()!} />
+      </Show>
+
+      <Show when={product() && !isAHarwareProduct()}>
         <ServiceProduct product={product()!} />
       </Show>
     </DefaultLayout>

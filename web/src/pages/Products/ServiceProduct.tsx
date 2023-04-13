@@ -14,7 +14,11 @@ export const ServiceProduct: Component<{ product: Product }> = (props) => {
         contain
       >
       </HeroWithBg>
-      {props.product.name}
+
+      <section class="text-center my-20">
+        <h2 class="text-4xl mb-3">Deploy High-Performance {props.product.name} Clusters</h2>
+        <h3 class="text-xl">Simplify the deployment and maintenance of-highly available {props.product.name} databases for your web applications.</h3>
+      </section>
     </>
   )
 }

@@ -1,4 +1,4 @@
-import { Component, JSXElement } from "solid-js";
+import { Component } from "solid-js";
 
 const Testimonial: Component<{
   name: string,
