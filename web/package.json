@@ -21,7 +21,9 @@
   "dependencies": {
     "@kobalte/core": "^0.8.2",
     "@solidjs/router": "^0.7.0",
+    "@stripe/stripe-js": "^1.52.1",
     "daisyui": "^2.50.0",
-    "solid-js": "^1.6.10"
+    "solid-js": "^1.6.10",
+    "solid-stripe": "^0.2.4"
   }
 }

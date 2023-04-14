@@ -1,7 +1,10 @@
 import { Tabs } from "@kobalte/core";
 import { Link } from "@solidjs/router";
-import { Component } from "solid-js";
+import { Component, createMemo, createSignal } from "solid-js";
 import Carousel from "../../components/Carousel";
+import FormInput from "../../components/FormInput";
+import { NotificationService } from "../../services/NotificationService";
+import { addToCart } from "../../stores/cart";
 import { Product } from "../../types/product";
 
 const carData = [
@@ -20,13 +23,20 @@ const carData = [
 ]
 
 export const PhysicalProduct: Component<{ product: Product }> = (props) => {
-  const product = () => props.product
+  const product = createMemo(() => props.product)
   const price = () => {
     if ((product().prices || []).length > 0) {
       return product().prices![0]
     }
 
     return { amount: 0, currency: "USD", symbol: "$" }
+  }
+  const [qty, setQty] = createSignal(0)
+
+  function buy() {
+    addToCart(product(), qty())
+
+    NotificationService.info(<>{qty()} &cross; {product().name} Added to cart</>)
   }
 
   return (
@@ -48,11 +58,15 @@ export const PhysicalProduct: Component<{ product: Product }> = (props) => {
 
         <div class="md:w-2/5 mt-3 text-center md:text-left">
           <h1 class="text-3xl text-bold">{product().name}</h1>
-          <p>{product().shortDescription}</p>
+          <p class="my-5">{product().shortDescription}</p>
 
-          <h4>{price().symbol}{price().amount} {price().currency}</h4>
+          <h4 class="text-xl">{price().symbol}{price().amount} {price().currency}</h4>
 
-          <button class="btn btn-primary">Buy</button>
+          <div class="w-1/2 mb-10">
+            <FormInput label="Quantity" type="number" min={1} value={qty().toString()} onChange={(newVal) => setQty(+newVal)} />
+          </div>
+
+          <button class="btn btn-primary" onClick={buy}>Buy</button>
         </div>
       </section>
 

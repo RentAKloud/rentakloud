@@ -6,7 +6,7 @@ const Testimonial: Component<{
   img: { uri: string, alt: string },
 }> = ({ name, text, img }) => {
   return (
-    <div class="card w-96 bg-base-200 shadow-xl items-center">
+    <div class="card w-96 bg-base-100 shadow-xl items-center">
       {
         img && (
           <figure class="p-5 h-60 w-60">

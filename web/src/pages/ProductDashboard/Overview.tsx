@@ -1,5 +1,5 @@
 import { Component } from "solid-js"
-import FormInput from "../../components/FormControl"
+import FormInput from "../../components/FormInput"
 
 const Overview: Component<{}> = () => {
   return (

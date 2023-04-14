@@ -7,7 +7,7 @@ const PricingCard: Component<{
   points: string[]
 }> = ({ planName, ppm, showYearly, points }) => {
   return (
-    <div class="w-full max-w-sm p-4 bg-base-200 border border-primary rounded-lg shadow sm:p-8">
+    <div class="w-full max-w-sm p-4 bg-base-100 border border-primary rounded-lg shadow sm:p-8">
       <h5 class="mb-4 text-xl font-medium text-gray-500 dark:text-gray-400">{planName}</h5>
       <div class="flex items-baseline text-gray-900 dark:text-white">
         <span class="text-3xl font-semibold">$</span>

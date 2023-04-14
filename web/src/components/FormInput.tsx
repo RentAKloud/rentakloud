@@ -5,11 +5,15 @@ const FormInput: Component<{
   value: string;
   placeholder?: string;
   type?: string;
+  onChange?: (newVal: any) => void;
+  min?: number;
 }> = ({
   label,
   value,
   placeholder,
-  type = 'text'
+  onChange,
+  type = 'text',
+  min,
 }) => {
     return (
       <div class="form-control">
@@ -18,7 +22,13 @@ const FormInput: Component<{
         </label>
         <label class="input-group input-group-vertical">
           {/* <span>{label}</span> */}
-          <input type={type} placeholder={placeholder} value={value} class="input input-bordered" />
+          <input
+            type={type} placeholder={placeholder}
+            value={value}
+            onchange={(e) => onChange && onChange(e.currentTarget.value)}
+            class="input input-bordered"
+            min={min}
+          />
         </label>
       </div>
     )
