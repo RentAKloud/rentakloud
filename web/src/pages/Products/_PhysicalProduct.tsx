@@ -1,6 +1,6 @@
 import { Tabs } from "@kobalte/core";
 import { Link } from "@solidjs/router";
-import { Component, createMemo, createSignal } from "solid-js";
+import { Component, Show, createMemo, createSignal } from "solid-js";
 import Carousel from "../../components/Carousel";
 import FormInput from "../../components/FormInput";
 import { NotificationService } from "../../services/NotificationService";
@@ -25,15 +25,17 @@ const carData = [
 export const PhysicalProduct: Component<{ product: Product }> = (props) => {
   const product = createMemo(() => props.product)
   const price = () => {
-    if ((product().prices || []).length > 0) {
-      return product().prices![0]
+    if (!product().prices || product().prices!.length === 0) {
+      return null
     }
 
-    return { amount: 0, currency: "USD", symbol: "$" }
+    return product().prices![0]
   }
   const [qty, setQty] = createSignal(0)
 
   function buy() {
+    if (qty() === 0) return
+
     addToCart(product(), qty())
 
     NotificationService.info(<>{qty()} &cross; {product().name} Added to cart</>)
@@ -58,15 +60,17 @@ export const PhysicalProduct: Component<{ product: Product }> = (props) => {
 
         <div class="md:w-2/5 mt-3 text-center md:text-left">
           <h1 class="text-3xl text-bold">{product().name}</h1>
-          <p class="my-5">{product().shortDescription}</p>
+          <p class="my-5" innerHTML={product().shortDescription} />
 
-          <h4 class="text-xl">{price().symbol}{price().amount} {price().currency}</h4>
+          <Show when={price() !== null} fallback={"Not available for purchase right now. Please check back soon."}>
+            <h4 class="text-xl">{price()!.symbol}{price()!.amount} {price()!.currency}</h4>
 
-          <div class="w-1/2 mb-10">
-            <FormInput label="Quantity" type="number" min={1} value={qty().toString()} onChange={(newVal) => setQty(+newVal)} />
-          </div>
+            <div class="w-1/2 mb-10">
+              <FormInput label="Quantity" type="number" min={1} value={qty().toString()} onChange={(newVal) => setQty(+newVal)} />
+            </div>
 
-          <button class="btn btn-primary" onClick={buy}>Buy</button>
+            <button class="btn btn-primary" disabled={qty() === 0} onClick={buy}>Buy</button>
+          </Show>
         </div>
       </section>
 
@@ -80,7 +84,7 @@ export const PhysicalProduct: Component<{ product: Product }> = (props) => {
           </Tabs.List>
 
           <div class="m-5">
-            <Tabs.Content class="tabs__content" value="details">{product().description}</Tabs.Content>
+            <Tabs.Content class="tabs__content" value="details" innerHTML={product().description}></Tabs.Content>
             <Tabs.Content class="tabs__content" value="shipping">Shipping Info</Tabs.Content>
             <Tabs.Content class="tabs__content" value="reviews">Reviews</Tabs.Content>
           </div>

@@ -1,42 +1,73 @@
-import { loadStripe, Stripe } from "@stripe/stripe-js";
-import { Component, createSignal, onMount, Show } from "solid-js";
-import { Card, Elements } from "solid-stripe";
+import { Component, onMount, Show } from "solid-js";
+import { useSearchParams } from "@solidjs/router";
 import DefaultLayout from "../../layouts/DefaultLayout";
+import { NotificationService } from "../../services/NotificationService";
+import { OrderDetails } from "./_OrderDetails";
+import { BillingAndShipping } from "./_BillingAndShipping";
+import { CheckoutProvider } from "./context";
+import { Payment } from "./_Payment";
 
-const Checkout: Component = () => {
-  const [stripe, setStripe] = createSignal<Stripe | null>(null)
+const _Checkout: Component = () => {
+  const [params, setParams] = useSearchParams()
+  const step = () => params.step
 
   onMount(async () => {
-    const result = await loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY)
-    setStripe(result)
+    if (!step()) {
+      setParams({ step: 'address' })
+    }
   })
+
+  function submit() {
+    NotificationService.success("Order created")
+  }
 
   return (
     <DefaultLayout>
-      <h1 class="text-4xl">Checkout Page</h1>
+      <div class="m-20">
+        <h1 class="text-4xl font-bold mb-5">Checkout</h1>
 
-      <div class="flex flex-col">
-        <section>
-          <div>billing & shipping info</div>
-          <div>
-            <Show when={stripe()} fallback={<div>Loading stripe</div>}>
-              <Elements stripe={stripe()!}>
-                {/* this is where your Stripe components go */}
-                <Card />
-              </Elements>
+        <div class="flex flex-col md:flex-row justify-between">
+          <section class="border-2 rounded-box p-5">
+            <Show when={step() === 'address'}>
+              <h2 class="-mt-8 mb-8 bg-base-200 px-1 w-fit text-gray-400">Billing & Shipping</h2>
+
+              <BillingAndShipping />
+
+              <button class="btn btn-primary" onclick={() => setParams({ step: 'payment' })}>Next</button>
             </Show>
-          </div>
-          <div>Confirm</div>
-        </section>
 
-        <section>
-          Order details
-        </section>
+            <Show when={step() === 'payment'}>
+              <h2 class="-mt-8 mb-8 bg-base-200 px-1 w-fit text-gray-400">Payment</h2>
+
+              <Payment />
+
+              <div class="flex gap-5">
+                <button class="btn" onclick={() => setParams({ step: 'address' })}>Back</button>
+                <button class="btn btn-primary" onclick={() => setParams({ step: 'confirm' })}>Next</button>
+              </div>
+            </Show>
+
+            <Show when={step() === 'confirm'}>
+              <div class="-mt-8 mb-8 bg-base-200 px-1 w-fit text-gray-400">Confirm</div>
+
+              <div class="flex gap-5">
+                <button class="btn" onclick={() => setParams({ step: 'payment' })}>Back</button>
+                <button class="btn btn-primary" onclick={submit}>Create Order</button>
+              </div>
+            </Show>
+          </section>
+
+          <section>
+            <div class="rounded-box bg-base-100 p-10 w-96 sticky top-20">
+              <OrderDetails />
+            </div>
+          </section>
+        </div>
       </div>
-
-
     </DefaultLayout>
   )
 }
+
+const Checkout = () => <CheckoutProvider><_Checkout /></CheckoutProvider>
 
 export default Checkout

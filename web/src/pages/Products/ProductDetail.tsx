@@ -3,8 +3,8 @@ import { Component, Show } from "solid-js"
 import { products } from "../../config/data"
 import DefaultLayout from "../../layouts/DefaultLayout"
 import NotFound from "../error/NotFound"
-import { PhysicalProduct } from "./PhysicalProduct"
-import { ServiceProduct } from "./ServiceProduct"
+import { PhysicalProduct } from "./_PhysicalProduct"
+import { ServiceProduct } from "./_ServiceProduct"
 
 const ProductDetail: Component<{}> = () => {
   const product = () => {

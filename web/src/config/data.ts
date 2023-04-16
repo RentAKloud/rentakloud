@@ -5,9 +5,33 @@ export const products: Product[] = [
     id: 1,
     name: "PiKVM",
     slug: "pi-kvm",
-    shortDescription: "lorem ipsum",
-    description: "lorem ipsum donor consit",
-    categories: ["Hardware"]
+    shortDescription: `A very simple and fully functional Raspberry Pi-based KVM over IP that you can make with your own hands without any soldering!
+    <br /><br />This device helps to manage servers or workstations remotely, regardless of the health of the operating system or whether one is installed. You can fix any problem, configure the BIOS, and even reinstall the OS using the virtual CD-ROM or Flash Drive.`,
+    description: `
+    <ul class="list-disc">
+      <li>Based on the Raspberry Pi Compute Module 4 which is included!</li>
+      <li><b>1920x1080@60Hz &amp; 1920x1200@60Hz</b> resolution support for increased UEFI/BIOS compatibility.</li>
+      <li>Improved <b>WiFi connectivity</b> with a port for an optional external antenna.</li>
+      <li>OTG <b>Keyboard</b> &amp; <b>mouse</b>; <b>Mass Storage Drive</b> emulation.</li>
+      <li>Ability to <b>simulate "removal and insertion" for USB</b>.</li>
+      <li>Onboard <b>ATX power control</b>.</li>
+      <li>Onboard <b>fan controller</b>.</li>
+      <li><b>A real-time clock</b>.</li>
+      <li><b>RJ-45 and USB serial console port</b> (to manage PiKVM OS or to connect with the server).</li>
+      <li><b>No need for soldering or breadboarding.</b> It's a pre-assembled, reliable device
+        which you can use yourself or provide to your clients.
+      </li>
+      <li>Continued use of PiKVM OS - <b>all the software is fully open</b>.</li>
+    </ul>
+    `,
+    categories: ["Hardware"],
+    prices: [
+      {
+        amount: 139,
+        currency: "USD",
+        symbol: "$"
+      }
+    ]
   },
   {
     id: 2,
