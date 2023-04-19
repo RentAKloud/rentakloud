@@ -65,7 +65,7 @@ const Navbar: Component<{}> = () => {
         </ul>
       </div>
 
-      <div class="hidden lg:flex navbar-end">
+      <div class="hidden lg:flex navbar-end gap-5">
         {cartLength() > 0 && (
           <div class="indicator">
             <Link href="/cart">

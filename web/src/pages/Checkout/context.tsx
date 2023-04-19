@@ -1,27 +1,8 @@
-import { Accessor, Component, JSXElement, Setter, createContext, createSignal, useContext } from "solid-js";
-import { createStore } from "solid-js/store";
+import { Component, JSXElement, createContext, createSignal, useContext } from "solid-js";
+import { Part, createStore } from "solid-js/store";
+import { Address, CheckoutContextProps, defaultCheckout } from "../../types/order";
 
-type OrderStore = {
-  billingAddress: {};
-  shippingAddress: {};
-  orderNotes: string;
-}
-
-type CheckoutContextProps = {
-  shippingSameAsBilling: Accessor<boolean>;
-  setShippingSameAsBilling: Setter<boolean>;
-  orderStore: OrderStore;
-}
-
-const defaultValue: CheckoutContextProps = {
-  shippingSameAsBilling: () => false,
-  setShippingSameAsBilling: (val: any) => val,
-  orderStore: {
-    billingAddress: {}, shippingAddress: {}, orderNotes: "lol"
-  },
-}
-
-const CheckoutContext = createContext<CheckoutContextProps>(defaultValue)
+const CheckoutContext = createContext<CheckoutContextProps>(defaultCheckout)
 
 export const useCheckoutContext = () => {
   return useContext(CheckoutContext)
@@ -29,13 +10,23 @@ export const useCheckoutContext = () => {
 
 export const CheckoutProvider: Component<{ children: JSXElement }> = (props) => {
   const [shippingSameAsBilling, setShippingSameAsBilling] = createSignal(true)
-  const [orderStore, setOrderStore] = createStore(defaultValue.orderStore)
+  const [orderStore, setOrderStore] = createStore(defaultCheckout.orderStore)
+
+  function updateBilling(key: Part<Address, keyof Address>, val: string) {
+    setOrderStore("billingAddress", key, val)
+  }
+
+  function updateShipping(key: Part<Address, keyof Address>, val: string) {
+    setOrderStore("shippingAddress", key, val)
+  }
 
   return (
     <CheckoutContext.Provider value={{
       shippingSameAsBilling,
       setShippingSameAsBilling,
       orderStore,
+      updateBilling,
+      updateShipping,
     }}>
       {props.children}
     </CheckoutContext.Provider>

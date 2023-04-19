@@ -20,7 +20,7 @@ const Register: Component = () => {
     firstName: "",
     lastName: ""
   })
-  const { access_token, errors } = authStore
+  const { access_token } = authStore
 
   function registerHandler() {
     const fd = formData()
@@ -45,7 +45,6 @@ const Register: Component = () => {
             onInput={(e) => setFormData({ ...formData(), firstName: e.currentTarget.value })}
             required
           />
-          {errors}
         </div>
 
         <div class="form-control">

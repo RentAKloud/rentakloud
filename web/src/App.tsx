@@ -1,5 +1,5 @@
 import { Component, createEffect } from 'solid-js';
-import { Route, Router, Routes } from '@solidjs/router';
+import { Route, Routes } from '@solidjs/router';
 
 import Home from './pages/Home';
 import Login from './pages/Login';
@@ -42,52 +42,50 @@ const App: Component = () => {
   })
 
   return (
-    <Router>
-      <Routes>
-        <Route path="/" component={Home} />
-        <Route path="/login" component={Login} />
-        <Route path="/register" component={Register} />
-        <Route path="/oauth/github" component={GithubCallback} />
-        <Route path="/about" component={About} />
-        <Route path="/our-products">
-          <Route path="/" component={Products} />
-          <Route path="/:slug" component={ProductDetail} />
-        </Route>
-        <Route path="/services" component={Services} />
-        <Route path="/support" component={Support} />
-        <Route path="/cart" component={Cart} />
+    <Routes>
+      <Route path="/" component={Home} />
+      <Route path="/login" component={Login} />
+      <Route path="/register" component={Register} />
+      <Route path="/oauth/github" component={GithubCallback} />
+      <Route path="/about" component={About} />
+      <Route path="/our-products">
+        <Route path="/" component={Products} />
+        <Route path="/:slug" component={ProductDetail} />
+      </Route>
+      <Route path="/services" component={Services} />
+      <Route path="/support" component={Support} />
+      <Route path="/cart" component={Cart} />
 
-        {
-          isLoggedIn() && (
-            <>
-              <Route path="/products/:id" component={ProductDashboard}>
-                <Route path={["/", "/overview"]} component={Overview} />
-                <Route path="/site-ssl" component={SiteAndSSL} />
-                <Route path="/database" component={Database} />
-                <Route path="/file-manager" component={FileManager} />
-                <Route path="/ssh" component={SSH} />
-                <Route path="/ftps" component={FTPS} />
-                <Route path="/metrics" component={Metrics} />
-                <Route path="/snapshots" component={Snapshots} />
-                <Route path="/events" component={Events} />
-                <Route path="/guidance-help" component={Guidance} />
-              </Route>
+      {
+        isLoggedIn() && (
+          <>
+            <Route path="/products/:id" component={ProductDashboard}>
+              <Route path={["/", "/overview"]} component={Overview} />
+              <Route path="/site-ssl" component={SiteAndSSL} />
+              <Route path="/database" component={Database} />
+              <Route path="/file-manager" component={FileManager} />
+              <Route path="/ssh" component={SSH} />
+              <Route path="/ftps" component={FTPS} />
+              <Route path="/metrics" component={Metrics} />
+              <Route path="/snapshots" component={Snapshots} />
+              <Route path="/events" component={Events} />
+              <Route path="/guidance-help" component={Guidance} />
+            </Route>
 
-              <Route path="/dashboard" component={Dashboard}>
-                <Route path={["/"]} component={DashboardHome} />
-                <Route path="/products" component={Overview} />
-                <Route path="/payments" component={SiteAndSSL} />
-                <Route path="/settings" component={Database} />
-              </Route>
+            <Route path="/dashboard" component={Dashboard}>
+              <Route path={["/"]} component={DashboardHome} />
+              <Route path="/products" component={Overview} />
+              <Route path="/payments" component={SiteAndSSL} />
+              <Route path="/settings" component={Database} />
+            </Route>
 
-              <Route path="/checkout" component={Checkout} />
-            </>
-          )
-        }
+            <Route path="/checkout" component={Checkout} />
+          </>
+        )
+      }
 
-        <Route path="*" component={NotFound} />
-      </Routes>
-    </Router>
+      <Route path="*" component={NotFound} />
+    </Routes>
   );
 };
 

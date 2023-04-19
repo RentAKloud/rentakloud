@@ -22,8 +22,12 @@ export const Payment: Component = () => {
         </Show>
       </div>
 
-      <div class="mb-10">
+      <div class="mb-5">
         <FormInput label="Order Notes" value="" />
+      </div>
+
+      <div class="mb-10">
+        <FormInput label="Coupon Code" value="" />
       </div>
     </>
   )

@@ -6,25 +6,17 @@ import { User } from "../types/user";
 const initialState = {
   access_token: localStorage.getItem(ls_keys.ACCESS_TOKEN),
   user: null,
-  errors: null,
 }
 
 const [authStore, setAuthStore] = createStore<{
   access_token: string | null;
   user: User | null;
-  errors: any;
 }>(initialState)
 
 async function login(email: string, password: string) {
-  try {
-    const resp = await AuthApi.login(email, password)
-    setAuthStore({ access_token: resp })
-    localStorage.setItem(ls_keys.ACCESS_TOKEN, resp)
-  } catch (err) {
-    setAuthStore({
-      errors: err
-    })
-  }
+  const resp = await AuthApi.login(email, password)
+  setAuthStore({ access_token: resp })
+  localStorage.setItem(ls_keys.ACCESS_TOKEN, resp)
 }
 
 function logout() {
@@ -36,14 +28,8 @@ function logout() {
 }
 
 async function register(email: string, password: string, firstName: string, lastName: string) {
-  try {
-    const resp = await AuthApi.register(email, password, firstName, lastName)
-    setAuthStore({ access_token: resp })
-  } catch (err) {
-    setAuthStore({
-      errors: err
-    })
-  }
+  const resp = await AuthApi.register(email, password, firstName, lastName)
+  setAuthStore({ access_token: resp })
 }
 
 async function getUserProfile() {

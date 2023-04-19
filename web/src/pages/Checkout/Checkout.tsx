@@ -4,12 +4,13 @@ import DefaultLayout from "../../layouts/DefaultLayout";
 import { NotificationService } from "../../services/NotificationService";
 import { OrderDetails } from "./_OrderDetails";
 import { BillingAndShipping } from "./_BillingAndShipping";
-import { CheckoutProvider } from "./context";
+import { CheckoutProvider, useCheckoutContext } from "./context";
 import { Payment } from "./_Payment";
 
 const _Checkout: Component = () => {
   const [params, setParams] = useSearchParams()
   const step = () => params.step
+  const { orderStore } = useCheckoutContext()
 
   onMount(async () => {
     if (!step()) {
@@ -50,9 +51,13 @@ const _Checkout: Component = () => {
             <Show when={step() === 'confirm'}>
               <div class="-mt-8 mb-8 bg-base-200 px-1 w-fit text-gray-400">Confirm</div>
 
+              <p class="mb-10">
+                Please confirm all the details. Then click proceed to finalize the order and make payment.
+              </p>
+
               <div class="flex gap-5">
                 <button class="btn" onclick={() => setParams({ step: 'payment' })}>Back</button>
-                <button class="btn btn-primary" onclick={submit}>Create Order</button>
+                <button class="btn btn-primary" onclick={submit}>Proceed</button>
               </div>
             </Show>
           </section>

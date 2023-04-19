@@ -6,6 +6,7 @@ import GithubIcon from "../components/icons/Github";
 import GoogleIcon from "../components/icons/Google";
 import { company, oauth } from "../config/constants";
 import { authStore, login } from "../stores/auth";
+import { NotificationService } from "../services/NotificationService";
 
 const Login: Component = () => {
   const navigate = useNavigate()
@@ -17,8 +18,16 @@ const Login: Component = () => {
     password: ""
   })
 
-  function loginHandler() {
-    login(formData().email || "", formData().password || "")
+  async function loginHandler() {
+    try {
+      await login(formData().email || "", formData().password || "")
+    } catch (err: any) {
+      if (err.message === "Unauthorized") {
+        NotificationService.error("Invalid email or password")
+      } else {
+        NotificationService.error("Something went wrong. Please contact support or try again later.")
+      }
+    }
   }
 
   createEffect(() => {
@@ -35,7 +44,7 @@ const Login: Component = () => {
             <span class="label-text">Email</span>
           </label>
           <input
-            type="text" placeholder="Email" class="input input-bordered input-primary"
+            type="email" placeholder="Email" class="input input-bordered input-primary"
             onInput={(e) => setFormData({ ...formData(), email: e.currentTarget.value })}
           />
         </div>

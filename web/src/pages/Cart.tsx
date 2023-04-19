@@ -1,7 +1,7 @@
 import { Link } from "@solidjs/router";
 import { Component, For, Show } from "solid-js";
 import DefaultLayout from "../layouts/DefaultLayout";
-import { cart } from "../stores/cart";
+import { cart, resetCart } from "../stores/cart";
 
 const Cart: Component = () => {
   const cartTotal = () => cart.items
@@ -56,7 +56,8 @@ const Cart: Component = () => {
             </table>
           </div>
 
-          <div class="mt-10">
+          <div class="mt-10 flex gap-5 justify-center">
+            <button class="btn btn-error" onclick={resetCart}>Clear Cart</button>
             <Link href="/checkout" class="btn btn-primary">Checkout</Link>
           </div>
         </Show>
