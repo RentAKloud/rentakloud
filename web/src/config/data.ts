@@ -1,6 +1,6 @@
 import { Product } from "../types/product"
 
-export const products: Product[] = [
+export const defaultProducts: Product[] = [
   {
     id: 1,
     name: "PiKVM",
@@ -24,7 +24,7 @@ export const products: Product[] = [
       <li>Continued use of PiKVM OS - <b>all the software is fully open</b>.</li>
     </ul>
     `,
-    categories: ["Hardware"],
+    categories: [{ title: "Hardware", slug: "hardware" }],
     prices: [
       {
         amount: 139,
@@ -39,7 +39,7 @@ export const products: Product[] = [
     slug: "postgresql",
     shortDescription: "lorem ipsum",
     description: "lorem ipsum donor consit",
-    categories: ["Databases"]
+    categories: [{ slug: "databases", title: "Databases" }]
   },
   {
     id: 3,
@@ -47,7 +47,7 @@ export const products: Product[] = [
     slug: "mysql",
     shortDescription: "lorem ipsum",
     description: "lorem ipsum donor consit",
-    categories: ["Databases"]
+    categories: [{ slug: "databases", title: "Databases" }]
   },
   {
     id: 4,
@@ -55,7 +55,7 @@ export const products: Product[] = [
     slug: "ms-sql-server",
     shortDescription: "lorem ipsum",
     description: "lorem ipsum donor consit",
-    categories: ["Databases"]
+    categories: [{ slug: "databases", title: "Databases" }]
   },
   {
     id: 5,
@@ -63,7 +63,7 @@ export const products: Product[] = [
     slug: "cockroach-db",
     shortDescription: "lorem ipsum",
     description: "lorem ipsum donor consit",
-    categories: ["Databases"]
+    categories: [{ slug: "databases", title: "Databases" }]
   },
   {
     id: 6,
@@ -71,7 +71,7 @@ export const products: Product[] = [
     slug: "redis",
     shortDescription: "lorem ipsum",
     description: "lorem ipsum donor consit",
-    categories: ["Databases"]
+    categories: [{ slug: "databases", title: "Databases" }]
   },
   {
     id: 7,
@@ -79,7 +79,7 @@ export const products: Product[] = [
     slug: "mongo-db",
     shortDescription: "lorem ipsum",
     description: "lorem ipsum donor consit",
-    categories: ["Databases"]
+    categories: [{ slug: "databases", title: "Databases" }]
   }
 ]
 
@@ -90,33 +90,57 @@ export const productsMenu = [
   },
   {
     title: "Databases Cloud Hosting",
-    slug: "?category=Databases",
-    submenu: products.filter(p => p.categories.includes("Databases")).map(p => ({ title: p.name, slug: p.slug }))
+    slug: "?category=databases",
+    submenu: defaultProducts
+      .filter(p => p.categories
+        .map(c => c.slug)
+        .includes("databases"))
+      .map(p => ({ title: p.name, slug: p.slug }))
   },
   {
     title: "ERP Cloud Hosting",
     slug: "?category=erp",
-    submenu: products.filter(p => p.categories.includes("ERP")).map(p => ({ title: p.name, slug: p.slug }))
+    submenu: defaultProducts
+      .filter(p => p.categories
+        .map(c => c.slug)
+        .includes("erp"))
+      .map(p => ({ title: p.name, slug: p.slug }))
   },
   {
     title: "CRM Cloud Hosting",
     slug: "?category=crm",
-    submenu: products.filter(p => p.categories.includes("CRM")).map(p => ({ title: p.name, slug: p.slug }))
+    submenu: defaultProducts
+      .filter(p => p.categories
+        .map(c => c.slug)
+        .includes("crm"))
+      .map(p => ({ title: p.name, slug: p.slug }))
   },
   {
     title: "CMS Cloud Hosting",
     slug: "?category=cms",
-    submenu: products.filter(p => p.categories.includes("CMS")).map(p => ({ title: p.name, slug: p.slug }))
+    submenu: defaultProducts
+      .filter(p => p.categories
+        .map(c => c.slug)
+        .includes("cms"))
+      .map(p => ({ title: p.name, slug: p.slug }))
   },
   {
     title: "Ecommerce Cloud Hosting",
     slug: "?category=ecommerce",
-    submenu: products.filter(p => p.categories.includes("Ecommerce")).map(p => ({ title: p.name, slug: p.slug }))
+    submenu: defaultProducts
+      .filter(p => p.categories
+        .map(c => c.slug)
+        .includes("ecommerce"))
+      .map(p => ({ title: p.name, slug: p.slug }))
   },
   {
     title: "Message Queueing Services",
     slug: "?category=message-queueing-services",
-    submenu: products.filter(p => p.categories.includes("Message Queueing")).map(p => ({ title: p.name, slug: p.slug }))
+    submenu: defaultProducts
+      .filter(p => p.categories
+        .map(c => c.slug)
+        .includes("message-queueing"))
+      .map(p => ({ title: p.name, slug: p.slug }))
   },
   {
     title: "NodeJS",

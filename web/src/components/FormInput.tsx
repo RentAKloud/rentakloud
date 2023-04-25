@@ -7,28 +7,36 @@ const FormInput: Component<{
   type?: string;
   onChange?: (newVal: any) => void;
   min?: number;
+  error?: string;
 }> = ({
   label,
   value,
   placeholder,
   onChange,
-  type = 'text',
   min,
+  type = 'text',
+  error,
 }) => {
     return (
-      <div class="form-control">
+      <div class="form-control flex-1">
         <label class="label">
           <span class="label-text">{label}</span>
         </label>
-        <label class="input-group input-group-vertical">
-          {/* <span>{label}</span> */}
-          <input
-            type={type} placeholder={placeholder}
-            value={value}
-            onchange={(e) => onChange && onChange(e.currentTarget.value)}
-            class="input input-bordered"
-            min={min}
-          />
+
+        <input
+          type={type} placeholder={placeholder}
+          value={value}
+          onchange={(e) => onChange && onChange(e.currentTarget.value)}
+          class="input input-bordered"
+          classList={{
+            "input-error": !!error
+          }}
+          min={min}
+        />
+
+        <label class="label">
+          <span class="label-text-alt text-error">{error}</span>
+          {/* <span class="label-text-alt">Bottom Right label</span> */}
         </label>
       </div>
     )

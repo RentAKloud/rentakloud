@@ -1,10 +1,11 @@
 import { Component, For } from "solid-js";
 import Hero from "../../components/Hero/Hero";
 import Card from "../../components/Card/Card"
-import { products } from "../../config/data";
+import { defaultProducts } from "../../config/data";
 import DefaultLayout from "../../layouts/DefaultLayout";
 import { Link, useSearchParams } from "@solidjs/router";
 import { productCategories, ProductCategory } from "../../types/product";
+import { products } from "../../stores/products";
 
 const Products: Component<{}> = () => {
   const [queryParams, setParams] = useSearchParams()
@@ -14,10 +15,10 @@ const Products: Component<{}> = () => {
     const { category } = queryParams
 
     if (category) {
-      return products.filter(p => p.categories.includes(category as ProductCategory))
+      return products.latest.filter(p => p.categories.map(c => c.slug).includes(category))
     }
 
-    return products
+    return products.latest
   }
 
   return (
@@ -38,10 +39,10 @@ const Products: Component<{}> = () => {
                 (c) =>
                   <button
                     class="btn btn-outline btn-accent"
-                    classList={{ 'btn-outline': category() !== c }}
-                    onClick={() => setParams({ category: c })}
+                    classList={{ 'btn-outline': category() !== c.slug }}
+                    onClick={() => setParams({ category: c.slug })}
                   >
-                    {c}
+                    {c.title}
                   </button>
               }
             </For>

@@ -14,5 +14,17 @@ type ProductPrice = {
   amount: number;
 }
 
-export type ProductCategory = "Hardware" | "Databases" | "ERP" | "CRM" | "CMS" | "Ecommerce" | "Message Queueing"
-export const productCategories: ProductCategory[] = ["Hardware", "Databases", "ERP", "CRM", "CMS", "Ecommerce", "Message Queueing"]
+export type ProductCategory = {
+  id?: number;
+  title: string;
+  slug: string;
+}
+export const productCategories: ProductCategory[] = ["Hardware", "Databases", "ERP", "CRM", "CMS", "Ecommerce", "Message Queueing"].map(c => ({
+  slug: c.toLowerCase().replaceAll(' ', '-'),
+  title: c,
+}))
+
+export type CartItem = {
+  product: Product;
+  quantity: number;
+}

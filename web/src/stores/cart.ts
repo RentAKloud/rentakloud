@@ -1,13 +1,10 @@
 import { createMutable } from "solid-js/store"
-import { Product } from "../types/product"
+import { CartItem, Product } from "../types/product"
 
 const initialState = JSON.parse(localStorage.getItem('cart') || '{ items: [] }')
 
 const cart = createMutable<{
-  items: {
-    product: Product;
-    quantity: number;
-  }[]
+  items: CartItem[]
 }>(initialState)
 
 function addToCart(item: Product, qty: number = 1) {

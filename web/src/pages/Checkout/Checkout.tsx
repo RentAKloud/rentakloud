@@ -1,40 +1,26 @@
-import { Component, onMount, Show } from "solid-js";
-import { useSearchParams } from "@solidjs/router";
+import { Component, Show } from "solid-js";
 import DefaultLayout from "../../layouts/DefaultLayout";
-import { NotificationService } from "../../services/NotificationService";
 import { OrderDetails } from "./_OrderDetails";
 import { BillingAndShipping } from "./_BillingAndShipping";
 import { CheckoutProvider, useCheckoutContext } from "./context";
 import { Payment } from "./_Payment";
 
 const _Checkout: Component = () => {
-  const [params, setParams] = useSearchParams()
-  const step = () => params.step
-  const { orderStore } = useCheckoutContext()
-
-  onMount(async () => {
-    if (!step()) {
-      setParams({ step: 'address' })
-    }
-  })
-
-  function submit() {
-    NotificationService.success("Order created")
-  }
+  const { submit, inTransit, step, setStep } = useCheckoutContext()
 
   return (
     <DefaultLayout>
-      <div class="m-20">
+      <div class="m-5 md:m-20">
         <h1 class="text-4xl font-bold mb-5">Checkout</h1>
 
-        <div class="flex flex-col md:flex-row justify-between">
-          <section class="border-2 rounded-box p-5">
+        <div class="flex flex-col md:flex-row gap-5 justify-between">
+          <section class="border-2 rounded-box p-5 md:w-2/5">
             <Show when={step() === 'address'}>
               <h2 class="-mt-8 mb-8 bg-base-200 px-1 w-fit text-gray-400">Billing & Shipping</h2>
 
               <BillingAndShipping />
 
-              <button class="btn btn-primary" onclick={() => setParams({ step: 'payment' })}>Next</button>
+              <button class="btn btn-primary" onclick={() => setStep('payment')}>Next</button>
             </Show>
 
             <Show when={step() === 'payment'}>
@@ -42,24 +28,32 @@ const _Checkout: Component = () => {
 
               <Payment />
 
-              <div class="flex gap-5">
-                <button class="btn" onclick={() => setParams({ step: 'address' })}>Back</button>
-                <button class="btn btn-primary" onclick={() => setParams({ step: 'confirm' })}>Next</button>
-              </div>
+              <p class="mb-10">
+                Please confirm all the details. Then click <strong>Confirm & Pay</strong> to finalize the order and make payment.
+              </p>
+
+              <Show when={!inTransit()} fallback={"Please wait"}>
+                <div class="flex gap-5">
+                  <button class="btn" onclick={() => setStep('address')}>Back</button>
+                  <button class="btn btn-primary" onclick={submit}>Confirm & Pay</button>
+                </div>
+              </Show>
             </Show>
 
-            <Show when={step() === 'confirm'}>
+            {/* <Show when={step() === 'confirm'}>
               <div class="-mt-8 mb-8 bg-base-200 px-1 w-fit text-gray-400">Confirm</div>
 
               <p class="mb-10">
                 Please confirm all the details. Then click proceed to finalize the order and make payment.
               </p>
 
-              <div class="flex gap-5">
-                <button class="btn" onclick={() => setParams({ step: 'payment' })}>Back</button>
-                <button class="btn btn-primary" onclick={submit}>Proceed</button>
-              </div>
-            </Show>
+              <Show when={!inTransit()} fallback={"Please wait"}>
+                <div class="flex gap-5">
+                  <button class="btn" onclick={() => setStep('payment')}>Back</button>
+                  <button class="btn btn-primary" onclick={submit}>Proceed</button>
+                </div>
+              </Show>
+            </Show> */}
           </section>
 
           <section>

@@ -25,10 +25,12 @@ export class HttpService {
   }
 
   static async post<T>(endpoint: string, body: any): Promise<T> {
+    const jwtToken = authStore.access_token
     const resp = await fetch(API_URL + endpoint, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${jwtToken}`
       },
       body: JSON.stringify(body)
     })

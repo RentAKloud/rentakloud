@@ -1,4 +1,4 @@
-import { Component, JSXElement } from "solid-js";
+import { Component, JSXElement, Show } from "solid-js";
 
 const Card: Component<{
   title: string,
@@ -14,7 +14,12 @@ const Card: Component<{
       }
       <div class={`card-body ${center && "text-center items-center"}`}>
         <h2 class="card-title">{title}</h2>
-        <p>{description}</p>
+        <Show when={typeof description === "string"}>
+          <p innerHTML={description as string} />
+        </Show>
+        <Show when={typeof description === "object"}>
+          <p>{description}</p>
+        </Show>
         <div class="card-actions justify-center mt-5">
           {actions}
         </div>

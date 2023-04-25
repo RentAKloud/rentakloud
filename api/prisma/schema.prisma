@@ -30,11 +30,12 @@ model Profile {
   user   User @relation(fields: [userId], references: [id])
   userId Int  @id
 
-  model           Gender?
-  birthDate       DateTime?
-  companyName     String?
-  companyPosition String?
-  preferredTheme  String    @default("system")
+  model            Gender?
+  birthDate        DateTime?
+  companyName      String?
+  companyPosition  String?
+  preferredTheme   String    @default("system")
+  stripeCustomerId String?
 
   addresses Address[]
 }
@@ -47,22 +48,35 @@ model Address {
   firstName String?
   lastName  String?
   email     String?
-  address   String?
-  city      String?
+  address   String
+  address2  String?
+  city      String
   state     String?
   zip       String?
-  country   String?
+  country   String
 }
 
 model Product {
   id               Int         @id @default(autoincrement())
   name             String
+  slug             String      @unique
   shortDescription String?
   description      String?
   productType      ProductType @default(OnlineService)
+  prices           Json[]
+  stripeId         String?     @unique
+
+  categories Category[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
+}
+
+model Category {
+  id       Int       @id @default(autoincrement())
+  title    String
+  slug     String
+  products Product[]
 }
 
 model Order {
@@ -74,10 +88,47 @@ model Order {
   billingLastName  String
   billingEmail     String
   billingAddress   String
+  billingAddress2  String?
   billingCity      String
   billingState     String
   billingZip       String
   billingCountry   String
+
+  shippingFirstName String
+  shippingLastName  String
+  shippingAddress   String
+  shippingAddress2  String?
+  shippingCity      String
+  shippingState     String
+  shippingZip       String
+  shippingCountry   String
+
+  items   Json[]
+  coupons CouponCode[]
+  status  OrderStatus  @default(Pending)
+  notes   String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+}
+
+model CouponCode {
+  id    Int    @id @default(autoincrement())
+  title String
+  code  String
+
+  type               CouponType @default(Flat)
+  flatDiscount       Decimal
+  percentageDiscount Int
+
+  maxUses   Int?
+  expiresAt DateTime?
+  active    Boolean   @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  orders Order[]
 }
 
 enum Gender {
@@ -90,4 +141,18 @@ enum Gender {
 enum ProductType {
   OnlineService // subscription based
   Physical // usually shipped
+}
+
+enum OrderStatus {
+  Pending // waiting for payment
+  Paid
+  Shipped
+  Completed
+  OnHold
+  Cancelled
+}
+
+enum CouponType {
+  Flat
+  Percentage
 }

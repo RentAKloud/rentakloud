@@ -1,17 +1,17 @@
 import { useParams } from "@solidjs/router"
 import { Component, Show } from "solid-js"
-import { products } from "../../config/data"
 import DefaultLayout from "../../layouts/DefaultLayout"
 import NotFound from "../error/NotFound"
 import { PhysicalProduct } from "./_PhysicalProduct"
 import { ServiceProduct } from "./_ServiceProduct"
+import { products } from "../../stores/products"
 
 const ProductDetail: Component<{}> = () => {
   const product = () => {
     const { slug } = useParams()
-    return products.find(p => p.slug === slug)
+    return products().find(p => p.slug === slug)
   }
-  const isAHarwareProduct = () => (product()?.categories || []).includes("Hardware")
+  const isAHarwareProduct = () => (product()?.categories || []).map(c => c.slug).includes("hardware")
 
   return (
     <DefaultLayout>

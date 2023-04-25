@@ -8,7 +8,7 @@ export const ServiceProduct: Component<{ product: Product }> = (props) => {
       <HeroWithBg
         title={`Simple and Reliable ${props.product.name} Databases`}
         subtitle={`Worry-free ${props.product.name} hosting so you can focus on building great apps.`}
-        header={<span class="uppercase">{props.product.categories.join(", ")}</span>}
+        header={<span class="uppercase">{props.product.categories.map(c => c.title).join(", ")}</span>}
         bgUrl="https://webimages.mongodb.com/_com_assets/cms/l4hecgagkqphn9kc9-ART.svg?ixlib=js-3.7.1&auto=format%2Ccompress&w=3038"
         align='left'
         contain

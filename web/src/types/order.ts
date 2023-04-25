@@ -1,9 +1,13 @@
 import { Accessor, Setter } from "solid-js";
 import { Part } from "solid-js/store";
-import { Product } from "./product";
+import { CartItem } from "./product";
+import { Stripe } from "@stripe/stripe-js";
 
 export type Address = {
-  address1: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  address: string;
   address2: string;
   city: string;
   state: string;
@@ -12,7 +16,8 @@ export type Address = {
 }
 
 export const defaultAddress: Address = {
-  address1: "", address2: "", city: "", state: "",
+  firstName: "", lastName: "", email: "",
+  address: "", address2: "", city: "", state: "",
   zip: "", country: ""
 }
 
@@ -24,24 +29,44 @@ export type OrderStore = {
 }
 
 export type CheckoutContextProps = {
+  step: () => string;
+  setStep: (step: "address" | "payment" | "confirm") => void;
   shippingSameAsBilling: Accessor<boolean>;
   setShippingSameAsBilling: Setter<boolean>;
   orderStore: OrderStore;
   updateBilling: (key: Part<Address, keyof Address>, val: string) => void;
   updateShipping: (key: Part<Address, keyof Address>, val: string) => void;
+  updateNotes: (val: string) => void;
+  updateCoupon: (val: string) => void;
+
+  stripe: Accessor<Stripe | null>;
+  clientSecret: Accessor<string | undefined>;
+  submit: () => void;
+  inTransit: Accessor<boolean>;
+  formErrors: Accessor<string[]>;
 }
 
 export const defaultCheckout: CheckoutContextProps = {
+  step: () => "",
+  setStep(step) {},
   shippingSameAsBilling: () => true,
   setShippingSameAsBilling: (val: any) => val,
   updateBilling(key, val) {},
   updateShipping(key, val) {},
+  updateNotes() {},
+  updateCoupon() {},
   orderStore: {
     billingAddress: defaultAddress,
     shippingAddress: defaultAddress,
     orderNotes: "",
     couponCode: "",
   },
+  stripe: () => null,
+  clientSecret: () => undefined,
+  submit() {},
+  inTransit: () => false,
+  formErrors: () => [],
 }
 
-export type OrderRequest = OrderStore & { items: Product[] }
+export type OrderRequest = OrderStore & { items: CartItem[] }
+export type OrderResponse = OrderRequest & { amount: number }
