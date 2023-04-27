@@ -29,11 +29,15 @@ export class AuthService {
     };
   }
 
-  register(data: RegisterReq) {
+  async register(data: RegisterReq) {
     const saltRounds = 14
     const salt = genSaltSync(saltRounds)
     data.password = hashSync(data.password, salt)
 
-    return this.users.createUser(data)
+    const user = await this.users.createUser(data)
+    const payload: JwtPayload = { email: user.email, sub: user.id }
+    return {
+      access_token: this.jwtService.sign(payload)
+    }
   }
 }

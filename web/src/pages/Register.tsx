@@ -6,6 +6,7 @@ import GoogleIcon from "../components/icons/Google";
 import { company, oauth } from "../config/constants";
 import DefaultLayout from "../layouts/DefaultLayout";
 import { authStore, register } from "../stores/auth";
+import { NotificationService } from "../services/NotificationService";
 
 const Register: Component = () => {
   const navigate = useNavigate()
@@ -20,15 +21,29 @@ const Register: Component = () => {
     firstName: "",
     lastName: ""
   })
-  const { access_token } = authStore
+  const [inTransit, setInTransit] = createSignal(false)
 
-  function registerHandler() {
-    const fd = formData()
-    register(fd.email || "", fd.password || "", fd.firstName, fd.lastName)
+  async function registerHandler() {
+    try {
+      setInTransit(true)
+      const fd = formData()
+      await register(fd.email || "", fd.password || "", fd.firstName, fd.lastName)
+    } catch (err: any) {
+      console.log(err)
+      if (err.message === "Unauthorized") {
+        NotificationService.error("Invalid email or password")
+      } else {
+        NotificationService.error("Something went wrong. Please contact support or try again later.")
+      }
+    } finally {
+      setInTransit(false)
+    }
   }
 
   createEffect(() => {
-    if (access_token) {
+    const { user } = authStore
+
+    if (user) {
       navigate("/dashboard")
     }
   })
@@ -85,7 +100,7 @@ const Register: Component = () => {
         </div>
 
         <div class="form-control mt-6">
-          <button class="btn btn-primary" onClick={registerHandler}>Register</button>
+          <button class="btn btn-primary" disabled={inTransit()} onClick={registerHandler}>Register</button>
         </div>
 
         <div class="divider">or</div>

@@ -47,7 +47,7 @@ export const PhysicalProduct: Component<{ product: Product }> = (props) => {
         <div class="text-sm breadcrumbs m-5">
           <ul>
             <li><Link href="/">Home</Link></li>
-            <li><Link href="/our-products/?category=Hardware">Hardware</Link></li>
+            <li><Link href={`/our-products/?category=${product().categories[0].slug}`}>{product().categories[0].title}</Link></li>
             <li>{product().name}</li>
           </ul>
         </div>

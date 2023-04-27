@@ -30,6 +30,7 @@ function logout() {
 async function register(email: string, password: string, firstName: string, lastName: string) {
   const resp = await AuthApi.register(email, password, firstName, lastName)
   setAuthStore({ access_token: resp })
+  localStorage.setItem(ls_keys.ACCESS_TOKEN, resp)
 }
 
 async function getUserProfile() {

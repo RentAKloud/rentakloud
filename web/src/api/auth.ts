@@ -1,17 +1,17 @@
 import { HttpService } from "../services/HttpService";
-import { LoginResponse } from "../types/auth";
+import { LoginResponse, RegisterResponse } from "../types/auth";
 import { User } from "../types/user";
 
 class AuthApi {
   static async register(email: string, password: string, firstName: string, lastName: string): Promise<string> {
-    const resp = await HttpService.post<string>("/auth/register", {
+    const resp = await HttpService.post<RegisterResponse>("/auth/register", {
       email,
       password,
       firstName,
       lastName,
     })
 
-    return resp
+    return resp.access_token
   }
 
   static async login(email: string, password: string): Promise<string> {
