@@ -2,6 +2,7 @@ import { Accessor, Setter } from "solid-js";
 import { Part } from "solid-js/store";
 import { CartItem } from "./product";
 import { Stripe } from "@stripe/stripe-js";
+import { User } from "./user";
 
 export type Address = {
   firstName: string;
@@ -13,6 +14,58 @@ export type Address = {
   state: string;
   zip: string;
   country: string;
+}
+
+export type Order = {
+  id: number;
+  user: User;
+  userId: number;
+
+  billingFirstName: string;
+  billingLastName: string;
+  billingEmail: string;
+  billingAddress: string;
+  billingAddress2?: string;
+  billingCity: string;
+  billingState: string;
+  billingZip: string;
+  billingCountry: string;
+
+  shippingFirstName: string;
+  shippingLastName: string;
+  shippingAddress: string;
+  shippingAddress2?: string;
+  shippingCity: string;
+  shippingState: string;
+  shippingZip: string;
+  shippingCountry: string;
+
+  items: any[];
+  coupons: CouponCode[];
+  status: OrderStatus;
+  notes: string;
+
+  createdAt: string;
+  updatedAt: string;
+}
+
+type CouponCode = {
+  id: number;
+  title: string;
+  code: string;
+
+  type: string;
+  flatDiscount: number;
+  percentageDiscount: number;
+}
+
+enum OrderStatus {
+  Pending,
+  Paid,
+  Shipped,
+  Completed,
+  OnHold,
+  Cancelled,
 }
 
 export const defaultAddress: Address = {
@@ -48,13 +101,13 @@ export type CheckoutContextProps = {
 
 export const defaultCheckout: CheckoutContextProps = {
   step: () => "",
-  setStep(step) {},
+  setStep(step) { },
   shippingSameAsBilling: () => true,
   setShippingSameAsBilling: (val: any) => val,
-  updateBilling(key, val) {},
-  updateShipping(key, val) {},
-  updateNotes() {},
-  updateCoupon() {},
+  updateBilling(key, val) { },
+  updateShipping(key, val) { },
+  updateNotes() { },
+  updateCoupon() { },
   orderStore: {
     billingAddress: defaultAddress,
     shippingAddress: defaultAddress,
@@ -63,7 +116,7 @@ export const defaultCheckout: CheckoutContextProps = {
   },
   stripe: () => null,
   clientSecret: () => undefined,
-  submit() {},
+  submit() { },
   inTransit: () => false,
   formErrors: () => [],
 }

@@ -28,6 +28,7 @@ import Dashboard from './pages/Dashboard/Dashboard';
 import DashboardHome from './pages/Dashboard/Home';
 import Checkout from './pages/Checkout/Checkout';
 import { authStore, getUserProfile } from './stores/auth';
+import Orders from './pages/Dashboard/Orders';
 
 const App: Component = () => {
   const isLoggedIn = () => !!authStore.user
@@ -75,6 +76,7 @@ const App: Component = () => {
             <Route path="/dashboard" component={Dashboard}>
               <Route path={["/"]} component={DashboardHome} />
               <Route path="/products" component={Overview} />
+              <Route path="/orders" component={Orders} />
               <Route path="/payments" component={SiteAndSSL} />
               <Route path="/settings" component={Database} />
             </Route>

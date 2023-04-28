@@ -6,12 +6,30 @@ import { PrismaService } from "./prisma.service";
 export class UsersService {
   constructor(private prisma: PrismaService) { }
 
+  private exclude<User, Key extends keyof User>(
+    user: User,
+    keys: Key[]
+  ): Omit<User, Key> {
+    for (let key of keys) {
+      delete user[key]
+    }
+    return user
+  }
+
   async user(
     userWhereUniqueInput: Prisma.UserWhereUniqueInput,
+    withPassword = false,
   ): Promise<User | null> {
-    return this.prisma.user.findUnique({
+    const user = await this.prisma.user.findUnique({
       where: userWhereUniqueInput,
     });
+
+    if (!withPassword) {
+      //@ts-ignore
+      return this.exclude(user, ['password'])
+    }
+
+    return user
   }
 
   async userWithProfile(

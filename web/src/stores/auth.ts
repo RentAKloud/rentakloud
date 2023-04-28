@@ -36,7 +36,7 @@ async function register(email: string, password: string, firstName: string, last
 async function getUserProfile() {
   try {
     const resp = await AuthApi.getCurrentUser()
-    setAuthStore({ user: resp })
+    setAuthStore({ user: new User(resp) })
   } catch (err) {
     console.log(err)
   }

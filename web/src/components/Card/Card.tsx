@@ -17,12 +17,16 @@ const Card: Component<{
         <Show when={typeof description === "string"}>
           <p innerHTML={description as string} />
         </Show>
+
         <Show when={typeof description === "object"}>
           <p>{description}</p>
         </Show>
-        <div class="card-actions justify-center mt-5">
-          {actions}
-        </div>
+
+        <Show when={actions}>
+          <div class="card-actions justify-center mt-5">
+            {actions}
+          </div>
+        </Show>
       </div>
     </div>
   )

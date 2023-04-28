@@ -9,7 +9,8 @@ const Dashboard: Component<{}> = () => {
         <div class="py-20">
           <ul class="menu bg-base-100 w-56">
             <li><Link href="/dashboard">Home</Link></li>
-            <li><Link href="/dashboard/products">My Products</Link></li>
+            <li><Link href="/dashboard/products">Active Products</Link></li>
+            <li><Link href="/dashboard/orders">Orders</Link></li>
             <li><Link href="/dashboard/payments">Payments</Link></li>
             <li><Link href="/dashboard/settings">Settings</Link></li>
           </ul>

@@ -6,7 +6,10 @@ import { CreateOrderReq } from 'src/types/order';
 
 @Controller('orders')
 export class OrdersController {
-  constructor(private readonly ordersService: OrdersService, private usersService: UsersService) { }
+  constructor(
+    private readonly ordersService: OrdersService,
+    private usersService: UsersService
+  ) { }
 
   @UseGuards(JwtAuthGuard)
   @Get()

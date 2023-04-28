@@ -1,10 +1,9 @@
 import { Component, For } from "solid-js";
 import Hero from "../../components/Hero/Hero";
 import Card from "../../components/Card/Card"
-import { defaultProducts } from "../../config/data";
 import DefaultLayout from "../../layouts/DefaultLayout";
 import { Link, useSearchParams } from "@solidjs/router";
-import { productCategories, ProductCategory } from "../../types/product";
+import { productCategories } from "../../types/product";
 import { products } from "../../stores/products";
 
 const Products: Component<{}> = () => {
