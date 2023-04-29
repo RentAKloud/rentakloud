@@ -1,13 +1,10 @@
 import { Link } from "@solidjs/router";
 import { Component, For, Show } from "solid-js";
 import DefaultLayout from "../layouts/DefaultLayout";
-import { cart, resetCart } from "../stores/cart";
+import { getCartTotal, cart, resetCart } from "../stores/cart";
+import { getProductById, products } from "../stores/products";
 
 const Cart: Component = () => {
-  const cartTotal = () => cart.items
-    .map(i => i.product.prices![0].amount * i.quantity)
-    .reduce((x, y) => x + y, 0)
-
   return (
     <DefaultLayout>
       <div class="min-h-screen text-center flex flex-col flex-1 place-content-center mx-20">
@@ -31,7 +28,9 @@ const Cart: Component = () => {
               <tbody>
                 <For each={cart.items}>
                   {
-                    ({ product, quantity }, i) => {
+                    ({ productId, quantity }, i) => {
+                      const product = getProductById(productId)!
+
                       const price = product.prices![0]
                       const total = price.amount * quantity
                       return (
@@ -50,7 +49,7 @@ const Cart: Component = () => {
                   <th></th>
                   <td></td>
                   <td></td>
-                  <td>{cartTotal()} {cart.items[0].product.prices![0].currency}</td>
+                  <td>{getCartTotal()} {getProductById(cart.items[0].productId)!.prices![0].currency}</td>
                 </tr>
               </tbody>
             </table>

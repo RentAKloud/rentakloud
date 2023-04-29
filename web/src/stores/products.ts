@@ -7,6 +7,10 @@ export const [products] = createResource<Product[]>(fetchAndRemix, {
   initialValue: defaultProducts
 })
 
+export function getProductById(id: number) {
+  return products.latest.find(p => p.id === id)
+}
+
 async function fetchAndRemix(): Promise<Product[]> {
   const _products = await ProductsApi.all()
   const prodSlugs = _products.map(p => p.slug)

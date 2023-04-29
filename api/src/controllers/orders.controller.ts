@@ -1,25 +1,25 @@
 import { Body, Controller, Get, Param, Post, Request, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 import { OrdersService } from 'src/services/orders.service';
-import { UsersService } from 'src/services/users.service';
+import { ProductsService } from 'src/services/products.service';
 import { CreateOrderReq } from 'src/types/order';
 
 @Controller('orders')
 export class OrdersController {
   constructor(
     private readonly ordersService: OrdersService,
-    private usersService: UsersService
+    private productsService: ProductsService
   ) { }
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  products(@Request() req) {
+  orders(@Request() req) {
     return this.ordersService.orders({ where: { userId: req.user.id } })
   }
 
   @UseGuards(JwtAuthGuard)
   @Get('/:id')
-  product(@Param('id') id: number) {
+  order(@Param('id') id: number) {
     return this.ordersService.order({ id })
   }
 
@@ -31,6 +31,17 @@ export class OrdersController {
   ) {
     const { billingAddress, shippingAddress, shippingSameAsBilling, orderNotes, items } = data
     const _shippingAddress = shippingSameAsBilling ? billingAddress : shippingAddress
+
+    const products = await this.productsService.productsWithSelect({
+      where: {
+        id: {
+          in: items.map(i => i.productId)
+        }
+      },
+      select: {
+        id: true, name: true, prices: true
+      }
+    })
 
     // TODO maybe can use a transformation pipe to clean this mess
     const orderInput = {
@@ -55,7 +66,10 @@ export class OrdersController {
 
       notes: orderNotes,
       user: { connect: { id: req.user.userId } },
-      items,
+      items: items.map((item, i) => ({
+        quantity: item.quantity,
+        product: products[i]
+      })) as any[],
     }
 
     return this.ordersService.createOrder(orderInput)

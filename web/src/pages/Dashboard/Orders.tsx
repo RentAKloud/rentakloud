@@ -11,7 +11,6 @@ const Orders: Component = () => {
       <h2 class="text-4xl font-bold mb-5">Order History</h2>
 
       <Show when={orders.loading}>
-        Loading orders...
         <Loader />
       </Show>
 

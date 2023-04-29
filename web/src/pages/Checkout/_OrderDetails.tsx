@@ -1,10 +1,9 @@
 import { Component, For, Show } from "solid-js";
-import { cart } from "../../stores/cart";
+import { cart, getCartTotal } from "../../stores/cart";
+import { getProductById } from "../../stores/products";
 
 export const OrderDetails: Component = () => {
-  const cartTotal = () => cart.items
-    .map(i => i.product.prices![0].amount * i.quantity)
-    .reduce((x, y) => x + y, 0)
+  const currency = () => getProductById(cart.items[0].productId)!.prices![0].currency
 
   return (
     <>
@@ -13,10 +12,11 @@ export const OrderDetails: Component = () => {
       <For each={cart.items} fallback={"no cart items :("}>
         {
           (item) => {
-            const price = item.product.prices![0]
+            const product = getProductById(item.productId)!
+            const price = product.prices![0]
             return (
               <div class="flex justify-between">
-                <span>{item.product.name}</span>
+                <span>{product.name}</span>
                 <div>
                   <span>{price.amount} {price.currency}</span>
                   <span> &cross; {item.quantity}</span>
@@ -30,24 +30,24 @@ export const OrderDetails: Component = () => {
       <Show when={cart.items.length > 0}>
         <div class="flex justify-between mt-5">
           <strong>Subtotal</strong>
-          <span>{cartTotal()} {cart.items[0].product.prices![0].currency}</span>
+          <span>{getCartTotal()} {currency()}</span>
         </div>
         <div class="flex justify-between">
           <strong>Discount</strong>
-          <span>-{"0.00"} {cart.items[0].product.prices![0].currency}</span>
+          <span>-{"0.00"} {currency()}</span>
         </div>
         <div class="flex justify-between">
           <strong>Taxes</strong>
-          <span>{"0.00"} {cart.items[0].product.prices![0].currency}</span>
+          <span>{"0.00"} {currency()}</span>
         </div>
         <div class="flex justify-between">
           <strong>Shipping</strong>
-          <span>{"0.00"} {cart.items[0].product.prices![0].currency}</span>
+          <span>{"0.00"} {currency()}</span>
         </div>
 
         <div class="flex justify-between mt-5">
           <strong>Total</strong>
-          <span>{cartTotal()} {cart.items[0].product.prices![0].currency}</span>
+          <span>{getCartTotal()} {currency()}</span>
         </div>
       </Show>
     </>

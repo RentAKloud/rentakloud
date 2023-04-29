@@ -25,6 +25,6 @@ export const productCategories: ProductCategory[] = ["Hardware", "Databases", "E
 }))
 
 export type CartItem = {
-  product: Product;
+  productId: number;
   quantity: number;
 }

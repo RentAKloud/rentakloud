@@ -34,6 +34,17 @@ export class ProductsService {
     });
   }
 
+  async productsWithSelect(params: {
+    where?: Prisma.ProductWhereInput;
+    select?: Prisma.ProductSelect;
+  }): Promise<Partial<Product>[]> {
+    const { where, select } = params
+    return this.prisma.product.findMany({
+      where,
+      select,
+    })
+  }
+
   async createProduct(data: Prisma.ProductCreateInput): Promise<Product> {
     return this.prisma.product.create({
       data,
