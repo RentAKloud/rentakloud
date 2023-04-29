@@ -1,5 +1,7 @@
 import { Body, Controller, Get, Param, Post, Request, UseGuards } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
+import { ParseOrderPipe, ParsedCreateOrderReq } from 'src/pipes/parse-order';
 import { OrdersService } from 'src/services/orders.service';
 import { ProductsService } from 'src/services/products.service';
 import { CreateOrderReq } from 'src/types/order';
@@ -27,11 +29,11 @@ export class OrdersController {
   @Post()
   async createOrder(
     @Request() req,
-    @Body() data: CreateOrderReq
+    @Body(ParseOrderPipe) data: ParsedCreateOrderReq
   ) {
-    const { billingAddress, shippingAddress, shippingSameAsBilling, orderNotes, items } = data
-    const _shippingAddress = shippingSameAsBilling ? billingAddress : shippingAddress
+    const { items } = data
 
+    // TODO we can also just select the specific price
     const products = await this.productsService.productsWithSelect({
       where: {
         id: {
@@ -43,35 +45,12 @@ export class OrdersController {
       }
     })
 
-    // TODO maybe can use a transformation pipe to clean this mess
-    const orderInput = {
-      billingFirstName: billingAddress.firstName,
-      billingLastName: billingAddress.lastName,
-      billingAddress: billingAddress.address,
-      billingAddress2: billingAddress.address2,
-      billingEmail: billingAddress.email,
-      billingCity: billingAddress.city,
-      billingState: billingAddress.state,
-      billingZip: billingAddress.zip,
-      billingCountry: billingAddress.country,
+    data.user = { connect: { id: req.user.userId } }
+    data.items = items.map((item, i) => ({
+      quantity: item.quantity,
+      product: products[i] as any // idk
+    }))
 
-      shippingFirstName: _shippingAddress.firstName,
-      shippingLastName: _shippingAddress.lastName,
-      shippingAddress: _shippingAddress.address,
-      shippingAddress2: _shippingAddress.address2,
-      shippingCity: _shippingAddress.city,
-      shippingState: _shippingAddress.state,
-      shippingZip: _shippingAddress.zip,
-      shippingCountry: _shippingAddress.country,
-
-      notes: orderNotes,
-      user: { connect: { id: req.user.userId } },
-      items: items.map((item, i) => ({
-        quantity: item.quantity,
-        product: products[i]
-      })) as any[],
-    }
-
-    return this.ordersService.createOrder(orderInput)
+    return this.ordersService.createOrder(data)
   }
 }

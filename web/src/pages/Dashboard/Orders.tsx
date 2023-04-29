@@ -35,7 +35,7 @@ const Orders: Component = () => {
                 {
                   (order, i) => {
                     const items = order.items.length > 1 ? `${order.items.length} items` : order.items[0].product.name
-                    const total = order.items.reduce((i, j) => i + j.product.prices[0].amount, 0)
+                    const total = order.items.reduce((i, j) => i + j.product.prices[0].amount * j.quantity, 0)
                     return (
                       <tr>
                         <th>{i() + 1}</th>
