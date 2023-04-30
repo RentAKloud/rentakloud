@@ -32,7 +32,7 @@ const _Checkout: Component = () => {
                 Please confirm all the details. Then click <strong>Confirm & Pay</strong> to finalize the order and make payment.
               </p>
 
-              <Show when={!inTransit()} fallback={"Please wait"}>
+              <Show when={!inTransit()} fallback={"Processing..."}>
                 <div class="flex gap-5">
                   <button class="btn" onclick={() => setStep('address')}>Back</button>
                   <button class="btn btn-primary" onclick={submit}>Confirm & Pay</button>

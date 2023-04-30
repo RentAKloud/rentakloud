@@ -45,11 +45,21 @@ export const CheckoutProvider: Component<{ children: JSXElement }> = (props) => 
   })
 
   function updateBilling(key: Part<Address, keyof Address>, val: string) {
-    setOrderStore("billingAddress", key, val)
+    setOrderStore({
+      billingAddress: {
+        ...orderStore.billingAddress,
+        [key as string]: val
+      }
+    })
   }
 
   function updateShipping(key: Part<Address, keyof Address>, val: string) {
-    setOrderStore("shippingAddress", key, val)
+    setOrderStore({
+      shippingAddress: {
+        ...orderStore.shippingAddress,
+        [key as string]: val
+      }
+    })
   }
 
   function updateNotes(val: string) {
@@ -67,7 +77,6 @@ export const CheckoutProvider: Component<{ children: JSXElement }> = (props) => 
     try {
       setInTransit(true)
       const resp = await OrdersApi.create({ ...orderStore, items: cart.items })
-      NotificationService.success("Order created")
 
       const resp2 = await HttpService.post<{
         clientSecret: string,
@@ -104,6 +113,7 @@ export const CheckoutProvider: Component<{ children: JSXElement }> = (props) => 
       clientSecret,
       submit,
       inTransit,
+      setInTransit,
       formErrors,
     }}>
       {props.children}

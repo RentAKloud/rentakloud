@@ -75,6 +75,21 @@ export const BillingAndShipping: Component = () => {
       </div>
 
       <Show when={!shippingSameAsBilling()}>
+        <div class="flex flex-col md:flex-row md:gap-5">
+          <FormInput
+            label="First Name"
+            value={orderStore.shippingAddress.firstName}
+            onChange={(val) => updateShipping("firstName", val)}
+            error={formErrors().find(e => e.includes("shippingAddress.firstName"))}
+          />
+
+          <FormInput
+            label="Last Name"
+            value={orderStore.shippingAddress.lastName}
+            onChange={(val) => updateShipping("lastName", val)}
+          />
+        </div>
+
         <FormInput label="Address 1" value={orderStore.shippingAddress.address} onChange={(val) => updateShipping("address", val)} />
 
         <FormInput label="Address 2 (optional)" value={orderStore.shippingAddress.address2} onChange={(val) => updateShipping("address2", val)} />

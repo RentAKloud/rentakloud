@@ -12,13 +12,13 @@ export const OrderDetails: Component = () => {
       <For each={cart.items} fallback={"no cart items :("}>
         {
           (item) => {
-            const product = getProductById(item.productId)!
-            const price = product.prices![0]
+            const product = () => getProductById(item.productId)!
+            const price = () => product().prices![0]
             return (
               <div class="flex justify-between">
-                <span>{product.name}</span>
+                <span>{product().name}</span>
                 <div>
-                  <span>{price.amount} {price.currency}</span>
+                  <span>{price().amount} {price().currency}</span>
                   <span> &cross; {item.quantity}</span>
                 </div>
               </div>

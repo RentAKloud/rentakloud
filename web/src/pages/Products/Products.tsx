@@ -50,7 +50,7 @@ const Products: Component<{}> = () => {
         centered
       />
 
-      <section class="flex flex-wrap gap-5">
+      <section class="flex flex-wrap gap-5 mx-5">
         <For each={filteredProducts()}>
           {(product) => (
             <Link href={`/our-products/${product.slug}`}>

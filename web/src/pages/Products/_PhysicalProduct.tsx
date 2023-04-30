@@ -69,7 +69,7 @@ export const PhysicalProduct: Component<{ product: Product }> = (props) => {
               <FormInput label="Quantity" type="number" min={1} value={qty().toString()} onChange={(newVal) => setQty(+newVal)} />
             </div>
 
-            <button class="btn btn-primary" disabled={qty() === 0} onClick={buy}>Buy</button>
+            <button class="btn btn-primary" disabled={qty() === 0} onClick={buy}>Add to Cart</button>
           </Show>
         </div>
       </section>

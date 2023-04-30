@@ -8,7 +8,7 @@ const Card: Component<{
   center?: boolean
 }> = ({ title, description, img, actions, center = false }) => {
   return (
-    <div class="card w-96 bg-base-100 shadow-xl">
+    <div class="card w-80 md:w-96 bg-base-100 shadow-xl">
       {
         img && <figure class="p-5 h-60"><img src={img.uri} alt={img.alt} style={{ height: "100%", "object-fit": "contain" }} /></figure>
       }

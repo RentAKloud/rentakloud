@@ -96,6 +96,7 @@ export type CheckoutContextProps = {
   clientSecret: Accessor<string | undefined>;
   submit: () => void;
   inTransit: Accessor<boolean>;
+  setInTransit: (val: boolean) => void;
   formErrors: Accessor<string[]>;
 }
 
@@ -118,6 +119,7 @@ export const defaultCheckout: CheckoutContextProps = {
   clientSecret: () => undefined,
   submit() { },
   inTransit: () => false,
+  setInTransit: () => false,
   formErrors: () => [],
 }
 
