@@ -1,8 +1,9 @@
-import { Component } from "solid-js";
+import { Component, createSignal } from "solid-js";
 
 const FormInput: Component<{
   label: string;
   value: string;
+  defaultVal?: string;
   placeholder?: string;
   type?: string;
   onChange?: (newVal: any) => void;
@@ -14,9 +15,16 @@ const FormInput: Component<{
   placeholder,
   onChange,
   min,
-  type = 'text',
   error,
+  defaultVal,
+  type = 'text',
 }) => {
+    const [dirty, setDirty] = createSignal(false)
+    let val = value
+    if (!val && !dirty() && defaultVal !== undefined) {
+      val = defaultVal
+    }
+
     return (
       <div class="form-control flex-1">
         <label class="label">
@@ -25,8 +33,11 @@ const FormInput: Component<{
 
         <input
           type={type} placeholder={placeholder}
-          value={value}
-          onchange={(e) => onChange && onChange(e.currentTarget.value)}
+          value={val}
+          onchange={(e) => {
+            dirty() || setDirty(true)
+            onChange && onChange(e.currentTarget.value)
+          }}
           class="input input-bordered"
           classList={{
             "input-error": !!error

@@ -1,6 +1,7 @@
-import { Component, Show } from "solid-js";
+import { Component, Show, createEffect } from "solid-js";
 import FormInput from "../../components/FormInput";
 import { useCheckoutContext } from "./context";
+import { authStore } from "../../stores/auth";
 
 export const BillingAndShipping: Component = () => {
   const {
@@ -12,6 +13,11 @@ export const BillingAndShipping: Component = () => {
 
     formErrors,
   } = useCheckoutContext()
+  const { user } = authStore
+
+  createEffect(() => {
+    console.log(user)
+  })
 
   return (
     <form>
@@ -19,6 +25,7 @@ export const BillingAndShipping: Component = () => {
         <FormInput
           label="First Name"
           value={orderStore.billingAddress.firstName}
+          defaultVal={user?.firstName}
           onChange={(val) => updateBilling("firstName", val)}
           error={formErrors().find(e => e.includes("billingAddress.firstName"))}
         />
@@ -26,13 +33,25 @@ export const BillingAndShipping: Component = () => {
         <FormInput
           label="Last Name"
           value={orderStore.billingAddress.lastName}
+          defaultVal={user?.lastName}
           onChange={(val) => updateBilling("lastName", val)}
         />
       </div>
 
-      <FormInput label="Email" value={orderStore.billingAddress.email} onChange={(val) => updateBilling("email", val)} type="email" />
+      <FormInput
+        label="Email"
+        value={orderStore.billingAddress.email}
+        defaultVal={user?.email}
+        onChange={(val) => updateBilling("email", val)}
+        type="email"
+      />
 
-      <FormInput label="Address 1" value={orderStore.billingAddress.address} onChange={(val) => updateBilling("address", val)} />
+      <FormInput
+        label="Address 1"
+        value={orderStore.billingAddress.address}
+        defaultVal={""}
+        onChange={(val) => updateBilling("address", val)}
+      />
 
       <FormInput label="Address 2 (optional)" value={orderStore.billingAddress.address2} onChange={(val) => updateBilling("address2", val)} />
 

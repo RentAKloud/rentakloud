@@ -2,12 +2,10 @@ import { createEffect } from "solid-js"
 import { Card, useStripeElements } from "solid-stripe"
 import { useCheckoutContext } from "./context"
 import { NotificationService } from "../../services/NotificationService"
-import { useNavigate } from "@solidjs/router"
 
 export const StripeElementsWrapper = () => {
-  const { stripe, clientSecret, setInTransit } = useCheckoutContext()
+  const { stripe, clientSecret, setInTransit, setStep } = useCheckoutContext()
   const elements = useStripeElements()
-  const navigate = useNavigate()
 
   createEffect(async () => {
     if (!clientSecret()) return
@@ -26,7 +24,7 @@ export const StripeElementsWrapper = () => {
       }
       else {
         NotificationService.success("Payment successfull")
-        navigate("/dashboard")
+        setStep('congrats')
       }
     } catch (err) {
       console.log(err)

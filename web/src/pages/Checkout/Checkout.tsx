@@ -1,4 +1,5 @@
 import { Component, Show } from "solid-js";
+import { Link } from "@solidjs/router";
 import DefaultLayout from "../../layouts/DefaultLayout";
 import { OrderDetails } from "./_OrderDetails";
 import { BillingAndShipping } from "./_BillingAndShipping";
@@ -40,20 +41,18 @@ const _Checkout: Component = () => {
               </Show>
             </Show>
 
-            {/* <Show when={step() === 'confirm'}>
-              <div class="-mt-8 mb-8 bg-base-200 px-1 w-fit text-gray-400">Confirm</div>
+            <Show when={step() === 'congrats'}>
+              <div class="-mt-8 mb-8 bg-base-200 px-1 w-fit text-gray-400">Success</div>
 
               <p class="mb-10">
-                Please confirm all the details. Then click proceed to finalize the order and make payment.
+                Your order has been placed! You'll receive an email shortly.
               </p>
 
-              <Show when={!inTransit()} fallback={"Please wait"}>
-                <div class="flex gap-5">
-                  <button class="btn" onclick={() => setStep('payment')}>Back</button>
-                  <button class="btn btn-primary" onclick={submit}>Proceed</button>
-                </div>
-              </Show>
-            </Show> */}
+              <div class="flex gap-5">
+                <Link href="/dashboard/orders" class="btn">My Orders</Link>
+                <Link href="/dashboard" class="btn btn-primary">Dashboard</Link>
+              </div>
+            </Show>
           </section>
 
           <section>

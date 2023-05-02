@@ -81,9 +81,11 @@ export type OrderStore = {
   couponCode: string;
 }
 
+export type CheckoutSteps = "address" | "payment" | "congrats"
+
 export type CheckoutContextProps = {
-  step: () => string;
-  setStep: (step: "address" | "payment" | "confirm") => void;
+  step: () => CheckoutSteps;
+  setStep: (step: CheckoutSteps) => void;
   shippingSameAsBilling: Accessor<boolean>;
   setShippingSameAsBilling: Setter<boolean>;
   orderStore: OrderStore;
@@ -101,12 +103,12 @@ export type CheckoutContextProps = {
 }
 
 export const defaultCheckout: CheckoutContextProps = {
-  step: () => "",
+  step: () => "address",
   setStep(step) { },
   shippingSameAsBilling: () => true,
   setShippingSameAsBilling: (val: any) => val,
-  updateBilling(key, val) { },
-  updateShipping(key, val) { },
+  updateBilling() { },
+  updateShipping() { },
   updateNotes() { },
   updateCoupon() { },
   orderStore: {

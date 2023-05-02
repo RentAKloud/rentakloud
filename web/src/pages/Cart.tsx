@@ -2,7 +2,7 @@ import { Link } from "@solidjs/router";
 import { Component, For, Show } from "solid-js";
 import DefaultLayout from "../layouts/DefaultLayout";
 import { getCartTotal, cart, resetCart } from "../stores/cart";
-import { getProductById, products } from "../stores/products";
+import { getProductById } from "../stores/products";
 
 const Cart: Component = () => {
   return (
@@ -29,16 +29,16 @@ const Cart: Component = () => {
                 <For each={cart.items}>
                   {
                     ({ productId, quantity }, i) => {
-                      const product = getProductById(productId)!
+                      const product = () => getProductById(productId)!
 
-                      const price = product.prices![0]
-                      const total = price.amount * quantity
+                      const price = () => product().prices![0]
+                      const total = () => price().amount * quantity
                       return (
                         <tr>
                           <th>{i() + 1}</th>
-                          <td>{product.name}</td>
+                          <td>{product().name}</td>
                           <td>{quantity}</td>
-                          <td>{total} {price.currency}</td>
+                          <td>{total()} {price().currency}</td>
                         </tr>
                       )
                     }

@@ -4,10 +4,10 @@ import { Stripe, loadStripe } from "@stripe/stripe-js";
 import { useSearchParams } from "@solidjs/router";
 import { NotificationService } from "../../services/NotificationService";
 import { HttpService } from "../../services/HttpService";
-import { Address, CheckoutContextProps, defaultCheckout } from "../../types/order";
+import { Address, CheckoutContextProps, CheckoutSteps, defaultCheckout } from "../../types/order";
 import { authStore } from "../../stores/auth";
 import OrdersApi from "../../api/orders";
-import { cart } from "../../stores/cart";
+import { cart, resetCart } from "../../stores/cart";
 
 const CheckoutContext = createContext<CheckoutContextProps>(defaultCheckout)
 
@@ -21,8 +21,8 @@ export const CheckoutProvider: Component<{ children: JSXElement }> = (props) => 
   const [formErrors, setFormErrors] = createSignal<string[]>([])
 
   const [params, setParams] = useSearchParams()
-  const step = () => params.step
-  function setStep(step: "address" | "payment" | "confirm") {
+  const step = () => params.step as CheckoutSteps
+  function setStep(step: CheckoutSteps) {
     setParams({ step })
   }
 
@@ -88,6 +88,7 @@ export const CheckoutProvider: Component<{ children: JSXElement }> = (props) => 
       })
 
       setClientSecret(resp2.clientSecret)
+      resetCart()
     } catch (err: any) {
       console.log(err)
       NotificationService.error("Something went wrong")
