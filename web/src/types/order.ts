@@ -98,7 +98,7 @@ export type CheckoutContextProps = {
   clientSecret: Accessor<string | undefined>;
   submit: () => void;
   inTransit: Accessor<boolean>;
-  setInTransit: (val: boolean) => void;
+  setInTransit: Setter<boolean>;
   formErrors: Accessor<string[]>;
 }
 
@@ -121,9 +121,9 @@ export const defaultCheckout: CheckoutContextProps = {
   clientSecret: () => undefined,
   submit() { },
   inTransit: () => false,
-  setInTransit: () => false,
+  setInTransit: (val: any) => val,
   formErrors: () => [],
 }
 
-export type OrderRequest = OrderStore & { items: CartItem[] }
-export type OrderResponse = OrderRequest & { amount: number }
+export type OrderRequest = OrderStore & { items: CartItem[], shippingSameAsBilling: boolean }
+export type OrderResponse = Omit<OrderRequest, 'shippingSameAsBilling'> & { amount: number }

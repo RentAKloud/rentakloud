@@ -76,7 +76,11 @@ export const CheckoutProvider: Component<{ children: JSXElement }> = (props) => 
   async function submit() {
     try {
       setInTransit(true)
-      const resp = await OrdersApi.create({ ...orderStore, items: cart.items })
+      const resp = await OrdersApi.create({
+        ...orderStore,
+        items: cart.items,
+        shippingSameAsBilling: shippingSameAsBilling()
+      })
 
       const resp2 = await HttpService.post<{
         clientSecret: string,

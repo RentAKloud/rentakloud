@@ -23,6 +23,7 @@ const FormInput: Component<{
     let val = value
     if (!val && !dirty() && defaultVal !== undefined) {
       val = defaultVal
+      onChange && onChange(val)
     }
 
     return (

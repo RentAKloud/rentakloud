@@ -1,4 +1,4 @@
-import { Component, Show, createEffect } from "solid-js";
+import { Component, Show } from "solid-js";
 import FormInput from "../../components/FormInput";
 import { useCheckoutContext } from "./context";
 import { authStore } from "../../stores/auth";
@@ -14,10 +14,6 @@ export const BillingAndShipping: Component = () => {
     formErrors,
   } = useCheckoutContext()
   const { user } = authStore
-
-  createEffect(() => {
-    console.log(user)
-  })
 
   return (
     <form>

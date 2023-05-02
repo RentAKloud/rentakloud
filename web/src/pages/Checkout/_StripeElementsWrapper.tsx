@@ -11,7 +11,7 @@ export const StripeElementsWrapper = () => {
     if (!clientSecret()) return
 
     try {
-      setInTransit(true)
+      setInTransit(true) // TODO this does not work for some reason
       const result = await stripe()!.confirmCardPayment(clientSecret()!, {
         payment_method: {
           card: elements().getElement(Card)!,
