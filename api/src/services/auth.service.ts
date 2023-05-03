@@ -4,12 +4,14 @@ import { UsersService } from './users.service';
 import { JwtPayload, RegisterReq } from 'src/types/auth';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '@prisma/client';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
 export class AuthService {
   constructor(
     private users: UsersService,
     private jwtService: JwtService,
+    private ee: EventEmitter2,
   ) { }
 
   async validateUser(email: string, password: string) {
@@ -36,6 +38,9 @@ export class AuthService {
 
     const user = await this.users.createUser(data)
     const payload: JwtPayload = { email: user.email, sub: user.id }
+
+    this.ee.emit('user.created', user)
+
     return {
       access_token: this.jwtService.sign(payload)
     }
