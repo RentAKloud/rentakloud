@@ -18,9 +18,6 @@ export class PaymentsService {
     }
   }
 
-  async create() {
-  }
-
   async createSubscription(email: string, priceId: string) {
     const customer = await this.findOrCreateCustomer(email);
 

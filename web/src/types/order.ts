@@ -59,13 +59,13 @@ type CouponCode = {
   percentageDiscount: number;
 }
 
-enum OrderStatus {
-  Pending,
-  Paid,
-  Shipped,
-  Completed,
-  OnHold,
-  Cancelled,
+export enum OrderStatus {
+  Pending = 'Pending',
+  Paid = 'Paid',
+  Shipped = 'Shipped',
+  Completed = 'Completed',
+  OnHold = 'OnHold',
+  Cancelled = 'Cancelled',
 }
 
 export const defaultAddress: Address = {
@@ -96,6 +96,7 @@ export type CheckoutContextProps = {
 
   stripe: Accessor<Stripe | null>;
   clientSecret: Accessor<string | undefined>;
+  setPaymentSuccess: Setter<boolean>;
   submit: () => void;
   inTransit: Accessor<boolean>;
   setInTransit: Setter<boolean>;
@@ -119,6 +120,7 @@ export const defaultCheckout: CheckoutContextProps = {
   },
   stripe: () => null,
   clientSecret: () => undefined,
+  setPaymentSuccess: (val: any) => val,
   submit() { },
   inTransit: () => false,
   setInTransit: (val: any) => val,
@@ -126,4 +128,4 @@ export const defaultCheckout: CheckoutContextProps = {
 }
 
 export type OrderRequest = OrderStore & { items: CartItem[], shippingSameAsBilling: boolean }
-export type OrderResponse = Omit<OrderRequest, 'shippingSameAsBilling'> & { amount: number }
+export type OrderResponse = Order & { amount: number }

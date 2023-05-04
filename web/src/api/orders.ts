@@ -1,5 +1,5 @@
 import { HttpService } from "../services/HttpService";
-import { OrderRequest, OrderResponse as CreateOrderResponse, Order } from "../types/order";
+import { OrderRequest, OrderResponse as CreateOrderResponse, Order, OrderStatus } from "../types/order";
 
 class OrdersApi {
   static async all(): Promise<Order[]> {
@@ -12,6 +12,10 @@ class OrdersApi {
 
   static async create(order: OrderRequest): Promise<CreateOrderResponse> {
     return await HttpService.post("/orders", order)
+  }
+
+  static async updateStatus(id: number, status: OrderStatus) {
+    return await HttpService.post(`/orders/${id}`, { status })
   }
 }
 

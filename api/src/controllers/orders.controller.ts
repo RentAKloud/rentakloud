@@ -1,10 +1,8 @@
-import { Body, Controller, Get, Param, Post, Request, UseGuards } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
+import { Body, Controller, Get, Param, ParseIntPipe, Post, Request, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 import { ParseOrderPipe, ParsedCreateOrderReq } from 'src/pipes/parse-order';
 import { OrdersService } from 'src/services/orders.service';
 import { ProductsService } from 'src/services/products.service';
-import { CreateOrderReq } from 'src/types/order';
 
 @Controller('orders')
 export class OrdersController {
@@ -16,7 +14,7 @@ export class OrdersController {
   @UseGuards(JwtAuthGuard)
   @Get()
   orders(@Request() req) {
-    return this.ordersService.orders({ where: { userId: req.user.id } })
+    return this.ordersService.orders({ where: { userId: req.user.userId } })
   }
 
   @UseGuards(JwtAuthGuard)
@@ -52,5 +50,19 @@ export class OrdersController {
     }))
 
     return this.ordersService.createOrder(data)
+  }
+
+  // TODO add validation using filter to make sure the user owns the order
+  @UseGuards(JwtAuthGuard)
+  @Post('/:id')
+  updateOrderStatus(
+    @Param('id', ParseIntPipe) id: number,
+    @Request() req
+  ) {
+    const { status } = req.body
+    this.ordersService.updateOrder({
+      where: { id },
+      data: { status }
+    })
   }
 }

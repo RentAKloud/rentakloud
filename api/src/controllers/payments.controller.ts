@@ -1,6 +1,6 @@
-import { Controller, Get, Post, Body, Req } from '@nestjs/common';
-import { Request } from 'express';
+import { Controller, Post, Body, UseGuards, Request, Get } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 import { PaymentsService } from 'src/services/payments.service';
 
 @Controller('payments')
@@ -10,16 +10,14 @@ export class PaymentsController {
     private readonly configService: ConfigService,
   ) { }
 
-  @Post()
-  create(
-    @Body()
-    createPaymentDto,
-  ) {
-    return this.paymentsService.create();
+  @UseGuards(JwtAuthGuard)
+  @Get()
+  payments() {
+    return []
   }
 
   @Post('new-subscription')
-  async createSubscription(@Req() request: Request) {
+  async createSubscription(@Request() request) {
     const { email, priceId } = request.body;
 
     const { clientSecret, ephemeralKey, customer, subscriptionId } =
@@ -49,7 +47,7 @@ export class PaymentsController {
   }
 
   @Post('stripe-webhook')
-  async webhooks(@Req() request: Request) {
+  async webhooks(@Request() request) {
     const event = request.body;
 
     switch (event.type) {

@@ -4,7 +4,7 @@ import { Stripe, loadStripe } from "@stripe/stripe-js";
 import { useSearchParams } from "@solidjs/router";
 import { NotificationService } from "../../services/NotificationService";
 import { HttpService } from "../../services/HttpService";
-import { Address, CheckoutContextProps, CheckoutSteps, defaultCheckout } from "../../types/order";
+import { Address, CheckoutContextProps, CheckoutSteps, Order, OrderStatus, defaultCheckout } from "../../types/order";
 import { authStore } from "../../stores/auth";
 import OrdersApi from "../../api/orders";
 import { cart, resetCart } from "../../stores/cart";
@@ -28,6 +28,7 @@ export const CheckoutProvider: Component<{ children: JSXElement }> = (props) => 
 
   const [stripe, setStripe] = createSignal<Stripe | null>(null)
   const [clientSecret, setClientSecret] = createSignal<string>()
+  const [paymentSuccess, setPaymentSuccess] = createSignal<boolean>()
 
   onMount(async () => {
     if (!step()) {
@@ -41,6 +42,12 @@ export const CheckoutProvider: Component<{ children: JSXElement }> = (props) => 
   createEffect(() => {
     if (formErrors().find(e => e.includes("billingAddress")) !== undefined) {
       setStep("address")
+    }
+  })
+
+  createEffect(() => {
+    if (paymentSuccess()) {
+      OrdersApi.updateStatus(order()!.id, OrderStatus.Paid)
     }
   })
 
@@ -72,6 +79,7 @@ export const CheckoutProvider: Component<{ children: JSXElement }> = (props) => 
 
   const { user } = authStore
   const [inTransit, setInTransit] = createSignal(false)
+  const [order, setOrder] = createSignal<Order>()
 
   async function submit() {
     try {
@@ -81,6 +89,7 @@ export const CheckoutProvider: Component<{ children: JSXElement }> = (props) => 
         items: cart.items,
         shippingSameAsBilling: shippingSameAsBilling()
       })
+      setOrder(resp)
 
       const resp2 = await HttpService.post<{
         clientSecret: string,
@@ -116,6 +125,7 @@ export const CheckoutProvider: Component<{ children: JSXElement }> = (props) => 
 
       stripe,
       clientSecret,
+      setPaymentSuccess,
       submit,
       inTransit,
       setInTransit,

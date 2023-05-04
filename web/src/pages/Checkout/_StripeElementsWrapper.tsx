@@ -4,7 +4,7 @@ import { useCheckoutContext } from "./context"
 import { NotificationService } from "../../services/NotificationService"
 
 export const StripeElementsWrapper = () => {
-  const { stripe, clientSecret, setInTransit, setStep } = useCheckoutContext()
+  const { stripe, clientSecret, setInTransit, setStep, setPaymentSuccess } = useCheckoutContext()
   const elements = useStripeElements()
 
   createEffect(async () => {
@@ -25,6 +25,7 @@ export const StripeElementsWrapper = () => {
       else {
         NotificationService.success("Payment successfull")
         setStep('congrats')
+        setPaymentSuccess(true)
       }
     } catch (err) {
       console.log(err)
