@@ -6,12 +6,22 @@ export type Product = {
   description: string;
   categories: ProductCategory[];
   prices?: ProductPrice[]
+  productType: ProductType;
 }
 
-type ProductPrice = {
+export type ProductPrice = {
   currency: string;
-  symbol: string;
   amount: number;
+
+  // for subscriptions
+  priceId?: string;
+  interval?: string;
+  intervalCount?: string;
+}
+
+export enum ProductType {
+  Physical = 'Physical',
+  OnlineService = 'OnlineService'
 }
 
 export type ProductCategory = {
@@ -27,4 +37,5 @@ export const productCategories: ProductCategory[] = ["Hardware", "Databases", "E
 export type CartItem = {
   productId: number;
   quantity: number;
+  priceId?: string;
 }

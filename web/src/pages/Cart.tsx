@@ -2,7 +2,8 @@ import { Link } from "@solidjs/router";
 import { Component, For, Show } from "solid-js";
 import DefaultLayout from "../layouts/DefaultLayout";
 import { getCartTotal, cart, resetCart } from "../stores/cart";
-import { getProductById } from "../stores/products";
+import { formatPrice, getProductById, getProductPrice, products } from "../stores/products";
+import Loader from "../components/Loader";
 
 const Cart: Component = () => {
   return (
@@ -10,11 +11,17 @@ const Cart: Component = () => {
       <div class="min-h-screen text-center flex flex-col flex-1 place-content-center mx-20">
         <h1 class="text-4xl font-bold mb-10">Your Cart</h1>
 
+        <Show when={products.loading}>
+          <div class="text-center">
+            <Loader />
+          </div>
+        </Show>
+
         <Show when={cart.items.length === 0}>
           <p>Oh snap! Your cart is empty</p>
         </Show>
 
-        <Show when={cart.items.length > 0}>
+        <Show when={cart.items.length > 0 && !products.loading}>
           <div class="overflow-x-auto">
             <table class="table w-full">
               <thead>
@@ -28,17 +35,22 @@ const Cart: Component = () => {
               <tbody>
                 <For each={cart.items}>
                   {
-                    ({ productId, quantity }, i) => {
+                    ({ productId, quantity, priceId }, i) => {
                       const product = () => getProductById(productId)!
 
-                      const price = () => product().prices![0]
+                      const price = () => getProductPrice(product(), priceId)
                       const total = () => price().amount * quantity
+                      const interval = () => price().priceId ? ` &cross; ${price().intervalCount} ${price().interval}` : ""
                       return (
                         <tr>
                           <th>{i() + 1}</th>
-                          <td>{product().name}</td>
+                          <td>{product().name}
+                            <Show when={interval()}>
+                              <span innerHTML={interval()}></span>
+                            </Show>
+                          </td>
                           <td>{quantity}</td>
-                          <td>{total()} {price().currency}</td>
+                          <td>{formatPrice(total())}</td>
                         </tr>
                       )
                     }
@@ -49,7 +61,7 @@ const Cart: Component = () => {
                   <th></th>
                   <td></td>
                   <td></td>
-                  <td>{getCartTotal()} {getProductById(cart.items[0].productId)!.prices![0].currency}</td>
+                  <td>{formatPrice(getCartTotal())}</td>
                 </tr>
               </tbody>
             </table>

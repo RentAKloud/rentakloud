@@ -105,12 +105,12 @@ const Navbar: Component<{}> = () => {
                     </Link>
                   </li>
                   <li>
-                    <a class="justify-between">
+                    <Link href="/dashboard/profile" class="justify-between">
                       Profile
-                      <span class="badge">New</span>
-                    </a>
+                      {/* <span class="badge">New</span> */}
+                    </Link>
                   </li>
-                  <li><a>Settings</a></li>
+                  <li><Link href="/dashboard/settings">Settings</Link></li>
                   <li><a onClick={logout}>Logout</a></li>
                 </ul>
               </div>

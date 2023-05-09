@@ -27,9 +27,11 @@ import Guidance from './pages/ProductDashboard/Guidance';
 import Dashboard from './pages/Dashboard/Dashboard';
 import DashboardHome from './pages/Dashboard/Home';
 import Checkout from './pages/Checkout/Checkout';
-import { authStore, getUserProfile } from './stores/auth';
 import Orders from './pages/Dashboard/Orders';
 import Payments from './pages/Dashboard/Payments';
+import Settings from './pages/Dashboard/Settings';
+import ActiveProducts from './pages/Dashboard/ActiveProducts';
+import { authStore, getUserProfile } from './stores/auth';
 
 const App: Component = () => {
   const isLoggedIn = () => !!authStore.user
@@ -76,10 +78,10 @@ const App: Component = () => {
 
             <Route path="/dashboard" component={Dashboard}>
               <Route path={["/"]} component={DashboardHome} />
-              <Route path="/products" component={Overview} />
+              <Route path="/products" component={ActiveProducts} />
               <Route path="/orders" component={Orders} />
               <Route path="/payments" component={Payments} />
-              <Route path="/settings" component={Database} />
+              <Route path="/settings" component={Settings} />
             </Route>
 
             <Route path="/checkout" component={Checkout} />

@@ -1,4 +1,4 @@
-import { Product } from "../types/product"
+import { Product, ProductType } from "../types/product"
 
 export const defaultProducts: Product[] = [
   {
@@ -29,9 +29,9 @@ export const defaultProducts: Product[] = [
       {
         amount: 139,
         currency: "USD",
-        symbol: "$"
       }
-    ]
+    ],
+    productType: ProductType.Physical,
   },
   {
     id: 2,
@@ -39,7 +39,8 @@ export const defaultProducts: Product[] = [
     slug: "postgresql",
     shortDescription: "lorem ipsum",
     description: "lorem ipsum donor consit",
-    categories: [{ slug: "databases", title: "Databases" }]
+    categories: [{ slug: "databases", title: "Databases" }],
+    productType: ProductType.OnlineService,
   },
   {
     id: 3,
@@ -47,7 +48,8 @@ export const defaultProducts: Product[] = [
     slug: "mysql",
     shortDescription: "lorem ipsum",
     description: "lorem ipsum donor consit",
-    categories: [{ slug: "databases", title: "Databases" }]
+    categories: [{ slug: "databases", title: "Databases" }],
+    productType: ProductType.OnlineService,
   },
   {
     id: 4,
@@ -55,7 +57,8 @@ export const defaultProducts: Product[] = [
     slug: "ms-sql-server",
     shortDescription: "lorem ipsum",
     description: "lorem ipsum donor consit",
-    categories: [{ slug: "databases", title: "Databases" }]
+    categories: [{ slug: "databases", title: "Databases" }],
+    productType: ProductType.OnlineService,
   },
   {
     id: 5,
@@ -63,7 +66,8 @@ export const defaultProducts: Product[] = [
     slug: "cockroach-db",
     shortDescription: "lorem ipsum",
     description: "lorem ipsum donor consit",
-    categories: [{ slug: "databases", title: "Databases" }]
+    categories: [{ slug: "databases", title: "Databases" }],
+    productType: ProductType.OnlineService,
   },
   {
     id: 6,
@@ -71,7 +75,8 @@ export const defaultProducts: Product[] = [
     slug: "redis",
     shortDescription: "lorem ipsum",
     description: "lorem ipsum donor consit",
-    categories: [{ slug: "databases", title: "Databases" }]
+    categories: [{ slug: "databases", title: "Databases" }],
+    productType: ProductType.OnlineService,
   },
   {
     id: 7,
@@ -79,7 +84,8 @@ export const defaultProducts: Product[] = [
     slug: "mongo-db",
     shortDescription: "lorem ipsum",
     description: "lorem ipsum donor consit",
-    categories: [{ slug: "databases", title: "Databases" }]
+    categories: [{ slug: "databases", title: "Databases" }],
+    productType: ProductType.OnlineService,
   }
 ]
 

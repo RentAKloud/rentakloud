@@ -66,7 +66,7 @@ const Home: Component<{}> = () => {
         </div>
       </div> */}
 
-      <section>
+      {/* <section>
         <div class="stats bg-primary text-primary-content">
 
           <div class="stat">
@@ -87,7 +87,7 @@ const Home: Component<{}> = () => {
           </div>
 
         </div>
-      </section>
+      </section> */}
     </>
   )
 }
