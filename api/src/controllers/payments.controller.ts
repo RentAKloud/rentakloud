@@ -1,5 +1,4 @@
 import { Controller, Post, Body, UseGuards, Request, Get } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 import { PaymentsService } from 'src/services/payments.service';
 
@@ -7,7 +6,6 @@ import { PaymentsService } from 'src/services/payments.service';
 export class PaymentsController {
   constructor(
     private readonly paymentsService: PaymentsService,
-    private readonly configService: ConfigService,
   ) { }
 
   @UseGuards(JwtAuthGuard)
@@ -16,7 +14,7 @@ export class PaymentsController {
     return []
   }
 
-  @Post('new-subscription')
+  @Post('create-subscription')
   async createSubscription(@Request() request) {
     const { email, priceId } = request.body;
 
@@ -28,13 +26,13 @@ export class PaymentsController {
       subscriptionId,
       ephemeralKey: ephemeralKey.secret,
       customer: customer.id,
-      publishableKey: this.configService.get('STRIPE_PK_TEST'),
+      // publishableKey: this.configService.get('STRIPE_PK_TEST'),
     };
   }
 
   @Post('create-payment-intent')
   async createPaymentIntent(@Body() body) {
-    const { email, priceId, amount } = body;
+    const { email, amount } = body;
 
     const { clientSecret, ephemeralKey, customer } =
       await this.paymentsService.createPaymentIntent(email, amount);

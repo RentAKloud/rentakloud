@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import { products } from "./seed.data";
 
 const prisma = new PrismaClient()
 
@@ -12,17 +13,10 @@ async function main() {
   })
 
   // products
-  await prisma.product.create({
-    data: {
-      name: "PiKVM", slug: "pi-kvm",
-      shortDescription: "PiKVM short description",
-      description: "PiKVM full description",
-      productType: "Physical",
-      prices: [{ amount: 199.99, currency: "USD" }],
-      categories: {
-        connect: [{ id: 1 }]
-      }
-    }
+  products.forEach(async (product) => {
+    await prisma.product.create({
+      data: product
+    })
   })
 }
 

@@ -43,9 +43,9 @@ export const ServiceProduct: Component<{ product: Product }> = (props) => {
         <div class="grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-3 place-items-center">
           <For each={props.product.prices}>
             {
-              (price) =>
+              (price, index) =>
                 <PricingCard
-                  planName="Basic Plan" ppm={price.amount} showYearly={showYearly}
+                  planName={price.planName || `Plan ${index() + 1}`} ppm={price.amount} showYearly={showYearly}
                   points={[
                     "2.8 GHz 8-core CPU", "20 GB Cloud storage",
                     "Integration help", "SSH Access", "24×7 phone & email support"

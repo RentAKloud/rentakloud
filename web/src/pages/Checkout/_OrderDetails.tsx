@@ -1,6 +1,6 @@
 import { Component, For, Show } from "solid-js";
 import { cart, getCartTotal } from "../../stores/cart";
-import { formatPrice, getProductById, getProductPrice } from "../../stores/products";
+import { formatPrice, getProductById, getProductPrice, products } from "../../stores/products";
 import { useCheckoutContext } from "./context";
 import Lottie from "../../components/Lottie";
 
@@ -9,7 +9,7 @@ export const OrderDetails: Component = () => {
 
   return (
     <>
-      <Show when={step() !== 'congrats'}>
+      <Show when={step() !== 'congrats' && !products.loading}>
         <h4 class="font-bold">Items</h4>
 
         <For each={cart.items} fallback={"Your cart is empty."}>
@@ -17,6 +17,7 @@ export const OrderDetails: Component = () => {
             (item) => {
               const product = () => getProductById(item.productId)!
               const price = () => getProductPrice(product(), item.priceId)
+
               return (
                 <div class="flex justify-between">
                   <span>{product().name}</span>

@@ -1,10 +1,14 @@
 import { Injectable } from "@nestjs/common";
-import { Order, Prisma, Product } from "@prisma/client";
+import { Order, Prisma } from "@prisma/client";
 import { PrismaService } from "./prisma.service";
+import { EventEmitter2 } from "@nestjs/event-emitter";
 
 @Injectable()
 export class OrdersService {
-  constructor(private prisma: PrismaService) { }
+  constructor(
+    private prisma: PrismaService,
+    private ee: EventEmitter2,
+  ) { }
 
   async order(
     orderWhereUniqueInput: Prisma.OrderWhereUniqueInput,
@@ -32,9 +36,13 @@ export class OrdersService {
   }
 
   async createOrder(data: Prisma.OrderCreateInput): Promise<Order> {
-    return this.prisma.order.create({
+    const order = await this.prisma.order.create({
       data,
     });
+
+    this.ee.emit('order.created', order)
+
+    return order
   }
 
   async updateOrder(params: {

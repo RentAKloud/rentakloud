@@ -96,6 +96,7 @@ export type CheckoutContextProps = {
 
   stripe: Accessor<Stripe | null>;
   clientSecret: Accessor<string | undefined>;
+  subClientSecrets: Accessor<string[] | undefined>;
   setPaymentSuccess: Setter<boolean>;
   submit: () => void;
   inTransit: Accessor<boolean>;
@@ -120,6 +121,7 @@ export const defaultCheckout: CheckoutContextProps = {
   },
   stripe: () => null,
   clientSecret: () => undefined,
+  subClientSecrets: () => undefined,
   setPaymentSuccess: (val: any) => val,
   submit() { },
   inTransit: () => false,

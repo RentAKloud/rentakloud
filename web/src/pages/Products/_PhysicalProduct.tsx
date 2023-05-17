@@ -6,6 +6,7 @@ import FormInput from "../../components/FormInput";
 import { NotificationService } from "../../services/NotificationService";
 import { addToCart } from "../../stores/cart";
 import { Product } from "../../types/product";
+import { formatPrice } from "../../stores/products";
 
 const carData = [
   {
@@ -63,7 +64,7 @@ export const PhysicalProduct: Component<{ product: Product }> = (props) => {
           <p class="my-5" innerHTML={product().shortDescription} />
 
           <Show when={price() !== null} fallback={"Not available for purchase right now. Please check back soon."}>
-            <h4 class="text-xl">{price()!.symbol}{price()!.amount} {price()!.currency}</h4>
+            <h4 class="text-xl">{formatPrice(price()!.amount)}</h4>
 
             <div class="w-1/2 mb-10">
               <FormInput label="Quantity" type="number" min={1} value={qty().toString()} onChange={(newVal) => setQty(+newVal)} />

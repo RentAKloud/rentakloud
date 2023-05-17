@@ -40,7 +40,7 @@ const Cart: Component = () => {
 
                       const price = () => getProductPrice(product(), priceId)
                       const total = () => price().amount * quantity
-                      const interval = () => price().priceId ? ` &cross; ${price().intervalCount} ${price().interval}` : ""
+                      const interval = () => price().priceId ? ` &cross; ${price().planName} ${price().interval}ly` : ""
                       return (
                         <tr>
                           <th>{i() + 1}</th>

@@ -3,11 +3,13 @@ import { Part, createStore } from "solid-js/store";
 import { Stripe, loadStripe } from "@stripe/stripe-js";
 import { useSearchParams } from "@solidjs/router";
 import { NotificationService } from "../../services/NotificationService";
-import { HttpService } from "../../services/HttpService";
 import { Address, CheckoutContextProps, CheckoutSteps, Order, OrderStatus, defaultCheckout } from "../../types/order";
 import { authStore } from "../../stores/auth";
 import OrdersApi from "../../api/orders";
 import { cart, resetCart } from "../../stores/cart";
+import { getProductById } from "../../stores/products";
+import { ProductType } from "../../types/product";
+import PaymentsApi from "../../api/payments";
 
 const CheckoutContext = createContext<CheckoutContextProps>(defaultCheckout)
 
@@ -28,6 +30,7 @@ export const CheckoutProvider: Component<{ children: JSXElement }> = (props) => 
 
   const [stripe, setStripe] = createSignal<Stripe | null>(null)
   const [clientSecret, setClientSecret] = createSignal<string>()
+  const [subClientSecrets, setSubClientSecrets] = createSignal<string[]>()
   const [paymentSuccess, setPaymentSuccess] = createSignal<boolean>()
 
   onMount(async () => {
@@ -84,23 +87,30 @@ export const CheckoutProvider: Component<{ children: JSXElement }> = (props) => 
   async function submit() {
     try {
       setInTransit(true)
-      const resp = await OrdersApi.create({
+      const orderResp = await OrdersApi.create({
         ...orderStore,
         items: cart.items,
         shippingSameAsBilling: shippingSameAsBilling()
       })
-      setOrder(resp)
+      setOrder(orderResp)
 
-      const resp2 = await HttpService.post<{
-        clientSecret: string,
-        ephemeralKey: string,
-        customer: string
-      }>('/payments/create-payment-intent', {
-        email: user?.email,
-        amount: resp.amount || 599, // TODO amount not yet returned from order response
+      const hasAtleastOnePhysical = cart.items.some(i => getProductById(i.productId)?.productType === ProductType.Physical)
+      if (hasAtleastOnePhysical) {
+        // orderResp.amount excludes amount for subscriptions
+        const resp2 = await PaymentsApi.createPaymentIntent(user!.email, orderResp.amount)
+        setClientSecret(resp2.clientSecret)
+      }
+
+      // Handle subscriptions - we create separate subscription for each
+      // subscription item, although stripe allows to include multiple items in one subscription,
+      // so they can be cancelled/updated individually
+      const subscriptionItems = cart.items.filter(i => getProductById(i.productId)?.productType === ProductType.OnlineService)
+      const subClientSecretsP = subscriptionItems.map(i => {
+        return PaymentsApi.createSubscription(user!.email, i.priceId!)
       })
+      const subClientSecrets = await Promise.all(subClientSecretsP)
+      setSubClientSecrets(subClientSecrets.map(x => x.clientSecret))
 
-      setClientSecret(resp2.clientSecret)
       resetCart()
     } catch (err: any) {
       console.log(err)
@@ -125,6 +135,7 @@ export const CheckoutProvider: Component<{ children: JSXElement }> = (props) => 
 
       stripe,
       clientSecret,
+      subClientSecrets,
       setPaymentSuccess,
       submit,
       inTransit,

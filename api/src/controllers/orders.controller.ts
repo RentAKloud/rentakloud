@@ -1,4 +1,5 @@
 import { Body, Controller, Get, Param, ParseIntPipe, Post, Request, UseGuards } from '@nestjs/common';
+import { ProductType } from '@prisma/client';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 import { ParseOrderPipe, ParsedCreateOrderReq } from 'src/pipes/parse-order';
 import { OrdersService } from 'src/services/orders.service';
@@ -31,7 +32,7 @@ export class OrdersController {
   ) {
     const { items } = data
 
-    // TODO we can also just select the specific price
+    // TODO we should also just select the specific price
     const products = await this.productsService.productsWithSelect({
       where: {
         id: {
@@ -39,7 +40,7 @@ export class OrdersController {
         }
       },
       select: {
-        id: true, name: true, prices: true
+        id: true, name: true, prices: true, productType: true
       }
     })
 
@@ -49,7 +50,19 @@ export class OrdersController {
       product: products[i] as any // idk
     }))
 
-    return this.ordersService.createOrder(data)
+    const order = await this.ordersService.createOrder(data)
+
+    // Calculate order total amount. This amount is used for confirmCardPayment at frontend.
+    // excludes amount for subscriptions
+    // @ts-ignore
+    order.amount = order.items.reduce((curr: number, next: {product: any, quantity: number}) => {
+      if (next.product.productType === ProductType.OnlineService) {
+        return curr
+      }
+      return curr + next.product.prices[0].amount * next.quantity
+    }, 0)
+
+    return order
   }
 
   // TODO add validation using filter to make sure the user owns the order

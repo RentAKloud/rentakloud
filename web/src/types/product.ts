@@ -14,6 +14,7 @@ export type ProductPrice = {
   amount: number;
 
   // for subscriptions
+  planName?: string;
   priceId?: string;
   interval?: string;
   intervalCount?: string;
@@ -29,6 +30,12 @@ export type ProductCategory = {
   title: string;
   slug: string;
 }
+
+export type ActiveProduct = {
+  product: Product;
+  createdAt: string;
+}
+
 export const productCategories: ProductCategory[] = ["Hardware", "Databases", "ERP", "CRM", "CMS", "Ecommerce", "Message Queueing"].map(c => ({
   slug: c.toLowerCase().replaceAll(' ', '-'),
   title: c,

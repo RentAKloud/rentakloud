@@ -4,7 +4,7 @@ import { useCheckoutContext } from "./context"
 import { NotificationService } from "../../services/NotificationService"
 
 export const StripeElementsWrapper = () => {
-  const { stripe, clientSecret, setInTransit, setStep, setPaymentSuccess } = useCheckoutContext()
+  const { stripe, clientSecret, subClientSecrets, setInTransit, setStep, setPaymentSuccess } = useCheckoutContext()
   const elements = useStripeElements()
 
   createEffect(async () => {
@@ -31,6 +31,33 @@ export const StripeElementsWrapper = () => {
       console.log(err)
     } finally {
       setInTransit(false)
+    }
+  })
+
+  createEffect(async () => {
+    if (!subClientSecrets()) return
+
+    try {
+      const promises = subClientSecrets()!.map((secret) => {
+        return stripe()!.confirmCardPayment(secret, {
+          payment_method: {
+            card: elements().getElement(Card)!,
+            billing_details: {},
+          }
+        })
+      })
+      const results = await Promise.all(promises)
+
+      if (results.some(r => !!r.error)) {
+        NotificationService.error("One of the payments failed")
+      }
+      else {
+        NotificationService.success("Subscription successfull")
+        setStep('congrats')
+        setPaymentSuccess(true)
+      }
+    } catch (err) {
+      console.log(err)
     }
   })
 

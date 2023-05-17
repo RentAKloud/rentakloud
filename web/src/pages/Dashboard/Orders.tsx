@@ -2,6 +2,7 @@ import { Component, For, Show, createResource } from "solid-js";
 import OrdersApi from "../../api/orders";
 import Loader from "../../components/Loader";
 import { DateTime } from "../../components/DateTime";
+import { formatPrice } from "../../stores/products";
 
 const Orders: Component = () => {
   const [orders] = createResource(OrdersApi.all)
@@ -41,7 +42,7 @@ const Orders: Component = () => {
                         <th>{i() + 1}</th>
                         <td>{items}</td>
                         <td><DateTime value={order.createdAt} /></td>
-                        <td>{total} {"USD"}</td>
+                        <td>{formatPrice(total)}</td>
                         <td>{order.status}</td>
                       </tr>
                     )
