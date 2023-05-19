@@ -84,7 +84,7 @@ export class ProductsService {
         return {
           userId: order.userId,
           productId: i.product.id,
-          subscriptionId: randomUUID(), // TODO
+          subscriptionId: randomUUID(), // TODO this should not be required
         }
       })
     })

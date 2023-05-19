@@ -87,17 +87,21 @@ export const CheckoutProvider: Component<{ children: JSXElement }> = (props) => 
   async function submit() {
     try {
       setInTransit(true)
-      const orderResp = await OrdersApi.create({
-        ...orderStore,
-        items: cart.items,
-        shippingSameAsBilling: shippingSameAsBilling()
-      })
-      setOrder(orderResp)
+
+      // Sometimes order will get created but payment can be failed
+      if (!order()) {
+        const orderResp = await OrdersApi.create({
+          ...orderStore,
+          items: cart.items,
+          shippingSameAsBilling: shippingSameAsBilling()
+        })
+        setOrder(orderResp)
+      }
 
       const hasAtleastOnePhysical = cart.items.some(i => getProductById(i.productId)?.productType === ProductType.Physical)
       if (hasAtleastOnePhysical) {
         // orderResp.amount excludes amount for subscriptions
-        const resp2 = await PaymentsApi.createPaymentIntent(user!.email, orderResp.amount)
+        const resp2 = await PaymentsApi.createPaymentIntent(user!.email, order()!.amount!)
         setClientSecret(resp2.clientSecret)
       }
 

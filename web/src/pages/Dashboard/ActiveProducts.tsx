@@ -21,8 +21,8 @@ const ActiveProducts: Component = () => {
                   <span>Started At: <DateTime value={activeProduct.createdAt} /></span>
                 </div>}
                 actions={<div class="flex gap-5 items-center justify-start">
-                  <span class="text-success">ACTIVE</span>
-                  <button class="btn btn-error">Pause</button>
+                  <span class="text-success" classList={{ "text-error": activeProduct.status === "Inactive" }}>{activeProduct.status}</span>
+                  <button class="btn">Pause</button>
                 </div>} />
             )
           }

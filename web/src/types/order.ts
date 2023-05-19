@@ -20,7 +20,7 @@ export type Order = {
   id: number;
   user: User;
   userId: number;
-
+  
   billingFirstName: string;
   billingLastName: string;
   billingEmail: string;
@@ -47,6 +47,8 @@ export type Order = {
 
   createdAt: string;
   updatedAt: string;
+
+  amount?: number; // only in create response
 }
 
 type CouponCode = {

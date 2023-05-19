@@ -3,13 +3,16 @@ import HeroWithBg from "../../components/Hero/HeroWithBg";
 import { Product } from "../../types/product";
 import PricingCard from "../../components/PricingCard";
 import { addToCart } from "../../stores/cart";
+import { useNavigate } from "@solidjs/router";
 
 export const ServiceProduct: Component<{ product: Product }> = (props) => {
   const [showYearly, setShowYearly] = createSignal(false)
   const product = createMemo(() => props.product)
+  const navigate = useNavigate()
 
   function selectPlan(priceId: string) {
     addToCart(product(), 1, priceId)
+    navigate("/checkout")
   }
 
   return (

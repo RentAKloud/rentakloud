@@ -17,10 +17,11 @@ export const OrderDetails: Component = () => {
             (item) => {
               const product = () => getProductById(item.productId)!
               const price = () => getProductPrice(product(), item.priceId)
+              const interval = () => price().priceId ? ` &cross; ${price().planName} ${price().interval}ly` : ""
 
               return (
                 <div class="flex justify-between">
-                  <span>{product().name}</span>
+                  <div>{product().name} <Show when={interval()}><span innerHTML={interval()} /></Show></div>
                   <div>
                     <span>{formatPrice(price().amount)}</span>
                     <span> &cross; {item.quantity}</span>

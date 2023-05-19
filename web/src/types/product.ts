@@ -34,6 +34,7 @@ export type ProductCategory = {
 export type ActiveProduct = {
   product: Product;
   createdAt: string;
+  status: "Active" | "Inactive";
 }
 
 export const productCategories: ProductCategory[] = ["Hardware", "Databases", "ERP", "CRM", "CMS", "Ecommerce", "Message Queueing"].map(c => ({
