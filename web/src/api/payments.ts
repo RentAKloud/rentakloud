@@ -7,6 +7,8 @@ type CreatePaymentIntent = {
   customer: string
 }
 
+export type CreateSubscriptionResponse = CreatePaymentIntent & { subscriptionId: string }
+
 class PaymentsApi {
   static async all(): Promise<Payment[]> {
     return await HttpService.get("/payments")
@@ -23,7 +25,7 @@ class PaymentsApi {
     })
   }
 
-  static async createSubscription(userEmail: string, priceId: string): Promise<CreatePaymentIntent> {
+  static async createSubscription(userEmail: string, priceId: string): Promise<CreateSubscriptionResponse> {
     return await HttpService.post('/payments/create-subscription', {
       email: userEmail,
       priceId

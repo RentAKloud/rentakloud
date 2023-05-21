@@ -24,6 +24,8 @@ export class OrdersController {
     return this.ordersService.order({ id })
   }
 
+  // This is for physical products only. We don't create orders for products of type OnlineService (subscription based)
+  // For subscription based/OnlineService products, see products.controller
   @UseGuards(JwtAuthGuard)
   @Post()
   async createOrder(
@@ -45,21 +47,23 @@ export class OrdersController {
     })
 
     data.user = { connect: { id: req.user.userId } }
-    data.items = items.map((item, i) => ({
-      quantity: item.quantity,
-      product: products[i] as any // idk
-    }))
+    data.items = items
+      .filter((_, i) => products[i].productType === ProductType.Physical)
+      .map((item, i) => ({
+        quantity: item.quantity,
+        product: products[i] as any // idk
+      }))
 
     const order = await this.ordersService.createOrder(data)
 
     // Calculate order total amount. This amount is used for confirmCardPayment at frontend.
     // excludes amount for subscriptions
     // @ts-ignore
-    order.amount = order.items.reduce((curr: number, next: {product: any, quantity: number}) => {
-      if (next.product.productType === ProductType.OnlineService) {
-        return curr
+    order.amount = order.items.reduce((sum: number, curr: { product: any, quantity: number }) => {
+      if (curr.product.productType === ProductType.OnlineService) {
+        return sum
       }
-      return curr + next.product.prices[0].amount * next.quantity
+      return sum + curr.product.prices[0].amount * curr.quantity
     }, 0)
 
     return order

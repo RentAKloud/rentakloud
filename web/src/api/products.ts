@@ -1,5 +1,5 @@
 import { HttpService } from "../services/HttpService";
-import { ActiveProduct, Product } from "../types/product";
+import { ActiveProduct, Product, SubscriptionData } from "../types/product";
 
 class ProductsApi {
   static async all(): Promise<Product[]> {
@@ -12,6 +12,10 @@ class ProductsApi {
 
   static async allMy(): Promise<ActiveProduct[]> {
     return await HttpService.get("/products/me")
+  }
+
+  static async createActiveProducts(subscriptions: SubscriptionData[]) {
+    return await HttpService.post("/products/me", { subscriptions })
   }
 }
 

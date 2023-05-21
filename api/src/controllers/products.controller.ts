@@ -1,4 +1,4 @@
-import { Controller, Get, Param, ParseIntPipe, Request, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, ParseIntPipe, Post, Request, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 import { ProductsService } from 'src/services/products.service';
 
@@ -20,5 +20,12 @@ export class ProductsController {
   @Get('/:id')
   product(@Param('id', ParseIntPipe) id: number) {
     return this.productsService.product({ id })
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('/me')
+  createUserProducts(@Request() req) {
+    const { subscriptions } = req.body
+    return this.productsService.createUserProducts(subscriptions, req.user.userId)
   }
 }

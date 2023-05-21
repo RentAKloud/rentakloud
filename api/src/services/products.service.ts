@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { Order, Prisma, Product } from "@prisma/client";
+import { Order, Prisma, Product, UserProductStatus } from "@prisma/client";
 import { PrismaService } from "./prisma.service";
 import { OnEvent } from "@nestjs/event-emitter";
 import { randomUUID } from "crypto";
@@ -77,14 +77,15 @@ export class ProductsService {
     })
   }
 
-  @OnEvent('order.created')
-  async newUserProductsFromOrder(order: Order) {
-    await this.prisma.userToProducts.createMany({
-      data: order.items.map((i: any) => {
+
+  async createUserProducts(products: {subscriptionId: string, priceId: string, productId: number}[], userId: number) {
+    return this.prisma.userToProducts.createMany({
+      data: products.map((i) => {
         return {
-          userId: order.userId,
-          productId: i.product.id,
-          subscriptionId: randomUUID(), // TODO this should not be required
+          userId: userId,
+          productId: i.productId,
+          subscriptionId: i.subscriptionId,
+          status: UserProductStatus.Active,
         }
       })
     })

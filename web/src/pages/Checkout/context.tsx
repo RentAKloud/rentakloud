@@ -8,8 +8,9 @@ import { authStore } from "../../stores/auth";
 import OrdersApi from "../../api/orders";
 import { cart, resetCart } from "../../stores/cart";
 import { getProductById } from "../../stores/products";
-import { ProductType } from "../../types/product";
+import { ProductType, SubscriptionData } from "../../types/product";
 import PaymentsApi from "../../api/payments";
+import ProductsApi from "../../api/products";
 
 const CheckoutContext = createContext<CheckoutContextProps>(defaultCheckout)
 
@@ -31,6 +32,7 @@ export const CheckoutProvider: Component<{ children: JSXElement }> = (props) => 
   const [stripe, setStripe] = createSignal<Stripe | null>(null)
   const [clientSecret, setClientSecret] = createSignal<string>()
   const [subClientSecrets, setSubClientSecrets] = createSignal<string[]>()
+  const [subIds, setSubIds] = createSignal<SubscriptionData[]>()
   const [paymentSuccess, setPaymentSuccess] = createSignal<boolean>()
 
   onMount(async () => {
@@ -48,9 +50,12 @@ export const CheckoutProvider: Component<{ children: JSXElement }> = (props) => 
     }
   })
 
+  // TODO if possible this order status should not be updated from frontend
+  // but from stripe webhooks. Dont have access to webhooks right now
   createEffect(() => {
     if (paymentSuccess()) {
       OrdersApi.updateStatus(order()!.id, OrderStatus.Paid)
+      resetCart()
     }
   })
 
@@ -88,34 +93,40 @@ export const CheckoutProvider: Component<{ children: JSXElement }> = (props) => 
     try {
       setInTransit(true)
 
-      // Sometimes order will get created but payment can be failed
-      if (!order()) {
+      const physicalItems = cart.items.filter(i => getProductById(i.productId)?.productType === ProductType.Physical)
+      // Sometimes order will get created but payment can be failed, so we add !order() check to not
+      // create order again
+      if (!order() && physicalItems.length > 0) {
         const orderResp = await OrdersApi.create({
           ...orderStore,
-          items: cart.items,
+          items: physicalItems,
           shippingSameAsBilling: shippingSameAsBilling()
         })
         setOrder(orderResp)
       }
 
-      const hasAtleastOnePhysical = cart.items.some(i => getProductById(i.productId)?.productType === ProductType.Physical)
-      if (hasAtleastOnePhysical) {
+      if (physicalItems.length > 0) {
         // orderResp.amount excludes amount for subscriptions
         const resp2 = await PaymentsApi.createPaymentIntent(user!.email, order()!.amount!)
         setClientSecret(resp2.clientSecret)
       }
 
       // Handle subscriptions - we create separate subscription for each
-      // subscription item, although stripe allows to include multiple items in one subscription,
-      // so they can be cancelled/updated individually
+      // subscription item so they can be cancelled/updated individually,
+      // although stripe allows to include multiple items in one subscription
       const subscriptionItems = cart.items.filter(i => getProductById(i.productId)?.productType === ProductType.OnlineService)
-      const subClientSecretsP = subscriptionItems.map(i => {
-        return PaymentsApi.createSubscription(user!.email, i.priceId!)
+      // TODO should be one bulk request
+      const subResponsePromises = subscriptionItems.map(i => {
+        return PaymentsApi.createSubscription(user!.email, i.priceId!) // TODO also consider i.quantity
       })
-      const subClientSecrets = await Promise.all(subClientSecretsP)
-      setSubClientSecrets(subClientSecrets.map(x => x.clientSecret))
-
-      resetCart()
+      const subResponses = await Promise.all(subResponsePromises)
+      const subData = subResponses.map((x, i) => ({
+        subscriptionId: x.subscriptionId,
+        productId: subscriptionItems[i].productId,
+        priceId: subscriptionItems[i].priceId!
+      }))
+      await ProductsApi.createActiveProducts(subData)
+      setSubClientSecrets(subResponses.map(x => x.clientSecret))
     } catch (err: any) {
       console.log(err)
       NotificationService.error("Something went wrong")

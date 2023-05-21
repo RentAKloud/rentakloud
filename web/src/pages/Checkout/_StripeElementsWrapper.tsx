@@ -54,7 +54,6 @@ export const StripeElementsWrapper = () => {
       else {
         NotificationService.success("Subscription successfull")
         setStep('congrats')
-        setPaymentSuccess(true)
       }
     } catch (err) {
       console.log(err)

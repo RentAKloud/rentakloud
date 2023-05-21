@@ -47,3 +47,9 @@ export type CartItem = {
   quantity: number;
   priceId?: string;
 }
+
+export type SubscriptionData = {
+  subscriptionId: string
+  productId: number
+  priceId: string
+}
