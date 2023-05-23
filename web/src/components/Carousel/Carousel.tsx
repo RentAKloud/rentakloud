@@ -9,11 +9,9 @@ export type CarouselProps = Component<{
 }>
 
 const Carousel: CarouselProps = (props) => {
-  const { items } = props
-
   return (
     <div class="carousel carousel-center rounded-box" ref={props.ref}>
-      <For each={items}>
+      <For each={props.items}>
         {
           (item) =>
             <div class="carousel-item w-full">

@@ -6,6 +6,10 @@ export type Product = {
   description: string;
   categories: ProductCategory[];
   prices?: ProductPrice[]
+  images: {
+    src: string
+    alt: string
+  }[]
   productType: ProductType;
 }
 

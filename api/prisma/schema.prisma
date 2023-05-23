@@ -65,6 +65,7 @@ model Product {
   description      String?
   productType      ProductType @default(OnlineService)
   prices           Json[]
+  images           Json        @default("[]")
   stripeId         String?     @unique
 
   categories Category[]
@@ -75,6 +76,8 @@ model Product {
 }
 
 model UserToProducts {
+  id String @id @default(uuid())
+
   user      User    @relation(fields: [userId], references: [id])
   userId    Int
   product   Product @relation(fields: [productId], references: [id])

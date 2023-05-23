@@ -2,7 +2,7 @@ import ChevronLeftIcon from "../icons/ChevronLeft";
 import ChevronRightIcon from "../icons/ChevronRight";
 import Carousel, { CarouselProps } from "./Carousel";
 
-const CarouselWithControls: CarouselProps = ({ items }) => {
+const CarouselWithControls: CarouselProps = (props) => {
   let carousel: HTMLDivElement | undefined;
 
   function next() {
@@ -15,7 +15,7 @@ const CarouselWithControls: CarouselProps = ({ items }) => {
 
   return (
     <div class="relative">
-      <Carousel ref={carousel} items={items} />
+      <Carousel ref={carousel} items={props.items} />
 
       <div>
         <button onclick={prev} class="btn btn-circle absolute top-1/2 left-1">

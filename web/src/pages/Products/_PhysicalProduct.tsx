@@ -8,21 +8,6 @@ import { addToCart } from "../../stores/cart";
 import { Product } from "../../types/product";
 import { formatPrice } from "../../stores/products";
 
-const carData = [
-  {
-    src: "https://cdn11.bigcommerce.com/s-2fbyfnm8ev/images/stencil/1280x1280/products/1968/7031/Plus-1__34215.1674847345.1280.1280__92699.1675093557.jpg?c=2",
-    alt: "bluej"
-  },
-  {
-    src: "https://cdn11.bigcommerce.com/s-2fbyfnm8ev/images/stencil/1280x1280/products/1968/7032/Plus-2__79690.1674847358.1280.1280__03489.1675093573.jpg?c=2",
-    alt: "bluej"
-  },
-  {
-    src: "https://cdn11.bigcommerce.com/s-2fbyfnm8ev/images/stencil/1280x1280/products/1968/7033/Plus-3__42612.1674847369.1280.1280__06848.1675093585.jpg?c=2",
-    alt: "bluej"
-  }
-]
-
 export const PhysicalProduct: Component<{ product: Product }> = (props) => {
   const product = createMemo(() => props.product)
   const price = () => {
@@ -56,7 +41,7 @@ export const PhysicalProduct: Component<{ product: Product }> = (props) => {
 
       <section class="flex flex-col md:flex-row justify-around">
         <div class="md:w-2/5">
-          <CarouselWithControls items={carData} />
+          <CarouselWithControls items={product().images} />
         </div>
 
         <div class="md:w-2/5 mt-3 text-center md:text-left">
