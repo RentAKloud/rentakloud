@@ -1,13 +1,18 @@
-import { Component, For } from "solid-js";
+import { Component, For, Ref } from "solid-js";
 
-const Carousel: Component<{
+export type CarouselProps = Component<{
   items: {
     src: string,
     alt: string,
   }[];
-}> = ({ items }) => {
+  ref?: Ref<HTMLDivElement>;
+}>
+
+const Carousel: CarouselProps = (props) => {
+  const { items } = props
+
   return (
-    <div class="carousel carousel-center rounded-box">
+    <div class="carousel carousel-center rounded-box" ref={props.ref}>
       <For each={items}>
         {
           (item) =>

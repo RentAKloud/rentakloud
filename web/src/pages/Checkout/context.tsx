@@ -8,7 +8,7 @@ import { authStore } from "../../stores/auth";
 import OrdersApi from "../../api/orders";
 import { cart, resetCart } from "../../stores/cart";
 import { getProductById } from "../../stores/products";
-import { ProductType, SubscriptionData } from "../../types/product";
+import { ProductType } from "../../types/product";
 import PaymentsApi from "../../api/payments";
 import ProductsApi from "../../api/products";
 
@@ -32,7 +32,6 @@ export const CheckoutProvider: Component<{ children: JSXElement }> = (props) => 
   const [stripe, setStripe] = createSignal<Stripe | null>(null)
   const [clientSecret, setClientSecret] = createSignal<string>()
   const [subClientSecrets, setSubClientSecrets] = createSignal<string[]>()
-  const [subIds, setSubIds] = createSignal<SubscriptionData[]>()
   const [paymentSuccess, setPaymentSuccess] = createSignal<boolean>()
 
   onMount(async () => {

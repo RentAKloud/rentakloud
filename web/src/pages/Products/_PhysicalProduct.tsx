@@ -1,7 +1,7 @@
 import { Tabs } from "@kobalte/core";
 import { Link } from "@solidjs/router";
 import { Component, Show, createMemo, createSignal } from "solid-js";
-import Carousel from "../../components/Carousel";
+import CarouselWithControls from "../../components/Carousel/CarouselWithControls";
 import FormInput from "../../components/FormInput";
 import { NotificationService } from "../../services/NotificationService";
 import { addToCart } from "../../stores/cart";
@@ -56,7 +56,7 @@ export const PhysicalProduct: Component<{ product: Product }> = (props) => {
 
       <section class="flex flex-col md:flex-row justify-around">
         <div class="md:w-2/5">
-          <Carousel items={carData} />
+          <CarouselWithControls items={carData} />
         </div>
 
         <div class="md:w-2/5 mt-3 text-center md:text-left">
