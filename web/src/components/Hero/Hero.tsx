@@ -10,7 +10,7 @@ const Hero: Component<{
   actions?: JSXElement,
 }> = ({ title, subtitle, content, children, actions, reverse = false, centered = false }) => {
   return (
-    <div class="hero min-h-screen bg-base-200">
+    <div class="hero min-h-screen bg-base-200 relative">
       <div
         class="hero-content flex-col text-center"
         classList={{

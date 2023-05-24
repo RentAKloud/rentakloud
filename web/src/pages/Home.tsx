@@ -7,6 +7,7 @@ import PricingCard from "../components/PricingCard";
 import Testimonial from "../components/Card/Testimonial";
 import Lottie from "../components/Lottie";
 import { home } from "../config/data";
+import CloudsAnimation from "../components/CloudsAnimation";
 
 const Home: Component = () => {
   const [showYearly, setShowYearly] = createSignal(false)
@@ -29,6 +30,7 @@ const Home: Component = () => {
         }
         reverse
       >
+        {/* <CloudsAnimation /> */}
         <Lottie src="https://assets10.lottiefiles.com/packages/lf20_cgjrfdzx.json" />
       </Hero>
 
