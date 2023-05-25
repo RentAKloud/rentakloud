@@ -33,6 +33,7 @@ export const CheckoutProvider: Component<{ children: JSXElement }> = (props) => 
   const [clientSecret, setClientSecret] = createSignal<string>()
   const [subClientSecrets, setSubClientSecrets] = createSignal<string[]>()
   const [paymentSuccess, setPaymentSuccess] = createSignal<boolean>()
+  const [subscriptionsPaid, setSubscriptionsPaid] = createSignal<boolean>()
 
   onMount(async () => {
     if (!step()) {
@@ -54,7 +55,17 @@ export const CheckoutProvider: Component<{ children: JSXElement }> = (props) => 
   createEffect(() => {
     if (paymentSuccess()) {
       OrdersApi.updateStatus(order()!.id, OrderStatus.Paid)
-      resetCart()
+    }
+
+    const hasPhysical = cart.items.some(i => getProductById(i.productId)?.productType === ProductType.Physical)
+    const hasServices = cart.items.some(i => getProductById(i.productId)?.productType === ProductType.OnlineService)
+
+    if (hasPhysical && hasServices && paymentSuccess() && subscriptionsPaid()) {
+      reset()
+    } else if (hasPhysical && paymentSuccess()) {
+      reset()
+    } else if (hasServices && subscriptionsPaid()) {
+      reset()
     }
   })
 
@@ -115,17 +126,19 @@ export const CheckoutProvider: Component<{ children: JSXElement }> = (props) => 
       // although stripe allows to include multiple items in one subscription
       const subscriptionItems = cart.items.filter(i => getProductById(i.productId)?.productType === ProductType.OnlineService)
       // TODO should be one bulk request
-      const subResponsePromises = subscriptionItems.map(i => {
-        return PaymentsApi.createSubscription(user!.email, i.priceId!) // TODO also consider i.quantity
-      })
-      const subResponses = await Promise.all(subResponsePromises)
-      const subData = subResponses.map((x, i) => ({
-        subscriptionId: x.subscriptionId,
-        productId: subscriptionItems[i].productId,
-        priceId: subscriptionItems[i].priceId!
-      }))
-      await ProductsApi.createActiveProducts(subData)
-      setSubClientSecrets(subResponses.map(x => x.clientSecret))
+      if (subscriptionItems.length > 0) {
+        const subResponsePromises = subscriptionItems.map(i => {
+          return PaymentsApi.createSubscription(user!.email, i.priceId!) // TODO also consider i.quantity
+        })
+        const subResponses = await Promise.all(subResponsePromises)
+        const subData = subResponses.map((x, i) => ({
+          subscriptionId: x.subscriptionId,
+          productId: subscriptionItems[i].productId,
+          priceId: subscriptionItems[i].priceId!
+        }))
+        await ProductsApi.createActiveProducts(subData)
+        setSubClientSecrets(subResponses.map(x => x.clientSecret))
+      }
     } catch (err: any) {
       console.log(err)
       NotificationService.error("Something went wrong")
@@ -133,6 +146,10 @@ export const CheckoutProvider: Component<{ children: JSXElement }> = (props) => 
     } finally {
       setInTransit(false)
     }
+  }
+
+  function reset() {
+    resetCart()
   }
 
   return (
@@ -151,6 +168,7 @@ export const CheckoutProvider: Component<{ children: JSXElement }> = (props) => 
       clientSecret,
       subClientSecrets,
       setPaymentSuccess,
+      setSubscriptionsPaid,
       submit,
       inTransit,
       setInTransit,

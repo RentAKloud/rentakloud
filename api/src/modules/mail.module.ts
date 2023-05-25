@@ -4,6 +4,7 @@ import { Global, Module } from '@nestjs/common';
 import { MailService } from '../services/mail.service';
 import { join } from 'path';
 import { ConfigService } from '@nestjs/config';
+import { UsersModule } from './users.module';
 
 @Global()
 @Module({
@@ -33,6 +34,8 @@ import { ConfigService } from '@nestjs/config';
       }),
       inject: [ConfigService],
     }),
+
+    UsersModule,
   ],
   providers: [MailService],
   exports: [MailService],

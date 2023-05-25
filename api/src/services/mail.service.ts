@@ -1,11 +1,15 @@
 import { MailerService } from '@nestjs-modules/mailer';
 import { Injectable } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
-import { User } from '@prisma/client';
+import { Order, User } from '@prisma/client';
+import { UsersService } from './users.service';
 
 @Injectable()
 export class MailService {
-  constructor(private mailerService: MailerService) {}
+  constructor(
+    private mailerService: MailerService,
+    private readonly usersService: UsersService,
+  ) { }
 
   @OnEvent('user.created')
   async sendUserConfirmation(user: User, token: string) {
@@ -16,9 +20,24 @@ export class MailService {
       // from: '"Support Team" <support@example.com>', // override default from
       subject: 'Welcome to RentAKloud! Confirm your Email',
       template: './user_confirmation', // `.hbs` extension is appended automatically
-      context: { // ✏️ filling curly brackets with content
+      context: {
         name: user.firstName + " " + user.lastName,
         url,
+      },
+    });
+  }
+
+  @OnEvent('order.created')
+  async sendOrderReceivedNotification(order: Order) {
+    const user = await this.usersService.user({ id: order.userId })
+
+    await this.mailerService.sendMail({
+      to: user.email,
+      subject: 'Order Received',
+      template: './order_received',
+      context: {
+        name: user.firstName + " " + user.lastName,
+        order,
       },
     });
   }

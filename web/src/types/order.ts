@@ -100,6 +100,7 @@ export type CheckoutContextProps = {
   clientSecret: Accessor<string | undefined>;
   subClientSecrets: Accessor<string[] | undefined>;
   setPaymentSuccess: Setter<boolean>;
+  setSubscriptionsPaid: Setter<boolean>;
   submit: () => void;
   inTransit: Accessor<boolean>;
   setInTransit: Setter<boolean>;
@@ -125,6 +126,7 @@ export const defaultCheckout: CheckoutContextProps = {
   clientSecret: () => undefined,
   subClientSecrets: () => undefined,
   setPaymentSuccess: (val: any) => val,
+  setSubscriptionsPaid: (val: any) => val,
   submit() { },
   inTransit: () => false,
   setInTransit: (val: any) => val,

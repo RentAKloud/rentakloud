@@ -1,0 +1,21 @@
+<body>
+  Hello {{ name }}
+  <br />
+  <br />
+
+  <div>
+    We have received your order. Your order ID is {{ order.id }}
+  </div>
+
+  <p>Your order items are:</p>
+  <ul>
+    {{#each order.items }}
+      <li>{{ product.name }}</li>
+    {{/each }}
+  </ul>
+
+  <br />
+  <br />
+  Thanks,<br />
+  RentAKloud Team
+</body>

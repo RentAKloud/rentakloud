@@ -17,7 +17,7 @@ export const PhysicalProduct: Component<{ product: Product }> = (props) => {
 
     return product().prices![0]
   }
-  const [qty, setQty] = createSignal(0)
+  const [qty, setQty] = createSignal(1)
 
   function buy() {
     if (qty() === 0) return

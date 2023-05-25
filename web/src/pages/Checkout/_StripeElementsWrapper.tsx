@@ -4,7 +4,11 @@ import { useCheckoutContext } from "./context"
 import { NotificationService } from "../../services/NotificationService"
 
 export const StripeElementsWrapper = () => {
-  const { stripe, clientSecret, subClientSecrets, setInTransit, setStep, setPaymentSuccess } = useCheckoutContext()
+  const {
+    stripe, clientSecret, subClientSecrets,
+    setInTransit, setStep, setPaymentSuccess,
+    setSubscriptionsPaid,
+  } = useCheckoutContext()
   const elements = useStripeElements()
 
   createEffect(async () => {
@@ -54,6 +58,8 @@ export const StripeElementsWrapper = () => {
       else {
         NotificationService.success("Subscription successfull")
         setStep('congrats')
+        setSubscriptionsPaid(true)
+        // TODO should check which subscriptions failed and on retry only try payment for those
       }
     } catch (err) {
       console.log(err)
