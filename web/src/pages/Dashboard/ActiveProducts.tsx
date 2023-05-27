@@ -10,7 +10,7 @@ const ActiveProducts: Component = () => {
     <>
       <h2 class="text-4xl font-bold mb-5">Active Products</h2>
 
-      <section class="grid gap-5">
+      <section class="grid grid-cols-1 md:grid-cols-3 gap-5">
         <For each={activeProducts.latest} fallback="Nothing to see here.">
           {
             (activeProduct, index) => (

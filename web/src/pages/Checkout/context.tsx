@@ -60,8 +60,10 @@ export const CheckoutProvider: Component<{ children: JSXElement }> = (props) => 
     const hasPhysical = cart.items.some(i => getProductById(i.productId)?.productType === ProductType.Physical)
     const hasServices = cart.items.some(i => getProductById(i.productId)?.productType === ProductType.OnlineService)
 
-    if (hasPhysical && hasServices && paymentSuccess() && subscriptionsPaid()) {
-      reset()
+    if (hasPhysical && hasServices) {
+      if (paymentSuccess() && subscriptionsPaid()) {
+        reset()
+      }
     } else if (hasPhysical && paymentSuccess()) {
       reset()
     } else if (hasServices && subscriptionsPaid()) {
@@ -124,11 +126,15 @@ export const CheckoutProvider: Component<{ children: JSXElement }> = (props) => 
       // Handle subscriptions - we create separate subscription for each
       // subscription item so they can be cancelled/updated individually,
       // although stripe allows to include multiple items in one subscription
-      const subscriptionItems = cart.items.filter(i => getProductById(i.productId)?.productType === ProductType.OnlineService)
+      const subscriptionItems = cart.items
+        .filter(i => getProductById(i.productId)?.productType === ProductType.OnlineService)
+        // consider the quantity too
+        .map(i => Array(i.quantity).fill(i))
+        .flat()
       // TODO should be one bulk request
       if (subscriptionItems.length > 0) {
         const subResponsePromises = subscriptionItems.map(i => {
-          return PaymentsApi.createSubscription(user!.email, i.priceId!) // TODO also consider i.quantity
+          return PaymentsApi.createSubscription(user!.email, i.priceId!)
         })
         const subResponses = await Promise.all(subResponsePromises)
         const subData = subResponses.map((x, i) => ({
@@ -137,7 +143,8 @@ export const CheckoutProvider: Component<{ children: JSXElement }> = (props) => 
           priceId: subscriptionItems[i].priceId!
         }))
         await ProductsApi.createActiveProducts(subData)
-        setSubClientSecrets(subResponses.map(x => x.clientSecret))
+        const secrets = subResponses.map(x => x.clientSecret)
+        setSubClientSecrets(secrets)
       }
     } catch (err: any) {
       console.log(err)
@@ -150,6 +157,7 @@ export const CheckoutProvider: Component<{ children: JSXElement }> = (props) => 
 
   function reset() {
     resetCart()
+    setStep('congrats')
   }
 
   return (

@@ -2,6 +2,7 @@ import { createEffect } from "solid-js"
 import { Card, useStripeElements } from "solid-stripe"
 import { useCheckoutContext } from "./context"
 import { NotificationService } from "../../services/NotificationService"
+import { PaymentIntentResult } from "@stripe/stripe-js"
 
 export const StripeElementsWrapper = () => {
   const {
@@ -11,26 +12,28 @@ export const StripeElementsWrapper = () => {
   } = useCheckoutContext()
   const elements = useStripeElements()
 
-  createEffect(async () => {
+  createEffect(() => {
     if (!clientSecret()) return
 
     try {
-      setInTransit(true) // TODO this does not work for some reason
-      const result = await stripe()!.confirmCardPayment(clientSecret()!, {
-        payment_method: {
-          card: elements().getElement(Card)!,
-          billing_details: {},
-        }
-      })
+      setInTransit(true);
 
-      if (result.error) {
-        NotificationService.error("Payment failed")
-      }
-      else {
-        NotificationService.success("Payment successfull")
-        setStep('congrats')
-        setPaymentSuccess(true)
-      }
+      (async () => {
+        const result = await stripe()!.confirmCardPayment(clientSecret()!, {
+          payment_method: {
+            card: elements().getElement(Card)!,
+            billing_details: {},
+          }
+        })
+
+        if (result.error) {
+          NotificationService.error("Payment failed")
+        }
+        else {
+          NotificationService.success("Payment successfull")
+          setPaymentSuccess(true)
+        }
+      })()
     } catch (err) {
       console.log(err)
     } finally {
@@ -38,29 +41,32 @@ export const StripeElementsWrapper = () => {
     }
   })
 
-  createEffect(async () => {
-    if (!subClientSecrets()) return
+  createEffect(() => {
+
+    if (subClientSecrets() === undefined || subClientSecrets()!.length === 0) return
 
     try {
-      const promises = subClientSecrets()!.map((secret) => {
-        return stripe()!.confirmCardPayment(secret, {
-          payment_method: {
-            card: elements().getElement(Card)!,
-            billing_details: {},
-          }
-        })
-      })
-      const results = await Promise.all(promises)
+      const results: PaymentIntentResult[] = [];
+      (async () => {
+        for (const secret of subClientSecrets()!) {
+          const r = await stripe()!.confirmCardPayment(secret, {
+            payment_method: {
+              card: elements().getElement(Card)!,
+              billing_details: {},
+            }
+          })
+          results.push(r)
+        }
 
-      if (results.some(r => !!r.error)) {
-        NotificationService.error("One of the payments failed")
-      }
-      else {
-        NotificationService.success("Subscription successfull")
-        setStep('congrats')
-        setSubscriptionsPaid(true)
-        // TODO should check which subscriptions failed and on retry only try payment for those
-      }
+        if (results.some(r => !!r.error)) {
+          NotificationService.error("One of the payments failed")
+        }
+        else {
+          NotificationService.success("Subscription successfull")
+          setSubscriptionsPaid(true)
+          // TODO should check which subscriptions failed and on retry only try payment for those
+        }
+      })()
     } catch (err) {
       console.log(err)
     }
