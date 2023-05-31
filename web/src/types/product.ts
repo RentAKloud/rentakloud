@@ -36,6 +36,7 @@ export type ProductCategory = {
 }
 
 export type ActiveProduct = {
+  id: string;
   product: Product;
   createdAt: string;
   status: "Active" | "Inactive";

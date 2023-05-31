@@ -1,12 +1,14 @@
 import { Injectable } from "@nestjs/common";
-import { Order, Prisma, Product, UserProductStatus } from "@prisma/client";
+import { Prisma, Product, UserProductStatus } from "@prisma/client";
 import { PrismaService } from "./prisma.service";
-import { OnEvent } from "@nestjs/event-emitter";
-import { randomUUID } from "crypto";
+import { EventEmitter2 } from "@nestjs/event-emitter";
 
 @Injectable()
 export class ProductsService {
-  constructor(private prisma: PrismaService) { }
+  constructor(
+    private prisma: PrismaService,
+    private ee: EventEmitter2
+  ) { }
 
   async product(
     productWhereUniqueInput: Prisma.ProductWhereUniqueInput,
@@ -78,7 +80,7 @@ export class ProductsService {
   }
 
 
-  async createUserProducts(products: {subscriptionId: string, priceId: string, productId: number}[], userId: number) {
+  async createUserProducts(products: { subscriptionId: string, priceId: string, productId: number }[], userId: number) {
     return this.prisma.userToProducts.createMany({
       data: products.map((i) => {
         return {
@@ -89,5 +91,13 @@ export class ProductsService {
         }
       })
     })
+  }
+
+  async deleteUserProduct(id: string) {
+    const result = await this.prisma.userToProducts.delete({ where: { id } })
+
+    this.ee.emit("user_product.deleted", result)
+
+    return result
   }
 }

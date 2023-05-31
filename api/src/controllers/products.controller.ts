@@ -1,4 +1,4 @@
-import { Controller, Get, Param, ParseIntPipe, Post, Request, UseGuards } from '@nestjs/common';
+import { Controller, Delete, Get, Param, ParseIntPipe, Post, Request, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 import { ProductsService } from 'src/services/products.service';
 
@@ -27,5 +27,11 @@ export class ProductsController {
   createUserProducts(@Request() req) {
     const { subscriptions } = req.body
     return this.productsService.createUserProducts(subscriptions, req.user.userId)
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete('/me/:id')
+  deleteUserProduct(@Param('id') id: string) {
+    return this.productsService.deleteUserProduct(id)
   }
 }

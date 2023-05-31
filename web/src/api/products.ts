@@ -17,6 +17,10 @@ class ProductsApi {
   static async createActiveProducts(subscriptions: SubscriptionData[]) {
     return await HttpService.post("/products/me", { subscriptions })
   }
+
+  static async deleteActiveProduct(id: string) {
+    return await HttpService.delete(`/products/me/${id}`)
+  }
 }
 
 export default ProductsApi

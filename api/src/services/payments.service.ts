@@ -2,6 +2,8 @@ import { Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import Stripe from "stripe";
 import { UsersService } from "./users.service";
+import { OnEvent } from "@nestjs/event-emitter";
+import { UserToProducts } from "@prisma/client";
 
 
 @Injectable()
@@ -47,6 +49,18 @@ export class PaymentsService {
       //@ts-ignore
       clientSecret: subscription.latest_invoice.payment_intent.client_secret,
     };
+  }
+
+  @OnEvent("user_product.deleted")
+  async cancelSubscription(userProduct: UserToProducts) {
+    // TODO refund logic?
+    try {
+      return await this.stripe.subscriptions.cancel(userProduct.subscriptionId)
+    } catch (err) {
+      console.log(err.message)
+      // TODO Send a notification? about an ActiveProduct getting deleted but failed
+      // to cancel its subscription
+    }
   }
 
   async createPaymentIntent(email: string, amount: number) {
