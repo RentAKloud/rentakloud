@@ -5,6 +5,7 @@ import { DateTime } from "../../components/DateTime";
 import Modal from "../../components/Modal";
 import { ActiveProduct } from "../../types/product";
 import { NotificationService } from "../../services/NotificationService";
+import { Link } from "@solidjs/router";
 
 const ActiveProducts: Component = () => {
   const [activeProducts, { refetch }] = createResource(ProductsApi.allMy)
@@ -34,14 +35,15 @@ const ActiveProducts: Component = () => {
               <Card
                 title={activeProduct.product.name}
                 description={
-                  <div class="flex flex-col gap-5">
+                  <div class="flex flex-col gap-3">
+                    <span class="text-success" classList={{ "text-error": activeProduct.status === "Inactive" }}>{activeProduct.status}</span>
                     <p>Instance ID: {activeProduct.id}</p>
                     {/* <p>{activeProduct.product.shortDescription}</p> */}
                     <span>Started At: <DateTime value={activeProduct.createdAt} /></span>
                   </div>
                 }
                 actions={<div class="flex gap-5 items-center justify-start">
-                  <span class="text-success" classList={{ "text-error": activeProduct.status === "Inactive" }}>{activeProduct.status}</span>
+                  <Link href={`/products/${activeProduct.id}`}>Details</Link>
                   <button class="btn" onclick={() => {
                     setSelectedProduct(activeProduct)
                     setIsDeleteModalOpen(true)

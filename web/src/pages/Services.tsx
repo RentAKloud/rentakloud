@@ -1,10 +1,13 @@
 import { Component } from "solid-js";
 import DefaultLayout from "../layouts/DefaultLayout";
+import Hero from "../components/Hero/Hero";
 
 const Services: Component<{}> = () => {
   return (
     <DefaultLayout>
-      <h1>Services</h1>
+      <Hero title="Services" centered subtitle="See everything we have to offer.">
+
+      </Hero>
     </DefaultLayout>
   )
 }

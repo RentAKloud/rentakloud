@@ -4,6 +4,7 @@ import { Portal } from "solid-js/web";
 import Collapse from "../components/Collapse/Collapse";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
+import { Link } from "@solidjs/router";
 
 const DefaultLayout: Component<{ children: JSX.Element }> = ({ children }) => {
   return (
@@ -33,20 +34,21 @@ const DefaultLayout: Component<{ children: JSX.Element }> = ({ children }) => {
           {/* <!-- Sidebar content here --> */}
           <Collapse title="Products" innerContent={
             <ul>
-              <li>Databases Cloud Hosting</li>
-              <li>ERP Cloud Hosting</li>
-              <li>CRM Cloud Hosting</li>
-              <li>CMS Cloud Hosting</li>
-              <li>Ecommerce Cloud Hosting</li>
-              <li>Message Queuing Services</li>
-              <li>NodeJS</li>
-              <li>Python</li>
-              <li>Ruby</li>
+              <li><Link activeClass="" href="/our-products">All</Link></li>
+              <li><Link activeClass="" href="/our-products?category=databases">Databases Cloud Hosting</Link></li>
+              <li><Link activeClass="" href="/our-products?category=erp">ERP Cloud Hosting</Link></li>
+              <li><Link activeClass="" href="/our-products?category=crm">CRM Cloud Hosting</Link></li>
+              <li><Link activeClass="" href="/our-products?category=cms">CMS Cloud Hosting</Link></li>
+              <li><Link activeClass="" href="/our-products?category=ecommerce">Ecommerce Cloud Hosting</Link></li>
+              <li><Link activeClass="" href="/our-products?category=message-queueing">Message Queuing Services</Link></li>
+              <li><Link activeClass="" href="/our-products/nodejs">NodeJS</Link></li>
+              <li><Link activeClass="" href="/our-products/python">Python</Link></li>
+              <li><Link activeClass="" href="/our-products/ruby">Ruby</Link></li>
             </ul>
           } />
-          <li><a>Services</a></li>
-          <li><a>About</a></li>
-          <li><a>Contact</a></li>
+          <li><Link href="/services">Services</Link></li>
+          <li><Link href="/about">About</Link></li>
+          <li><Link href="/contact">Contact</Link></li>
         </ul>
       </aside>
     </div>

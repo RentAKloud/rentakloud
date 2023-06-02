@@ -116,7 +116,7 @@ const Home: Component = () => {
         <h2 class="text-3xl text-center font-bold mb-5">Built Different</h2>
         <p class="text-center mb-10">Cutting-edge infrastructure. 100% Uptime. Automatic Backups.</p>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 place-items-center items-stretch">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 place-items-center items-stretch gap-5">
           <Card
             center
             title="Infrastructure"
@@ -128,6 +128,7 @@ const Home: Component = () => {
                 <li>Proactive Monitoring</li>
               </ul>
             }
+            class="w-96"
             img={{ uri: "https://images.cloudclusters.io/57daa7380d554d859b7566b8b97be586/Infrastructure%20for%20CCS%20Cloud%20Hosting.png", alt: "" }}
           />
 
@@ -141,6 +142,7 @@ const Home: Component = () => {
                 <li>Pure SSD</li>
               </ul>
             }
+            class="w-96"
             img={{ uri: "https://images.cloudclusters.io/68465fbdf2774c0eae58e720ba76eb51/Speed%20Matters.png", alt: "" }}
           />
 
@@ -155,6 +157,7 @@ const Home: Component = () => {
                 <li>Free Backup</li>
               </ul>
             }
+            class="w-96"
             img={{ uri: "https://images.cloudclusters.io/128998bd6c8444988ba6374fac064693/Comprehensive%20Protection%20for%20Cloud%20Applications%20on%20CCS%20platform.png", alt: "" }}
           />
 
@@ -167,6 +170,7 @@ const Home: Component = () => {
                 <li>Free Migration</li>
               </ul>
             }
+            class="w-96"
             img={{ uri: "https://images.cloudclusters.io/1ebca492f6b84f04902f8f3aa89ac5ac/Tech%20Support%20for%20Open-Source%20Applications.png", alt: "" }}
           />
         </div>

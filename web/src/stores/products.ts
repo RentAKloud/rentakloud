@@ -25,13 +25,18 @@ export function formatPrice(amount: number, currency = 'usd') {
 }
 
 async function fetchAndRemix(): Promise<Product[]> {
-  const _products = await ProductsApi.all()
-  const prodSlugs = _products.map(p => p.slug)
-  defaultProducts.forEach(p => {
-    if (!prodSlugs.includes(p.slug)) {
-      _products.push(p)
-    }
-  })
-
-  return _products
+  try {
+    const _products = await ProductsApi.all()
+    const _slugs = _products.map(p => p.slug)
+    defaultProducts.forEach(p => {
+      if (!_slugs.includes(p.slug)) {
+        _products.push(p)
+      }
+    })
+  
+    return _products
+  } catch (err) {
+    console.error("Could not fetch products data")
+    return defaultProducts
+  }
 }

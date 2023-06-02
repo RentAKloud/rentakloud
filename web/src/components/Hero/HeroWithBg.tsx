@@ -20,7 +20,7 @@ const HeroWithBg: Component<{
       'bg-no-repeat': contain,
     }} style={bgUrl ? `background-image: url(${bgUrl});` : ''}>
       <div class="hero-overlay bg-opacity-60"></div>
-      <div class="hero-content text-center text-neutral-content md:mx-32" classList={{
+      <div class="hero-content text-center text-neutral-content md:mx-32 flex-col md:flex-row" classList={{
         'md:text-left': align === 'left',
       }}>
         {children}

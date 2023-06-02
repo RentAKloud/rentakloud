@@ -1,4 +1,4 @@
-import { Component, For } from "solid-js";
+import { Component, For, Show } from "solid-js";
 import Hero from "../../components/Hero/Hero";
 import Card from "../../components/Card/Card"
 import DefaultLayout from "../../layouts/DefaultLayout";
@@ -50,15 +50,17 @@ const Products: Component<{}> = () => {
         centered
       />
 
-      <section class="flex flex-wrap gap-5 mx-5">
-        <For each={filteredProducts()}>
-          {(product) => (
-            <Link href={`/our-products/${product.slug}`}>
-              <Card title={product.name} description={product.shortDescription} />
-            </Link>
-          )}
-        </For>
-      </section>
+      <Show when={!products.error}>
+        <section class="flex flex-wrap gap-5 mx-5 justify-center">
+          <For each={filteredProducts()}>
+            {(product) => (
+              <Link href={`/our-products/${product.slug}`}>
+                <Card title={product.name} description={product.shortDescription} class="w-96" />
+              </Link>
+            )}
+          </For>
+        </section>
+      </Show>
     </DefaultLayout>
   )
 }
