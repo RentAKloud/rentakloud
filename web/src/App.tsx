@@ -12,6 +12,8 @@ import About from './pages/About';
 import NotFound from './pages/error/NotFound';
 import GithubCallback from './pages/OAuth/GithubCallback';
 import Cart from './pages/Cart';
+import LegalHome from './pages/Legal/LegalHome';
+import PrivacyPolicy from './pages/Legal/PrivacyPolicy';
 
 import ProductDashboard from './pages/ProductDashboard/ProductDashboard';
 import Overview from './pages/ProductDashboard/Overview';
@@ -59,6 +61,11 @@ const App: Component = () => {
       <Route path="/services" component={Services} />
       <Route path="/support" component={Support} />
       <Route path="/cart" component={Cart} />
+
+      <Route path="/legal">
+        <Route path="/" component={LegalHome} />
+        <Route path="/privacy-policy" component={PrivacyPolicy} />
+      </Route>
 
       {
         isLoggedIn() && (
