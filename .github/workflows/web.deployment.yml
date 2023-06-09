@@ -1,0 +1,86 @@
+
+name: Test, Build & Deploy RentAKloud Web
+run-name: RentAKloud Web Deployment
+
+on:
+  push:
+    branches: [ master ]
+    paths:
+      - 'web/**'
+
+jobs:
+  # Dont have tests yet
+  # test:
+  #   runs-on: ubuntu-latest
+  #   defaults:
+  #     run:
+  #       working-directory: web/
+
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #     - name: Use NodeJS 20
+  #       uses: actions/setup-node@v3
+  #       with:
+  #         node-version: '20.x'
+  #     - run: yarn install
+  #     - run: yarn test
+
+  build:
+    runs-on: ubuntu-latest
+    # needs: [ test ]
+    defaults:
+      run:
+        working-directory: web/
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use NodeJS 20
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20.x'
+          cache: 'yarn'
+          cache-dependency-path: web/
+
+      - run: yarn install
+      - run: yarn build
+
+      - name: Upload artifact for deployment job
+        uses: actions/upload-artifact@v3
+        with:
+          name: dist-artifact
+          path: web/dist # name of build folder
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: [ build ]
+
+    steps:
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v3
+        with:
+          name: dist-artifact
+
+      - name: Connect using SSH and clear existing stuff in deployment folder
+        uses: appleboy/ssh-action@v0.1.4
+        env:
+          WEB_DEPLOY_DIR: ${{ vars.WEB_DEPLOY_DIR }}
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          port: ${{ secrets.SSH_PORT }}
+          username: ${{ secrets.SSH_USER }}
+          # key: ${{ secrets.SSH_PK }}
+          password: ${{ secrets.SSH_PK }}
+          envs: WEB_DEPLOY_DIR
+          script: |
+            rm -rf $WEB_DEPLOY_DIR/*
+
+      - name: Copy new release to deployment folder
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          port: ${{ secrets.SSH_PORT }}
+          username: ${{ secrets.SSH_USERNAME }}
+          # key: ${{ secrets.SSH_PK }}
+          password: ${{ secrets.SSH_PK }}
+          source: "./*"
+          target: "${{ secrets.WEB_DEPLOY_DIR }}/"
