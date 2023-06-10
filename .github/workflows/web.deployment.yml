@@ -79,8 +79,8 @@ jobs:
         with:
           host: ${{ secrets.SSH_HOST }}
           port: ${{ secrets.SSH_PORT }}
-          username: ${{ secrets.SSH_USERNAME }}
+          username: ${{ secrets.SSH_USER }}
           # key: ${{ secrets.SSH_PK }}
           password: ${{ secrets.SSH_PK }}
           source: "./*"
-          target: "${{ secrets.WEB_DEPLOY_DIR }}/"
+          target: "${{ vars.WEB_DEPLOY_DIR }}/"

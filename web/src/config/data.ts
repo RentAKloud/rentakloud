@@ -32,6 +32,7 @@ export const defaultProducts: Product[] = [
       }
     ],
     productType: ProductType.Physical,
+    images: [],
   },
   {
     id: 2,
@@ -41,6 +42,7 @@ export const defaultProducts: Product[] = [
     description: "lorem ipsum donor consit",
     categories: [{ slug: "databases", title: "Databases" }],
     productType: ProductType.OnlineService,
+    images: [],
   },
   {
     id: 3,
@@ -50,6 +52,7 @@ export const defaultProducts: Product[] = [
     description: "lorem ipsum donor consit",
     categories: [{ slug: "databases", title: "Databases" }],
     productType: ProductType.OnlineService,
+    images: [],
   },
   {
     id: 4,
@@ -59,6 +62,7 @@ export const defaultProducts: Product[] = [
     description: "lorem ipsum donor consit",
     categories: [{ slug: "databases", title: "Databases" }],
     productType: ProductType.OnlineService,
+    images: [],
   },
   {
     id: 5,
@@ -68,6 +72,7 @@ export const defaultProducts: Product[] = [
     description: "lorem ipsum donor consit",
     categories: [{ slug: "databases", title: "Databases" }],
     productType: ProductType.OnlineService,
+    images: [],
   },
   {
     id: 6,
@@ -77,6 +82,7 @@ export const defaultProducts: Product[] = [
     description: "lorem ipsum donor consit",
     categories: [{ slug: "databases", title: "Databases" }],
     productType: ProductType.OnlineService,
+    images: [],
   },
   {
     id: 7,
@@ -86,6 +92,7 @@ export const defaultProducts: Product[] = [
     description: "lorem ipsum donor consit",
     categories: [{ slug: "databases", title: "Databases" }],
     productType: ProductType.OnlineService,
+    images: [],
   }
 ]
 

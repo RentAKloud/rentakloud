@@ -8,6 +8,7 @@ import Testimonial from "../components/Card/Testimonial";
 import Lottie from "../components/Lottie";
 import { home } from "../config/data";
 import CloudsAnimation from "../components/CloudsAnimation";
+import { Link } from "@solidjs/router";
 
 const Home: Component = () => {
   const [showYearly, setShowYearly] = createSignal(false)
@@ -26,7 +27,7 @@ const Home: Component = () => {
           </ul>
         }
         actions={
-          <button class="btn btn-primary">Get Started</button>
+          <Link href="/register" class="btn btn-primary">Get Started</Link>
         }
         reverse
       >
