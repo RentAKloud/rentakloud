@@ -32,7 +32,7 @@ import Checkout from './pages/Checkout/Checkout';
 import Orders from './pages/Dashboard/Orders';
 import Payments from './pages/Dashboard/Payments';
 import Settings from './pages/Dashboard/Settings';
-import ActiveProducts from './pages/Dashboard/ActiveProducts';
+import Instances from './pages/Dashboard/Instances';
 import { authStore, getUserProfile } from './stores/auth';
 
 const App: Component = () => {
@@ -84,8 +84,8 @@ const App: Component = () => {
             </Route>
 
             <Route path="/dashboard" component={Dashboard}>
-              <Route path={["/"]} component={DashboardHome} />
-              <Route path="/products" component={ActiveProducts} />
+              <Route path={["/", "/overview"]} component={DashboardHome} />
+              <Route path="/products" component={Instances} />
               <Route path="/orders" component={Orders} />
               <Route path="/payments" component={Payments} />
               <Route path="/settings" component={Settings} />
