@@ -1,4 +1,20 @@
-version: '3.1'
+version: '3.8'
+
+x-environment:
+  &glitchtip-environment
+  DATABASE_URL: ${GLITCHTIP_DB_URL}
+  SECRET_KEY: ${GLITCHTIP_SECRET} # best to run openssl rand -hex 32
+  PORT: 8000
+  EMAIL_URL: smtp://${SMTP_USER}:${SMTP_PASS}@${SMTP_HOST}:${SMTP_PORT} # https://glitchtip.com/documentation/install#configuration
+  GLITCHTIP_DOMAIN: ${GLITCHTIP_DOMAIN} # Change this to your domain
+  DEFAULT_FROM_EMAIL: alerts@rentakloud.com # Change this to your email
+  CELERY_WORKER_CONCURRENCY: 2 # Set to 2 to prevent excessive memory usage. Change it or remove to set it to the number of cpu cores.
+  # optional
+  ENABLE_USER_REGISTRATION: false
+x-depends_on:
+  &glitchtip-depends_on
+  - db
+  - redis
 
 services:
   db:
@@ -8,9 +24,44 @@ services:
       - 5432:5432
     environment:
       POSTGRES_PASSWORD: example
+    volumes:
+      - pg-data:/var/lib/postgresql/data
 
+  # Web UI for database
   adminer:
     image: adminer
     restart: always
     ports:
       - 9000:8080
+
+  redis:
+    image: redis
+    restart: unless-stopped
+
+  # Error tracking service (Sentry compatible)
+  glitchtip-web:
+    image: glitchtip/glitchtip
+    depends_on: *glitchtip-depends_on
+    ports:
+      - "8000:8000"
+    environment: *glitchtip-environment
+    restart: unless-stopped
+    volumes: 
+      - uploads:/code/uploads
+  glitchtip-worker:
+    image: glitchtip/glitchtip
+    command: ./bin/run-celery-with-beat.sh
+    depends_on: *glitchtip-depends_on
+    environment: *glitchtip-environment
+    restart: unless-stopped
+    volumes: 
+      - uploads:/code/uploads
+  glitchtip-migrate:
+    image: glitchtip/glitchtip
+    depends_on: *glitchtip-depends_on
+    command: "./manage.py migrate"
+    environment: *glitchtip-environment
+
+volumes:
+  pg-data:
+  uploads:

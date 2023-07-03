@@ -8,10 +8,10 @@ $ yarn install
 
 ### Database
 
-You can easily launch database using Docker:
+You can easily launch database (and other services) using Docker:
 
 ```
-docker compose up
+docker compose up -d
 ```
 
 ```bash

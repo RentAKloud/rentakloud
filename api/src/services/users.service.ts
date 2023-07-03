@@ -24,7 +24,7 @@ export class UsersService {
       where: userWhereUniqueInput,
     });
 
-    if (!withPassword) {
+    if (user && !withPassword) {
       //@ts-ignore
       return this.exclude(user, ['password'])
     }

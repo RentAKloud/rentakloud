@@ -9,7 +9,7 @@ const Card: Component<{
   class?: string
 }> = ({ title, description, img, actions, center = false, class: _class }) => {
   return (
-    <div class={`card bg-base-100 shadow-xl ${_class}`}>
+    <div class={`card bg-base-100 shadow-xl ${_class || ""}`}>
       {
         img && <figure class="p-5 h-60"><img src={img.uri} alt={img.alt} style={{ height: "100%", "object-fit": "contain" }} /></figure>
       }

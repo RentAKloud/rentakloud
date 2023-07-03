@@ -1,4 +1,5 @@
 export const API_URL = import.meta.env.VITE_API_URL
+export const SENTRY_DSN = import.meta.env.VITE_SENTRY_DSN // GlitchTip DSN
 
 export const company = {
   DISPLAY_NAME: "RentAKloud",

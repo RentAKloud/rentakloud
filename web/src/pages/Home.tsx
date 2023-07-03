@@ -50,6 +50,7 @@ const Home: Component = () => {
                   actions={
                     <button class="btn btn-primary">Learn More</button>
                   }
+                  class="w-96"
                 />
             }
           </For>
