@@ -41,6 +41,10 @@ jobs:
           cache: 'yarn'
           cache-dependency-path: web/
 
+      - name: 'Create env file'
+        run: |
+          echo "${{ vars.WEB_ENV_PRODUCTION }}" > .env.production
+
       - run: yarn install
       - run: yarn build
 
