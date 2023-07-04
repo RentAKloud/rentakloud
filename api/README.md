@@ -27,6 +27,18 @@ $ yarn start:prod
 
 ## Database
 
+### Run Migrations
+
+```
+npx prisma migrate deploy
+```
+
+### Seeding
+
+`prisma migrate reset` automatically runs seeding using `prisma/seed.ts`. Use `--skip-seed` to skip seeding with these commands.
+
+To manually seed database, use `prisma db seed`. It uses the command specified in `package.json`
+
 ### Updating the Schema
 
 Go to `prisma/schema.prisma` and add/update the models.
@@ -40,12 +52,6 @@ npx prisma migrate dev --name <migration-name>
 ```
 
 Add `--create-only` to only generate and not run. Then you can edit it, and run separately: `npx prisma db execute --file ./<migration_name>.sql --schema prisma/schema.prisma`
-
-### Seeding
-
-`prisma migrate reset` automatically run seed using `prisma/seed.ts`. Use `--skip-seed` to skip seeding with these commands.
-
-To manually seed database, use `prisma db seed`. It uses the command specified in `package.json`
 
 ### Rollback
 

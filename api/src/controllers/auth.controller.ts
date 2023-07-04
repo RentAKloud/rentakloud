@@ -1,9 +1,10 @@
 import { Body, Controller, Get, Post, Request, UseGuards } from '@nestjs/common';
+import { ApiBody } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 import { LocalAuthGuard } from 'src/guards/local-auth.guard';
 import { AuthService } from 'src/services/auth.service';
 import { UsersService } from 'src/services/users.service';
-import { RegisterReq } from 'src/types/auth';
+import { LoginReq, RegisterReq } from 'src/types/auth.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -14,6 +15,9 @@ export class AuthController {
 
   @UseGuards(LocalAuthGuard)
   @Post('login')
+  @ApiBody({
+    type: LoginReq
+  })
   login(@Request() req) {
     return this.authService.login(req.user);
   }

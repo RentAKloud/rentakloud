@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { compareSync, hashSync, genSaltSync } from "bcrypt";
 import { UsersService } from './users.service';
-import { JwtPayload, RegisterReq } from 'src/types/auth';
+import { JwtPayload, RegisterReq } from 'src/types/auth.dto';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '@prisma/client';
 import { EventEmitter2 } from '@nestjs/event-emitter';

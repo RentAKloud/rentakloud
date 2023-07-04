@@ -1,11 +1,11 @@
-export type RegisterReq = {
+export class RegisterReq {
   email: string;
   password: string;
   firstName: string;
   lastName: string;
 }
 
-export type LoginReq = {
+export class LoginReq {
   email: string;
   password: string;
 }

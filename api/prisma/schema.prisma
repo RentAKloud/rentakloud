@@ -22,9 +22,10 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
 
-  profile  Profile?
-  orders   Order[]
-  products UserToProducts[] // active/subscribed products
+  profile   Profile?
+  orders    Order[]
+  products  UserToProducts[] // active/subscribed products
+  DiskImage DiskImage[]
 }
 
 model Profile {
@@ -180,4 +181,36 @@ enum CouponType {
 enum UserProductStatus {
   Active
   Inactive
+}
+
+model DiskImage {
+  id          Int   @id @default(autoincrement())
+  createdBy   User? @relation(fields: [createdById], references: [id]) // if absent, means system generated (and is visible to all)
+  createdById Int?
+
+  name        String
+  format      DiskImageFormat
+  description String?
+  tags        String[]
+  path        String
+  os          DiskImageOS
+  osName      String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+}
+
+enum DiskImageFormat {
+  QCOW2
+  VHDX
+  DMG
+  ISO
+  VDI
+  IMG
+}
+
+enum DiskImageOS {
+  Linux
+  Windows
+  macOS
 }
