@@ -9,6 +9,7 @@ import { AppController } from './app.controller';
 import { ProductsModule } from './modules/products.module';
 import { OrdersModule } from './modules/orders.module';
 import { PaymentsModule } from './modules/payments.module';
+import { DiskImagesModule } from './modules/disk-images.module';
 import { MailModule } from './modules/mail.module';
 
 @Module({
@@ -24,6 +25,7 @@ import { MailModule } from './modules/mail.module';
     ProductsModule,
     PaymentsModule,
     OrdersModule,
+    DiskImagesModule
   ],
   controllers: [AppController],
   providers: [AppService],

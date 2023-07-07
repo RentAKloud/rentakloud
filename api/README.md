@@ -6,13 +6,18 @@ $ yarn install
 
 ## Running the app
 
-### Database
-
 You can easily launch database (and other services) using Docker:
 
 ```
 docker compose up -d
 ```
+
+Next you'll need to create the required databases. It can be done using the Adminer Web UI available at localhost:9000, or you can CLI into the docker container and do it there. The required database names are:
+
+- rentakloud
+- glitchtip
+
+Next run the migrations (see Database section for commands), and optionally seed the db. Then you should be able to start the project:
 
 ```bash
 # development
@@ -35,9 +40,9 @@ npx prisma migrate deploy
 
 ### Seeding
 
-`prisma migrate reset` automatically runs seeding using `prisma/seed.ts`. Use `--skip-seed` to skip seeding with these commands.
-
 To manually seed database, use `prisma db seed`. It uses the command specified in `package.json`
+
+`prisma migrate reset` automatically runs seeding using `prisma/seed.ts`. Use `--skip-seed` to skip seeding with these commands.
 
 ### Updating the Schema
 
