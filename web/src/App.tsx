@@ -34,6 +34,7 @@ import Payments from './pages/Dashboard/Payments';
 import Settings from './pages/Dashboard/Settings';
 import Instances from './pages/Dashboard/Instances';
 import { authStore, getUserProfile } from './stores/auth';
+import Images from './pages/Dashboard/Images';
 
 const App: Component = () => {
   const isLoggedIn = () => !!authStore.user
@@ -86,6 +87,7 @@ const App: Component = () => {
             <Route path="/dashboard" component={Dashboard}>
               <Route path={["/", "/overview"]} component={DashboardHome} />
               <Route path="/products" component={Instances} />
+              <Route path="/images" component={Images} />
               <Route path="/orders" component={Orders} />
               <Route path="/payments" component={Payments} />
               <Route path="/settings" component={Settings} />

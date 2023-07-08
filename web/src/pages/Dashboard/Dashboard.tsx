@@ -10,6 +10,7 @@ const Dashboard: Component<{}> = () => {
           <ul class="menu bg-base-100 w-56">
             <li><Link href="/dashboard/overview">Home</Link></li>
             <li><Link href="/dashboard/products">Instances</Link></li>
+            <li><Link href="/dashboard/images">Images</Link></li>
             <li><Link href="/dashboard/orders">Orders</Link></li>
             <li><Link href="/dashboard/payments">Payments</Link></li>
             <li><Link href="/dashboard/settings">Settings</Link></li>
