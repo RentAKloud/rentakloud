@@ -30,7 +30,7 @@ const DefaultLayout: Component<{ children: JSX.Element }> = ({ children }) => {
       </div>
       <aside class="drawer-side">
         <label for="my-drawer-3" class="drawer-overlay"></label>
-        <ul class="menu p-4 w-80 bg-base-100">
+        <ul class="menu p-4 w-80 bg-base-100 h-full">
           {/* <!-- Sidebar content here --> */}
           <Collapse title="Products" innerContent={
             <ul>

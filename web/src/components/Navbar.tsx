@@ -28,20 +28,20 @@ const Navbar: Component<{}> = () => {
       <div class="hidden lg:flex navbar-center">
         <ul class="menu menu-horizontal">
           {/* <!-- Navbar menu content here --> */}
-          <li tabindex="0">
+          <li tabindex="0" class="dropdown dropdown-hover">
             <Link href="/our-products">
               Products
               <svg class="fill-current" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z" /></svg>
             </Link>
-            <ul class="menu p-2 z-10 bg-base-100">
+            <ul class="dropdown-content menu xl:menu-horizontal lg:min-w-max bg-base-100 rounded-box z-10 ml-[-10em]">
               <For each={productsMenu}>
                 {
                   (item) => (
                     item.submenu ? (
-                      <li tabindex="0">
-                        <Link activeClass="" href={`/our-products/${item.slug}`}>{item.title} <svg xmlns="http://www.w3.org/2000/svg" class="fill-none w-4 h-4" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg></Link>
+                      <li>
+                        <Link href={`/our-products/${item.slug}`} activeClass="">{item.title}</Link>
 
-                        <ul class="bg-base-100 p-0">
+                        <ul>
                           <For each={item.submenu}>
                             {
                               (subItem) => <li><Link href={`/our-products/${subItem.slug}`}>{subItem.title}</Link></li>
@@ -57,6 +57,31 @@ const Navbar: Component<{}> = () => {
                   )
                 }
               </For>
+              {/* <li>
+                <a>Databases</a>
+                <ul>
+                  <li><a>Design</a></li>
+                  <li><a>Development</a></li>
+                  <li><a>Hosting</a></li>
+                  <li><a>Domain register</a></li>
+                </ul>
+              </li> */}
+              {/* <li>
+                <a>Products</a>
+                <ul>
+                  <li><a>UI Kit</a></li>
+                  <li><a>Wordpress themes</a></li>
+                  <li><a>Wordpress plugins</a></li>
+                  <li>
+                    <a>Open source</a>
+                    <ul>
+                      <li><a>Auth management system</a></li>
+                      <li><a>VScode theme</a></li>
+                      <li><a>Color picker app</a></li>
+                    </ul>
+                  </li>
+                </ul>
+              </li> */}
             </ul>
           </li>
           <li><Link href="/services">Services</Link></li>
@@ -98,7 +123,8 @@ const Navbar: Component<{}> = () => {
                     <img src="https://spectrum.ieee.org/media-library/ceo-of-comma-ai-george-geohot-hotz-speaks-onstage-during-techcrunch-disrupt-sf-2016-at-pier-48-on-september-13-2016-in-san-fr.jpg?id=25582060&width=980" />
                   </div>
                 </label>
-                <ul tabindex="0" class="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52">
+
+                <ul tabindex="0" class="dropdown-content menu menu-compact mt-3 p-2 z-10 shadow bg-base-100 rounded-box w-52">
                   <li>
                     <Link href="/dashboard" class="justify-between">
                       Dashboard

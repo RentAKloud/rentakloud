@@ -178,11 +178,11 @@ const Home: Component = () => {
         </div>
       </section>
 
-      <section class="py-10">
+      <section class="py-10 flex flex-col items-center">
         <h2 class="text-3xl text-center font-bold mb-5">Testimonials</h2>
         <p class="text-center mb-10">Loved by all of our customers.</p>
 
-        <div class="carousel w-full">
+        <div class="carousel w-64">
           <For each={home.testimonials}>
             {
               (t, i) =>

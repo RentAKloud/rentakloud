@@ -93,14 +93,20 @@ export const defaultProducts: Product[] = [
     categories: [{ slug: "databases", title: "Databases" }],
     productType: ProductType.OnlineService,
     images: [],
+  },
+  {
+    id: 8,
+    name: "WordPress",
+    slug: "wordpress",
+    shortDescription: "WordPress, get started on creating your website with one of the most powerful, popular, and customizable platforms in the world.",
+    description: "The world's most popular CMS.",
+    categories: [{ slug: "cms", title: "CMS" }],
+    productType: ProductType.OnlineService,
+    images: []
   }
 ]
 
 export const productsMenu = [
-  {
-    title: "PiKVM",
-    slug: "pi-kvm"
-  },
   {
     title: "Databases Cloud Hosting",
     slug: "?category=databases",
@@ -129,43 +135,31 @@ export const productsMenu = [
       .map(p => ({ title: p.name, slug: p.slug }))
   },
   {
-    title: "CMS Cloud Hosting",
+    title: "CMS/Ecommerce",
     slug: "?category=cms",
     submenu: defaultProducts
-      .filter(p => p.categories
-        .map(c => c.slug)
-        .includes("cms"))
+      .filter(p => {
+        const x = p.categories
+          .map(c => c.slug)
+        return x.includes("cms") || x.includes("ecommerce")
+      })
       .map(p => ({ title: p.name, slug: p.slug }))
   },
   {
-    title: "Ecommerce Cloud Hosting",
-    slug: "?category=ecommerce",
-    submenu: defaultProducts
-      .filter(p => p.categories
-        .map(c => c.slug)
-        .includes("ecommerce"))
-      .map(p => ({ title: p.name, slug: p.slug }))
+    title: "Runtimes",
+    slug: "",
+    submenu: [
+      { title: "NodeJS", slug: "nodejs-cloud-hosting" },
+      { title: "Python", slug: "python-django-cloud-hosting" },
+      { title: "Ruby", slug: "ruby-ror-cloud-hosting" }
+    ]
   },
   {
-    title: "Message Queueing Services",
-    slug: "?category=message-queueing-services",
-    submenu: defaultProducts
-      .filter(p => p.categories
-        .map(c => c.slug)
-        .includes("message-queueing"))
-      .map(p => ({ title: p.name, slug: p.slug }))
-  },
-  {
-    title: "NodeJS",
-    slug: "nodejs-cloud-hosting"
-  },
-  {
-    title: "Python",
-    slug: "python-django-cloud-hosting"
-  },
-  {
-    title: "Ruby",
-    slug: "ruby-ror-cloud-hosting"
+    title: "Hardware",
+    slug: "?category=hardware",
+    submenu: [
+      { title: "PiKVM", slug: "pi-kvm" }
+    ]
   },
 ]
 
