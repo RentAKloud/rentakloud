@@ -9,7 +9,8 @@ $ yarn install
 You can easily launch database (and other services) using Docker:
 
 ```
-docker compose up -d
+cd docker/
+docker compose --env-file ../api/.env up -d
 ```
 
 Next you'll need to create the required databases. It can be done using the Adminer Web UI available at localhost:9000, or you can CLI into the docker container and do it there. The required database names are:
