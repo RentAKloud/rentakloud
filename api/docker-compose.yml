@@ -1,4 +1,5 @@
 version: '3.8'
+name: rentakloud-runtime
 
 x-environment:
   &glitchtip-environment
@@ -43,25 +44,47 @@ services:
     image: glitchtip/glitchtip
     depends_on: *glitchtip-depends_on
     ports:
-      - "8000:8000"
+      - 8000:8000
     environment: *glitchtip-environment
     restart: unless-stopped
-    volumes: 
-      - uploads:/code/uploads
+    volumes:
+      - glitchtip-uploads:/code/uploads
   glitchtip-worker:
     image: glitchtip/glitchtip
     command: ./bin/run-celery-with-beat.sh
     depends_on: *glitchtip-depends_on
     environment: *glitchtip-environment
     restart: unless-stopped
-    volumes: 
-      - uploads:/code/uploads
+    volumes:
+      - glitchtip-uploads:/code/uploads
   glitchtip-migrate:
     image: glitchtip/glitchtip
     depends_on: *glitchtip-depends_on
     command: "./manage.py migrate"
     environment: *glitchtip-environment
 
+  # Monitoring
+  prometheus:
+    image: bitnami/prometheus
+    ports:
+      - 9090:9090
+    volumes:
+      - prometheus-data:/opt/bitnami/prometheus/data
+      - ./prometheus.yml:/opt/bitnami/prometheus/conf/prometheus.yml
+    extra_hosts:
+      - host.docker.internal:host-gateway
+
+  grafana:
+    image: grafana/grafana
+    ports:
+      - 9091:3000
+    volumes:
+      - grafana-data:/var/lib/grafana
+
 volumes:
   pg-data:
-  uploads:
+  glitchtip-uploads:
+  prometheus-data:
+  grafana-data:
+
+

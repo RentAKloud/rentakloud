@@ -11,6 +11,7 @@ import { OrdersModule } from './modules/orders.module';
 import { PaymentsModule } from './modules/payments.module';
 import { DiskImagesModule } from './modules/disk-images.module';
 import { MailModule } from './modules/mail.module';
+import { PrometheusModule } from '@willsoto/nestjs-prometheus';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { MailModule } from './modules/mail.module';
     PrismaModule,
     EventEmitterModule.forRoot(),
     MailModule,
+    PrometheusModule.register(),
 
     AuthModule,
     ProductsModule,
