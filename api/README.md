@@ -6,7 +6,11 @@ $ yarn install
 
 ## Running the app
 
-You can easily launch database (and other services) using Docker:
+### Setting Up The Environment
+
+Make sure you have `.env` file.
+
+You can easily launch the database and other services using Docker:
 
 ```
 cd docker/
@@ -18,7 +22,11 @@ Next you'll need to create the required databases. It can be done using the Admi
 - rentakloud
 - glitchtip
 
-Next run the migrations (see Database section for commands), and optionally seed the db. Then you should be able to start the project:
+Next run the migrations (see Database section for commands), and optionally seed the db.
+
+### Start The App
+
+Now you should be able to start the project:
 
 ```bash
 # development

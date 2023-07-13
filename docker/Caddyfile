@@ -1,0 +1,28 @@
+rentakloud.com {
+  root * /www/web/
+  file_server
+}
+
+admin.rentakloud.com {
+  root * /www/admin/
+  file_server
+}
+
+# Since we run Caddy from Docker using `network_mode: host`,
+# we can use localhost here
+
+api.rentakloud.com {
+  reverse_proxy localhost:3000
+}
+
+gt.rentakloud.com {
+  reverse_proxy localhost:8000
+}
+
+monitor.rentakloud.com {
+  reverse_proxy localhost:9091
+}
+
+status.rentakloud.com {
+  reverse_proxy localhost:9100
+}
