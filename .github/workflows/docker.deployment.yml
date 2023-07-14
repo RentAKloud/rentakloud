@@ -1,0 +1,54 @@
+
+name: Deploy RentAKloud Runtime
+run-name: RentAKloud Runtime Deployment
+
+on:
+  push:
+    branches: [ master ]
+    paths:
+      - 'docker/**'
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: docker/
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Copy new release to deployment folder
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          port: ${{ secrets.SSH_PORT }}
+          username: ${{ secrets.SSH_USER }}
+          # key: ${{ secrets.SSH_PK }}
+          password: ${{ secrets.SSH_PK }}
+          source: "docker/"
+          target: "${{ vars.DOCKER_DEPLOY_DIR }}"
+          rm: true # Remove the directory to clear existing stuff
+          strip_components: 1 # Otherwise it creates a "docker" dir inside the target dir
+
+      - name: Connect using SSH and run docker compose
+        uses: appleboy/ssh-action@v0.1.4
+        env:
+          DOCKER_DEPLOY_DIR: ${{ vars.DOCKER_DEPLOY_DIR }}
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          port: ${{ secrets.SSH_PORT }}
+          username: ${{ secrets.SSH_USER }}
+          # key: ${{ secrets.SSH_PK }}
+          password: ${{ secrets.SSH_PK }}
+          envs: DOCKER_DEPLOY_DIR
+          script: |
+            cd $DOCKER_DEPLOY_DIR
+            docker compose --env-file ../api/.env -f docker-compose.yml -f docker-compose.prod.yml up -d
+
+    # steps:
+    #   - uses: actions/checkout@v3
+    #   - name: 'Create env file'
+    #     run: |
+    #       echo "${{ vars.API_ENV_PRODUCTION }}" > .env
