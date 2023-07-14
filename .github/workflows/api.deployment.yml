@@ -1,0 +1,116 @@
+
+name: Test, Build & Deploy RentAKloud API
+run-name: RentAKloud API Deployment
+
+on:
+  push:
+    branches: [ master ]
+    paths:
+      - 'api/**'
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: api/
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use NodeJS 20
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20.x'
+          cache: 'yarn'
+          cache-dependency-path: api/
+      - run: yarn install
+      - run: yarn test
+
+  build:
+    runs-on: ubuntu-latest
+    needs: [ test ]
+    defaults:
+      run:
+        working-directory: api/
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use NodeJS 20
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20.x'
+          cache: 'yarn'
+          cache-dependency-path: api/yarn.lock
+
+      - name: 'Create env file'
+        run: |
+          echo "${{ vars.API_ENV_PRODUCTION }}" > .env
+
+      - run: yarn install
+      - run: yarn build
+      - run: zip build.zip -r dist/ prisma/ package.json yarn.lock .env
+
+      - name: Upload artifact for deployment job
+        uses: actions/upload-artifact@v3
+        with:
+          name: dist-artifact
+          path: api/build.zip # name of build file/folder
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: [ build ]
+
+    steps:
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v3
+        with:
+          name: dist-artifact
+
+      - name: SSH in to clear existing stuff in deployment folder
+        uses: appleboy/ssh-action@v0.1.4
+        env:
+          API_DEPLOY_DIR: ${{ vars.API_DEPLOY_DIR }}
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          port: ${{ secrets.SSH_PORT }}
+          username: ${{ secrets.SSH_USER }}
+          # key: ${{ secrets.SSH_PK }}
+          password: ${{ secrets.SSH_PK }}
+          envs: API_DEPLOY_DIR
+          script: |
+            shopt -s extglob
+            rm -rf $API_DEPLOY_DIR/!(node_modules)
+            shopt -u extglob
+
+      - name: Copy new release to deployment folder
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          port: ${{ secrets.SSH_PORT }}
+          username: ${{ secrets.SSH_USER }}
+          # key: ${{ secrets.SSH_PK }}
+          password: ${{ secrets.SSH_PK }}
+          source: "./*"
+          target: "${{ vars.API_DEPLOY_DIR }}/"
+
+      - name: SSH in to install deps and run the app server
+        uses: appleboy/ssh-action@v0.1.4
+        env:
+          API_DEPLOY_DIR: ${{ vars.API_DEPLOY_DIR }}
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          port: ${{ secrets.SSH_PORT }}
+          username: ${{ secrets.SSH_USER }}
+          # key: ${{ secrets.SSH_PK }}
+          password: ${{ secrets.SSH_PK }}
+          envs: API_DEPLOY_DIR
+          script: |
+            cd $API_DEPLOY_DIR
+            unzip -o build.zip
+            rm build.zip
+            yarn install
+            npx prisma migrate deploy
+            yarn start:prod
+          # -o in `unzip` forces overwrite option. Without it we get a prompt at runtime asking if we
+          # want to overwrite existing files, like .env
