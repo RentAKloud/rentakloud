@@ -15,6 +15,8 @@ import Cart from './pages/Cart';
 import LegalHome from './pages/Legal/LegalHome';
 import PrivacyPolicy from './pages/Legal/PrivacyPolicy';
 
+import Checkout from './pages/Checkout/Checkout';
+
 import ProductDashboard from './pages/ProductDashboard/ProductDashboard';
 import Overview from './pages/ProductDashboard/Overview';
 import SiteAndSSL from './pages/ProductDashboard/SiteAndSSL';
@@ -26,15 +28,16 @@ import Metrics from './pages/ProductDashboard/Metrics';
 import Snapshots from './pages/ProductDashboard/Snapshots';
 import Events from './pages/ProductDashboard/Events';
 import Guidance from './pages/ProductDashboard/Guidance';
+
 import Dashboard from './pages/Dashboard/Dashboard';
 import DashboardHome from './pages/Dashboard/Home';
-import Checkout from './pages/Checkout/Checkout';
 import Orders from './pages/Dashboard/Orders';
 import Payments from './pages/Dashboard/Payments';
 import Settings from './pages/Dashboard/Settings';
 import Instances from './pages/Dashboard/Instances';
-import { authStore, getUserProfile } from './stores/auth';
 import Images from './pages/Dashboard/Images';
+import Backups from './pages/Dashboard/Backups';
+import { authStore, getUserProfile } from './stores/auth';
 
 const App: Component = () => {
   const isLoggedIn = () => !!authStore.user
@@ -88,6 +91,7 @@ const App: Component = () => {
               <Route path={["/", "/overview"]} component={DashboardHome} />
               <Route path="/products" component={Instances} />
               <Route path="/images" component={Images} />
+              <Route path="/backups" component={Backups} />
               <Route path="/orders" component={Orders} />
               <Route path="/payments" component={Payments} />
               <Route path="/settings" component={Settings} />

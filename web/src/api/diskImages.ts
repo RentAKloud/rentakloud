@@ -2,8 +2,8 @@ import { HttpService } from "../services/HttpService";
 import { DiskImage } from "../types/diskImage";
 
 class DiskImagesApi {
-  static async all(): Promise<DiskImage[]> {
-    return await HttpService.get("/disk-images")
+  static async all(query?: URLSearchParams): Promise<DiskImage[]> {
+    return await HttpService.get('/disk-images', query)
   }
 
   static async one(id: number): Promise<DiskImage> {

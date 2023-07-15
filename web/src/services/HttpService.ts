@@ -3,7 +3,10 @@ import { authStore } from "../stores/auth"
 import { NotificationService } from "./NotificationService"
 
 export class HttpService {
-  static async get<T>(endpoint: string): Promise<T> {
+  static async get<T>(endpoint: string, queryParams?: URLSearchParams): Promise<T> {
+    if (queryParams) {
+      endpoint += `?${queryParams}`
+    }
     return wrapper(endpoint)
   }
 

@@ -8,9 +8,9 @@ import TrashIcon from "../../components/icons/Trash";
 import DesktopIcon from "../../components/icons/Desktop";
 import DownloadIcon from "../../components/icons/Download";
 
-const Images: Component = () => {
+const Backups: Component = () => {
   const q = new URLSearchParams([
-    ['exclude_tags', 'backup'],
+    ['tags', 'backup']
   ])
   const [images, { refetch }] = createResource(() => DiskImagesApi.all(q))
   const [selectedProduct, setSelectedProduct] = createSignal<DiskImage>()
@@ -29,8 +29,8 @@ const Images: Component = () => {
 
   return (
     <>
-      <h2 class="text-4xl font-bold mb-2">Images ({images.latest?.length})</h2>
-      <p class="mb-10">Base disk images. You can create VMs based of these images.</p>
+      <h2 class="text-4xl font-bold mb-2">Backups ({images.latest?.length})</h2>
+      <p class="mb-10">Your backups. You can download them or create VMs based of these images.</p>
 
       <section>
         <Show when={images.latest?.length === 0}>
@@ -128,4 +128,4 @@ const Images: Component = () => {
   )
 }
 
-export default Images
+export default Backups
