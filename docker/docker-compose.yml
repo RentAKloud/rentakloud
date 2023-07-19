@@ -63,7 +63,7 @@ services:
     command: "./manage.py migrate"
     environment: *glitchtip-environment
 
-  # Monitoring
+  # Monitoring Metrics/Performance
   prometheus:
     image: bitnami/prometheus
     ports:
@@ -81,8 +81,18 @@ services:
     volumes:
       - grafana-data:/var/lib/grafana
 
+  # Monitoring Uptime & Public Status Pages
+  uptime-kuma:
+    image: louislam/uptime-kuma
+    restart: always
+    ports:
+      - 9100:3001
+    volumes:
+      - uptime-kuma:/app/data
+
 volumes:
   pg-data:
   glitchtip-uploads:
   prometheus-data:
   grafana-data:
+  uptime-kuma:
