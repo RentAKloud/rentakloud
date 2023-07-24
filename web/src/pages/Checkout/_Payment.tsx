@@ -1,6 +1,6 @@
 import { Component, Show } from "solid-js";
 import { Card, Elements } from "solid-stripe";
-import FormInput from "../../components/FormInput";
+import FormInput from "../../components/Inputs/FormInput";
 import { useCheckoutContext } from "./context";
 import { StripeElementsWrapper } from "./_StripeElementsWrapper";
 

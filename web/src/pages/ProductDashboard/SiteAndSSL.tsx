@@ -1,5 +1,5 @@
 import { Component } from "solid-js"
-import FormInput from "../../components/FormInput"
+import FormInput from "../../components/Inputs/FormInput"
 
 const SiteAndSSL: Component<{}> = () => {
   return (

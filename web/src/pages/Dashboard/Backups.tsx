@@ -1,4 +1,5 @@
 import { Component, For, Show, createResource, createSignal } from "solid-js";
+import { useSearchParams } from "@solidjs/router";
 import { DateTime } from "../../components/DateTime";
 import Modal from "../../components/Modal";
 import { NotificationService } from "../../services/NotificationService";
@@ -7,11 +8,17 @@ import { DiskImage } from "../../types/diskImage";
 import TrashIcon from "../../components/icons/Trash";
 import DesktopIcon from "../../components/icons/Desktop";
 import DownloadIcon from "../../components/icons/Download";
+import Pagination from "../../components/Pagination";
+import Search from "../../components/Inputs/Search";
 
 const Backups: Component = () => {
   const q = new URLSearchParams([
     ['tags', 'backup']
   ])
+  const [params, setParams] = useSearchParams()
+  const currPage = () => params.page || '1'
+  q.append('page', currPage())
+
   const [images, { refetch }] = createResource(() => DiskImagesApi.all(q))
   const [selectedProduct, setSelectedProduct] = createSignal<DiskImage>()
   const [isDeleteModalOpen, setIsDeleteModalOpen] = createSignal<boolean>(false)
@@ -27,10 +34,14 @@ const Backups: Component = () => {
     }
   }
 
+  function setCurrPage(page: number) {
+    setParams({ page })
+  }
+
   return (
     <>
       <h2 class="text-4xl font-bold mb-2">Backups ({images.latest?.length})</h2>
-      <p class="mb-10">Your backups. You can download them or create VMs based of these images.</p>
+      <p class="mb-5">Your backups. You can download them or create VMs based of these images.</p>
 
       <section>
         <Show when={images.latest?.length === 0}>
@@ -38,6 +49,10 @@ const Backups: Component = () => {
         </Show>
 
         <Show when={!images.loading && images.latest!.length > 0}>
+          <div class="mb-10">
+            <Search />
+          </div>
+
           <div class="overflow-x-auto">
             <table class="table">
               {/* <!-- head --> */}
@@ -53,8 +68,6 @@ const Backups: Component = () => {
                   <th>OS</th>
                   <th>Format</th>
                   <th>Created At</th>
-                  <th></th>
-                  <th></th>
                   <th></th>
                 </tr>
               </thead>
@@ -79,15 +92,21 @@ const Backups: Component = () => {
                         <td>{image.osName}</td>
                         <td>{image.format}</td>
                         <td><DateTime value={image.createdAt} /></td>
-                        <td class="text-error">
-                          <TrashIcon />
-                        </td>
-                        <td>
-                          <span class="tooltip tooltip-info inline" data-tip="Launch a new VM">
-                            <DesktopIcon />
+                        <td class="flex items-center gap-5">
+                          <span class="text-error">
+                            <TrashIcon />
+                          </span>
+
+                          <span class="tooltip tooltip-info" data-tip="Launch a new VM">
+                            <button class="btn btn-ghost">
+                              <DesktopIcon />
+                            </button>
+                          </span>
+
+                          <span class="tooltip tooltip-info" data-tip="Download">
+                            <DownloadIcon />
                           </span>
                         </td>
-                        <td><DownloadIcon /></td>
                       </tr>
                     )
                   }
@@ -103,12 +122,14 @@ const Backups: Component = () => {
                   <th>Format</th>
                   <th>Created At</th>
                   <th></th>
-                  <th></th>
-                  <th></th>
                 </tr>
               </tfoot>
 
             </table>
+          </div>
+
+          <div class="mt-10 flex justify-center">
+            <Pagination current={+currPage()} last={6} setPage={setCurrPage} />
           </div>
         </Show>
       </section>

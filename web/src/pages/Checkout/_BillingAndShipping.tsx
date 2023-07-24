@@ -1,5 +1,5 @@
 import { Component, Show } from "solid-js";
-import FormInput from "../../components/FormInput";
+import FormInput from "../../components/Inputs/FormInput";
 import { useCheckoutContext } from "./context";
 import { authStore } from "../../stores/auth";
 

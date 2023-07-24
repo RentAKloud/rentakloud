@@ -2,7 +2,7 @@ import { Tabs } from "@kobalte/core";
 import { Link } from "@solidjs/router";
 import { Component, Show, createMemo, createSignal } from "solid-js";
 import CarouselWithControls from "../../components/Carousel/CarouselWithControls";
-import FormInput from "../../components/FormInput";
+import FormInput from "../../components/Inputs/FormInput";
 import { NotificationService } from "../../services/NotificationService";
 import { addToCart } from "../../stores/cart";
 import { Product } from "../../types/product";
