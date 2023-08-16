@@ -30,7 +30,11 @@ const Instances: Component = () => {
   return (
     <>
       <h2 class="text-4xl font-bold mb-2">Instances ({activeProducts.latest?.length})</h2>
-      <p class="mb-10">Your active subscriptions.</p>
+      <p class="mb-5">Your active subscriptions.</p>
+
+      <section class="mb-10">
+        <Link href="new" class="btn btn-outline">New</Link>
+      </section>
 
       <section>
         <Show when={activeProducts.latest?.length === 0}>

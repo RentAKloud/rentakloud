@@ -1,5 +1,5 @@
 import { Component, For, Show, createResource, createSignal } from "solid-js";
-import { useSearchParams } from "@solidjs/router";
+import { Link, useSearchParams } from "@solidjs/router";
 import { DateTime } from "../../components/DateTime";
 import Modal from "../../components/Modal";
 import { NotificationService } from "../../services/NotificationService";
@@ -98,9 +98,9 @@ const Backups: Component = () => {
                           </span>
 
                           <span class="tooltip tooltip-info" data-tip="Launch a new VM">
-                            <button class="btn btn-ghost">
+                            <Link href={`/dashboard/instances/new?image=${image.id}`} class="btn btn-ghost">
                               <DesktopIcon />
-                            </button>
+                            </Link>
                           </span>
 
                           <span class="tooltip tooltip-info" data-tip="Download">

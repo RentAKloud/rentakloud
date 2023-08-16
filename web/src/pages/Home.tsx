@@ -20,10 +20,10 @@ const Home: Component = () => {
         subtitle="Lightning Fast. Scalable & Secure. All Your Cloud Computing Needs In One Place."
         content={
           <ul class="mb-5">
-            <li><CheckIcon success={true} /> Blazingly Fast</li>
-            <li><CheckIcon success={true} /> Fully Managed</li>
-            <li><CheckIcon success={true} /> Free SSL</li>
-            <li><CheckIcon success={true} /> 24/7 Support</li>
+            <li><CheckIcon class="text-success inline" /> Blazingly Fast</li>
+            <li><CheckIcon class="text-success inline" /> Fully Managed</li>
+            <li><CheckIcon class="text-success inline" /> Free SSL</li>
+            <li><CheckIcon class="text-success inline" /> 24/7 Support</li>
           </ul>
         }
         actions={

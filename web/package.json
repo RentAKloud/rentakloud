@@ -19,7 +19,7 @@
     "vite-plugin-solid": "^2.5.0"
   },
   "dependencies": {
-    "@kobalte/core": "^0.8.2",
+    "@kobalte/core": "^0.9.8",
     "@sentry/browser": "^7.57.0",
     "@solidjs/router": "^0.7.0",
     "@stripe/stripe-js": "^1.52.1",

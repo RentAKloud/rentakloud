@@ -1,6 +1,6 @@
 import { Component, createSignal } from "solid-js";
 
-const FormInput: Component<{
+type FormInputType = {
   label: string;
   value: string;
   defaultVal?: string;
@@ -9,7 +9,9 @@ const FormInput: Component<{
   onChange?: (newVal: any) => void;
   min?: number;
   error?: string;
-}> = ({
+}
+
+const FormInput: Component<FormInputType> = ({
   label,
   value,
   placeholder,
