@@ -8,7 +8,7 @@ async function bootstrap() {
   app.enableCors({
     origin: ["http://localhost:3001"]
   })
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(new ValidationPipe({ transform: true }));
 
   const config = new DocumentBuilder()
     .setTitle('RentAKloud API')

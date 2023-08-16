@@ -1,4 +1,4 @@
-import { Component, For, Show, createResource, createSignal } from "solid-js";
+import { Component, For, Show, createEffect, createResource, createSignal } from "solid-js";
 import { Link, useSearchParams } from "@solidjs/router";
 import { DateTime } from "../../components/DateTime";
 import Modal from "../../components/Modal";
@@ -17,11 +17,21 @@ const Images: Component = () => {
   ])
   const [params, setParams] = useSearchParams()
   const currPage = () => params.page || '1'
+  const pageSize = () => params["page-size"] || '10'
   q.append('page', currPage())
+  q.append('page-size', pageSize())
 
   const [images, { refetch }] = createResource(() => DiskImagesApi.all(q))
   const [selectedProduct, setSelectedProduct] = createSignal<DiskImage>()
   const [isDeleteModalOpen, setIsDeleteModalOpen] = createSignal<boolean>(false)
+
+  const totalPages = () => Math.ceil((images.latest?.total || 0) / +pageSize())
+
+  createEffect(() => {
+    q.set('page', currPage())
+    q.set('page-size', pageSize())
+    refetch()
+  })
 
   async function deleteDiskImage(id: number) {
     try {
@@ -40,15 +50,15 @@ const Images: Component = () => {
 
   return (
     <>
-      <h2 class="text-4xl font-bold mb-2">Images ({images.latest?.length})</h2>
+      <h2 class="text-4xl font-bold mb-2">Images ({images.latest?.total})</h2>
       <p class="mb-5">Base disk images. You can create VMs based of these images.</p>
 
       <section>
-        <Show when={images.latest?.length === 0}>
+        <Show when={images.latest?.total === 0}>
           <p>Nothing to see here.</p>
         </Show>
 
-        <Show when={!images.loading && images.latest!.length > 0}>
+        <Show when={!images.loading && !images.error && images.latest!.total > 0}>
           <div class="mb-10">
             <Search />
           </div>
@@ -72,7 +82,7 @@ const Images: Component = () => {
                 </tr>
               </thead>
               <tbody>
-                <For each={images.latest}>
+                <For each={images.latest!.data}>
                   {
                     (image) => (
                       <tr>
@@ -129,7 +139,7 @@ const Images: Component = () => {
           </div>
 
           <div class="mt-10 flex justify-center">
-            <Pagination current={+currPage()} last={4} setPage={setCurrPage} />
+            <Pagination current={+currPage()} last={totalPages()} setPage={setCurrPage} />
           </div>
         </Show>
       </section>

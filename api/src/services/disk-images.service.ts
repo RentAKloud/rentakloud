@@ -2,6 +2,8 @@ import { Injectable } from "@nestjs/common";
 import { DiskImage, Prisma } from "@prisma/client";
 import { PrismaService } from "./prisma.service";
 import { EventEmitter2 } from "@nestjs/event-emitter";
+import { DiskImagesFindManyQuery } from "src/types/disk-images.dto";
+import { Paginated } from "src/types/common.dto";
 
 @Injectable()
 export class DiskImagesService {
@@ -18,21 +20,18 @@ export class DiskImagesService {
     });
   }
 
-  async diskImages(params: {
-    skip?: number;
-    take?: number;
-    cursor?: Prisma.DiskImageWhereUniqueInput;
-    where?: Prisma.DiskImageWhereInput;
-    orderBy?: Prisma.DiskImageOrderByWithRelationInput;
-  }): Promise<DiskImage[]> {
-    const { skip, take, cursor, where, orderBy } = params;
-    return this.prisma.diskImage.findMany({
-      skip,
-      take,
-      cursor,
-      where,
-      orderBy,
-    });
+  // https://github.com/prisma/prisma/issues/7550#issuecomment-1537160913
+  async diskImages(params: DiskImagesFindManyQuery): Promise<Paginated<DiskImage>> {
+    // const { skip, take, cursor, where, orderBy } = params;
+    const [data, total] = await this.prisma.$transaction([
+      this.prisma.diskImage.findMany(params),
+      this.prisma.diskImage.count({ where: params.where })
+    ])
+
+    return {
+      data,
+      total
+    }
   }
 
   async createDiskImage(data: Prisma.DiskImageCreateInput): Promise<DiskImage> {

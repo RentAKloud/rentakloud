@@ -1,8 +1,9 @@
 import { HttpService } from "../services/HttpService";
+import { Paginated } from "../types/common";
 import { DiskImage } from "../types/diskImage";
 
 class DiskImagesApi {
-  static async all(query?: URLSearchParams): Promise<DiskImage[]> {
+  static async all(query?: URLSearchParams): Promise<Paginated<DiskImage>> {
     return await HttpService.get('/disk-images', query)
   }
 
