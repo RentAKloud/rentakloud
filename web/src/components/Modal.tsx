@@ -9,7 +9,7 @@ const Modal: Component<{
   isOpen?: boolean;
 }> = (props) => {
   return (
-    <AlertDialog.Root isOpen={props.isOpen} onOpenChange={(isOpen => console.log(isOpen))}>
+    <AlertDialog.Root open={props.isOpen} onOpenChange={(isOpen => console.log(isOpen))}>
       {/* <AlertDialog.Trigger class="btn">Open</AlertDialog.Trigger> */}
       <AlertDialog.Portal>
         <AlertDialog.Overlay class="fixed inset-0 z-50" />

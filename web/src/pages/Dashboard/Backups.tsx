@@ -113,7 +113,10 @@ const Backups: Component = () => {
                         <td>{image.format}</td>
                         <td><DateTime value={image.createdAt} /></td>
                         <td class="flex items-center gap-5">
-                          <span class="text-error">
+                          <span class="text-error btn btn-ghost" onclick={() => {
+                            setSelectedProduct(image)
+                            setIsDeleteModalOpen(true)
+                          }}>
                             <TrashIcon />
                           </span>
 
@@ -124,7 +127,9 @@ const Backups: Component = () => {
                           </span>
 
                           <span class="tooltip tooltip-info" data-tip="Download">
+                            <span class="btn btn-ghost">
                             <DownloadIcon />
+                            </span>
                           </span>
                         </td>
                       </tr>
