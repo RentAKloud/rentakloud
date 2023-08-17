@@ -18,8 +18,10 @@ const Backups: Component = () => {
   const [params, setParams] = useSearchParams()
   const currPage = () => params.page || '1'
   const pageSize = () => params["page-size"] || '10'
+  const searchQuery = () => params.q || ''
   q.append('page', currPage())
   q.append('page-size', pageSize())
+  q.append('q', searchQuery())
 
   const [images, { refetch }] = createResource(() => DiskImagesApi.all(q))
   const [selectedProduct, setSelectedProduct] = createSignal<DiskImage>()
@@ -30,6 +32,14 @@ const Backups: Component = () => {
   createEffect(() => {
     q.set('page', currPage())
     q.set('page-size', pageSize())
+
+    // if search query has changed, we also want to reset to first page
+    if (q.get('q') !== searchQuery()) {
+      q.set('q', searchQuery())
+      setCurrPage(1)
+      q.set('page', '1')
+    }
+
     refetch()
   })
 
@@ -54,11 +64,11 @@ const Backups: Component = () => {
       <p class="mb-5">Your backups. You can download them or create VMs based of these images.</p>
 
       <section>
-        <Show when={images.latest?.total === 0}>
+        <Show when={images.latest?.total === 0 && searchQuery() === ''}>
           <p>Nothing to see here.</p>
         </Show>
 
-        <Show when={!images.loading && images.latest!.total > 0}>
+        <Show when={!images.error && images.latest}>
           <div class="mb-10">
             <Search />
           </div>

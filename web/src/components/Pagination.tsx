@@ -65,7 +65,7 @@ const Pagination: Component<{
 
       <button
         class="join-item btn"
-        classList={{ "btn-disabled": props.current === props.last }}
+        classList={{ "btn-disabled": props.current >= props.last }}
         onclick={() => props.setPage(props.current + 1)}
       >»</button>
     </div>

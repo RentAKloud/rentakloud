@@ -32,7 +32,14 @@ const Images: Component = () => {
   createEffect(() => {
     q.set('page', currPage())
     q.set('page-size', pageSize())
-    q.set('q', searchQuery())
+
+    // if search query has changed, we also want to reset to first page
+    if (q.get('q') !== searchQuery()) {
+      q.set('q', searchQuery())
+      setCurrPage(1)
+      q.set('page', '1')
+    }
+
     refetch()
   })
 
@@ -57,7 +64,7 @@ const Images: Component = () => {
       <p class="mb-5">Base disk images. You can create VMs based of these images.</p>
 
       <section>
-        <Show when={images.latest?.total === 0}>
+        <Show when={images.latest?.total === 0 && searchQuery() === ''}>
           <p>Nothing to see here.</p>
         </Show>
 
