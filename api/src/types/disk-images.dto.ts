@@ -3,9 +3,11 @@ import { Expose, Transform } from "class-transformer";
 import { IsOptional } from "class-validator";
 
 export class DiskImagesQuery {
+  @Transform(({ value }) => Array.isArray(value) ? value : [value])
   tags: string[]
 
   @Expose({ name: 'exclude_tags' })
+  @Transform(({ value }) => Array.isArray(value) ? value : [value])
   excludeTags: string[]
 
   @IsOptional()
