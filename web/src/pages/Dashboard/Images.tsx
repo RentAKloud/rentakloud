@@ -18,8 +18,10 @@ const Images: Component = () => {
   const [params, setParams] = useSearchParams()
   const currPage = () => params.page || '1'
   const pageSize = () => params["page-size"] || '10'
+  const searchQuery = () => params.q || ''
   q.append('page', currPage())
   q.append('page-size', pageSize())
+  q.append('q', searchQuery())
 
   const [images, { refetch }] = createResource(() => DiskImagesApi.all(q))
   const [selectedProduct, setSelectedProduct] = createSignal<DiskImage>()
@@ -30,6 +32,7 @@ const Images: Component = () => {
   createEffect(() => {
     q.set('page', currPage())
     q.set('page-size', pageSize())
+    q.set('q', searchQuery())
     refetch()
   })
 
@@ -58,7 +61,7 @@ const Images: Component = () => {
           <p>Nothing to see here.</p>
         </Show>
 
-        <Show when={!images.loading && !images.error && images.latest!.total > 0}>
+        <Show when={!images.error && images.latest}>
           <div class="mb-10">
             <Search />
           </div>

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, ParseIntPipe, Post, Query, Request, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query, Request, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Prisma } from '@prisma/client';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
@@ -16,7 +16,7 @@ export class DiskImagesController {
   @Get()
   diskImages(
     @Request() req,
-    @Query() { tags, excludeTags, page, pageSize }: DiskImagesQuery
+    @Query() { tags, excludeTags, page, pageSize, q }: DiskImagesQuery
   ) {
     const filters: Prisma.DiskImageWhereInput = {
       OR: [
@@ -30,6 +30,15 @@ export class DiskImagesController {
     }
     if (excludeTags) {
       filters.NOT = { tags: { hasSome: excludeTags } }
+    }
+    if (q) {
+      filters.AND = {
+        ...filters.AND,
+        OR: [
+          { name: { contains: q, mode: 'insensitive' } },
+          { osName: { contains: q, mode: 'insensitive' } }
+        ]
+      }
     }
 
     const query: DiskImagesFindManyQuery = {

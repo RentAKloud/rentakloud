@@ -16,6 +16,9 @@ export class DiskImagesQuery {
   @IsOptional()
   @Transform(({ value }) => +value)
   pageSize: number
+
+  @IsOptional()
+  q: string
 }
 
 export class DiskImagesFindManyQuery {

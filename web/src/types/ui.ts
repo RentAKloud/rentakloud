@@ -14,3 +14,7 @@ export type Card = {
   center?: boolean,
   class?: string
 }
+
+export type SearchProps = {
+  onInput?: (value: string) => void
+}
