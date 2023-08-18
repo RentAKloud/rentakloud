@@ -8,7 +8,7 @@ const Dashboard: Component<{}> = () => {
       <div class="flex">
         <div class="py-20">
           <ul class="menu bg-base-100 w-56">
-            <li><Link href="/dashboard/overview">Home</Link></li>
+            <li><Link href="/dashboard" end>Home</Link></li>
             <li><Link href="/dashboard/instances">Instances</Link></li>
             <li><Link href="/dashboard/images">Images</Link></li>
             <li><Link href="/dashboard/backups">Backups</Link></li>

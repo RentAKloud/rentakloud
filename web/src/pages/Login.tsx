@@ -1,5 +1,5 @@
 import { Component, createEffect, createSignal } from "solid-js";
-import { Link, useNavigate } from "@solidjs/router";
+import { Link, useNavigate, useSearchParams } from "@solidjs/router";
 import DefaultLayout from "../layouts/DefaultLayout";
 import HeroWithForm from "../components/Hero/HeroWithForm";
 import GithubIcon from "../components/icons/Github";
@@ -32,8 +32,10 @@ const Login: Component = () => {
 
   createEffect(() => {
     const { user } = authStore
-    if (user)
-      navigate("/dashboard")
+    if (user) {
+      const [params] = useSearchParams()
+      navigate(params.next || "/dashboard")
+    }
   })
 
   return (

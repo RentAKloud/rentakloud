@@ -126,7 +126,7 @@ const Navbar: Component<{}> = () => {
 
                 <ul tabindex="0" class="dropdown-content menu menu-compact mt-3 p-2 z-10 shadow bg-base-100 rounded-box w-52">
                   <li>
-                    <Link href="/dashboard" class="justify-between">
+                    <Link href="/dashboard" end class="justify-between">
                       Dashboard
                     </Link>
                   </li>
