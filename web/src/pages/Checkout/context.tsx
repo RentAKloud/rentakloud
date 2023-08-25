@@ -2,15 +2,15 @@ import { Component, JSXElement, createContext, createEffect, createSignal, onMou
 import { Part, createStore } from "solid-js/store";
 import { Stripe, loadStripe } from "@stripe/stripe-js";
 import { useSearchParams } from "@solidjs/router";
-import { NotificationService } from "../../services/NotificationService";
-import { Address, CheckoutContextProps, CheckoutSteps, Order, OrderStatus, defaultCheckout } from "../../types/order";
-import { authStore } from "../../stores/auth";
-import OrdersApi from "../../api/orders";
-import { cart, resetCart } from "../../stores/cart";
-import { getProductById } from "../../stores/products";
-import { ProductType } from "../../types/product";
-import PaymentsApi from "../../api/payments";
-import ProductsApi from "../../api/products";
+import { NotificationService } from "~/services/NotificationService";
+import { Address, CheckoutContextProps, CheckoutSteps, Order, OrderStatus, OrderStore, defaultCheckout } from "~/types/order";
+import { authStore } from "~/stores/auth";
+import OrdersApi from "~/api/orders";
+import { cart, resetCart } from "~/stores/cart";
+import { getProductById } from "~/stores/products";
+import { ProductType } from "~/types/product";
+import PaymentsApi from "~/api/payments";
+import ProductsApi from "~/api/products";
 
 const CheckoutContext = createContext<CheckoutContextProps>(defaultCheckout)
 
@@ -19,8 +19,17 @@ export const useCheckoutContext = () => {
 }
 
 export const CheckoutProvider: Component<{ children: JSXElement }> = (props) => {
+  const { user } = authStore
   const [shippingSameAsBilling, setShippingSameAsBilling] = createSignal(true)
-  const [orderStore, setOrderStore] = createStore(defaultCheckout.orderStore)
+  const [orderStore, setOrderStore] = createStore<OrderStore>({
+    ...defaultCheckout.orderStore,
+    billingAddress: {
+      ...defaultCheckout.orderStore.billingAddress,
+      firstName: user?.firstName || '',
+      lastName: user?.lastName || '',
+      email: user?.email || ''
+    }
+  })
   const [formErrors, setFormErrors] = createSignal<string[]>([])
 
   const [params, setParams] = useSearchParams()
@@ -97,7 +106,6 @@ export const CheckoutProvider: Component<{ children: JSXElement }> = (props) => 
     setOrderStore("couponCode", val)
   }
 
-  const { user } = authStore
   const [inTransit, setInTransit] = createSignal(false)
   const [order, setOrder] = createSignal<Order>()
 

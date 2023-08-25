@@ -1,7 +1,7 @@
 import { Component, Show } from "solid-js";
-import FormInput from "../../components/Inputs/FormInput";
+import TextInput from "../../components/Inputs/TextInput";
 import { useCheckoutContext } from "./context";
-import { authStore } from "../../stores/auth";
+// import { authStore } from "../../stores/auth";
 
 export const BillingAndShipping: Component = () => {
   const {
@@ -13,69 +13,68 @@ export const BillingAndShipping: Component = () => {
 
     formErrors,
   } = useCheckoutContext()
-  const { user } = authStore
 
   return (
     <form>
       <div class="flex flex-col md:flex-row md:gap-5">
-        <FormInput
+        <TextInput
           label="First Name"
           value={orderStore.billingAddress.firstName}
-          defaultVal={user?.firstName}
-          onChange={(val) => updateBilling("firstName", val)}
+          // defaultVal={user?.firstName}
+          onChange={(e) => updateBilling("firstName", e.currentTarget.value)}
           error={formErrors().find(e => e.includes("billingAddress.firstName"))}
         />
 
-        <FormInput
+        <TextInput
           label="Last Name"
           value={orderStore.billingAddress.lastName}
-          defaultVal={user?.lastName}
-          onChange={(val) => updateBilling("lastName", val)}
+          // defaultVal={user?.lastName}
+          onChange={(e) => updateBilling("lastName", e.currentTarget.value)}
         />
       </div>
 
-      <FormInput
+      <TextInput
         label="Email"
         value={orderStore.billingAddress.email}
-        defaultVal={user?.email}
-        onChange={(val) => updateBilling("email", val)}
+        // defaultVal={user?.email}
+        onChange={(e) => updateBilling("email", e.currentTarget.value)}
         type="email"
       />
 
-      <FormInput
+      <TextInput
         label="Address 1"
         value={orderStore.billingAddress.address}
-        defaultVal={""}
-        onChange={(val) => updateBilling("address", val)}
+        // defaultVal={""}
+        onChange={(e) => updateBilling("address", e.currentTarget.value)}
       />
 
-      <FormInput label="Address 2 (optional)" value={orderStore.billingAddress.address2} onChange={(val) => updateBilling("address2", val)} />
+      <TextInput label="Address 2 (optional)" value={orderStore.billingAddress.address2} onChange={(e) => updateBilling("address2", e.currentTarget.value)} />
 
       <div class="flex flex-col md:flex-row md:gap-5 justify-center">
-        <FormInput
+        <TextInput
           label="City"
           value={orderStore.billingAddress.city}
-          onChange={(val) => updateBilling("city", val)}
+          onChange={(e) => updateBilling("city", e.currentTarget.value)}
         />
 
-        <FormInput
+        <TextInput
           label="State"
           value={orderStore.billingAddress.state}
-          onChange={(val) => updateBilling("state", val)}
+          onChange={(e) => updateBilling("state", e.currentTarget.value)}
         />
       </div>
 
       <div class="flex flex-col md:flex-row md:gap-5 justify-center mb-5">
-        <FormInput
+        <TextInput
           label="Country"
           value={orderStore.billingAddress.country}
-          onChange={(val) => updateBilling("country", val)}
+          onChange={(e) => updateBilling("country", e.currentTarget.value)}
         />
 
-        <FormInput
+        <TextInput
           label="Zip"
           value={orderStore.billingAddress.zip}
-          onChange={(val) => updateBilling("zip", val)}
+          onChange={(e) => updateBilling("zip", e.currentTarget.value)}
         />
       </div>
 
@@ -91,34 +90,34 @@ export const BillingAndShipping: Component = () => {
 
       <Show when={!shippingSameAsBilling()}>
         <div class="flex flex-col md:flex-row md:gap-5">
-          <FormInput
+          <TextInput
             label="First Name"
             value={orderStore.shippingAddress.firstName}
-            onChange={(val) => updateShipping("firstName", val)}
+            onChange={(e) => updateShipping("firstName", e.currentTarget.value)}
             error={formErrors().find(e => e.includes("shippingAddress.firstName"))}
           />
 
-          <FormInput
+          <TextInput
             label="Last Name"
             value={orderStore.shippingAddress.lastName}
-            onChange={(val) => updateShipping("lastName", val)}
+            onChange={(e) => updateShipping("lastName", e.currentTarget.value)}
           />
         </div>
 
-        <FormInput label="Address 1" value={orderStore.shippingAddress.address} onChange={(val) => updateShipping("address", val)} />
+        <TextInput label="Address 1" value={orderStore.shippingAddress.address} onChange={(e) => updateShipping("address", e.currentTarget.value)} />
 
-        <FormInput label="Address 2 (optional)" value={orderStore.shippingAddress.address2} onChange={(val) => updateShipping("address2", val)} />
+        <TextInput label="Address 2 (optional)" value={orderStore.shippingAddress.address2} onChange={(e) => updateShipping("address2", e.currentTarget.value)} />
 
         <div class="flex gap-5 justify-center">
-          <FormInput label="City" value={orderStore.shippingAddress.city} onChange={(val) => updateShipping("city", val)} />
+          <TextInput label="City" value={orderStore.shippingAddress.city} onChange={(e) => updateShipping("city", e.currentTarget.value)} />
 
-          <FormInput label="State" value={orderStore.shippingAddress.state} onChange={(val) => updateShipping("state", val)} />
+          <TextInput label="State" value={orderStore.shippingAddress.state} onChange={(e) => updateShipping("state", e.currentTarget.value)} />
         </div>
 
         <div class="flex gap-5 justify-center mb-10">
-          <FormInput label="Country" value={orderStore.shippingAddress.country} onChange={(val) => updateShipping("country", val)} />
+          <TextInput label="Country" value={orderStore.shippingAddress.country} onChange={(e) => updateShipping("country", e.currentTarget.value)} />
 
-          <FormInput label="Zip" value={orderStore.shippingAddress.zip} onChange={(val) => updateShipping("zip", val)} />
+          <TextInput label="Zip" value={orderStore.shippingAddress.zip} onChange={(e) => updateShipping("zip", e.currentTarget.value)} />
         </div>
       </Show>
     </form >

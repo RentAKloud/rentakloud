@@ -1,5 +1,5 @@
 import { Component } from "solid-js"
-import FormInput from "../../components/Inputs/FormInput"
+import TextInput from "../../components/Inputs/TextInput"
 
 const Overview: Component<{}> = () => {
   return (
@@ -11,27 +11,27 @@ const Overview: Component<{}> = () => {
         <form>
           <div class="flex gap-5 justify-center mb-10">
             <div class="flex-1">
-              <FormInput label="Product" value="ERPNext" />
+              <TextInput label="Product" value="ERPNext" />
 
-              <FormInput label="Name" value="ERPNext-Main" />
+              <TextInput label="Name" value="ERPNext-Main" />
 
-              <FormInput label="Billing Cycle" value="Monthly" />
+              <TextInput label="Billing Cycle" value="Monthly" />
 
-              <FormInput label="Payment Method" value="Credit Card" />
+              <TextInput label="Payment Method" value="Credit Card" />
 
-              <FormInput label="Created" value="1/29/2023" />
+              <TextInput label="Created" value="1/29/2023" />
             </div>
 
             <div class="flex-1">
-              <FormInput label="Version" value="14.0 Community" />
+              <TextInput label="Version" value="14.0 Community" />
 
-              <FormInput label="Location" value="Central US" />
+              <TextInput label="Location" value="Central US" />
 
-              <FormInput label="Configuration" value="2 CPU Cores/2 GB RAM/60 GB SSD" />
+              <TextInput label="Configuration" value="2 CPU Cores/2 GB RAM/60 GB SSD" />
 
-              <FormInput label="Price" value="$6.99/month" />
+              <TextInput label="Price" value="$6.99/month" />
 
-              <FormInput label="Due Date" value="1/29/2024" />
+              <TextInput label="Due Date" value="1/29/2024" />
             </div>
           </div>
 

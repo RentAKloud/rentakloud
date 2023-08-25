@@ -2,7 +2,7 @@ import { Tabs } from "@kobalte/core";
 import { Link } from "@solidjs/router";
 import { Component, Show, createMemo, createSignal } from "solid-js";
 import CarouselWithControls from "../../components/Carousel/CarouselWithControls";
-import FormInput from "../../components/Inputs/FormInput";
+import TextInput from "../../components/Inputs/TextInput";
 import { NotificationService } from "../../services/NotificationService";
 import { addToCart } from "../../stores/cart";
 import { Product } from "../../types/product";
@@ -52,7 +52,7 @@ export const PhysicalProduct: Component<{ product: Product }> = (props) => {
             <h4 class="text-xl">{formatPrice(price()!.amount)}</h4>
 
             <div class="w-1/2 mb-10">
-              <FormInput label="Quantity" type="number" min={1} value={qty().toString()} onChange={(newVal) => setQty(+newVal)} />
+              <TextInput label="Quantity" type="number" min={1} value={qty().toString()} onChange={(e) => setQty(+e.currentTarget.value)} />
             </div>
 
             <button class="btn btn-primary" disabled={qty() === 0} onClick={buy}>Add to Cart</button>
