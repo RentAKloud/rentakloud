@@ -1,10 +1,10 @@
 rentakloud.com {
-  root * /www/web/
+  root * /srv/web/
   file_server
 }
 
 admin.rentakloud.com {
-  root * /www/admin/
+  root * /srv/admin/
   file_server
 }
 
