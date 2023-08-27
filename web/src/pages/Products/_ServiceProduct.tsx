@@ -1,13 +1,14 @@
 import { Component, For, createMemo, createSignal } from "solid-js";
-import HeroWithBg from "../../components/Hero/HeroWithBg";
-import { Product } from "../../types/product";
-import PricingCard from "../../components/PricingCard";
-import { addToCart } from "../../stores/cart";
 import { useNavigate } from "@solidjs/router";
+import HeroWithBg from "~/components/Hero/HeroWithBg";
+import { Product } from "~/types/product";
+import PricingCard from "~/components/PricingCard";
+import { addToCart } from "~/stores/cart";
 
 export const ServiceProduct: Component<{ product: Product }> = (props) => {
   const [showYearly, setShowYearly] = createSignal(false)
   const product = createMemo(() => props.product)
+  const category = () => product().categories[0].title
   const navigate = useNavigate()
 
   function selectPlan(priceId: string) {
@@ -18,18 +19,18 @@ export const ServiceProduct: Component<{ product: Product }> = (props) => {
   return (
     <>
       <HeroWithBg
-        title={`Simple and Reliable ${props.product.name} Databases`}
-        subtitle={`Worry-free ${props.product.name} hosting so you can focus on building great apps.`}
-        header={<span class="uppercase">{props.product.categories.map(c => c.title).join(", ")}</span>}
-        bgUrl="https://webimages.mongodb.com/_com_assets/cms/l4hecgagkqphn9kc9-ART.svg?ixlib=js-3.7.1&auto=format%2Ccompress&w=3038"
+        title={`Simple and Reliable ${product().name} ${category()}`}
+        subtitle={`Worry-free ${product().name} hosting so you can focus on building great apps.`}
+        header={<span class="uppercase">{product().categories.map(c => c.title).join(", ")}</span>}
+        bgUrl={product().images[0]?.src || ""}
         align='left'
-        contain
+        // contain
       >
       </HeroWithBg>
 
       <section class="text-center my-20">
-        <h2 class="text-4xl mb-3">Deploy High-Performance {props.product.name} Clusters</h2>
-        <h3 class="text-xl">Simplify the deployment and maintenance of-highly available {props.product.name} databases for your web applications.</h3>
+        <h2 class="text-4xl mb-3">Deploy High-Performance {product().name} Clusters</h2>
+        <h3 class="text-xl">Simplify the deployment and maintenance of-highly available {product().name} {category()} for your web applications.</h3>
       </section>
 
       <section class="p-10">
@@ -58,6 +59,11 @@ export const ServiceProduct: Component<{ product: Product }> = (props) => {
             }
           </For>
         </div>
+      </section>
+
+      <section class="p-10">
+        <h2 class="text-3xl text-center font-bold">FAQ</h2>
+        <p class="text-center">Your frequently asked questions answered right here.</p>
       </section>
     </>
   )

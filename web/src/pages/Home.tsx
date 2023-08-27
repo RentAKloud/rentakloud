@@ -48,7 +48,7 @@ const Home: Component = () => {
                   description={product.description}
                   img={{ uri: product.img, alt: `${product.name} logo` }}
                   actions={
-                    <button class="btn btn-primary">Learn More</button>
+                    <Link href={`/our-products/${product.slug}`} class="btn btn-primary">Learn More</Link>
                   }
                   class="w-96"
                 />
@@ -75,6 +75,7 @@ const Home: Component = () => {
               "2.8 GHz 8-core CPU", "20 GB Cloud storage",
               "Integration help", "SSH Access", "24×7 phone & email support"
             ]}
+            config="basic"
           />
           <PricingCard
             planName="Standard Plan" ppm={15} showYearly={showYearly}
@@ -82,6 +83,7 @@ const Home: Component = () => {
               "3.4 GHz 8-core CPU", "50 GB Cloud storage",
               "Integration help", "SSH Access", "24×7 phone & email support"
             ]}
+            config="standard"
           />
           <PricingCard
             planName="Enterprise" ppm={50} showYearly={showYearly}
@@ -89,6 +91,7 @@ const Home: Component = () => {
               "4 GHz 16-core CPU", "200 GB Cloud storage",
               "Integration help", "SSH Access", "24×7 phone & email support"
             ]}
+            config="enterprise"
           />
         </div>
       </section>
@@ -106,7 +109,7 @@ const Home: Component = () => {
                   description={rt.description}
                   img={{ uri: rt.img, alt: `${rt.name} logo` }}
                   actions={
-                    <button class="btn btn-primary">Learn More</button>
+                    <Link href={`/our-products/${rt.slug}`} class="btn btn-primary">Learn More</Link>
                   }
                 />
             }

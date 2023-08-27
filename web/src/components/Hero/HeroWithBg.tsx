@@ -10,7 +10,7 @@ const HeroWithBg: Component<{
   contain?: boolean,
   align?: "center" | "left",
 }> = (props) => {
-  const { children, bgUrl, actions, header, contain, align = "center" } = props
+  const { children, actions, header, contain, align = "center" } = props
 
   return (
     <div class="hero min-h-screen" classList={{
@@ -18,8 +18,8 @@ const HeroWithBg: Component<{
       'bg-right': align === 'left',
       'bg-contain': contain,
       'bg-no-repeat': contain,
-    }} style={bgUrl ? `background-image: url(${bgUrl});` : ''}>
-      <div class="hero-overlay bg-opacity-60"></div>
+    }} style={props.bgUrl ? `background-image: url(${props.bgUrl});` : ''}>
+      <div class="hero-overlay bg-opacity-90"></div>
       <div class="hero-content text-center text-neutral-content md:mx-32 flex-col md:flex-row" classList={{
         'md:text-left': align === 'left',
       }}>

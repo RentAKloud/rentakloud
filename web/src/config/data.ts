@@ -42,7 +42,12 @@ export const defaultProducts: Product[] = [
     description: "lorem ipsum donor consit",
     categories: [{ slug: "databases", title: "Databases" }],
     productType: ProductType.OnlineService,
-    images: [],
+    images: [
+      {
+        src: "https://res.cloudinary.com/practicaldev/image/fetch/s--twVcwT-B--/c_imagga_scale,f_auto,fl_progressive,h_900,q_auto,w_1600/https://dev-to-uploads.s3.amazonaws.com/i/kbjzeples71613068b1i.jpg",
+        alt: "background"
+      }
+    ],
   },
   {
     id: 3,
@@ -52,7 +57,12 @@ export const defaultProducts: Product[] = [
     description: "lorem ipsum donor consit",
     categories: [{ slug: "databases", title: "Databases" }],
     productType: ProductType.OnlineService,
-    images: [],
+    images: [
+      {
+        src: "https://images.unsplash.com/photo-1646226343350-1ee5021e342a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1920&q=80",
+        alt: "background"
+      }
+    ],
   },
   {
     id: 4,
@@ -62,7 +72,12 @@ export const defaultProducts: Product[] = [
     description: "lorem ipsum donor consit",
     categories: [{ slug: "databases", title: "Databases" }],
     productType: ProductType.OnlineService,
-    images: [],
+    images: [
+      {
+        src: "https://images.unsplash.com/photo-1489875347897-49f64b51c1f8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1920&q=80",
+        alt: "background"
+      }
+    ],
   },
   {
     id: 5,
@@ -72,7 +87,12 @@ export const defaultProducts: Product[] = [
     description: "lorem ipsum donor consit",
     categories: [{ slug: "databases", title: "Databases" }],
     productType: ProductType.OnlineService,
-    images: [],
+    images: [
+      {
+        src: "https://plus.unsplash.com/premium_photo-1664297989345-f4ff2063b212?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1920&q=80",
+        alt: "background"
+      }
+    ],
   },
   {
     id: 6,
@@ -82,7 +102,12 @@ export const defaultProducts: Product[] = [
     description: "lorem ipsum donor consit",
     categories: [{ slug: "databases", title: "Databases" }],
     productType: ProductType.OnlineService,
-    images: [],
+    images: [
+      {
+        src: "https://images.unsplash.com/photo-1597852074816-d933c7d2b988?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1920&q=80",
+        alt: "background"
+      }
+    ],
   },
   {
     id: 7,
@@ -92,7 +117,12 @@ export const defaultProducts: Product[] = [
     description: "lorem ipsum donor consit",
     categories: [{ slug: "databases", title: "Databases" }],
     productType: ProductType.OnlineService,
-    images: [],
+    images: [
+      {
+        src: "https://webimages.mongodb.com/_com_assets/cms/l4hecgagkqphn9kc9-ART.svg?ixlib=js-3.7.1&auto=format%2Ccompress&w=1920",
+        alt: "background"
+      }
+    ],
   },
   {
     id: 8,
@@ -101,6 +131,124 @@ export const defaultProducts: Product[] = [
     shortDescription: "WordPress, get started on creating your website with one of the most powerful, popular, and customizable platforms in the world.",
     description: "The world's most popular CMS.",
     categories: [{ slug: "cms", title: "CMS" }],
+    productType: ProductType.OnlineService,
+    images: [
+      {
+        src: "https://www.backup-technology.com/images/header/wordpress.jpg",
+        alt: "background"
+      }
+    ]
+  },
+  {
+    id: 9,
+    name: "RabbitMQ",
+    slug: "rabbitmq",
+    shortDescription: "lorem ipsum",
+    description: "lorem ipsum",
+    categories: [{ slug: "databases", title: "Databases" }],
+    productType: ProductType.OnlineService,
+    images: []
+  },
+
+  {
+    id: 10,
+    name: "Odoo",
+    slug: "odoo",
+    shortDescription: "Odoo is a suite of open source business apps that cover all your company needs: CRM, eCommerce, accounting, inventory, point of sale, project management, etc.",
+    description: "",
+    categories: [{ slug: "erp", title: "ERP" }, { slug: "ecommerce", title: "Ecommerce" }],
+    productType: ProductType.OnlineService,
+    images: [
+      {
+        src: "https://images.unsplash.com/photo-1556740758-90de374c12ad?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1920&q=80",
+        alt: "background"
+      }
+    ]
+  },
+  {
+    id: 11,
+    name: "ERPNext",
+    slug: "erp-next",
+    shortDescription: "ERPNext is the world's best free and open source ERP",
+    description: "",
+    categories: [{ slug: "erp", title: "ERP" }],
+    productType: ProductType.OnlineService,
+    images: [
+      {
+        src: "https://images.unsplash.com/photo-1556740772-1a741367b93e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1920&q=80",
+        alt: "background"
+      }
+    ]
+  },
+  {
+    id: 12,
+    name: "Dolibarr",
+    slug: "dolibarr",
+    shortDescription: "Web based ERP and CRM Open Source software to manage a professional or foundation activity",
+    description: "",
+    categories: [{ slug: "erp", title: "ERP" }],
+    productType: ProductType.OnlineService,
+    images: [
+      {
+        src: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1920&q=80",
+        alt: "background"
+      }
+    ]
+  },
+
+  {
+    id: 13,
+    name: "SuiteCRM",
+    slug: "suite-crm",
+    shortDescription: "Sell, market & service smarter with SuiteCRM the world’s number 1 Open Source CRM",
+    description: "",
+    categories: [{ slug: "crm", title: "CRM" }],
+    productType: ProductType.OnlineService,
+    images: [
+      {
+        src: "https://images.unsplash.com/photo-1557426272-fc759fdf7a8d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1920&q=60",
+        alt: "background"
+      }
+    ]
+  },
+
+  {
+    id: 14,
+    name: "NodeJS",
+    slug: "nodejs-cloud-hosting",
+    shortDescription: "",
+    description: "",
+    categories: [{ slug: "runtime", title: "Runtime" }],
+    productType: ProductType.OnlineService,
+    images: []
+  },
+  {
+    id: 15,
+    name: "Python",
+    slug: "python-django-cloud-hosting",
+    shortDescription: "",
+    description: "",
+    categories: [{ slug: "runtime", title: "Runtime" }],
+    productType: ProductType.OnlineService,
+    images: []
+  },
+  {
+    id: 16,
+    name: "Ruby",
+    slug: "ruby-ror-cloud-hosting",
+    shortDescription: "",
+    description: "",
+    categories: [{ slug: "runtime", title: "Runtime" }],
+    productType: ProductType.OnlineService,
+    images: []
+  },
+  {
+    id: 17,
+    name: "Java",
+    slug: "java-spring-boot-tomcat-cloud-hosting",
+    shortDescription: "",
+    description: "",
+    categories: [{ slug: "runtime", title: "Runtime" }],
     productType: ProductType.OnlineService,
     images: []
   }
@@ -117,21 +265,13 @@ export const productsMenu = [
       .map(p => ({ title: p.name, slug: p.slug }))
   },
   {
-    title: "ERP Cloud Hosting",
-    slug: "?category=erp",
+    title: "ERP/CRM Cloud Hosting",
+    slug: "?category=erp&category=crm",
     submenu: defaultProducts
-      .filter(p => p.categories
-        .map(c => c.slug)
-        .includes("erp"))
-      .map(p => ({ title: p.name, slug: p.slug }))
-  },
-  {
-    title: "CRM Cloud Hosting",
-    slug: "?category=crm",
-    submenu: defaultProducts
-      .filter(p => p.categories
-        .map(c => c.slug)
-        .includes("crm"))
+      .filter(p => {
+        const x = p.categories.map(c => c.slug)
+        return ["erp", "crm"].some(c => x.includes(c))
+      })
       .map(p => ({ title: p.name, slug: p.slug }))
   },
   {
@@ -139,9 +279,18 @@ export const productsMenu = [
     slug: "?category=cms",
     submenu: defaultProducts
       .filter(p => {
-        const x = p.categories
-          .map(c => c.slug)
+        const x = p.categories.map(c => c.slug)
         return x.includes("cms") || x.includes("ecommerce")
+      })
+      .map(p => ({ title: p.name, slug: p.slug }))
+  },
+  {
+    title: "Others",
+    slug: "?category=",
+    submenu: defaultProducts
+      .filter(p => {
+        const categories = p.categories.map(c => c.slug)
+        return [""].some(c => categories.includes(c))
       })
       .map(p => ({ title: p.name, slug: p.slug }))
   },
@@ -151,7 +300,8 @@ export const productsMenu = [
     submenu: [
       { title: "NodeJS", slug: "nodejs-cloud-hosting" },
       { title: "Python", slug: "python-django-cloud-hosting" },
-      { title: "Ruby", slug: "ruby-ror-cloud-hosting" }
+      { title: "Ruby", slug: "ruby-ror-cloud-hosting" },
+      { title: "Java", slug: "java-spring-boot-tomcat-cloud-hosting" }
     ]
   },
   {
@@ -166,32 +316,32 @@ export const productsMenu = [
 export const home = {
   featuredProducts: [
     {
-      name: "PostgresQL",
+      ...defaultProducts[1],
       description: "Fully managed, scalable hosting for PostgresQL database.",
       img: "https://1000logos.net/wp-content/uploads/2020/08/PostgreSQL-Logo.png"
     },
     {
-      name: "MySQL",
+      ...defaultProducts[2],
       description: "Fully managed, scalable hosting for MySQL database.",
       img: "https://upload.wikimedia.org/wikipedia/fr/thumb/6/62/MySQL.svg/1200px-MySQL.svg.png"
     },
     {
-      name: "CockroachDB",
+      ...defaultProducts[4],
       description: "Fully managed, scalable hosting for Cockroach database.",
       img: "https://connect.redhat.com/s3api/prod-s3api/1629218071-logo-url-5e9872712989e6a90307acd6.png"
     },
     {
-      name: "Redis",
+      ...defaultProducts[5],
       description: "Fully managed, scalable hosting for Redis datastore.",
       img: "https://upload.wikimedia.org/wikipedia/en/6/6b/Redis_Logo.svg"
     },
     {
-      name: "RabbitMQ",
+      ...defaultProducts[8],
       description: "Fully managed, scalable hosting for RabbitMQ message queuing system.",
       img: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/71/RabbitMQ_logo.svg/2560px-RabbitMQ_logo.svg.png"
     },
     {
-      name: "Wordpress",
+      ...defaultProducts[7],
       description: "Fully managed, scalable hosting for Wordpress to fulfill all your blogging and ecommerce needs",
       img: "https://1000logos.net/wp-content/uploads/2023/01/WordPress-logo.png"
     }
@@ -199,16 +349,19 @@ export const home = {
   runtimes: [
     {
       name: "NodeJS",
+      slug: "nodejs-cloud-hosting",
       description: "Fully managed, scalable hosting for NodeJS applications.",
       img: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Node.js_logo.svg/2560px-Node.js_logo.svg.png"
     },
     {
       name: "Java",
+      slug: "java-spring-boot-tomcat-cloud-hosting",
       description: "Fully managed, scalable hosting for Java and JVM based languages. Run Tomcat, Springboot and more.",
       img: "https://1000logos.net/wp-content/uploads/2020/09/Java-Logo.png"
     },
     {
       name: "Ruby",
+      slug: "ruby-ror-cloud-hosting",
       description: "Fully managed, scalable hosting for Ruby/Rails.",
       img: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/Ruby_logo.svg/1024px-Ruby_logo.svg.png"
     },

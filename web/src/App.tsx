@@ -1,5 +1,5 @@
 import { Component, createEffect } from 'solid-js';
-import { Route, Routes, useNavigate } from '@solidjs/router';
+import { Route, Routes, useLocation, useNavigate } from '@solidjs/router';
 
 import { authStore, getUserProfile } from './stores/auth';
 
@@ -9,6 +9,7 @@ import NotFound from './pages/error/NotFound';
 
 const App: Component = () => {
   const navigate = useNavigate()
+  const location = useLocation()
   const isLoggedIn = () => !!authStore.user
 
   createEffect(() => {
@@ -20,7 +21,7 @@ const App: Component = () => {
     }
 
     // if logged out and on protected route
-    const currentRoute = window.location.pathname
+    const currentRoute = location.pathname
     if (protectedRoots.includes(currentRoute.split('/')[1])) {
       navigate(`/login?next=${currentRoute}`)
     }
