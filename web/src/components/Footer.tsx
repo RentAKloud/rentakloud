@@ -1,6 +1,6 @@
 import { Link } from "@solidjs/router"
 import { Component } from "solid-js"
-import { company } from "../config/constants"
+import { company } from "~/config/constants"
 
 const Footer: Component = () => {
   return (
@@ -22,7 +22,7 @@ const Footer: Component = () => {
         </div>
         <div>
           <span class="footer-title">Legal</span>
-          <a class="link link-hover">Terms of use</a>
+          <Link href="/legal/terms-of-service-agreement" class="link link-hover">Terms of Service</Link>
           <Link href="/legal/privacy-policy" class="link link-hover">Privacy policy</Link>
           <Link href="/legal/cookie-policy" class="link link-hover">Cookie policy</Link>
         </div>

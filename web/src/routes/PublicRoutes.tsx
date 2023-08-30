@@ -11,8 +11,9 @@ import Support from '~/pages/Support';
 import About from '~/pages/About';
 import GithubCallback from '~/pages/OAuth/GithubCallback';
 import Cart from '~/pages/Cart';
-import LegalHome from '~/pages/Legal/LegalHome';
-import PrivacyPolicy from '~/pages/Legal/PrivacyPolicy';
+const LegalHome = lazy(() => import('~/pages/Legal/LegalHome'));
+const PrivacyPolicy = lazy(() => import('~/pages/Legal/PrivacyPolicy'));
+const TermsOfService = lazy(() => import('~/pages/Legal/TermsOfService'));
 
 const PublicRoutes: Component = () => {
   return (
@@ -33,6 +34,7 @@ const PublicRoutes: Component = () => {
       <Route path="/legal">
         <Route path="/" component={LegalHome} />
         <Route path="/privacy-policy" component={PrivacyPolicy} />
+        <Route path="/terms-of-service-agreement" component={TermsOfService} />
       </Route>
     </>
   )

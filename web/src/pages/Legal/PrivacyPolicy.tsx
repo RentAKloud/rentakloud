@@ -1,7 +1,7 @@
 import { Component } from "solid-js";
-import DefaultLayout from "../../layouts/DefaultLayout";
-import { company } from "../../config/constants";
 import { Link } from "@solidjs/router";
+import DefaultLayout from "~/layouts/DefaultLayout";
+import { company } from "~/config/constants";
 
 const PrivacyPolicy: Component = () => {
   return (
@@ -184,7 +184,7 @@ const PrivacyPolicy: Component = () => {
           <li>
             <u>By Mail</u>:
             <ul class="list-[circle] pl-8">
-              <li>United States: Attn: Office of the Data Protection Officer, 2155 E. RentAKloud Way, Tempe, AZ 85284 USA</li>
+              <li>United States: Attn: Office of the Data Protection Officer, {company.ADDRESS_USA}</li>
               <li>United Kingdom: Attn: Legal, Office of the DPO, 5th Floor, The Shipping Building, Old Vinyl Factory, 252-254 Blyth Road, Hayes, UB3 1HA.</li>
               <li>European Union (EEA): Attn: Legal, Office of the DPO, RentAKloud Deutschland GmbH c/o WeWork, Friesenplatz 4, 50672 Cologne, Germany</li>
               <li>Asia: Attn: Legal, Office of the DPO, 80 Robinson Road #02-00 Singapore 068898</li>
