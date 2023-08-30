@@ -1,10 +1,10 @@
-import { Toast } from "@kobalte/core";
 import { Component, JSX } from "solid-js";
 import { Portal } from "solid-js/web";
-import Collapse from "../components/Collapse/Collapse";
-import Footer from "../components/Footer";
-import Navbar from "../components/Navbar";
 import { Link } from "@solidjs/router";
+import { Toast } from "@kobalte/core";
+import Collapse from "~/components/Collapse/Collapse";
+import Footer from "~/components/Footer";
+import Navbar from "~/components/Navbar";
 
 const DefaultLayout: Component<{ children: JSX.Element }> = ({ children }) => {
   return (

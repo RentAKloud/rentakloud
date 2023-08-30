@@ -1,4 +1,4 @@
-import { Component, createEffect } from 'solid-js';
+import { Component, Suspense, createEffect } from 'solid-js';
 import { Route, Routes, useLocation, useNavigate } from '@solidjs/router';
 
 import { authStore, getUserProfile } from './stores/auth';
@@ -28,17 +28,19 @@ const App: Component = () => {
   })
 
   return (
-    <Routes>
-      <PublicRoutes />
+    <Suspense fallback="Loading...">
+      <Routes>
+        <PublicRoutes />
 
-      {
-        isLoggedIn() && (
-          <ProtectedRoutes />
-        )
-      }
+        {
+          isLoggedIn() && (
+            <ProtectedRoutes />
+          )
+        }
 
-      <Route path="*" component={NotFound} />
-    </Routes>
+        <Route path="*" component={NotFound} />
+      </Routes>
+    </Suspense>
   );
 };
 

@@ -1,15 +1,15 @@
-import { Link } from "@solidjs/router";
 import { Component, For, Show } from "solid-js";
-import DefaultLayout from "../layouts/DefaultLayout";
-import { getCartTotal, cart, resetCart } from "../stores/cart";
-import { formatPrice, getProductById, getProductPrice, products } from "../stores/products";
-import Loader from "../components/Loader";
+import { Link } from "@solidjs/router";
+import DefaultLayout from "~/layouts/DefaultLayout";
+import { getCartTotal, cart, resetCart } from "~/stores/cart";
+import { formatPrice, getProductById, getProductPrice, products } from "~/stores/products";
+import Loader from "~/components/Loader";
 
 const Cart: Component = () => {
   return (
     <DefaultLayout>
-      <div class="min-h-screen text-center flex flex-col flex-1 place-content-center mx-20">
-        <h1 class="text-4xl font-bold mb-10">Your Cart</h1>
+      <section class="min-h-screen bg-base-100 pt-32 md:px-20">
+        <h1 class="text-4xl text-center font-bold mb-20">Your Cart</h1>
 
         <Show when={products.loading}>
           <div class="text-center">
@@ -18,7 +18,7 @@ const Cart: Component = () => {
         </Show>
 
         <Show when={cart.items.length === 0}>
-          <p>Oh snap! Your cart is empty</p>
+          <p class="text-center">Oh snap! Your cart is empty</p>
         </Show>
 
         <Show when={cart.items.length > 0 && !products.loading}>
@@ -42,7 +42,7 @@ const Cart: Component = () => {
                       const total = () => price().amount * quantity
                       const interval = () => price().priceId ? ` &cross; ${price().planName} ${price().interval}ly` : ""
                       return (
-                        <tr>
+                        <tr class="hover">
                           <th>{i() + 1}</th>
                           <td>{product().name}
                             <Show when={interval()}>
@@ -72,7 +72,7 @@ const Cart: Component = () => {
             <Link href="/checkout" class="btn btn-primary">Checkout</Link>
           </div>
         </Show>
-      </div>
+      </section>
     </DefaultLayout>
   )
 }

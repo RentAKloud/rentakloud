@@ -1,29 +1,29 @@
+import { Component, lazy } from "solid-js";
 import { Route } from "@solidjs/router";
-import { Component } from "solid-js";
 
-import Checkout from '../pages/Checkout/Checkout';
+const Checkout = lazy(() => import('~/pages/Checkout/Checkout'));
 
-import ProductDashboard from '../pages/ProductDashboard/ProductDashboard';
-import Overview from '../pages/ProductDashboard/Overview';
-import SiteAndSSL from '../pages/ProductDashboard/SiteAndSSL';
-import Database from '../pages/ProductDashboard/Database';
-import FileManager from '../pages/ProductDashboard/FileManager';
-import SSH from '../pages/ProductDashboard/SSH';
-import FTPS from '../pages/ProductDashboard/FTPS';
-import Metrics from '../pages/ProductDashboard/Metrics';
-import Snapshots from '../pages/ProductDashboard/Snapshots';
-import Events from '../pages/ProductDashboard/Events';
-import Guidance from '../pages/ProductDashboard/Guidance';
+import ProductDashboard from '~/pages/ProductDashboard/ProductDashboard';
+import Overview from '~/pages/ProductDashboard/Overview';
+import SiteAndSSL from '~/pages/ProductDashboard/SiteAndSSL';
+import Database from '~/pages/ProductDashboard/Database';
+import FileManager from '~/pages/ProductDashboard/FileManager';
+import SSH from '~/pages/ProductDashboard/SSH';
+import FTPS from '~/pages/ProductDashboard/FTPS';
+import Metrics from '~/pages/ProductDashboard/Metrics';
+import Snapshots from '~/pages/ProductDashboard/Snapshots';
+import Events from '~/pages/ProductDashboard/Events';
+import Guidance from '~/pages/ProductDashboard/Guidance';
 
-import Dashboard from '../pages/Dashboard/Dashboard';
-import DashboardHome from '../pages/Dashboard/Home';
-import Orders from '../pages/Dashboard/Orders';
-import Payments from '../pages/Dashboard/Payments';
-import Settings from '../pages/Dashboard/Settings';
-import Instances from '../pages/Dashboard/Instances';
-import Images from '../pages/Dashboard/Images';
-import Backups from '../pages/Dashboard/Backups';
-import InstancesNew from '../pages/Instances/New';
+import Dashboard from '~/pages/Dashboard/Dashboard';
+import DashboardHome from '~/pages/Dashboard/Home';
+import Orders from '~/pages/Dashboard/Orders';
+import Payments from '~/pages/Dashboard/Payments';
+import Settings from '~/pages/Dashboard/Settings';
+import Instances from '~/pages/Dashboard/Instances';
+import Images from '~/pages/Dashboard/Images';
+import Backups from '~/pages/Dashboard/Backups';
+import InstancesNew from '~/pages/Instances/New';
 
 export const protectedRoots = ["products", "dashboard", "checkout"]
 
