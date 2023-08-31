@@ -1,14 +1,15 @@
-import { Component, JSX, onMount } from "solid-js";
+import { Component, JSX, createEffect } from "solid-js";
 import { Portal } from "solid-js/web";
 import { Link } from "@solidjs/router";
 import { Toast } from "@kobalte/core";
 import Collapse from "~/components/Collapse/Collapse";
 import Footer from "~/components/Footer";
 import Navbar from "~/components/Navbar";
+import { company } from "~/config/constants";
 
 const DefaultLayout: Component<{ children: JSX.Element, title?: string }> = (props) => {
-  onMount(() => {
-    document.title = props.title || "RentAKloud"
+  createEffect(() => {
+    document.title = props.title || company.DISPLAY_NAME
   })
 
   return (

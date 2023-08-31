@@ -1,10 +1,10 @@
 import { useParams } from "@solidjs/router"
 import { Component, Show } from "solid-js"
-import DefaultLayout from "../../layouts/DefaultLayout"
-import NotFound from "../error/NotFound"
+import DefaultLayout from "~/layouts/DefaultLayout"
+import { products } from "~/stores/products"
+import NotFound from "~/pages/error/NotFound"
 import { PhysicalProduct } from "./_PhysicalProduct"
 import { ServiceProduct } from "./_ServiceProduct"
-import { products } from "../../stores/products"
 
 const ProductDetail: Component<{}> = () => {
   const product = () => {
@@ -13,8 +13,12 @@ const ProductDetail: Component<{}> = () => {
   }
   const isAHarwareProduct = () => (product()?.categories || []).map(c => c.slug).includes("hardware")
 
+  const title = () => {
+    return isAHarwareProduct() ? product()?.name : `${product()?.name} ${product()?.categories[0].title} Hosting`
+  }
+
   return (
-    <DefaultLayout>
+    <DefaultLayout title={title()}>
       <Show when={!product()}>
         <NotFound withoutLayout />
       </Show>

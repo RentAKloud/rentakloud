@@ -11,10 +11,11 @@ import Support from '~/pages/Support';
 import About from '~/pages/About';
 import GithubCallback from '~/pages/OAuth/GithubCallback';
 import Cart from '~/pages/Cart';
-const CookiePolicy = lazy(() => import('~/pages/Legal/CookiePolicy'));
-const RefundPolicy = lazy(() => import('~/pages/Legal/RefundPolicy'));
 const LegalHome = lazy(() => import('~/pages/Legal/LegalHome'));
 const PrivacyPolicy = lazy(() => import('~/pages/Legal/PrivacyPolicy'));
+const CookiePolicy = lazy(() => import('~/pages/Legal/CookiePolicy'));
+const RefundPolicy = lazy(() => import('~/pages/Legal/RefundPolicy'));
+const DeliveryPolicy = lazy(() => import('~/pages/Legal/DeliveryPolicy'));
 const TermsOfService = lazy(() => import('~/pages/Legal/TermsOfService'));
 
 const PublicRoutes: Component = () => {
@@ -38,6 +39,7 @@ const PublicRoutes: Component = () => {
         <Route path="/privacy-policy" component={PrivacyPolicy} />
         <Route path="/refund-policy" component={RefundPolicy} />
         <Route path="/cookie-policy" component={CookiePolicy} />
+        <Route path="/delivery-policy" component={DeliveryPolicy} />
         <Route path="/terms-of-service-agreement" component={TermsOfService} />
       </Route>
     </>
