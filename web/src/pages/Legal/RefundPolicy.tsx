@@ -5,12 +5,14 @@ import { company } from "~/config/constants";
 
 const RefundPolicy: Component = () => {
   return (
-    <DefaultLayout>
+    <DefaultLayout title="Refund Policy">
       <style>
         {`
         #document h3 {
           margin-bottom: 1.0rem;
           margin-top: 2.25rem;
+          font-size: 1.5rem;
+          line-height: 2rem;
         }
         #document p {
           margin-bottom: 1.25rem;
@@ -29,7 +31,7 @@ const RefundPolicy: Component = () => {
       </section>
 
       <div class="flex m-10">
-        <aside class="w-96">
+        <aside class="w-96 hidden lg:block">
           Sidebar
         </aside>
 
@@ -47,9 +49,11 @@ const RefundPolicy: Component = () => {
                 and policies shall prevail.
               </p>
             </div>
-            <p class="paragraph text-h-gray pt-30">
+
+            <p class="text-h-gray pt-30">
               Last Revised: 2023-06-25 14:53:15
             </p>
+
             <div class="document-content">
               <h3>
                 <strong>STANDARD REFUND TERMS</strong>

@@ -18,13 +18,15 @@ const Footer: Component = () => {
           <Link href="/about" class="link link-hover">About us</Link>
           <a class="link link-hover">Contact</a>
           <a class="link link-hover">Jobs</a>
-          <a class="link link-hover">Press kit</a>
+          <Link href="/payment-options" class="link link-hover">Payment Options</Link>
         </div>
         <div>
           <span class="footer-title">Legal</span>
           <Link href="/legal/terms-of-service-agreement" class="link link-hover">Terms of Service</Link>
           <Link href="/legal/privacy-policy" class="link link-hover">Privacy policy</Link>
           <Link href="/legal/cookie-policy" class="link link-hover">Cookie policy</Link>
+          <Link href="/legal/refund-policy" class="link link-hover">Refund policy</Link>
+          <Link href="/legal" class="link link-hover">All Legal Documents</Link>
         </div>
       </footer>
 

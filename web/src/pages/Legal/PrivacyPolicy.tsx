@@ -5,7 +5,7 @@ import { company } from "~/config/constants";
 
 const PrivacyPolicy: Component = () => {
   return (
-    <DefaultLayout>
+    <DefaultLayout title="Privacy Policy">
       <section class="m-10">
         <h1 class="text-3xl mb-4">{company.DISPLAY_NAME} - PRIVACY POLICY</h1>
 

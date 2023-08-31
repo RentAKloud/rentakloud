@@ -1,4 +1,4 @@
-import { Component, JSX } from "solid-js";
+import { Component, JSX, onMount } from "solid-js";
 import { Portal } from "solid-js/web";
 import { Link } from "@solidjs/router";
 import { Toast } from "@kobalte/core";
@@ -6,7 +6,11 @@ import Collapse from "~/components/Collapse/Collapse";
 import Footer from "~/components/Footer";
 import Navbar from "~/components/Navbar";
 
-const DefaultLayout: Component<{ children: JSX.Element }> = ({ children }) => {
+const DefaultLayout: Component<{ children: JSX.Element, title?: string }> = (props) => {
+  onMount(() => {
+    document.title = props.title || "RentAKloud"
+  })
+
   return (
     <div class="drawer">
       <input id="my-drawer-3" type="checkbox" class="drawer-toggle" />
@@ -17,7 +21,7 @@ const DefaultLayout: Component<{ children: JSX.Element }> = ({ children }) => {
         {/* <!-- Page content here --> */}
 
         <main class="bg-base-200">
-          {children}
+          {props.children}
         </main>
 
         <Portal>

@@ -5,7 +5,7 @@ import DefaultLayout from "~/layouts/DefaultLayout";
 
 const TermsOfService: Component = () => {
   return (
-    <DefaultLayout>
+    <DefaultLayout title="Terms of Service Agreement">
       <style>
         {`
         #document a {
