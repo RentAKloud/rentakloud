@@ -1,5 +1,10 @@
 import { JSXElement } from "solid-js"
 
+export type LayoutProps = {
+  children: JSXElement
+  title?: string
+}
+
 export type Icon = {
   class?: string;
   children?: JSXElement;

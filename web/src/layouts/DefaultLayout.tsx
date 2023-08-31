@@ -6,8 +6,9 @@ import Collapse from "~/components/Collapse/Collapse";
 import Footer from "~/components/Footer";
 import Navbar from "~/components/Navbar";
 import { company } from "~/config/constants";
+import { LayoutProps } from "~/types/ui";
 
-const DefaultLayout: Component<{ children: JSX.Element, title?: string }> = (props) => {
+const DefaultLayout: Component<LayoutProps> = (props) => {
   createEffect(() => {
     document.title = props.title || company.DISPLAY_NAME
   })
