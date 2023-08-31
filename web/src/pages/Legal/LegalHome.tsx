@@ -1,5 +1,5 @@
 import { Component } from "solid-js";
-import DefaultLayout from "../../layouts/DefaultLayout";
+import DefaultLayout from "~/layouts/DefaultLayout";
 
 const LegalHome: Component = () => {
   return (

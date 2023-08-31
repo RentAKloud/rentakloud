@@ -11,6 +11,7 @@ import Support from '~/pages/Support';
 import About from '~/pages/About';
 import GithubCallback from '~/pages/OAuth/GithubCallback';
 import Cart from '~/pages/Cart';
+const RefundPolicy = lazy(() => import('~/pages/Legal/RefundPolicy'));
 const LegalHome = lazy(() => import('~/pages/Legal/LegalHome'));
 const PrivacyPolicy = lazy(() => import('~/pages/Legal/PrivacyPolicy'));
 const TermsOfService = lazy(() => import('~/pages/Legal/TermsOfService'));
@@ -34,6 +35,7 @@ const PublicRoutes: Component = () => {
       <Route path="/legal">
         <Route path="/" component={LegalHome} />
         <Route path="/privacy-policy" component={PrivacyPolicy} />
+        <Route path="/refund-policy" component={RefundPolicy} />
         <Route path="/terms-of-service-agreement" component={TermsOfService} />
       </Route>
     </>
