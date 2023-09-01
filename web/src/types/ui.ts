@@ -10,6 +10,18 @@ export type Icon = {
   children?: JSXElement;
 }
 
+export type HeroWithBgProps = {
+  title: string,
+  subtitle: string,
+  children?: JSXElement,
+  bgUrl?: string,
+  actions?: JSXElement,
+  header?: JSXElement,
+  contain?: boolean,
+  align?: "center" | "left",
+  notFullScreen?: boolean
+}
+
 export type Card = {
   title: string,
   description?: string | JSXElement,

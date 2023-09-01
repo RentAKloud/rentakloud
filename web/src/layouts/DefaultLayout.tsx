@@ -1,4 +1,4 @@
-import { Component, JSX, createEffect } from "solid-js";
+import { Component, createEffect } from "solid-js";
 import { Portal } from "solid-js/web";
 import { Link } from "@solidjs/router";
 import { Toast } from "@kobalte/core";
@@ -38,7 +38,7 @@ const DefaultLayout: Component<LayoutProps> = (props) => {
         <label for="my-drawer-3" class="drawer-overlay"></label>
         <ul class="menu p-4 w-80 bg-base-100 h-full">
           {/* <!-- Sidebar content here --> */}
-          <Collapse title="Products" innerContent={
+          <Collapse title="Products">
             <ul>
               <li><Link activeClass="" href="/our-products">All</Link></li>
               <li><Link activeClass="" href="/our-products?category=databases">Databases Cloud Hosting</Link></li>
@@ -51,7 +51,7 @@ const DefaultLayout: Component<LayoutProps> = (props) => {
               <li><Link activeClass="" href="/our-products/python">Python</Link></li>
               <li><Link activeClass="" href="/our-products/ruby">Ruby</Link></li>
             </ul>
-          } />
+          </Collapse>
           <li><Link href="/services">Services</Link></li>
           <li><Link href="/about">About</Link></li>
           <li><Link href="/contact">Contact</Link></li>

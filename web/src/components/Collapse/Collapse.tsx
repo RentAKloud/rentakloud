@@ -1,7 +1,12 @@
 import { Collapsible } from "@kobalte/core"
 import { Component, JSXElement, createSignal } from "solid-js"
 
-const Collapse: Component<{ title: string, innerContent: JSXElement }> = ({ title, innerContent }) => {
+type CollapseProps = {
+  title: string
+  children: JSXElement
+}
+
+const Collapse: Component<CollapseProps> = (props) => {
   const [isOpen, setIsOpen] = createSignal<boolean>(false)
 
   return (
@@ -10,10 +15,10 @@ const Collapse: Component<{ title: string, innerContent: JSXElement }> = ({ titl
       onOpenChange={(isOpen) => setIsOpen(isOpen)}
       classList={{ "collapse-open": isOpen() }}>
       <Collapsible.Trigger class="collapse-title text-left">
-        {title}
+        {props.title}
       </Collapsible.Trigger>
       <Collapsible.Content class="collapse-content">
-        {innerContent}
+        {props.children}
       </Collapsible.Content>
     </Collapsible.Root>
   )

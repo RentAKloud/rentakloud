@@ -8,9 +8,10 @@ import Products from '~/pages/Products/Products';
 import ProductDetail from '~/pages/Products/ProductDetail';
 import Services from '~/pages/Services';
 import Support from '~/pages/Support';
-import About from '~/pages/About';
+const About = lazy(() => import('~/pages/About'));
 import GithubCallback from '~/pages/OAuth/GithubCallback';
 import Cart from '~/pages/Cart';
+const PaymentMethods = lazy(() => import('~/pages/Legal/PaymentMethods'));
 const LegalHome = lazy(() => import('~/pages/Legal/LegalHome'));
 const PrivacyPolicy = lazy(() => import('~/pages/Legal/PrivacyPolicy'));
 const CookiePolicy = lazy(() => import('~/pages/Legal/CookiePolicy'));
@@ -42,6 +43,7 @@ const PublicRoutes: Component = () => {
         <Route path="/delivery-policy" component={DeliveryPolicy} />
         <Route path="/terms-of-service-agreement" component={TermsOfService} />
       </Route>
+      <Route path="payment-methods" component={PaymentMethods} />
     </>
   )
 }

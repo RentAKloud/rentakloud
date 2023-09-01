@@ -18,7 +18,7 @@ const Footer: Component = () => {
           <Link href="/about" class="link link-hover">About us</Link>
           <a class="link link-hover">Contact</a>
           <a class="link link-hover">Jobs</a>
-          <Link href="/payment-options" class="link link-hover">Payment Options</Link>
+          <Link href="/payment-methods" class="link link-hover">Payment Options</Link>
         </div>
         <div>
           <span class="footer-title">Legal</span>
