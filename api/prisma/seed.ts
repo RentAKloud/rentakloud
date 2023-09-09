@@ -8,7 +8,16 @@ async function main() {
   await prisma.category.createMany({
     data: [
       { title: "Hardware", slug: "hardware" },
-      { title: "Databases", slug: "databases" }
+      { title: "Databases", slug: "databases" },
+      { title: "CMS", slug: "cms" },
+      { title: "Message Queueing", slug: "message-queueing" },
+      { title: "ERP", slug: "erp" },
+      { title: "CRM", slug: "crm" },
+      { title: "Runtimes", slug: "runtimes" },
+      { title: "Ecommerce", slug: "ecommerce" },
+      { title: "EMR", slug: "emr" },
+      { title: "Servers", slug: "servers" },
+      { title: "Routers", slug: "routers" },
     ]
   })
 

@@ -1,5 +1,5 @@
-import { Component, lazy } from "solid-js";
-import { Route } from "@solidjs/router";
+import { Component, Show, lazy } from "solid-js";
+import { Outlet, Route } from "@solidjs/router";
 
 const Checkout = lazy(() => import('~/pages/Checkout/Checkout'));
 
@@ -24,12 +24,25 @@ import Instances from '~/pages/Dashboard/Instances';
 import Images from '~/pages/Dashboard/Images';
 import Backups from '~/pages/Dashboard/Backups';
 import InstancesNew from '~/pages/Instances/New';
+import { authStore } from "~/stores/auth";
+import Login from "~/pages/Login";
 
 export const protectedRoots = ["products", "dashboard", "checkout"]
 
-const ProtectedRoutes: Component = () => {
+const Protected = () => {
+  const isLoggedIn = () => !!authStore.user
+
   return (
-    <>
+    <Show when={isLoggedIn()} fallback={<Login />}>
+      <Outlet />
+    </Show>
+  )
+}
+
+const ProtectedRoutes: Component = () => {
+
+  return (
+    <Route path="" component={Protected}>
       <Route path="/products/:id" component={ProductDashboard}>
         <Route path={["/", "/overview"]} component={Overview} />
         <Route path="/site-ssl" component={SiteAndSSL} />
@@ -57,7 +70,7 @@ const ProtectedRoutes: Component = () => {
       </Route>
 
       <Route path="/checkout" component={Checkout} />
-    </>
+    </Route>
   )
 }
 

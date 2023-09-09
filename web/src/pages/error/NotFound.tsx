@@ -1,9 +1,13 @@
-import { Component } from "solid-js";
+import { Component, onMount } from "solid-js";
 import HeroWithBg from "~/components/Hero/HeroWithBg";
 import Lottie from "~/components/Lottie";
 import DefaultLayout from "~/layouts/DefaultLayout";
 
 const NotFound: Component<{ withoutLayout?: boolean }> = ({ withoutLayout }) => {
+  onMount(() => {
+    document.title = "404 Not Found"
+  })
+
   const internal = (
     <HeroWithBg
       title="404 Not Found"
@@ -23,7 +27,7 @@ const NotFound: Component<{ withoutLayout?: boolean }> = ({ withoutLayout }) => 
     withoutLayout ? (
       <>{internal}</>
     ) : (
-      <DefaultLayout>
+      <DefaultLayout title="404 Not Found">
         {internal}
       </DefaultLayout>
     )

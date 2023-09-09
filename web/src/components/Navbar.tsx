@@ -34,7 +34,7 @@ const Navbar: Component<{}> = () => {
               <svg class="fill-current" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z" /></svg>
             </Link>
             <ul class="dropdown-content menu xl:menu-horizontal lg:min-w-max bg-base-100 rounded-box z-10 ml-[-10em]">
-              <For each={productsMenu}>
+              <For each={productsMenu()}>
                 {
                   (item) => (
                     item.submenu ? (
@@ -57,31 +57,6 @@ const Navbar: Component<{}> = () => {
                   )
                 }
               </For>
-              {/* <li>
-                <a>Databases</a>
-                <ul>
-                  <li><a>Design</a></li>
-                  <li><a>Development</a></li>
-                  <li><a>Hosting</a></li>
-                  <li><a>Domain register</a></li>
-                </ul>
-              </li> */}
-              {/* <li>
-                <a>Products</a>
-                <ul>
-                  <li><a>UI Kit</a></li>
-                  <li><a>Wordpress themes</a></li>
-                  <li><a>Wordpress plugins</a></li>
-                  <li>
-                    <a>Open source</a>
-                    <ul>
-                      <li><a>Auth management system</a></li>
-                      <li><a>VScode theme</a></li>
-                      <li><a>Color picker app</a></li>
-                    </ul>
-                  </li>
-                </ul>
-              </li> */}
             </ul>
           </li>
           <li><Link href="/services">Services</Link></li>

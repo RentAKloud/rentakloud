@@ -5,13 +5,14 @@ import { products } from "~/stores/products"
 import NotFound from "~/pages/error/NotFound"
 import { PhysicalProduct } from "./_PhysicalProduct"
 import { ServiceProduct } from "./_ServiceProduct"
+import { ProductType } from "~/types/product"
 
 const ProductDetail: Component<{}> = () => {
   const product = () => {
     const { slug } = useParams()
     return products().find(p => p.slug === slug)
   }
-  const isAHarwareProduct = () => (product()?.categories || []).map(c => c.slug).includes("hardware")
+  const isAHarwareProduct = () => product()?.productType === ProductType.Physical
 
   const title = () => {
     return isAHarwareProduct() ? product()?.name : `${product()?.name} ${product()?.categories[0].title} Hosting`

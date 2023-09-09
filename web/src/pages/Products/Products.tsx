@@ -52,6 +52,10 @@ const Products: Component<{}> = () => {
 
       <Show when={!products.error}>
         <section class="flex flex-wrap gap-5 mx-5 justify-center">
+          <Show when={filteredProducts().length === 0}>
+            <p class="mb-20 italic">No products in this category.</p>
+          </Show>
+
           <For each={filteredProducts()}>
             {(product) => (
               <Link href={`/our-products/${product.slug}`}>

@@ -40,11 +40,11 @@ const Home: Component = () => {
         <p class="text-center mb-10">In-demand open source applications. Deploy an instance in seconds. Get started right away.</p>
 
         <div class="grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-3 place-items-center items-stretch">
-          <For each={home.featuredProducts}>
+          <For each={home().featuredProducts}>
             {
               (product) =>
                 <Card
-                  title={product.name}
+                  title={product.name!}
                   description={product.description}
                   img={{ uri: product.img, alt: `${product.name} logo` }}
                   actions={
@@ -101,7 +101,7 @@ const Home: Component = () => {
         <p class="text-center mb-10">Cutting-edge infrastructure. 100% Uptime. Automatic Backups.</p>
 
         <div class="grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-3 place-items-center items-stretch">
-          <For each={home.runtimes}>
+          <For each={home().runtimes}>
             {
               (rt) =>
                 <Card
@@ -186,7 +186,7 @@ const Home: Component = () => {
         <p class="text-center mb-10">Loved by all of our customers.</p>
 
         <div class="carousel w-64">
-          <For each={home.testimonials}>
+          <For each={home().testimonials}>
             {
               (t, i) =>
                 <div id={`item${i() + 1}`} class="carousel-item w-full justify-center">
@@ -200,7 +200,7 @@ const Home: Component = () => {
           </For>
         </div>
         <div class="flex justify-center w-full py-2 gap-2">
-          <For each={home.testimonials}>
+          <For each={home().testimonials}>
             {
               (_, i) =>
                 <a href={`#item${i() + 1}`} class="btn btn-xs">{i() + 1}</a>

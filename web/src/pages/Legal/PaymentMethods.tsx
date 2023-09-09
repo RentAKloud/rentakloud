@@ -56,7 +56,7 @@ const PaymentMethods: Component = () => {
         <h2 class="text-4xl font-bold text-center mb-4">Payments FAQ</h2>
         <p class="text-center mb-12">Find answers to frequently asked questions about payment methods.</p>
 
-        <div class="px-40">
+        <div class="mx-20">
           <Accordion items={[
             {
               heading: "How do you ensure payments are secure?",
