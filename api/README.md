@@ -69,7 +69,22 @@ Add `--create-only` to only generate and not run. Then you can edit it, and run 
 
 ### Rollback
 
-For rollback you have to separately generate down migrations. I prefer resetting the database, although it results in data loss.
+For rollback you have to separately [generate down migrations](https://www.prisma.io/docs/guides/migrate/developing-with-prisma-migrate/generating-down-migrations). **You have to do this before generating up migrations**.
+
+```
+npx prisma migrate diff \
+ --from-schema-datamodel prisma/schema.prisma \
+ --to-schema-datasource prisma/schema.prisma \
+ --script > down.sql
+ ```
+
+ For failed migration, you would also need to run:
+
+```
+npx prisma migrate resolve --rolled-back <migration-name>
+```
+
+Sometimes, resetting the database is easier, although it results in data loss.
 
 ```
 npx prisma migrate reset

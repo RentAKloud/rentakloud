@@ -18,6 +18,14 @@ export class HttpService {
     return wrapper(endpoint, options)
   }
 
+  static async patch<T>(endpoint: string, body: any): Promise<T> {
+    const options = {
+      method: "PATCH",
+      body: JSON.stringify(body)
+    }
+    return wrapper(endpoint, options)
+  }
+
   static async delete<T>(endpoint: string): Promise<T> {
     const options = {
       method: "DELETE"

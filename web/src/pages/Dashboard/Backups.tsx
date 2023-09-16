@@ -1,15 +1,15 @@
 import { Component, For, Show, createEffect, createResource, createSignal } from "solid-js";
 import { Link, useSearchParams } from "@solidjs/router";
-import { DateTime } from "../../components/DateTime";
-import Modal from "../../components/Modal";
-import { NotificationService } from "../../services/NotificationService";
-import DiskImagesApi from "../../api/diskImages";
-import { DiskImage } from "../../types/diskImage";
-import TrashIcon from "../../components/icons/Trash";
-import DesktopIcon from "../../components/icons/Desktop";
-import DownloadIcon from "../../components/icons/Download";
-import Pagination from "../../components/Pagination";
-import Search from "../../components/Inputs/Search";
+import { DateTime } from "~/components/DateTime";
+import Modal from "~/components/Modal";
+import { NotificationService } from "~/services/NotificationService";
+import DiskImagesApi from "~/api/diskImages";
+import { DiskImage } from "~/types/diskImage";
+import TrashIcon from "~/components/icons/Trash";
+import DesktopIcon from "~/components/icons/Desktop";
+import DownloadIcon from "~/components/icons/Download";
+import Pagination from "~/components/Pagination";
+import Search from "~/components/Inputs/Search";
 
 const Backups: Component = () => {
   const q = new URLSearchParams([

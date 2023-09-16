@@ -22,10 +22,11 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
 
-  profile   Profile?
-  orders    Order[]
-  products  UserToProducts[] // active/subscribed products
-  DiskImage DiskImage[]
+  profile       Profile?
+  orders        Order[]
+  products      UserToProducts[] // active/subscribed products
+  diskImages    DiskImage[]
+  notifications Notification[]
 }
 
 model Profile {
@@ -46,49 +47,79 @@ model Address {
   id            Int      @id
   profile       Profile? @relation(fields: [profileUserId], references: [userId])
   profileUserId Int?
+  //
+  firstName     String?
+  lastName      String?
+  email         String?
+  address       String
+  address2      String?
+  city          String
+  state         String?
+  zip           String?
+  country       String
+}
 
-  firstName String?
-  lastName  String?
-  email     String?
-  address   String
-  address2  String?
-  city      String
-  state     String?
-  zip       String?
-  country   String
+model Notification {
+  id        String             @id @default(uuid())
+  //
+  user      User               @relation(fields: [userId], references: [id])
+  userId    Int
+  //
+  title     String
+  body      String
+  status    NotificationStatus @default(Created)
+  //
+  createdAt DateTime           @default(now())
+  updatedAt DateTime           @default(now())
+}
+
+enum NotificationStatus {
+  Created
+  Sent // to be Sent is to be rendered at a client-side frontend
+  Notified // to be Notified is to be explicitly alerted using means such as popups, audio or push notification
+  Read
+  Failed
 }
 
 model Product {
-  id               Int         @id @default(autoincrement())
+  id               Int              @id @default(autoincrement())
   name             String
-  slug             String      @unique
+  slug             String           @unique
   shortDescription String?
   description      String?
-  productType      ProductType @default(OnlineService)
+  productType      ProductType      @default(OnlineService)
   prices           Json[]
-  images           Json        @default("[]")
-  stripeId         String?     @unique
-
-  categories Category[]
-  users      UserToProducts[] // subscribed users
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
+  images           Json             @default("[]")
+  stripeId         String?          @unique
+  //
+  categories       Category[]
+  users            UserToProducts[] // subscribed users
+  //
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @default(now())
 }
 
+// Instance configurations (also used as plans)
+// model Config {
+//   id           Int    @id @default(autoincrement())
+//   name         String
+//   monthlyPrice Float
+//   yearlyPrice  Float
+// }
+
 model UserToProducts {
-  id String @id @default(uuid())
-
-  user      User    @relation(fields: [userId], references: [id])
-  userId    Int
-  product   Product @relation(fields: [productId], references: [id])
-  productId Int
-
+  id             String            @id @default(uuid())
+  //
+  user           User              @relation(fields: [userId], references: [id])
+  userId         Int
+  product        Product           @relation(fields: [productId], references: [id])
+  productId      Int
+  //
   status         UserProductStatus @default(Inactive)
   subscriptionId String            @unique // stripe
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
+  //
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @default(now())
 
   @@index([userId, productId])
 }
@@ -101,20 +132,20 @@ model Category {
 }
 
 model Order {
-  id     Int  @id @default(autoincrement())
-  user   User @relation(fields: [userId], references: [id])
-  userId Int
-
-  billingFirstName String
-  billingLastName  String
-  billingEmail     String
-  billingAddress   String
-  billingAddress2  String?
-  billingCity      String
-  billingState     String
-  billingZip       String
-  billingCountry   String
-
+  id                Int          @id @default(autoincrement())
+  user              User         @relation(fields: [userId], references: [id])
+  userId            Int
+  //
+  billingFirstName  String
+  billingLastName   String
+  billingEmail      String
+  billingAddress    String
+  billingAddress2   String?
+  billingCity       String
+  billingState      String
+  billingZip        String
+  billingCountry    String
+  //
   shippingFirstName String
   shippingLastName  String
   shippingAddress   String
@@ -123,33 +154,33 @@ model Order {
   shippingState     String
   shippingZip       String
   shippingCountry   String
-
-  items   Json[]
-  coupons CouponCode[]
-  status  OrderStatus  @default(Pending)
-  notes   String
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
+  //
+  items             Json[]
+  coupons           CouponCode[]
+  status            OrderStatus  @default(Pending)
+  notes             String
+  //
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @default(now())
 }
 
 model CouponCode {
-  id    Int    @id @default(autoincrement())
-  title String
-  code  String
-
+  id                 Int        @id @default(autoincrement())
+  title              String
+  code               String
+  //
   type               CouponType @default(Flat)
   flatDiscount       Decimal
   percentageDiscount Int
-
-  maxUses   Int?
-  expiresAt DateTime?
-  active    Boolean   @default(true)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
-
-  orders Order[]
+  //
+  maxUses            Int?
+  expiresAt          DateTime?
+  active             Boolean    @default(true)
+  //
+  createdAt          DateTime   @default(now())
+  updatedAt          DateTime   @default(now())
+  //
+  orders             Order[]
 }
 
 enum Gender {

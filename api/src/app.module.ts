@@ -12,6 +12,7 @@ import { PaymentsModule } from './modules/payments.module';
 import { DiskImagesModule } from './modules/disk-images.module';
 import { MailModule } from './modules/mail.module';
 import { PrometheusModule } from '@willsoto/nestjs-prometheus';
+import { NotificationsModule } from './modules/notifications.module';
 
 @Module({
   imports: [
@@ -27,7 +28,8 @@ import { PrometheusModule } from '@willsoto/nestjs-prometheus';
     ProductsModule,
     PaymentsModule,
     OrdersModule,
-    DiskImagesModule
+    DiskImagesModule,
+    NotificationsModule
   ],
   controllers: [AppController],
   providers: [AppService],
