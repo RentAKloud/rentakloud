@@ -49,6 +49,17 @@
   <title>Users</title>
 </svelte:head>
 
+<section class="p-5">
+  <h1
+    class="text-2xl font-semibold text-left text-gray-900 bg-white dark:text-white dark:bg-gray-800"
+  >
+    Users
+  </h1>
+  <p class="mt-1 text-sm font-normal text-gray-500 dark:text-gray-400">
+    Manage all users here.
+  </p>
+</section>
+
 <TableSearch hoverable={true} striped bind:inputValue={searchTerm}>
   <TableHead>
     <TableHeadCell class="!p-4">

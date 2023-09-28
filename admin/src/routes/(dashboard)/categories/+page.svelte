@@ -53,10 +53,10 @@
   <h1
     class="text-2xl font-semibold text-left text-gray-900 bg-white dark:text-white dark:bg-gray-800"
   >
-    Products
+    Categories
   </h1>
   <p class="mt-1 text-sm font-normal text-gray-500 dark:text-gray-400">
-    Manage products from here.
+    Manage product categories from here.
   </p>
 </section>
 

@@ -1,0 +1,75 @@
+
+name: Build & Deploy RentAKloud Admin Panel
+run-name: RentAKloud Admin Deployment
+
+on:
+  push:
+    branches: [ master ]
+    paths:
+      - 'admin/**'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    # needs: [ test ]
+    defaults:
+      run:
+        working-directory: admin/
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use latest Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+          # cache: bun
+          # cache-dependency-path: admin/bun.lockb
+
+      # - name: 'Create env file'
+      #   run: |
+      #     echo "${{ vars.WEB_ENV_PRODUCTION }}" > .env.production
+
+      - run: bun install
+      - run: bun run build
+
+      - name: Upload artifact for deployment job
+        uses: actions/upload-artifact@v3
+        with:
+          name: dist-artifact
+          path: admin/build # name of build folder
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: [ build ]
+
+    steps:
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v3
+        with:
+          name: dist-artifact
+
+      - name: Connect using SSH and clear existing stuff in deployment folder
+        uses: appleboy/ssh-action@v0.1.4
+        env:
+          ADMIN_DEPLOY_DIR: ${{ vars.ADMIN_DEPLOY_DIR }}
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          port: ${{ secrets.SSH_PORT }}
+          username: ${{ secrets.SSH_USER }}
+          # key: ${{ secrets.SSH_PK }}
+          password: ${{ secrets.SSH_PK }}
+          envs: ADMIN_DEPLOY_DIR
+          script: |
+            rm -rf $ADMIN_DEPLOY_DIR/*
+
+      - name: Copy new release to deployment folder
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          port: ${{ secrets.SSH_PORT }}
+          username: ${{ secrets.SSH_USER }}
+          # key: ${{ secrets.SSH_PK }}
+          password: ${{ secrets.SSH_PK }}
+          source: "./*"
+          target: "${{ vars.ADMIN_DEPLOY_DIR }}/"

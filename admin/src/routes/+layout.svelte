@@ -43,7 +43,7 @@
     <FooterBrand
       href="https://rentakloud.com.com"
       src="/logo-60x60.png"
-      alt="Flowbite Logo"
+      alt="RentAKloud Logo"
       name="RentAKloud"
     />
     <FooterLinkGroup

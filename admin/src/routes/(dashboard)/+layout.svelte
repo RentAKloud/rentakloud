@@ -41,7 +41,7 @@
           </svelte:fragment>
           <SidebarDropdownItem label="Products" href="/products" />
           <SidebarDropdownItem label="Orders" href="/orders" />
-          <SidebarDropdownItem label="Invoice" />
+          <SidebarDropdownItem label="Categories" href="/categories" />
         </SidebarDropdownWrapper>
         <SidebarItem label="Configs" {spanClass}>
           <svelte:fragment slot="icon">
