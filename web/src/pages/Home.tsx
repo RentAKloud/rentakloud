@@ -1,4 +1,4 @@
-import { Component, createSignal, For } from "solid-js";
+import { Component, createSignal, For, Match, Switch } from "solid-js";
 import Card from "../components/Card/Card";
 import Hero from "../components/Hero/Hero";
 import CheckIcon from "../components/icons/Check";
@@ -9,6 +9,7 @@ import Lottie from "../components/Lottie";
 import { home } from "../config/data";
 import CloudsAnimation from "../components/CloudsAnimation";
 import { Link } from "@solidjs/router";
+import { truncate } from "~/utils";
 
 const Home: Component = () => {
   const [showYearly, setShowYearly] = createSignal(false)
@@ -34,6 +35,36 @@ const Home: Component = () => {
         {/* <CloudsAnimation /> */}
         <Lottie src="https://assets10.lottiefiles.com/packages/lf20_cgjrfdzx.json" />
       </Hero>
+
+      <section class="p-10 bg-base-200">
+        <h2 class="text-3xl text-center font-bold mb-5">Hardware Products</h2>
+        <p class="text-center mb-10">Cutting-edge, high performance hardware. Intense computation with efficient energy usage.</p>
+
+        <div class="grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-3 place-items-center items-stretch">
+          <For each={home().featuredHardware}>
+            {
+              (product) =>
+                <Switch>
+                  <Match when={product === undefined}>
+                    <Card title="Loading..." />
+                  </Match>
+
+                  <Match when={!!product}>
+                    <Card
+                      title={product!.name}
+                      description={truncate(product!.shortDescription || '', 120)}
+                      img={{ uri: product!.images && product!.images[0] && product!.images![0].src || '', alt: `${product!.name} logo` }}
+                      actions={
+                        <Link href={`/our-products/${product!.slug}`} class="btn btn-primary">Learn More</Link>
+                      }
+                      class="w-96"
+                    />
+                  </Match>
+                </Switch>
+            }
+          </For>
+        </div>
+      </section>
 
       <section class="p-10 bg-base-200">
         <h2 class="text-3xl text-center font-bold mb-5">Popular Products</h2>

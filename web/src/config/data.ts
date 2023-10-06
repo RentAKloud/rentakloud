@@ -56,14 +56,19 @@ export const productsMenu = () => [
     title: "Hardware",
     slug: "?category=hardware",
     submenu: [
-      { title: "RemoteHands", slug: "remote-hands" },
-      { title: "RK Server 1", slug: "rk-server-1" },
+      { title: "PulseKVM", slug: "pulse-kvm" },
+      { title: "RK R5950", slug: "rk-server-1" },
       { title: "RK Router 1", slug: "rk-router-1" }
     ]
   },
 ]
 
 export const home = () => ({
+  featuredHardware: [
+    products.latest.find(p => p.slug === 'pulse-kvm'),
+    products.latest.find(p => p.slug === 'rk-server-1'),
+    products.latest.find(p => p.slug === 'rk-router-1'),
+  ],
   featuredProducts: [
     {
       ...products.latest.find(p => p.slug === 'postgresql'),

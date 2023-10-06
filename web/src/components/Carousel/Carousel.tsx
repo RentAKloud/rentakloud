@@ -15,7 +15,7 @@ const Carousel: CarouselProps = (props) => {
         {
           (item) =>
             <div class="carousel-item w-full">
-              <img src={item.src} alt={item.alt} />
+              <img src={item.src} alt={item.alt} class="object-contain" />
             </div>
         }
       </For>
