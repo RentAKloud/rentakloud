@@ -1,4 +1,6 @@
-<script>
+<script lang="ts">
+    import { Http } from "$lib/http";
+    import { User } from "$lib/types";
   import {
     TableBody,
     TableBodyCell,
@@ -8,41 +10,22 @@
     Checkbox,
     TableSearch,
   } from "flowbite-svelte";
+    import { onMount } from "svelte";
 
   let searchTerm = "";
-  let items = [
-    {
-      id: 1,
-      name: 'Apple MacBook Pro 17"',
-      color: "Silver",
-      category: "Laptop",
-      price: 2999,
-    },
-    {
-      id: 2,
-      name: 'Microsoft Surface Pro',
-      color: "White",
-      category: "Laptop PC",
-      price: 1999,
-    },
-    {
-      id: 3,
-      name: 'Magic Mouse 2',
-      color: "Black",
-      category: "Accessories",
-      price: 99,
-    },
-    {
-      id: 4,
-      name: 'Apple MacBook Pro 13"',
-      color: "Rose",
-      category: "Laptop",
-      price: 2599,
-    },
-  ];
+  let items: User[] = [];
   $: filteredItems = items.filter(
-    (item) => item.name.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1
+    (item) => item.firstName.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1
   );
+
+  async function loadData() {
+    const data = await Http.get<User[]>('/users')
+    items = data
+  }
+
+  onMount(() => {
+    loadData()
+  })
 </script>
 
 <svelte:head>
@@ -65,10 +48,11 @@
     <TableHeadCell class="!p-4">
       <Checkbox />
     </TableHeadCell>
-    <TableHeadCell>Product name</TableHeadCell>
-    <TableHeadCell>Color</TableHeadCell>
-    <TableHeadCell>Category</TableHeadCell>
-    <TableHeadCell>Price</TableHeadCell>
+    <TableHeadCell>ID</TableHeadCell>
+    <TableHeadCell>Name</TableHeadCell>
+    <TableHeadCell>Email</TableHeadCell>
+    <TableHeadCell>Created At</TableHeadCell>
+    <TableHeadCell>Updated At</TableHeadCell>
     <TableHeadCell>
       <span class="sr-only">Edit</span>
     </TableHeadCell>
@@ -79,10 +63,11 @@
         <TableBodyCell class="!p-4">
           <Checkbox />
         </TableBodyCell>
-        <TableBodyCell>{item.name}</TableBodyCell>
-        <TableBodyCell>{item.color}</TableBodyCell>
-        <TableBodyCell>{item.category}</TableBodyCell>
-        <TableBodyCell>${item.price}</TableBodyCell>
+        <TableBodyCell>{item.id}</TableBodyCell>
+        <TableBodyCell>{User.fullName(item)}</TableBodyCell>
+        <TableBodyCell>{item.email}</TableBodyCell>
+        <TableBodyCell>{item.createdAt}</TableBodyCell>
+        <TableBodyCell>{item.updatedAt}</TableBodyCell>
         <TableBodyCell>
           <a
             href="/tables"

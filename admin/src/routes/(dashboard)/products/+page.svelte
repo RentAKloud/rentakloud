@@ -1,4 +1,7 @@
-<script>
+<script lang="ts">
+  import { Http } from "$lib/http";
+  import type { Product } from "$lib/types";
+    import { price } from "$lib/utils";
   import {
     TableBody,
     TableBodyCell,
@@ -8,41 +11,22 @@
     Checkbox,
     TableSearch,
   } from "flowbite-svelte";
+    import { onMount } from "svelte";
 
   let searchTerm = "";
-  let items = [
-    {
-      id: 1,
-      name: 'Apple MacBook Pro 17"',
-      color: "Silver",
-      category: "Laptop",
-      price: 2999,
-    },
-    {
-      id: 2,
-      name: 'Microsoft Surface Pro',
-      color: "White",
-      category: "Laptop PC",
-      price: 1999,
-    },
-    {
-      id: 3,
-      name: 'Magic Mouse 2',
-      color: "Black",
-      category: "Accessories",
-      price: 99,
-    },
-    {
-      id: 4,
-      name: 'Apple MacBook Pro 13"',
-      color: "Rose",
-      category: "Laptop",
-      price: 2599,
-    },
-  ];
+  let items: Product[] = [];
   $: filteredItems = items.filter(
     (item) => item.name.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1
   );
+
+  async function loadData() {
+    const data = await Http.get<Product[]>('/products')
+    items = data
+  }
+
+  onMount(() => {
+    loadData()
+  })
 </script>
 
 <svelte:head>
@@ -65,8 +49,8 @@
     <TableHeadCell class="!p-4">
       <Checkbox />
     </TableHeadCell>
+    <TableHeadCell>ID</TableHeadCell>
     <TableHeadCell>Product name</TableHeadCell>
-    <TableHeadCell>Color</TableHeadCell>
     <TableHeadCell>Category</TableHeadCell>
     <TableHeadCell>Price</TableHeadCell>
     <TableHeadCell>
@@ -79,10 +63,10 @@
         <TableBodyCell class="!p-4">
           <Checkbox />
         </TableBodyCell>
+        <TableBodyCell>{item.id}</TableBodyCell>
         <TableBodyCell>{item.name}</TableBodyCell>
-        <TableBodyCell>{item.color}</TableBodyCell>
-        <TableBodyCell>{item.category}</TableBodyCell>
-        <TableBodyCell>${item.price}</TableBodyCell>
+        <TableBodyCell>{item.categories[0]?.title || "-"}</TableBodyCell>
+        <TableBodyCell>{item.prices[0]?.amount ? price(item.prices[0]?.amount) : "-"}</TableBodyCell>
         <TableBodyCell>
           <a
             href="/tables"

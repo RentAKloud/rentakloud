@@ -1,5 +1,25 @@
-<script>
+<script lang="ts">
+  import { Http } from "$lib/http";
   import { Button, Label, Input, Checkbox, Card } from "flowbite-svelte";
+  import { auth } from "$lib/stores";
+    import { goto } from "$app/navigation";
+
+  const searchParams = new URLSearchParams(location.search);
+  let email: string = searchParams.get("email") || "";
+  let password: string = searchParams.get("password") || "";
+
+  async function login(e: SubmitEvent) {
+    const d = await Http.post("/auth/login", { email, password }) as { access_token: string };
+
+    if (d.access_token) {
+      auth.update((a) => {
+        a.token = d.access_token;
+        return a;
+      })
+      localStorage.setItem('access_token', d.access_token)
+      goto("/")
+    }
+  }
 </script>
 
 <svelte:head>
@@ -11,7 +31,7 @@
   style="background-image: url(https://images.pexels.com/photos/4508751/pexels-photo-4508751.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2);"
 >
   <Card class="w-full max-w-md">
-    <form class="flex flex-col space-y-6" action="#">
+    <form class="flex flex-col space-y-6" on:submit={login}>
       <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">
         Sign in
       </h3>
@@ -21,12 +41,19 @@
           type="email"
           name="email"
           placeholder="name@company.com"
+          bind:value={email}
           required
         />
       </Label>
       <Label class="space-y-2">
         <span>Your password</span>
-        <Input type="password" name="password" placeholder="•••••" required />
+        <Input
+          type="password"
+          name="password"
+          placeholder="•••••"
+          bind:value={password}
+          required
+        />
       </Label>
       <div class="flex items-start">
         <Checkbox>Remember me</Checkbox>

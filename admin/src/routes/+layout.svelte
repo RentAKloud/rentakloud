@@ -14,6 +14,27 @@
     FooterLink,
   } from "flowbite-svelte";
   import "../app.css";
+  import { auth } from "$lib/stores";
+  import { Http } from "$lib/http";
+  import { onDestroy } from "svelte";
+
+  const unsub = auth.subscribe(async (a) => {
+    if (a.isLoggedIn() && !a.user) {
+      const user = await Http.get("/auth/me");
+      a.user = user;
+    }
+  });
+
+  function logout() {
+    auth.update((a) => {
+      a.user = undefined;
+      a.token = undefined;
+      localStorage.removeItem('access_token')
+      return a;
+    });
+  }
+
+  onDestroy(unsub);
 </script>
 
 <svelte:head>
@@ -31,8 +52,13 @@
   </NavBrand>
   <NavHamburger on:click={toggle} />
   <NavUl {hidden}>
-    <NavLi href="/" active={true}>Dashboard</NavLi>
-    <NavLi href="/login">Login</NavLi>
+    {#if $auth.isLoggedIn()}
+      <NavLi>{$auth.user?.email}</NavLi>
+      <NavLi href="/" active={true}>Dashboard</NavLi>
+      <NavLi href="#" on:click={logout}>Logout</NavLi>
+    {:else}
+      <NavLi href="/login">Login</NavLi>
+    {/if}
   </NavUl>
 </Navbar>
 

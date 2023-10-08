@@ -15,7 +15,15 @@
     UserSolid,
     GearSolid,
   } from "flowbite-svelte-icons";
+    import { auth } from "$lib/stores";
+    import { goto } from "$app/navigation";
   let spanClass = "flex-1 ml-3 whitespace-nowrap";
+
+  auth.subscribe(async (value) => {
+    if (!value.isLoggedIn()) {
+      goto("/login")
+    }
+  })
 </script>
 
 <svelte:head>
