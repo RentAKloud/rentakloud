@@ -35,7 +35,7 @@
 
 <section class="p-5">
   <h1
-    class="text-2xl font-semibold text-left text-gray-900 bg-white dark:text-white dark:bg-gray-800"
+    class="text-2xl font-semibold text-left text-gray-900 dark:text-white"
   >
     Products
   </h1>
@@ -69,7 +69,7 @@
         <TableBodyCell>{item.prices[0]?.amount ? price(item.prices[0]?.amount) : "-"}</TableBodyCell>
         <TableBodyCell>
           <a
-            href="/tables"
+            href={`/products/${item.id}`}
             class="font-medium text-primary-600 hover:underline dark:text-primary-500"
             >Edit</a
           >

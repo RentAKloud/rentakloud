@@ -21,7 +21,7 @@
   const unsub = auth.subscribe(async (a) => {
     if (a.isLoggedIn() && !a.user) {
       const user = await Http.get("/auth/me");
-      a.user = user;
+      $auth.user = user;
     }
   });
 
@@ -53,7 +53,7 @@
   <NavHamburger on:click={toggle} />
   <NavUl {hidden}>
     {#if $auth.isLoggedIn()}
-      <NavLi>{$auth.user?.email}</NavLi>
+      <NavLi>{$auth.user?.email || ''}</NavLi>
       <NavLi href="/" active={true}>Dashboard</NavLi>
       <NavLi href="#" on:click={logout}>Logout</NavLi>
     {:else}

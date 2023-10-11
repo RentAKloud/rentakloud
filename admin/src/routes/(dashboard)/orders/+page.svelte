@@ -51,7 +51,7 @@
 
 <section class="p-5">
   <h1
-    class="text-2xl font-semibold text-left text-gray-900 bg-white dark:text-white dark:bg-gray-800"
+    class="text-2xl font-semibold text-left text-gray-900 dark:text-white"
   >
     Orders
   </h1>

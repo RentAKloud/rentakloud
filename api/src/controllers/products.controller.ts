@@ -1,5 +1,6 @@
-import { Controller, Delete, Get, Param, ParseIntPipe, Post, Request, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, Request, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+import { Category, Product } from '@prisma/client';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 import { ProductsService } from 'src/services/products.service';
 
@@ -22,6 +23,38 @@ export class ProductsController {
   @Get('/:id')
   product(@Param('id', ParseIntPipe) id: number) {
     return this.productsService.product({ id })
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post()
+  createProduct(@Body() reqBody) {
+    return this.productsService.createProduct(reqBody)
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Put()
+  updateProduct(@Body() reqBody: Product & { categories: number[], oldCategories: number[] }) {
+    const { categories, oldCategories } = reqBody
+    const toRemove = oldCategories.filter(x => !categories.includes(x))
+    delete reqBody['oldCategories']
+
+    return this.productsService.updateProduct({
+      where: { id: reqBody.id },
+      data: {
+        ...reqBody,
+        categories: {
+          connect: categories.map(id => ({ id })),
+          disconnect: toRemove.map(id => ({ id }))
+        }
+      }
+    })
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete('/:id')
+  deleteProduct(@Param('id', ParseIntPipe) id: number) {
+    // TODO delete all active products
+    return this.productsService.deleteProduct({ id })
   }
 
   @UseGuards(JwtAuthGuard)

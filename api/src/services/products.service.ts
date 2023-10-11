@@ -15,6 +15,9 @@ export class ProductsService {
   ): Promise<Product | null> {
     return this.prisma.product.findUnique({
       where: productWhereUniqueInput,
+      include: {
+        categories: true
+      },
     });
   }
 

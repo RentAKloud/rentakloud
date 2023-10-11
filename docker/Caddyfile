@@ -6,6 +6,7 @@ rentakloud.com {
 
 admin.rentakloud.com {
   root * /srv/admin/
+  try_files {path} /index.html
   file_server
 }
 

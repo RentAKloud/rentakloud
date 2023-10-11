@@ -13,6 +13,7 @@ import { DiskImagesModule } from './modules/disk-images.module';
 import { MailModule } from './modules/mail.module';
 import { PrometheusModule } from '@willsoto/nestjs-prometheus';
 import { NotificationsModule } from './modules/notifications.module';
+import { CategoriesModule } from './modules/categories.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { NotificationsModule } from './modules/notifications.module';
 
     AuthModule,
     ProductsModule,
+    CategoriesModule,
     PaymentsModule,
     OrdersModule,
     DiskImagesModule,

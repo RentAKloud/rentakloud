@@ -97,7 +97,7 @@
     </SidebarWrapper>
   </Sidebar>
 
-  <div class="p-6 min-h-screen">
+  <div class="p-6 min-h-screen w-full">
     <slot />
   </div>
 </main>

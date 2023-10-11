@@ -12,6 +12,8 @@ x-environment:
   CELERY_WORKER_CONCURRENCY: 2 # Set to 2 to prevent excessive memory usage. Change it or remove to set it to the number of cpu cores.
   # optional
   ENABLE_USER_REGISTRATION: false
+  # STRIPE_TEST_PUBLIC_KEY: 
+  # STRIPE_TEST_SECRET_KEY: 
 x-depends_on:
   &glitchtip-depends_on
   - db

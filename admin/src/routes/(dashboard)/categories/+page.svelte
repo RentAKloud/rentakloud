@@ -1,4 +1,6 @@
-<script>
+<script lang="ts">
+    import { Http } from "$lib/http";
+  import type { Category } from "$lib/types";
   import {
     TableBody,
     TableBodyCell,
@@ -8,51 +10,30 @@
     Checkbox,
     TableSearch,
   } from "flowbite-svelte";
+    import { onMount } from "svelte";
 
   let searchTerm = "";
-  let items = [
-    {
-      id: 1,
-      name: 'Apple MacBook Pro 17"',
-      color: "Silver",
-      category: "Laptop",
-      price: 2999,
-    },
-    {
-      id: 2,
-      name: 'Microsoft Surface Pro',
-      color: "White",
-      category: "Laptop PC",
-      price: 1999,
-    },
-    {
-      id: 3,
-      name: 'Magic Mouse 2',
-      color: "Black",
-      category: "Accessories",
-      price: 99,
-    },
-    {
-      id: 4,
-      name: 'Apple MacBook Pro 13"',
-      color: "Rose",
-      category: "Laptop",
-      price: 2599,
-    },
-  ];
+  let items: Category[] = [];
   $: filteredItems = items.filter(
-    (item) => item.name.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1
+    (item) => item.title.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1
   );
+
+  async function loadData() {
+    const data = await Http.get<Category[]>('/categories')
+    items = data
+  }
+
+  onMount(() => {
+    loadData()
+  })
 </script>
 
 <svelte:head>
-  <title>Products</title>
+  <title>Categories</title>
 </svelte:head>
 
 <section class="p-5">
-  <h1
-    class="text-2xl font-semibold text-left text-gray-900 bg-white dark:text-white dark:bg-gray-800"
-  >
+  <h1 class="text-2xl font-semibold text-left text-gray-900 dark:text-white">
     Categories
   </h1>
   <p class="mt-1 text-sm font-normal text-gray-500 dark:text-gray-400">
@@ -65,10 +46,10 @@
     <TableHeadCell class="!p-4">
       <Checkbox />
     </TableHeadCell>
-    <TableHeadCell>Product name</TableHeadCell>
-    <TableHeadCell>Color</TableHeadCell>
-    <TableHeadCell>Category</TableHeadCell>
-    <TableHeadCell>Price</TableHeadCell>
+    <TableHeadCell>ID</TableHeadCell>
+    <TableHeadCell>Title</TableHeadCell>
+    <TableHeadCell>Slug</TableHeadCell>
+    <TableHeadCell>Product Count</TableHeadCell>
     <TableHeadCell>
       <span class="sr-only">Edit</span>
     </TableHeadCell>
@@ -79,13 +60,13 @@
         <TableBodyCell class="!p-4">
           <Checkbox />
         </TableBodyCell>
-        <TableBodyCell>{item.name}</TableBodyCell>
-        <TableBodyCell>{item.color}</TableBodyCell>
-        <TableBodyCell>{item.category}</TableBodyCell>
-        <TableBodyCell>${item.price}</TableBodyCell>
+        <TableBodyCell>{item.id}</TableBodyCell>
+        <TableBodyCell>{item.title}</TableBodyCell>
+        <TableBodyCell>{item.slug}</TableBodyCell>
+        <TableBodyCell>5</TableBodyCell>
         <TableBodyCell>
           <a
-            href="/tables"
+            href={`/categories/${item.id}`}
             class="font-medium text-primary-600 hover:underline dark:text-primary-500"
             >Edit</a
           >
