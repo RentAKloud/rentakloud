@@ -1,3 +1,12 @@
+export function formatPrice(amount: number, currency = 'usd') {
+  const f = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: currency,
+  })
+
+  return `${f.format(amount)} ${currency.toUpperCase()}`
+}
+
 export function pluralize(qty: number, word: string, plural = word + 's') {
   return [1, -1].includes(Number(qty)) ? word : plural
 }

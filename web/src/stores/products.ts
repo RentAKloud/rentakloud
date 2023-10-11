@@ -14,15 +14,6 @@ export function getProductPrice(product: Product, priceId?: string): ProductPric
   return priceId ? product.prices?.find(p => p.priceId === priceId)! : product.prices![0]
 }
 
-export function formatPrice(amount: number, currency = 'usd') {
-  const f = new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: currency,
-  })
-
-  return `${f.format(amount)} ${currency.toUpperCase()}`
-}
-
 async function fetchAndRemix(): Promise<Product[]> {
   try {
     const _products = await ProductsApi.all()

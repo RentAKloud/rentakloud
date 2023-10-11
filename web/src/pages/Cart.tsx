@@ -2,8 +2,9 @@ import { Component, For, Show } from "solid-js";
 import { Link } from "@solidjs/router";
 import DefaultLayout from "~/layouts/DefaultLayout";
 import { getCartTotal, cart, resetCart } from "~/stores/cart";
-import { formatPrice, getProductById, getProductPrice, products } from "~/stores/products";
+import { getProductById, getProductPrice, products } from "~/stores/products";
 import Loader from "~/components/Loader";
+import { formatPrice } from "~/utils";
 
 const Cart: Component = () => {
   return (

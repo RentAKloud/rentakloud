@@ -3,16 +3,16 @@ import Card from "../components/Card/Card";
 import Hero from "../components/Hero/Hero";
 import CheckIcon from "../components/icons/Check";
 import DefaultLayout from "../layouts/DefaultLayout";
-import PricingCard from "../components/PricingCard";
+// import PricingCard from "../components/PricingCard";
 import Testimonial from "../components/Card/Testimonial";
 import Lottie from "../components/Lottie";
 import { home } from "../config/data";
-import CloudsAnimation from "../components/CloudsAnimation";
+// import CloudsAnimation from "../components/CloudsAnimation";
 import { Link } from "@solidjs/router";
 import { truncate } from "~/utils";
 
 const Home: Component = () => {
-  const [showYearly, setShowYearly] = createSignal(false)
+  // const [showYearly, setShowYearly] = createSignal(false)
 
   return (
     <DefaultLayout>
@@ -66,7 +66,7 @@ const Home: Component = () => {
         </div>
       </section>
 
-      <section class="p-10 bg-base-200">
+      {/* <section class="p-10 bg-base-200">
         <h2 class="text-3xl text-center font-bold mb-5">Popular Products</h2>
         <p class="text-center mb-10">In-demand open source applications. Deploy an instance in seconds. Get started right away.</p>
 
@@ -86,9 +86,9 @@ const Home: Component = () => {
             }
           </For>
         </div>
-      </section>
+      </section> */}
 
-      <section class="p-10">
+      {/* <section class="p-10">
         <h2 class="text-3xl text-center font-bold mb-5">Pricing</h2>
         <p class="text-center mb-5">Choose the plan that fits your needs. No hidden fees. Hassle-free payments.</p>
 
@@ -125,9 +125,9 @@ const Home: Component = () => {
             config="enterprise"
           />
         </div>
-      </section>
+      </section> */}
 
-      <section class="p-10 bg-base-200">
+      {/* <section class="p-10 bg-base-200">
         <h2 class="text-3xl text-center font-bold mb-5">Popular Runtimes</h2>
         <p class="text-center mb-10">Cutting-edge infrastructure. 100% Uptime. Automatic Backups.</p>
 
@@ -146,7 +146,7 @@ const Home: Component = () => {
             }
           </For>
         </div>
-      </section>
+      </section> */}
 
       <section class="p-10 bg-base-200">
         <h2 class="text-3xl text-center font-bold mb-5">Built Different</h2>

@@ -1,12 +1,12 @@
 import { Tabs } from "@kobalte/core";
 import { Link } from "@solidjs/router";
 import { Component, Show, createMemo, createSignal } from "solid-js";
-import CarouselWithControls from "../../components/Carousel/CarouselWithControls";
-import TextInput from "../../components/Inputs/TextInput";
-import { NotificationService } from "../../services/NotificationService";
-import { addToCart } from "../../stores/cart";
-import { Product } from "../../types/product";
-import { formatPrice } from "../../stores/products";
+import CarouselWithControls from "~/components/Carousel/CarouselWithControls";
+import TextInput from "~/components/Inputs/TextInput";
+import { NotificationService } from "~/services/NotificationService";
+import { addToCart } from "~/stores/cart";
+import { Product } from "~/types/product";
+import { formatPrice } from "~/utils";
 
 export const PhysicalProduct: Component<{ product: Product }> = (props) => {
   const product = createMemo(() => props.product)
@@ -61,20 +61,20 @@ export const PhysicalProduct: Component<{ product: Product }> = (props) => {
       </section>
 
       <section class="mt-5">
-        <Tabs.Root aria-label="Main navigation">
-          <Tabs.List class="tabs">
+        {/* <Tabs.Root aria-label="Main navigation"> */}
+          {/* <Tabs.List class="tabs">
             <Tabs.Trigger class="tab tab-bordered ui-selected:tab-active" value="details">Details</Tabs.Trigger>
             <Tabs.Trigger class="tab tab-bordered ui-selected:tab-active" value="shipping">Shipping</Tabs.Trigger>
-            <Tabs.Trigger class="tab tab-bordered ui-selected:tab-active" value="reviews">Reviews</Tabs.Trigger>
+            <Tabs.Trigger class="tab tab-bordered ui-selected:tab-active" value="reviews">Reviews</Tabs.Trigger> */}
             {/* <Tabs.Indicator class="tabs__indicator" /> */}
-          </Tabs.List>
+          {/* </Tabs.List> */}
 
-          <div class="m-5">
-            <Tabs.Content class="tabs__content" value="details" innerHTML={product().description}></Tabs.Content>
+          <div class="m-5" innerHTML={product().description}>
+            {/* <Tabs.Content class="tabs__content" value="details" innerHTML={product().description}></Tabs.Content>
             <Tabs.Content class="tabs__content" value="shipping">Shipping Info</Tabs.Content>
-            <Tabs.Content class="tabs__content" value="reviews">Reviews</Tabs.Content>
+            <Tabs.Content class="tabs__content" value="reviews">Reviews</Tabs.Content> */}
           </div>
-        </Tabs.Root>
+        {/* </Tabs.Root> */}
       </section>
     </>
   )

@@ -1,8 +1,8 @@
 import { Component, For, Show, createResource } from "solid-js";
-import OrdersApi from "../../api/orders";
-import Loader from "../../components/Loader";
-import { DateTime } from "../../components/DateTime";
-import { formatPrice } from "../../stores/products";
+import OrdersApi from "~/api/orders";
+import Loader from "~/components/Loader";
+import { DateTime } from "~/components/DateTime";
+import { formatPrice } from "~/utils";
 
 const Orders: Component = () => {
   const [orders] = createResource(OrdersApi.all)

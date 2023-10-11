@@ -1,8 +1,9 @@
 import { Component, For, Show } from "solid-js";
-import { cart, getCartTotal } from "../../stores/cart";
-import { formatPrice, getProductById, getProductPrice, products } from "../../stores/products";
+import { cart, getCartTotal } from "~/stores/cart";
+import { getProductById, getProductPrice, products } from "~/stores/products";
 import { useCheckoutContext } from "./context";
-import Lottie from "../../components/Lottie";
+import Lottie from "~/components/Lottie";
+import { formatPrice } from "~/utils";
 
 export const OrderDetails: Component = () => {
   const { step } = useCheckoutContext()

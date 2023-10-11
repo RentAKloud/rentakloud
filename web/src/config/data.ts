@@ -57,8 +57,8 @@ export const productsMenu = () => [
     slug: "?category=hardware",
     submenu: [
       { title: "PulseKVM", slug: "pulse-kvm" },
-      { title: "RK R5950", slug: "rk-server-1" },
-      { title: "RK Router 1", slug: "rk-router-1" }
+      { title: "RAK R5950", slug: "rk-server-1" },
+      { title: "RAK Router 1", slug: "rk-router-1" }
     ]
   },
 ]
