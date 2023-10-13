@@ -6,6 +6,7 @@
   import { Button, Input, Label, MultiSelect, Textarea } from "flowbite-svelte";
 
   import { onMount } from "svelte";
+  import Editor from "../../../../components/Editor.svelte";
 
   let product: Product;
   let categories: { value: number; name: string }[] = [];
@@ -29,7 +30,7 @@
 
   async function update() {
     const data: any = product;
-    data.oldCategories = data.categories.map((c: Category) => c.id)
+    data.oldCategories = data.categories.map((c: Category) => c.id);
     data.categories = selectedCategories;
     await Http.put(`/products`, data);
   }
@@ -80,12 +81,7 @@
 
     <div class="mb-6">
       <Label for="description" class="block mb-2">Description</Label>
-      <Textarea
-        id="description"
-        rows="4"
-        bind:value={product.description}
-        class="resize-none"
-      />
+      <Editor />
     </div>
 
     <div class="mb-6">

@@ -1,9 +1,12 @@
+import type { OutputData } from "@editorjs/editorjs"
+
 export class Product {
   constructor(
     public id: number,
     public name: string,
     public shortDescription: string,
     public description: string,
+    public descriptionEditor: OutputData,
     public categories: Category[],
     public prices: { amount: number, currency: string }[],
     public images: { alt: string, src: string }[]

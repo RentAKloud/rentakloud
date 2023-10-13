@@ -1,5 +1,5 @@
 import { auth } from "$lib/stores"
-import { API_URL } from "./constants"
+import { PUBLIC_API_URL as API_URL } from "$env/static/public"
 
 export class Http {
   static async get<T>(endpoint: string, queryParams?: URLSearchParams): Promise<T> {
