@@ -69,7 +69,7 @@ Add `--create-only` to only generate and not run. Then you can edit it, and run 
 
 ### Rollback
 
-For rollback you have to separately [generate down migrations](https://www.prisma.io/docs/guides/migrate/developing-with-prisma-migrate/generating-down-migrations). **You have to do this before generating up migrations**.
+For rollback you have to separately [generate down migrations](https://www.prisma.io/docs/guides/migrate/developing-with-prisma-migrate/generating-down-migrations). **You have to do this before generating _up_ migrations**.
 
 ```
 npx prisma migrate diff \
@@ -92,7 +92,7 @@ npx prisma migrate reset
 
 ### Updating the Models
 
-To reflect your latest changes in schema in the code, you need to update the prisma client. This happens automatically on migration.
+To reflect your latest changes in schema in the code, you need to update the prisma client. This happens automatically on `migrate dev`.
 
 ```
 npx prisma generate

@@ -82,21 +82,23 @@ enum NotificationStatus {
 }
 
 model Product {
-  id               Int              @id @default(autoincrement())
-  name             String
-  slug             String           @unique
-  shortDescription String?
-  description      String?
-  productType      ProductType      @default(OnlineService)
-  prices           Json[]
-  images           Json             @default("[]")
-  stripeId         String?          @unique
+  id                Int              @id @default(autoincrement())
+  name              String
+  slug              String           @unique
+  shortDescription  String?
+  description       String?
+  descriptionEditor Json?
+  productType       ProductType      @default(OnlineService)
+  prices            Json[]
+  stock             Int              @default(1)
+  images            Json             @default("[]")
+  stripeId          String?          @unique
   //
-  categories       Category[]
-  users            UserToProducts[] // subscribed users
+  categories        Category[]
+  users             UserToProducts[] // subscribed users
   //
-  createdAt        DateTime         @default(now())
-  updatedAt        DateTime         @default(now())
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @default(now())
 }
 
 // Instance configurations (also used as plans)
