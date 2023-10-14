@@ -32,7 +32,7 @@
     const data: any = product;
     data.oldCategories = data.categories.map((c: Category) => c.id);
     data.categories = selectedCategories;
-    await Http.put(`/products`, data);
+    product = await Http.put(`/products`, data);
   }
 </script>
 

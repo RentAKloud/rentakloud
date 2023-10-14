@@ -11,7 +11,7 @@ export type CarouselProps = Component<{
 
 const Carousel: CarouselProps = (props) => {
   return (
-    <div class="carousel carousel-center rounded-box h-96" ref={props.ref}>
+    <div class="carousel carousel-center rounded-box" ref={props.ref}>
       <For each={props.items}>
         {
           (item) => {

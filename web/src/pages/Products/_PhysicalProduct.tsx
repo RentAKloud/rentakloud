@@ -51,7 +51,7 @@ export const PhysicalProduct: Component<{ product: Product }> = (props) => {
           <Show when={price() !== null} fallback={"Not available for purchase right now. Please check back soon."}>
             <h4 class="text-xl">{formatPrice(price()!.amount)}</h4>
 
-            <div class="w-1/2 mb-10">
+            <div class="w-1/2 mb-10 mx-auto md:mx-0">
               <TextInput label="Quantity" type="number" min={1} value={qty().toString()} onChange={(e) => setQty(+e.currentTarget.value)} />
             </div>
 

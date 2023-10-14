@@ -1,6 +1,6 @@
-import { Component, createEffect } from "solid-js";
+import { Component, Show, createEffect } from "solid-js";
 import { Portal } from "solid-js/web";
-import { Link } from "@solidjs/router";
+import { Link, useIsRouting } from "@solidjs/router";
 import { Toast } from "@kobalte/core";
 import Collapse from "~/components/Collapse/Collapse";
 import Footer from "~/components/Footer";
@@ -12,9 +12,14 @@ const DefaultLayout: Component<LayoutProps> = (props) => {
   createEffect(() => {
     document.title = props.title || company.DISPLAY_NAME
   })
+  const isRouting = useIsRouting()
 
   return (
     <div class="drawer">
+      <Show when={isRouting()}>
+        <progress class="progress w-full fixed"></progress>
+      </Show>
+
       <input id="my-drawer-3" type="checkbox" class="drawer-toggle" />
       <div class="drawer-content flex flex-col">
         {/* <!-- Navbar --> */}
