@@ -4,6 +4,7 @@
   import type { Category, Product } from "$lib/types";
   import { price } from "$lib/utils";
   import { Button, Input, Label, MultiSelect, Textarea } from "flowbite-svelte";
+  import type EditorJS from "@editorjs/editorjs";
 
   import { onMount } from "svelte";
   import Editor from "../../../../components/Editor.svelte";
@@ -11,6 +12,7 @@
   let product: Product;
   let categories: { value: number; name: string }[] = [];
   let selectedCategories: number[];
+  let descriptionEditor: EditorJS;
   const id = $page.params.id;
 
   async function loadData() {
@@ -32,6 +34,7 @@
     const data: any = product;
     data.oldCategories = data.categories.map((c: Category) => c.id);
     data.categories = selectedCategories;
+    data.descriptionEditor = await descriptionEditor.save()
     product = await Http.put(`/products`, data);
   }
 </script>
@@ -81,7 +84,7 @@
 
     <div class="mb-6">
       <Label for="description" class="block mb-2">Description</Label>
-      <Editor />
+      <Editor bind:editor={descriptionEditor} data={product.descriptionEditor} />
     </div>
 
     <div class="mb-6">

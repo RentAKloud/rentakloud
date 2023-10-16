@@ -6,11 +6,12 @@
   import Checklist from "@editorjs/checklist";
   import Table from "@editorjs/table";
 
+  export let editor: EditorJS | null = null;
   export let data: OutputData = { blocks: [] };
   let editorContainer: HTMLDivElement;
 
   function initEditor() {
-    const editor = new EditorJS({
+    editor = new EditorJS({
       holder: editorContainer,
       data,
       tools: {
