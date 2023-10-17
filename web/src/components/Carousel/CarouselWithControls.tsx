@@ -1,9 +1,9 @@
-import { For, createEffect, createSignal } from "solid-js";
+import { Component, For, createEffect, createSignal } from "solid-js";
 import ChevronLeftIcon from "../icons/ChevronLeft";
 import ChevronRightIcon from "../icons/ChevronRight";
 import Carousel, { CarouselProps } from "./Carousel";
 
-const CarouselWithControls: CarouselProps = (props) => {
+const CarouselWithControls: Component<CarouselProps> = (props) => {
   const [currSlide, setCurrSlide] = createSignal(0)
   const [inTransit, setInTransit] = createSignal(false)
   const isFirst = () => currSlide() === 0
@@ -42,8 +42,11 @@ const CarouselWithControls: CarouselProps = (props) => {
             {(_, i) => {
               return (
                 <span
-                  class="bg-white opacity-50 block rounded w-[10px] h-[10px]"
-                  classList={{ "opacity-100": i() === currSlide() }}
+                  class="block rounded w-[10px] h-[10px]"
+                  classList={{
+                    "bg-neutral": i() !== currSlide(),
+                    "bg-primary": i() === currSlide()
+                  }}
                   onclick={() => setCurrSlide(i())}
                 />
               )

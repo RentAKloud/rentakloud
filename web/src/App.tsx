@@ -1,4 +1,4 @@
-import { Component, Show, Suspense, createEffect } from 'solid-js';
+import { Component, Suspense, createEffect } from 'solid-js';
 import { Route, Routes, useLocation, useNavigate } from '@solidjs/router';
 
 import { authStore, getUserProfile } from './stores/auth';

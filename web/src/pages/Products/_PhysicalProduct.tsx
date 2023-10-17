@@ -1,6 +1,6 @@
 import { Tabs } from "@kobalte/core";
 import { Link } from "@solidjs/router";
-import { Component, Show, createMemo, createSignal } from "solid-js";
+import { Component, Match, Show, Switch, createMemo, createSignal } from "solid-js";
 import CarouselWithControls from "~/components/Carousel/CarouselWithControls";
 import TextInput from "~/components/Inputs/TextInput";
 import { NotificationService } from "~/services/NotificationService";
@@ -49,7 +49,16 @@ export const PhysicalProduct: Component<{ product: Product }> = (props) => {
           <p class="my-5" innerHTML={product().shortDescription} />
 
           <Show when={price() !== null} fallback={"Not available for purchase right now. Please check back soon."}>
-            <h4 class="text-xl">{formatPrice(price()!.amount)}</h4>
+            <h4 class="text-xl mb-2">{formatPrice(price()!.amount)}</h4>
+
+            <Switch>
+              <Match when={product().stock <= 0}>
+                <h3 class="text-red-500">OUT OF STOCK</h3>
+              </Match>
+              <Match when={product().stock >= 1}>
+                <h3 class="text-green-500">IN STOCK <small class="text-base-content opacity-70">{product().stock} left</small></h3>
+              </Match>
+            </Switch>
 
             <div class="w-1/2 mb-10 mx-auto md:mx-0">
               <TextInput label="Quantity" type="number" min={1} value={qty().toString()} onChange={(e) => setQty(+e.currentTarget.value)} />
@@ -62,18 +71,18 @@ export const PhysicalProduct: Component<{ product: Product }> = (props) => {
 
       <section class="mt-5">
         {/* <Tabs.Root aria-label="Main navigation"> */}
-          {/* <Tabs.List class="tabs">
+        {/* <Tabs.List class="tabs">
             <Tabs.Trigger class="tab tab-bordered ui-selected:tab-active" value="details">Details</Tabs.Trigger>
             <Tabs.Trigger class="tab tab-bordered ui-selected:tab-active" value="shipping">Shipping</Tabs.Trigger>
             <Tabs.Trigger class="tab tab-bordered ui-selected:tab-active" value="reviews">Reviews</Tabs.Trigger> */}
-            {/* <Tabs.Indicator class="tabs__indicator" /> */}
-          {/* </Tabs.List> */}
+        {/* <Tabs.Indicator class="tabs__indicator" /> */}
+        {/* </Tabs.List> */}
 
-          <div class="m-5" innerHTML={product().description}>
-            {/* <Tabs.Content class="tabs__content" value="details" innerHTML={product().description}></Tabs.Content>
+        <div class="m-5" innerHTML={product().description}>
+          {/* <Tabs.Content class="tabs__content" value="details" innerHTML={product().description}></Tabs.Content>
             <Tabs.Content class="tabs__content" value="shipping">Shipping Info</Tabs.Content>
             <Tabs.Content class="tabs__content" value="reviews">Reviews</Tabs.Content> */}
-          </div>
+        </div>
         {/* </Tabs.Root> */}
       </section>
     </>

@@ -1,27 +1,28 @@
-import { Component, For, Ref, createEffect, createSignal } from "solid-js";
+import { Component, For, createEffect, createSignal } from "solid-js";
 
-export type CarouselProps = Component<{
+export type CarouselProps = {
   items: {
     src: string,
     alt: string,
     bg?: string,
   }[];
-  currSlide: number;
-}>
+  currSlide?: number;
+}
 
-const Carousel: CarouselProps = (props) => {
+const Carousel: Component<CarouselProps> = (props) => {
   let carousel: HTMLDivElement | undefined;
-  const [prevSlide, setPrevSlide] = createSignal(props.currSlide)
+  const currSlide = () => props.currSlide || 0
+  const [prevSlide, setPrevSlide] = createSignal(currSlide())
 
   createEffect(() => {
-    const diff = props.currSlide - prevSlide()
+    const diff = currSlide() - prevSlide()
     const n = Math.abs(diff)
     const dir = diff/n
     
     for (let i = 0; i < n; i++)
       setTimeout(() => carousel?.scrollBy(10 * dir, 0), 600 * i)
 
-    setPrevSlide(props.currSlide)
+    setPrevSlide(currSlide())
   })
 
   return (

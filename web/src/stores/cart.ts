@@ -24,6 +24,19 @@ function addToCart(item: Product, qty: number = 1, priceId?: string) {
   localStorage.setItem('cart', JSON.stringify(cart))
 }
 
+function removeFromCart(item: Product) {
+  cart.items = cart.items.filter(p => p.productId !== item.id)
+  localStorage.setItem('cart', JSON.stringify(cart))
+}
+
+function incrQty(item: Product) {
+  addToCart(item, 1)
+}
+
+function decrQty(item: Product) {
+  addToCart(item, -1)
+}
+
 function resetCart() {
   cart.items = []
   localStorage.setItem('cart', JSON.stringify(cart))
@@ -38,6 +51,9 @@ function getCartTotal() {
 export {
   cart,
   addToCart,
+  removeFromCart,
+  incrQty,
+  decrQty,
   resetCart,
   getCartTotal,
 }
