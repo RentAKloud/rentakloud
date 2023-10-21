@@ -3,7 +3,7 @@ import { Part, createStore } from "solid-js/store";
 import { Stripe, loadStripe } from "@stripe/stripe-js";
 import { useSearchParams } from "@solidjs/router";
 import { NotificationService } from "~/services/NotificationService";
-import { Address, CheckoutContextProps, CheckoutSteps, Order, OrderStatus, OrderStore, defaultCheckout } from "~/types/order";
+import { Address, CheckoutContextProps, CheckoutSteps, CouponCode, CouponType, Order, OrderStatus, OrderStore, defaultCheckout } from "~/types/order";
 import { authStore } from "~/stores/auth";
 import OrdersApi from "~/api/orders";
 import { cart, resetCart } from "~/stores/cart";
@@ -102,8 +102,8 @@ export const CheckoutProvider: Component<{ children: JSXElement }> = (props) => 
     setOrderStore("orderNotes", val)
   }
 
-  function updateCoupon(val: string) {
-    setOrderStore("couponCode", val)
+  function updateCoupons(val: CouponCode[]) {
+    setOrderStore("couponCodes", val)
   }
 
   const [inTransit, setInTransit] = createSignal(false)
@@ -119,16 +119,20 @@ export const CheckoutProvider: Component<{ children: JSXElement }> = (props) => 
       if (!order() && physicalItems.length > 0) {
         const orderResp = await OrdersApi.create({
           ...orderStore,
-          items: physicalItems,
+          items: physicalItems, // TODO should only need to send IDs here
           shippingSameAsBilling: shippingSameAsBilling()
         })
-        setOrder(orderResp)
+        if (!orderResp.error) {
+          setOrder(orderResp.result!)
+        }
       }
 
       if (physicalItems.length > 0) {
         // orderResp.amount excludes amount for subscriptions
         const resp2 = await PaymentsApi.createPaymentIntent(user!.email, order()!.amount!)
-        setClientSecret(resp2.clientSecret)
+        if (!resp2.error) {
+          setClientSecret(resp2.result!.clientSecret)
+        }
       }
 
       // Handle subscriptions - we create separate subscription for each
@@ -146,16 +150,15 @@ export const CheckoutProvider: Component<{ children: JSXElement }> = (props) => 
         })
         const subResponses = await Promise.all(subResponsePromises)
         const subData = subResponses.map((x, i) => ({
-          subscriptionId: x.subscriptionId,
+          subscriptionId: x.result!.subscriptionId,
           productId: subscriptionItems[i].productId,
           priceId: subscriptionItems[i].priceId!
         }))
         await ProductsApi.createActiveProducts(subData)
-        const secrets = subResponses.map(x => x.clientSecret)
+        const secrets = subResponses.map(x => x.result!.clientSecret)
         setSubClientSecrets(secrets)
       }
     } catch (err: any) {
-      console.log(err)
       NotificationService.error("Something went wrong")
       setFormErrors(err.message.split(","))
     } finally {
@@ -178,7 +181,7 @@ export const CheckoutProvider: Component<{ children: JSXElement }> = (props) => 
       updateBilling,
       updateShipping,
       updateNotes,
-      updateCoupon,
+      updateCoupons,
 
       stripe,
       clientSecret,

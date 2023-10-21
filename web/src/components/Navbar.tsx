@@ -1,4 +1,4 @@
-import { Component, For, Show, createResource } from "solid-js";
+import { Component, For, Match, Show, Switch, createResource } from "solid-js";
 import { Link } from "@solidjs/router";
 import { company } from "~/config/constants";
 import { authStore, logout } from "~/stores/auth";
@@ -72,7 +72,7 @@ const Navbar: Component<{}> = () => {
       </div>
 
       <div class="hidden lg:flex navbar-end gap-5">
-        {cartLength() > 0 && (
+        <Show when={cartLength() > 0}>
           <Link href="/cart">
             <div class="btn btn-ghost btn-circle">
               <div class="indicator">
@@ -83,33 +83,37 @@ const Navbar: Component<{}> = () => {
               </div>
             </div>
           </Link>
-        )}
+        </Show>
 
-        {
-          !loggedIn() ? (
+        <Switch>
+          <Match when={!loggedIn()}>
             <ul class="menu menu-horizontal">
               <li><Link href="/register">Signup</Link></li>
               <li><Link href="/login">Login</Link></li>
             </ul>
-          ) : (
-            <>
-              <div class="dropdown dropdown-end">
-                <Notifications />
-              </div>
+          </Match>
+          <Match when={loggedIn()}>
+            <div class="dropdown dropdown-end">
+              <Notifications />
+            </div>
 
-              <div class="dropdown dropdown-end">
-                <Profile />
-              </div>
-            </>
-          )
-        }
+            <div class="dropdown dropdown-end">
+              <Profile />
+            </div>
+          </Match>
+        </Switch>
       </div>
     </nav>
   )
 }
 
 const Notifications: Component = () => {
-  const [notifications, { refetch }] = createResource(NotificationsApi.all)
+  const [notifications, { refetch }] = createResource(async () => {
+    const { result, error } = await NotificationsApi.all()
+    if (!error) {
+      return result
+    }
+  })
 
   return (
     <>

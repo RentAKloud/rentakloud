@@ -17,11 +17,12 @@ type SelectSearchProps = {
   error?: string;
   required?: boolean | undefined;
   disabled?: boolean | undefined;
-  ref: (element: HTMLSelectElement) => void;
-  onInput: JSX.EventHandler<HTMLSelectElement, InputEvent>;
+  default?: Option;
+  ref?: (element: HTMLSelectElement) => void;
+  onInput?: JSX.EventHandler<HTMLSelectElement, InputEvent>;
   onChange: JSX.EventHandler<HTMLSelectElement, Event>;
-  onBlur: JSX.EventHandler<HTMLSelectElement, FocusEvent>;
-  onValueChange: (value: string|number) => void;
+  onBlur?: JSX.EventHandler<HTMLSelectElement, FocusEvent>;
+  onValueChange?: (value: string|number) => void;
 }
 
 const SelectSearch: Component<SelectSearchProps> = (props) => {
@@ -56,6 +57,7 @@ const SelectSearch: Component<SelectSearchProps> = (props) => {
     <div class="form-control">
       <Combobox.Root<Option>
         {...rootProps}
+        defaultValue={props.default}
         value={getValue()}
         options={options()}
         optionLabel="label"

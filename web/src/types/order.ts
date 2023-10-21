@@ -51,14 +51,19 @@ export type Order = {
   amount?: number; // only in create response
 }
 
-type CouponCode = {
+export type CouponCode = {
   id: number;
   title: string;
   code: string;
 
-  type: string;
-  flatDiscount: number;
+  type: CouponType;
+  flatDiscount: string; // Type Decimal is returned as string from backend
   percentageDiscount: number;
+}
+
+export enum CouponType {
+  Flat = 'Flat',
+  Percentage = 'Percentage'
 }
 
 export enum OrderStatus {
@@ -80,7 +85,7 @@ export type OrderStore = {
   billingAddress: Address;
   shippingAddress: Address;
   orderNotes: string;
-  couponCode: string;
+  couponCodes: CouponCode[];
 }
 
 export type CheckoutSteps = "address" | "payment" | "congrats"
@@ -94,7 +99,7 @@ export type CheckoutContextProps = {
   updateBilling: (key: Part<Address, keyof Address>, val: string) => void;
   updateShipping: (key: Part<Address, keyof Address>, val: string) => void;
   updateNotes: (val: string) => void;
-  updateCoupon: (val: string) => void;
+  updateCoupons: (val: CouponCode[]) => void;
 
   stripe: Accessor<Stripe | null>;
   clientSecret: Accessor<string | undefined>;
@@ -115,12 +120,12 @@ export const defaultCheckout: CheckoutContextProps = {
   updateBilling() { },
   updateShipping() { },
   updateNotes() { },
-  updateCoupon() { },
+  updateCoupons() { },
   orderStore: {
     billingAddress: defaultAddress,
     shippingAddress: defaultAddress,
     orderNotes: "",
-    couponCode: "",
+    couponCodes: [],
   },
   stripe: () => null,
   clientSecret: () => undefined,

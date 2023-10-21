@@ -1,16 +1,16 @@
-import { HttpService } from "../services/HttpService";
-import { ActiveProduct, Product, SubscriptionData } from "../types/product";
+import { ApiResponse, HttpService } from "~/services/HttpService";
+import { ActiveProduct, Product, SubscriptionData } from "~/types/product";
 
 class ProductsApi {
-  static async all(): Promise<Product[]> {
+  static async all(): ApiResponse<Product[]> {
     return await HttpService.get("/products")
   }
 
-  static async one(id: number): Promise<Product> {
+  static async one(id: number): ApiResponse<Product> {
     return await HttpService.get(`/products/${id}`)
   }
 
-  static async allMy(): Promise<ActiveProduct[]> {
+  static async allMy(): ApiResponse<ActiveProduct[]> {
     return await HttpService.get("/products/me")
   }
 

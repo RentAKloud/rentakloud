@@ -1,17 +1,21 @@
 import { Component, For, Show, createResource, createSignal } from "solid-js";
-import ProductsApi from "../../api/products";
-import Card from "../../components/Card/Card";
-import { DateTime } from "../../components/DateTime";
-import Modal from "../../components/Modal";
-import { ActiveProduct } from "../../types/product";
-import { NotificationService } from "../../services/NotificationService";
 import { Link } from "@solidjs/router";
-import ListIcon from "../../components/icons/List";
-import GridIcon from "../../components/icons/Grid";
-import CLIIcon from "../../components/icons/CLI";
+import ProductsApi from "~/api/products";
+import Card from "~/components/Card/Card";
+import { DateTime } from "~/components/DateTime";
+import Modal from "~/components/Modal";
+import { ActiveProduct } from "~/types/product";
+import { NotificationService } from "~/services/NotificationService";
+import ListIcon from "~/components/icons/List";
+import GridIcon from "~/components/icons/Grid";
+import CLIIcon from "~/components/icons/CLI";
 
 const Instances: Component = () => {
-  const [activeProducts, { refetch }] = createResource(ProductsApi.allMy)
+  const [activeProducts, { refetch }] = createResource(async () => {
+    const { result, error } = await ProductsApi.allMy()
+    if (error) throw error
+    return result
+  })
   const [selectedProduct, setSelectedProduct] = createSignal<ActiveProduct>()
   const [isDeleteModalOpen, setIsDeleteModalOpen] = createSignal<boolean>(false)
   const [activeView, setActiveView] = createSignal<"grid" | "list">("grid")

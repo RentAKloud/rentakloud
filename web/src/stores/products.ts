@@ -1,6 +1,6 @@
 import { createResource } from "solid-js";
-import { Product, ProductPrice } from "../types/product";
-import ProductsApi from "../api/products";
+import { Product, ProductPrice } from "~/types/product";
+import ProductsApi from "~/api/products";
 
 export const [products] = createResource<Product[]>(fetchAndRemix, {
   initialValue: []
@@ -15,18 +15,16 @@ export function getProductPrice(product: Product, priceId?: string): ProductPric
 }
 
 async function fetchAndRemix(): Promise<Product[]> {
-  try {
-    const _products = await ProductsApi.all()
-    // const _slugs = _products.map(p => p.slug)
-    // defaultProducts.forEach(p => {
-    //   if (!_slugs.includes(p.slug)) {
-    //     _products.push(p)
-    //   }
-    // })
-  
-    return _products
-  } catch (err) {
-    console.error("Could not fetch products data")
-    return []
+  const _products = await ProductsApi.all()
+  // const _slugs = _products.map(p => p.slug)
+  // defaultProducts.forEach(p => {
+  //   if (!_slugs.includes(p.slug)) {
+  //     _products.push(p)
+  //   }
+  // })
+  if (_products.error) {
+    throw "Could not fetch products data"
   }
+
+  return _products.result!
 }

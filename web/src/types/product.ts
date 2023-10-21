@@ -17,6 +17,7 @@ export type Product = {
 export type ProductPrice = {
   currency: string;
   amount: number;
+  saleAmount?: number;
 
   // for subscriptions
   planName?: string;

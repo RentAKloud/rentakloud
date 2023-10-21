@@ -14,6 +14,7 @@ import { MailModule } from './modules/mail.module';
 import { PrometheusModule } from '@willsoto/nestjs-prometheus';
 import { NotificationsModule } from './modules/notifications.module';
 import { CategoriesModule } from './modules/categories.module';
+import { CouponsModule } from './modules/coupons.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { CategoriesModule } from './modules/categories.module';
     CategoriesModule,
     PaymentsModule,
     OrdersModule,
+    CouponsModule,
     DiskImagesModule,
     NotificationsModule
   ],

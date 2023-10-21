@@ -5,6 +5,7 @@ import DefaultLayout from "../../layouts/DefaultLayout";
 import { Link, useSearchParams } from "@solidjs/router";
 import { productCategories } from "../../types/product";
 import { products } from "../../stores/products";
+import { truncate } from "~/utils";
 
 const Products: Component<{}> = () => {
   const [queryParams, setParams] = useSearchParams()
@@ -59,7 +60,7 @@ const Products: Component<{}> = () => {
           <For each={filteredProducts()}>
             {(product) => (
               <Link href={`/our-products/${product.slug}`}>
-                <Card title={product.name} description={product.shortDescription} class="w-96" />
+                <Card title={product.name} description={truncate(product.shortDescription, 120)} class="w-96" />
               </Link>
             )}
           </For>

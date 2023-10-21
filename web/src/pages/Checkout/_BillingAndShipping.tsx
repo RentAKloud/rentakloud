@@ -1,6 +1,7 @@
 import { Component, Show } from "solid-js";
-import TextInput from "../../components/Inputs/TextInput";
+import TextInput from "~/components/Inputs/TextInput";
 import { useCheckoutContext } from "./context";
+import SelectSearch from "~/components/Inputs/SelectSearch";
 // import { authStore } from "../../stores/auth";
 
 export const BillingAndShipping: Component = () => {
@@ -65,9 +66,13 @@ export const BillingAndShipping: Component = () => {
       </div>
 
       <div class="flex flex-col md:flex-row md:gap-5 justify-center mb-5">
-        <TextInput
+        <SelectSearch
+          name="country"
           label="Country"
+          options={[{ label: "USA", value: "us" }, { label: "Canada", value: "ca" }]}
+          default={{value: "us", label: "USA"}}
           value={orderStore.billingAddress.country}
+
           onChange={(e) => updateBilling("country", e.currentTarget.value)}
         />
 
@@ -115,7 +120,14 @@ export const BillingAndShipping: Component = () => {
         </div>
 
         <div class="flex gap-5 justify-center mb-10">
-          <TextInput label="Country" value={orderStore.shippingAddress.country} onChange={(e) => updateShipping("country", e.currentTarget.value)} />
+          <SelectSearch
+            name="country"
+            label="Country"
+            options={[{ label: "USA", value: "us" }, { label: "Canada", value: "ca" }]}
+            value={orderStore.shippingAddress.country}
+
+            onChange={(e) => updateShipping("country", e.currentTarget.value)}
+          />
 
           <TextInput label="Zip" value={orderStore.shippingAddress.zip} onChange={(e) => updateShipping("zip", e.currentTarget.value)} />
         </div>

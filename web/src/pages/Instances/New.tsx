@@ -22,7 +22,11 @@ const networks = [{ label: "Default", value: 1 }, { label: "VPC-1", value: 2 }]
 
 const InstancesNew: Component = () => {
   const [params, setParams] = useSearchParams()
-  const [images, { refetch }] = createResource(() => DiskImagesApi.all())
+  const [images, { refetch }] = createResource(async () => {
+    const { result, error } = await DiskImagesApi.all()
+    if (error) throw error
+    return result
+  })
   const regions = ["US East", "US West", "Canada", "EU West", "EU East", "EU Central", "Asia Central", "Australia"]
   const initialValues = {
     // config: configs[2].value,

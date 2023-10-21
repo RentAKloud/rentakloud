@@ -12,7 +12,7 @@ type FormInputType = {
 
   ref?: (element: HTMLInputElement) => void;
   onInput?: JSX.EventHandler<HTMLInputElement, InputEvent>;
-  onChange: JSX.EventHandler<HTMLInputElement, Event>;
+  onChange?: JSX.EventHandler<HTMLInputElement, Event>;
   onBlur?: JSX.EventHandler<HTMLInputElement, FocusEvent>;
 }
 

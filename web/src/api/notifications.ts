@@ -1,12 +1,12 @@
 import { Notification, NotificationStatus } from "~/types/notification";
-import { HttpService } from "~/services/HttpService";
+import { ApiResponse, HttpService } from "~/services/HttpService";
 
 class NotificationsApi {
-  static async all(): Promise<Notification[]> {
+  static async all(): ApiResponse<Notification[]> {
     return await HttpService.get("/notifications")
   }
 
-  static async one(id: number): Promise<Notification> {
+  static async one(id: number): ApiResponse<Notification> {
     return await HttpService.get(`/notifications/${id}`)
   }
 

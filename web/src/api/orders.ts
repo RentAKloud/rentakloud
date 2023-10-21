@@ -1,21 +1,25 @@
-import { HttpService } from "../services/HttpService";
-import { OrderRequest, OrderResponse as CreateOrderResponse, Order, OrderStatus } from "../types/order";
+import { ApiResponse, HttpService } from "~/services/HttpService";
+import { OrderRequest, OrderResponse as CreateOrderResponse, Order, OrderStatus, CouponCode } from "~/types/order";
 
 class OrdersApi {
-  static async all(): Promise<Order[]> {
+  static async all(): ApiResponse<Order[]> {
     return await HttpService.get("/orders")
   }
 
-  static async one(id: number): Promise<Order> {
+  static async one(id: number): ApiResponse<Order> {
     return await HttpService.get(`/orders/${id}`)
   }
 
-  static async create(order: OrderRequest): Promise<CreateOrderResponse> {
+  static async create(order: OrderRequest): ApiResponse<CreateOrderResponse> {
     return await HttpService.post("/orders", order)
   }
 
   static async updateStatus(id: number, status: OrderStatus) {
     return await HttpService.post(`/orders/${id}`, { status })
+  }
+
+  static async validateCoupon(code: string): ApiResponse<CouponCode> {
+    return await HttpService.post<CouponCode>(`/coupons/validate`, { code })
   }
 }
 

@@ -1,13 +1,13 @@
-import { HttpService } from "../services/HttpService";
-import { Paginated } from "../types/common";
-import { DiskImage } from "../types/diskImage";
+import { ApiResponse, HttpService } from "~/services/HttpService";
+import { Paginated } from "~/types/common";
+import { DiskImage } from "~/types/diskImage";
 
 class DiskImagesApi {
-  static async all(query?: URLSearchParams): Promise<Paginated<DiskImage>> {
+  static async all(query?: URLSearchParams): ApiResponse<Paginated<DiskImage>> {
     return await HttpService.get('/disk-images', query)
   }
 
-  static async one(id: number): Promise<DiskImage> {
+  static async one(id: number): ApiResponse<DiskImage> {
     return await HttpService.get(`/disk-images/${id}`)
   }
 

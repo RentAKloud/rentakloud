@@ -3,10 +3,12 @@ import { cart, getCartTotal } from "~/stores/cart";
 import { getProductById, getProductPrice, products } from "~/stores/products";
 import { useCheckoutContext } from "./context";
 import Lottie from "~/components/Lottie";
-import { formatPrice } from "~/utils";
+import { formatPrice, getTotalDiscounts } from "~/utils";
 
 export const OrderDetails: Component = () => {
-  const { step } = useCheckoutContext()
+  const { step, orderStore } = useCheckoutContext()
+  const subTotal = () => getCartTotal()
+  const discounts = () => getTotalDiscounts(orderStore.couponCodes, subTotal())
 
   return (
     <>
@@ -19,12 +21,13 @@ export const OrderDetails: Component = () => {
               const product = () => getProductById(item.productId)!
               const price = () => getProductPrice(product(), item.priceId)
               const interval = () => price().priceId ? ` &cross; ${price().planName} ${price().interval}ly` : ""
+              const formattedPrice = () => formatPrice(price().saleAmount || price().amount)
 
               return (
                 <div class="flex justify-between">
                   <div>{product().name} <Show when={interval()}><span innerHTML={interval()} /></Show></div>
                   <div>
-                    <span>{formatPrice(price().amount)}</span>
+                    <span>{formattedPrice()}</span>
                     <span> &cross; {item.quantity}</span>
                   </div>
                 </div>
@@ -36,11 +39,11 @@ export const OrderDetails: Component = () => {
         <Show when={cart.items.length > 0}>
           <div class="flex justify-between mt-5">
             <strong>Subtotal</strong>
-            <span>{formatPrice(getCartTotal())}</span>
+            <span>{formatPrice(subTotal())}</span>
           </div>
           <div class="flex justify-between">
             <strong>Discount</strong>
-            <span>-{formatPrice(0)}</span>
+            <span>-{formatPrice(discounts())}</span>
           </div>
           <div class="flex justify-between">
             <strong>Taxes</strong>
@@ -53,7 +56,7 @@ export const OrderDetails: Component = () => {
 
           <div class="flex justify-between mt-5">
             <strong>Total</strong>
-            <span>{formatPrice(getCartTotal())}</span>
+            <span>{formatPrice(subTotal() - discounts())}</span>
           </div>
         </Show>
       </Show>

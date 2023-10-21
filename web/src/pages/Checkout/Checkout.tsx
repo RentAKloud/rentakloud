@@ -1,6 +1,6 @@
 import { Component, Show } from "solid-js";
 import { Link } from "@solidjs/router";
-import DefaultLayout from "../../layouts/DefaultLayout";
+import DefaultLayout from "~/layouts/DefaultLayout";
 import { OrderDetails } from "./_OrderDetails";
 import { BillingAndShipping } from "./_BillingAndShipping";
 import { CheckoutProvider, useCheckoutContext } from "./context";
@@ -15,7 +15,7 @@ const _Checkout: Component = () => {
         <h1 class="text-4xl font-bold mb-5">Checkout</h1>
 
         <div class="flex flex-col md:flex-row gap-5 justify-between">
-          <section class="border-2 rounded-box p-5 md:w-2/5">
+          <section class="border-2 rounded-box p-5 md:w-3/5 xl:w-2/5">
             <Show when={step() === 'address'}>
               <h2 class="-mt-8 mb-8 bg-base-200 px-1 w-fit text-gray-400">Billing & Shipping</h2>
 

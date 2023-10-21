@@ -43,4 +43,7 @@ export class CreateOrderReq {
   @IsArray()
   @ArrayMinSize(1)
   items: any[];
+
+  @IsArray()
+  couponCodes: { id: number }[]
 }

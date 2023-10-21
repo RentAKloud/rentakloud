@@ -44,7 +44,10 @@ function resetCart() {
 
 function getCartTotal() {
   return cart.items
-    .map(i => getProductPrice(getProductById(i.productId)!, i.priceId).amount * i.quantity)
+    .map(i => {
+      const p = getProductPrice(getProductById(i.productId)!, i.priceId)
+      return (p.saleAmount || p.amount) * i.quantity
+    })
     .reduce((x, y) => x + y, 0)
 }
 

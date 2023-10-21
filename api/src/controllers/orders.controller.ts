@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Param, ParseIntPipe, Post, Request, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { ProductType } from '@prisma/client';
+import { CouponType, ProductType } from '@prisma/client';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 import { ParseOrderPipe, ParsedCreateOrderReq } from 'src/pipes/parse-order';
 import { OrdersService } from 'src/services/orders.service';
@@ -17,7 +17,9 @@ export class OrdersController {
   @UseGuards(JwtAuthGuard)
   @Get()
   orders(@Request() req) {
-    return this.ordersService.orders({ where: { userId: req.user.userId } })
+    return this.ordersService.orders({
+      where: { userId: req.user.userId },
+    })
   }
 
   @UseGuards(JwtAuthGuard)
@@ -60,13 +62,20 @@ export class OrdersController {
 
     // Calculate order total amount. This amount is used for confirmCardPayment at frontend.
     // excludes amount for subscriptions
-    // @ts-ignore
-    order.amount = order.items.reduce((sum: number, curr: { product: any, quantity: number }) => {
+    order.amount = order.items.reduce<number>((sum: number, curr: { product: any, quantity: number }) => {
       if (curr.product.productType === ProductType.OnlineService) {
         return sum
       }
-      return sum + curr.product.prices[0].amount * curr.quantity
+      const amount = curr.product.prices[0].saleAmount || curr.product.prices[0].amount
+      return sum + amount * curr.quantity
     }, 0)
+    const discounts = order.coupons.reduce((sum, curr) => {
+      return (curr.type === CouponType.Percentage ?
+        order.amount * curr.percentageDiscount / 100
+        :
+        curr.flatDiscount.toNumber()) + sum
+    }, 0.0)
+    order.amount = +(order.amount - discounts).toFixed(2)
 
     return order
   }

@@ -2,10 +2,17 @@ import { Component, For, Show, createResource } from "solid-js";
 import OrdersApi from "~/api/orders";
 import Loader from "~/components/Loader";
 import { DateTime } from "~/components/DateTime";
-import { formatPrice } from "~/utils";
+import { formatPrice, getTotalDiscounts } from "~/utils";
 
 const Orders: Component = () => {
-  const [orders] = createResource(OrdersApi.all)
+  const [orders] = createResource(async () => {
+    const { result, error } = await OrdersApi.all()
+    if (error) {
+      throw error
+    }
+
+    return result
+  })
 
   return (
     <>
@@ -36,13 +43,15 @@ const Orders: Component = () => {
                 {
                   (order, i) => {
                     const items = order.items.length > 1 ? `${order.items.length} items` : order.items[0].product.name
-                    const total = order.items.reduce((i, j) => i + j.product.prices[0].amount * j.quantity, 0)
+                    const total = order.items.reduce((i, j) => i + (j.product.prices[0].saleAmount || j.product.prices[0].amount) * j.quantity, 0)
+                    const discounts = getTotalDiscounts(order.coupons, total)
+
                     return (
                       <tr>
                         <th>{i() + 1}</th>
                         <td>{items}</td>
                         <td><DateTime value={order.createdAt} /></td>
-                        <td>{formatPrice(total)}</td>
+                        <td>{formatPrice(total - discounts)}</td>
                         <td>{order.status}</td>
                       </tr>
                     )

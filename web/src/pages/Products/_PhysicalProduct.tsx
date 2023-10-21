@@ -49,7 +49,16 @@ export const PhysicalProduct: Component<{ product: Product }> = (props) => {
           <p class="my-5" innerHTML={product().shortDescription} />
 
           <Show when={price() !== null} fallback={"Not available for purchase right now. Please check back soon."}>
-            <h4 class="text-xl mb-2">{formatPrice(price()!.amount)}</h4>
+            <h4 class="text-xl mb-2">
+              <span classList={{ "line-through": !!price()!.saleAmount }}>{formatPrice(price()!.amount)}</span>
+              <Show when={price()!.saleAmount}>
+                <br />{formatPrice(price()!.saleAmount!)}
+                &nbsp;
+                <span class="badge badge-secondary badge-lg dark:badge-outline">
+                  -{Math.round((1 - price()!.saleAmount! / price()!.amount) * 100)}%
+                </span>
+              </Show>
+            </h4>
 
             <Switch>
               <Match when={product().stock <= 0}>

@@ -1,7 +1,7 @@
 import { createEffect } from "solid-js"
 import { Card, useStripeElements } from "solid-stripe"
 import { useCheckoutContext } from "./context"
-import { NotificationService } from "../../services/NotificationService"
+import { NotificationService } from "~/services/NotificationService"
 import { PaymentIntentResult } from "@stripe/stripe-js"
 
 export const StripeElementsWrapper = () => {

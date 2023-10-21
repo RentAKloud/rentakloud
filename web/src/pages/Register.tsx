@@ -29,7 +29,6 @@ const Register: Component = () => {
       const fd = formData()
       await register(fd.email || "", fd.password || "", fd.firstName, fd.lastName)
     } catch (err: any) {
-      console.log(err)
       if (err.message === "Unauthorized") {
         NotificationService.error("Invalid email or password")
       } else {

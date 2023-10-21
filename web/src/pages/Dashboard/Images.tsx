@@ -23,7 +23,11 @@ const Images: Component = () => {
   q.append('page-size', pageSize())
   q.append('q', searchQuery())
 
-  const [images, { refetch }] = createResource(() => DiskImagesApi.all(q))
+  const [images, { refetch }] = createResource(async () => {
+    const {result, error} = await DiskImagesApi.all(q)
+    if (error) throw error
+    return result
+  })
   const [selectedProduct, setSelectedProduct] = createSignal<DiskImage>()
   const [isDeleteModalOpen, setIsDeleteModalOpen] = createSignal<boolean>(false)
 

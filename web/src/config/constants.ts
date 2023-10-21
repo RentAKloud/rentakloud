@@ -5,7 +5,8 @@ export const company = {
   DISPLAY_NAME: "RentAKloud",
   LEGAL_NAME: "RentAKloud Ltd.",
   LEGAL_ENTITY_CODE: "CZ10401365D",
-  ADDRESS_USA: "2156 E. RentAKloud Way, Tempe, AZ 85184 USA",
+  ADDRESS_USA: "916 Slate Lane, Celina, TX 75009, USA",
+  PHONE_NUMBER: "713-532-1280",
   LOGO_URL: "/images/logo-60x60.png" // served from `public` directory
 }
 

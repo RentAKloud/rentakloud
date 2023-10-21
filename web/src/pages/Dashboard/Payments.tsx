@@ -1,10 +1,14 @@
 import { Component, For, Show, createResource } from "solid-js";
-import Loader from "../../components/Loader";
-import { DateTime } from "../../components/DateTime";
-import PaymentsApi from "../../api/payments";
+import Loader from "~/components/Loader";
+import { DateTime } from "~/components/DateTime";
+import PaymentsApi from "~/api/payments";
 
 const Payments: Component = () => {
-  const [payments] = createResource(PaymentsApi.all)
+  const [payments] = createResource(async () => {
+    const { result, error } = await PaymentsApi.all()
+    if (error) throw error
+    return result
+  })
 
   return (
     <>

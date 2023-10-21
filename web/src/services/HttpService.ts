@@ -2,15 +2,23 @@ import { API_URL } from "../config/constants"
 import { authStore } from "../stores/auth"
 import { NotificationService } from "./NotificationService"
 
+export type ApiResponse<T> = Promise<{
+  result: T | null
+  error: {
+    statusCode: string
+    message: string
+  } | null
+}>
+
 export class HttpService {
-  static async get<T>(endpoint: string, queryParams?: URLSearchParams): Promise<T> {
+  static async get<T>(endpoint: string, queryParams?: URLSearchParams): ApiResponse<T> {
     if (queryParams) {
       endpoint += `?${queryParams}`
     }
     return wrapper(endpoint)
   }
 
-  static async post<T>(endpoint: string, body: any): Promise<T> {
+  static async post<T>(endpoint: string, body: any): ApiResponse<T> {
     const options = {
       method: "POST",
       body: JSON.stringify(body)
@@ -18,7 +26,7 @@ export class HttpService {
     return wrapper(endpoint, options)
   }
 
-  static async patch<T>(endpoint: string, body: any): Promise<T> {
+  static async patch<T>(endpoint: string, body: any): ApiResponse<T> {
     const options = {
       method: "PATCH",
       body: JSON.stringify(body)
@@ -26,7 +34,7 @@ export class HttpService {
     return wrapper(endpoint, options)
   }
 
-  static async delete<T>(endpoint: string): Promise<T> {
+  static async delete<T>(endpoint: string): ApiResponse<T> {
     const options = {
       method: "DELETE"
     }
@@ -35,6 +43,7 @@ export class HttpService {
 }
 
 // In case of multiple failures of same kind, we don't spam error messages
+// TODO not HttpService's job to display error notifications
 let lastFailure: string | null = null
 
 async function wrapper(endpoint: string, options?: RequestInit) {
@@ -57,16 +66,14 @@ async function wrapper(endpoint: string, options?: RequestInit) {
       toReturn = await resp.text()
     }
 
-    if (resp.status >= 400) {
-      throw new Error(toReturn.message || toReturn)
-    }
-
     lastFailure = null
-    return toReturn
+    return { result: toReturn, error: null }
   } catch (err: any) {
     if (lastFailure) {
       NotificationService.error("Could not reach RentaKloud network.")
     }
     lastFailure = err.message
+
+    return { result: null, error: { statusCode: "500", message: "Could not reach RentAKloud network" } }
   }
 }
