@@ -21,13 +21,13 @@ const LegalHome: Component = () => {
 
           <p class="mb-5">
             Corporate Headquarters<br />
-            1567 E. RentAKloud Way<br />
-            Tempe, AZ 85284 USA<br />
+            916 Slate Lane<br />
+            Celina, TX 75009 USA<br />
           </p>
 
           <p>
-            Phone number: +1 480 463 8811<br />
-            Fax number: (480) 624-2546<br />
+            Phone number: +1 713 532 1280<br />
+            {/* Fax number: (480) 624-2546<br /> */}
             Email address: info@rentakloud.com<br />
             Report Abuse<br />
             <br />

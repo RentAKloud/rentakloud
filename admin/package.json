@@ -31,6 +31,7 @@
     "@editorjs/embed": "^2.5.3",
     "@editorjs/header": "^2.7.0",
     "@editorjs/list": "^1.8.0",
-    "@editorjs/table": "^2.2.2"
+    "@editorjs/table": "^2.2.2",
+    "@tailwindcss/typography": "^0.5.10"
   }
 }

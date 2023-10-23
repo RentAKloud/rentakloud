@@ -87,7 +87,7 @@ export const PhysicalProduct: Component<{ product: Product }> = (props) => {
         {/* <Tabs.Indicator class="tabs__indicator" /> */}
         {/* </Tabs.List> */}
 
-        <div class="m-5" innerHTML={product().description}>
+        <div class="m-5 prose" innerHTML={product().description}>
           {/* <Tabs.Content class="tabs__content" value="details" innerHTML={product().description}></Tabs.Content>
             <Tabs.Content class="tabs__content" value="shipping">Shipping Info</Tabs.Content>
             <Tabs.Content class="tabs__content" value="reviews">Reviews</Tabs.Content> */}

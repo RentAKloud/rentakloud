@@ -3,10 +3,6 @@
 @tailwind components;
 @tailwind utilities;
 
-.editor-container h1 {
-  @apply text-4xl font-bold
-}
-
-.editor-container h2 {
-  @apply text-3xl font-bold
+.codex-editor {
+  @apply ml-16
 }

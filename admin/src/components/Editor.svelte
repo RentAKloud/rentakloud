@@ -17,7 +17,10 @@
       tools: {
         header: Header,
         embed: Embed,
-        list: List,
+        list: {
+          class: List,
+          inlineToolbar: true
+        },
         checklist: Checklist,
         table: Table,
       },
@@ -31,6 +34,6 @@
 
 <div
   bind:this={editorContainer}
-  class="editor-container bg-gray-50 dark:text-white dark:bg-gray-700"
+  class="prose dark:prose-invert bg-gray-50 dark:bg-gray-700"
   style="border-radius: 5px;"
 />

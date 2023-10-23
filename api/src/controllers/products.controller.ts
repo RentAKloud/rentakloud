@@ -3,6 +3,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { Category, Product } from '@prisma/client';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 import { ProductsService } from 'src/services/products.service';
+import * as edjsHTML from "editorjs-html";
 
 @ApiTags('Products')
 @Controller('products')
@@ -37,6 +38,12 @@ export class ProductsController {
     const { categories, oldCategories } = reqBody
     const toRemove = oldCategories.filter(x => !categories.includes(x))
     delete reqBody['oldCategories']
+
+    if (reqBody.descriptionEditor) {
+      //@ts-ignore
+      const parser = edjsHTML()
+      reqBody.description = parser.parse(reqBody.descriptionEditor).join("")
+    }
 
     return this.productsService.updateProduct({
       where: { id: reqBody.id },

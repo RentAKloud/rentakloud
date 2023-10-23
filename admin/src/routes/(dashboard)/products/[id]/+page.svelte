@@ -97,6 +97,12 @@
             placeholder="Price"
             bind:value={price.amount}
           />
+          <Input
+            type="number"
+            step="0.01"
+            placeholder="Sale Price"
+            bind:value={price.saleAmount}
+          />
           <Input placeholder="Currency" bind:value={price.currency} />
         </div>
       {/each}
