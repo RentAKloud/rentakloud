@@ -4,7 +4,7 @@ import { Component, Match, Show, Switch, createMemo, createSignal } from "solid-
 import CarouselWithControls from "~/components/Carousel/CarouselWithControls";
 import TextInput from "~/components/Inputs/TextInput";
 import { NotificationService } from "~/services/NotificationService";
-import { addToCart } from "~/stores/cart";
+import { addToCart, cart } from "~/stores/cart";
 import { Product } from "~/types/product";
 import { formatPrice } from "~/utils";
 
@@ -21,6 +21,10 @@ export const PhysicalProduct: Component<{ product: Product }> = (props) => {
 
   function buy() {
     if (qty() === 0) return
+    if (qty() + (cart.items.find(p => p.productId === product().id)?.quantity || 0) > product().stock) {
+      NotificationService.error("Cannot add more than in stock")
+      return
+    }
 
     addToCart(product(), qty())
 
@@ -70,7 +74,12 @@ export const PhysicalProduct: Component<{ product: Product }> = (props) => {
             </Switch>
 
             <div class="w-1/2 mb-10 mx-auto md:mx-0">
-              <TextInput label="Quantity" type="number" min={1} value={qty().toString()} onChange={(e) => setQty(+e.currentTarget.value)} />
+              <TextInput
+                label="Quantity"
+                type="number" min={1} max={product().stock}
+                value={qty().toString()}
+                onChange={(e) => setQty(+e.currentTarget.value)}
+              />
             </div>
 
             <button class="btn btn-primary" disabled={qty() === 0} onClick={buy}>Add to Cart</button>

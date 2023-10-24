@@ -8,6 +8,7 @@ type FormInputType = {
   placeholder?: string;
   type?: string;
   min?: number;
+  max?: number
   error?: string;
 
   ref?: (element: HTMLInputElement) => void;

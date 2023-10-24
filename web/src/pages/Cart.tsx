@@ -55,7 +55,7 @@ const Cart: Component = () => {
                           <button
                             class="font-bold text-green-500 btn btn-ghost btn-circle"
                             onclick={() => incrQty(product())}
-                          // disabled={item.quantity >= product().stock}
+                            disabled={item.quantity >= product().stock}
                           >
                             +
                           </button>
