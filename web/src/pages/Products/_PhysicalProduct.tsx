@@ -48,7 +48,7 @@ export const PhysicalProduct: Component<{ product: Product }> = (props) => {
           <CarouselWithControls items={product().images} />
         </div>
 
-        <div class="md:w-2/5 mt-3 text-center md:text-left">
+        <div class="md:w-2/5 mt-3 text-center md:text-left px-6 md:px-0">
           <h1 class="text-3xl text-bold">{product().name}</h1>
           <p class="my-5" innerHTML={product().shortDescription} />
 
@@ -63,6 +63,10 @@ export const PhysicalProduct: Component<{ product: Product }> = (props) => {
                 </span>
               </Show>
             </h4>
+
+            <Show when={product().contentAfterPrice}>
+              <div innerHTML={product().contentAfterPrice} class="my-4" />
+            </Show>
 
             <Switch>
               <Match when={product().stock <= 0}>
@@ -96,7 +100,7 @@ export const PhysicalProduct: Component<{ product: Product }> = (props) => {
         {/* <Tabs.Indicator class="tabs__indicator" /> */}
         {/* </Tabs.List> */}
 
-        <div class="m-5 prose" innerHTML={product().description}>
+        <div class="m-5 md:px-10 prose" innerHTML={product().description}>
           {/* <Tabs.Content class="tabs__content" value="details" innerHTML={product().description}></Tabs.Content>
             <Tabs.Content class="tabs__content" value="shipping">Shipping Info</Tabs.Content>
             <Tabs.Content class="tabs__content" value="reviews">Reviews</Tabs.Content> */}

@@ -88,6 +88,7 @@ model Product {
   shortDescription  String?
   description       String?
   descriptionEditor Json?
+  contentAfterPrice String?
   productType       ProductType      @default(OnlineService)
   prices            Json[]
   stock             Int              @default(1)

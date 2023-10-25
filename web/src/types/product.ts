@@ -4,6 +4,7 @@ export type Product = {
   slug: string;
   shortDescription: string;
   description: string;
+  contentAfterPrice?: string
   categories: ProductCategory[];
   prices?: ProductPrice[]
   stock: number
