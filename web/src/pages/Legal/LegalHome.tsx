@@ -6,16 +6,16 @@ import DefaultLayout from "~/layouts/DefaultLayout";
 const LegalHome: Component = () => {
   return (
     <DefaultLayout title="Legal Agreements & Policies">
-      <section class="px-20 py-20">
+      <section class="px-10 py-20">
         <h1 class="text-4xl font-bold mb-3">{company.DISPLAY_NAME} Legal Agreements & Policies</h1>
-        <p>
+        <p class="lg:w-2/3">
           This page contains links to current corporate policies, agreements for the products and services
           available through {company.DISPLAY_NAME}, and notices for employees, candidates, and applicants.
           To view any of the documents presented on this page, click on the policy/agreement.
         </p>
       </section>
 
-      <section class="px-20 flex flex-col md:flex-row gap-10">
+      <section class="px-10 flex flex-col md:flex-row gap-10">
         <div>
           <h1 class="text-4xl font-bold mb-3">Company Information</h1>
 

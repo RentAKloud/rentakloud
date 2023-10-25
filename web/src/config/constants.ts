@@ -19,3 +19,5 @@ export const oauth = {
 export const ls_keys = {
   ACCESS_TOKEN: 'ACCESS_TOKEN'
 }
+
+export const ONLINE_ORDER_AMOUNT_LIMIT = 10_000

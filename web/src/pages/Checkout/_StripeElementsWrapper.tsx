@@ -7,7 +7,7 @@ import { PaymentIntentResult } from "@stripe/stripe-js"
 export const StripeElementsWrapper = () => {
   const {
     stripe, clientSecret, subClientSecrets,
-    setInTransit, setStep, setPaymentSuccess,
+    setInTransit, setPaymentSuccess,
     setSubscriptionsPaid,
   } = useCheckoutContext()
   const elements = useStripeElements()
@@ -73,6 +73,6 @@ export const StripeElementsWrapper = () => {
   })
 
   return (
-    <Card />
+    <Card onChange={(e) => console.log(e.complete)} />
   )
 }

@@ -3,14 +3,15 @@ import { Part, createStore } from "solid-js/store";
 import { Stripe, loadStripe } from "@stripe/stripe-js";
 import { useSearchParams } from "@solidjs/router";
 import { NotificationService } from "~/services/NotificationService";
-import { Address, CheckoutContextProps, CheckoutSteps, CouponCode, CouponType, Order, OrderStatus, OrderStore, defaultCheckout } from "~/types/order";
+import { Address, CheckoutContextProps, CheckoutSteps, CouponCode, Order, OrderStatus, OrderStore, defaultCheckout } from "~/types/order";
 import { authStore } from "~/stores/auth";
 import OrdersApi from "~/api/orders";
-import { cart, resetCart } from "~/stores/cart";
+import { cart, getCartTotal, resetCart } from "~/stores/cart";
 import { getProductById } from "~/stores/products";
-import { ProductType } from "~/types/product";
+import { CartItem, ProductType } from "~/types/product";
 import PaymentsApi from "~/api/payments";
 import ProductsApi from "~/api/products";
+import { ONLINE_ORDER_AMOUNT_LIMIT } from "~/config/constants";
 
 const CheckoutContext = createContext<CheckoutContextProps>(defaultCheckout)
 
@@ -71,12 +72,12 @@ export const CheckoutProvider: Component<{ children: JSXElement }> = (props) => 
 
     if (hasPhysical && hasServices) {
       if (paymentSuccess() && subscriptionsPaid()) {
-        reset()
+        checkoutSuccessful()
       }
     } else if (hasPhysical && paymentSuccess()) {
-      reset()
+      checkoutSuccessful()
     } else if (hasServices && subscriptionsPaid()) {
-      reset()
+      checkoutSuccessful()
     }
   })
 
@@ -127,36 +128,10 @@ export const CheckoutProvider: Component<{ children: JSXElement }> = (props) => 
         }
       }
 
-      if (physicalItems.length > 0) {
-        // orderResp.amount excludes amount for subscriptions
-        const resp2 = await PaymentsApi.createPaymentIntent(user!.email, order()!.amount!)
-        if (!resp2.error) {
-          setClientSecret(resp2.result!.clientSecret)
-        }
-      }
-
-      // Handle subscriptions - we create separate subscription for each
-      // subscription item so they can be cancelled/updated individually,
-      // although stripe allows to include multiple items in one subscription
-      const subscriptionItems = cart.items
-        .filter(i => getProductById(i.productId)?.productType === ProductType.OnlineService)
-        // consider the quantity too
-        .map(i => Array(i.quantity).fill(i))
-        .flat()
-      // TODO should be one bulk request
-      if (subscriptionItems.length > 0) {
-        const subResponsePromises = subscriptionItems.map(i => {
-          return PaymentsApi.createSubscription(user!.email, i.priceId!)
-        })
-        const subResponses = await Promise.all(subResponsePromises)
-        const subData = subResponses.map((x, i) => ({
-          subscriptionId: x.result!.subscriptionId,
-          productId: subscriptionItems[i].productId,
-          priceId: subscriptionItems[i].priceId!
-        }))
-        await ProductsApi.createActiveProducts(subData)
-        const secrets = subResponses.map(x => x.result!.clientSecret)
-        setSubClientSecrets(secrets)
+      if (getCartTotal() <= ONLINE_ORDER_AMOUNT_LIMIT) {
+        _paymentsFlow(physicalItems)
+      } else {
+        checkoutSuccessful()
       }
     } catch (err: any) {
       NotificationService.error("Something went wrong")
@@ -166,7 +141,41 @@ export const CheckoutProvider: Component<{ children: JSXElement }> = (props) => 
     }
   }
 
-  function reset() {
+  async function _paymentsFlow(physicalItems: CartItem[]) {
+    if (physicalItems.length > 0) {
+      // orderResp.amount excludes amount for subscriptions
+      const resp2 = await PaymentsApi.createPaymentIntent(user!.email, order()!.amount!)
+      if (!resp2.error) {
+        setClientSecret(resp2.result!.clientSecret)
+      }
+    }
+
+    // Handle subscriptions - we create separate subscription for each
+    // subscription item so they can be cancelled/updated individually,
+    // although stripe allows to include multiple items in one subscription
+    const subscriptionItems = cart.items
+      .filter(i => getProductById(i.productId)?.productType === ProductType.OnlineService)
+      // consider the quantity too
+      .map(i => Array(i.quantity).fill(i))
+      .flat()
+    // TODO should be one bulk request
+    if (subscriptionItems.length > 0) {
+      const subResponsePromises = subscriptionItems.map(i => {
+        return PaymentsApi.createSubscription(user!.email, i.priceId!)
+      })
+      const subResponses = await Promise.all(subResponsePromises)
+      const subData = subResponses.map((x, i) => ({
+        subscriptionId: x.result!.subscriptionId,
+        productId: subscriptionItems[i].productId,
+        priceId: subscriptionItems[i].priceId!
+      }))
+      await ProductsApi.createActiveProducts(subData)
+      const secrets = subResponses.map(x => x.result!.clientSecret)
+      setSubClientSecrets(secrets)
+    }
+  }
+
+  function checkoutSuccessful() {
     resetCart()
     setStep('congrats')
   }

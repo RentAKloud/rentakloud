@@ -22,7 +22,7 @@ export const PhysicalProduct: Component<{ product: Product }> = (props) => {
   function buy() {
     if (qty() === 0) return
     if (qty() + (cart.items.find(p => p.productId === product().id)?.quantity || 0) > product().stock) {
-      NotificationService.error("Cannot add more than in stock")
+      NotificationService.error("Cannot add more than in stock. For custom orders, please contact sales@rentakloud.com")
       return
     }
 

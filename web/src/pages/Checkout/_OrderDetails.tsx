@@ -9,6 +9,7 @@ export const OrderDetails: Component = () => {
   const { step, orderStore } = useCheckoutContext()
   const subTotal = () => getCartTotal()
   const discounts = () => getTotalDiscounts(orderStore.couponCodes, subTotal())
+  const finalTotal = () => subTotal() - discounts()
 
   return (
     <>
@@ -56,7 +57,7 @@ export const OrderDetails: Component = () => {
 
           <div class="flex justify-between mt-5">
             <strong>Total</strong>
-            <span>{formatPrice(subTotal() - discounts())}</span>
+            <span>{formatPrice(finalTotal())}</span>
           </div>
         </Show>
       </Show>

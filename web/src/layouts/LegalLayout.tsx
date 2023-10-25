@@ -41,7 +41,7 @@ const LegalLayout: Component<LayoutProps & {
 
       <section class="flex flex-col h-96 place-content-center">
         <h1 class="text-5xl text-center mb-4">{props.heading || props.title}</h1>
-        <p class="text-center">Please read this agreement carefully, as it contains important information regarding your legal rights and remedies.</p>
+        <p class="text-center px-6">Please read this agreement carefully, as it contains important information regarding your legal rights and remedies.</p>
       </section>
 
       <div class="flex m-10">
@@ -64,9 +64,9 @@ const LegalLayout: Component<LayoutProps & {
           </div>
         </aside>
 
-        <section class="mx-10 w-fit">
+        <section class="md:mx-10 w-fit">
           <div id="document">
-            <div class="p-20">
+            <div class="p-4">
               <p class="alert alert-info">
                 The English version of legal agreements and policies is
                 considered as the only current and valid version of this

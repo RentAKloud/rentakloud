@@ -5,6 +5,9 @@ import { OrderDetails } from "./_OrderDetails";
 import { BillingAndShipping } from "./_BillingAndShipping";
 import { CheckoutProvider, useCheckoutContext } from "./context";
 import { Payment } from "./_Payment";
+import { getCartTotal } from "~/stores/cart";
+import { formatPrice } from "~/utils";
+import { ONLINE_ORDER_AMOUNT_LIMIT } from "~/config/constants";
 
 const _Checkout: Component = () => {
   const { submit, inTransit, step, setStep } = useCheckoutContext()
@@ -27,7 +30,16 @@ const _Checkout: Component = () => {
             <Show when={step() === 'payment'}>
               <h2 class="-mt-8 mb-8 bg-base-200 px-1 w-fit text-gray-400">Payment</h2>
 
-              <Payment />
+              <Show when={getCartTotal() <= ONLINE_ORDER_AMOUNT_LIMIT}>
+                <Payment />
+              </Show>
+
+              <Show when={getCartTotal() > ONLINE_ORDER_AMOUNT_LIMIT}>
+                <p class="mb-10">
+                  Your order will be created, however, orders of value higher than <strong>{formatPrice(ONLINE_ORDER_AMOUNT_LIMIT)}</strong> cannot be processed online.
+                  Please make a purchase order to <strong>sales@rentakloud.com</strong>
+                </p>
+              </Show>
 
               <p class="mb-10">
                 Please confirm all the details. Then click <strong>Confirm & Pay</strong> to finalize the order and make payment.
