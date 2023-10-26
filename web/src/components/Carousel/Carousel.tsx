@@ -1,4 +1,4 @@
-import { Component, For, createEffect, createSignal } from "solid-js";
+import { Component, For, createEffect } from "solid-js";
 
 export type CarouselProps = {
   items: {
@@ -12,21 +12,20 @@ export type CarouselProps = {
 const Carousel: Component<CarouselProps> = (props) => {
   let carousel: HTMLDivElement | undefined;
   const currSlide = () => props.currSlide || 0
-  const [prevSlide, setPrevSlide] = createSignal(currSlide())
 
+  function scrollIntoView(slide: number) {
+    document.querySelector(`div.carousel-item:nth-child(${slide})`)?.scrollIntoView()
+  }
   createEffect(() => {
-    const diff = currSlide() - prevSlide()
-    const n = Math.abs(diff)
-    const dir = diff/n
-    
-    for (let i = 0; i < n; i++)
-      setTimeout(() => carousel?.scrollBy(10 * dir, 0), 600 * i)
-
-    setPrevSlide(currSlide())
+    scrollIntoView(currSlide() + 1)
   })
 
+  window.onresize = () => {
+    scrollIntoView(currSlide() + 1)
+  }
+
   return (
-    <div class="carousel carousel-center rounded-box" ref={carousel}>
+    <div class="flex overflow-hidden scroll-smooth rounded-box" ref={carousel}>
       <For each={props.items}>
         {(item) => {
           let customStyles = ''

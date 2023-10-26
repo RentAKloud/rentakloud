@@ -65,7 +65,7 @@ const Navbar: Component<{}> = () => {
               </For>
             </ul>
           </li>
-          <li><Link href="/services">Services</Link></li>
+          {/* <li><Link href="/services">Services</Link></li> */}
           <li><Link href="/about">About</Link></li>
           <li><Link href="/support">Support</Link></li>
         </ul>

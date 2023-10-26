@@ -1,7 +1,15 @@
+{
+  email mustaghees@rentakloud.com
+}
+
 rentakloud.com {
   root * /srv/web/
   try_files {path} /index.html
   file_server
+}
+
+www.rentakloud.com {
+  redir https://rentakloud.com{uri}
 }
 
 admin.rentakloud.com {

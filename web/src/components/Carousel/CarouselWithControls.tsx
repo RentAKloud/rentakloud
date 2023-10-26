@@ -37,12 +37,12 @@ const CarouselWithControls: Component<CarouselProps> = (props) => {
           <ChevronRightIcon />
         </button>
 
-        <div class="flex gap-4 justify-center">
+        <div class="flex gap-4 justify-center mt-2">
           <For each={props.items}>
             {(_, i) => {
               return (
                 <span
-                  class="block rounded w-[10px] h-[10px]"
+                  class="block rounded-full w-[10px] h-[10px] hover:border-2 hover:animate-pulse border-primary cursor-pointer"
                   classList={{
                     "bg-neutral": i() !== currSlide(),
                     "bg-primary": i() === currSlide()
