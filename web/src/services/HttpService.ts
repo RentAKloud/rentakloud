@@ -1,12 +1,12 @@
-import { API_URL } from "../config/constants"
-import { authStore } from "../stores/auth"
-import { NotificationService } from "./NotificationService"
+import { API_URL } from "~/config/constants"
+import { authStore } from "~/stores/auth"
 
 export type ApiResponse<T> = Promise<{
   result: T | null
   error: {
     statusCode: string
     message: string
+    error?: string
   } | null
 }>
 
@@ -42,10 +42,6 @@ export class HttpService {
   }
 }
 
-// In case of multiple failures of same kind, we don't spam error messages
-// TODO not HttpService's job to display error notifications
-let lastFailure: string | null = null
-
 async function wrapper(endpoint: string, options?: RequestInit) {
   const jwtToken = authStore.access_token
   const _options = {
@@ -66,14 +62,12 @@ async function wrapper(endpoint: string, options?: RequestInit) {
       toReturn = await resp.text()
     }
 
-    lastFailure = null
+    if (toReturn.statusCode) {
+      return { result: null, error: toReturn }
+    }
+
     return { result: toReturn, error: null }
   } catch (err: any) {
-    if (lastFailure) {
-      NotificationService.error("Could not reach RentaKloud network.")
-    }
-    lastFailure = err.message
-
     return { result: null, error: { statusCode: "500", message: "Could not reach RentAKloud network" } }
   }
 }

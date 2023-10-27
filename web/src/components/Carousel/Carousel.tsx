@@ -14,8 +14,10 @@ const Carousel: Component<CarouselProps> = (props) => {
   const currSlide = () => props.currSlide || 0
 
   function scrollIntoView(slide: number) {
-    document.querySelector(`div.carousel-item:nth-child(${slide})`)?.scrollIntoView()
+    document.querySelector(`div.carousel-item:nth-child(${slide})`)
+      ?.scrollIntoView({ block: "nearest", inline: "nearest" })
   }
+
   createEffect(() => {
     scrollIntoView(currSlide() + 1)
   })

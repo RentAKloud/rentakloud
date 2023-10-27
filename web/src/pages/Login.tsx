@@ -1,12 +1,12 @@
 import { Component, createEffect, createSignal } from "solid-js";
 import { Link, useNavigate, useSearchParams } from "@solidjs/router";
-import DefaultLayout from "../layouts/DefaultLayout";
-import HeroWithForm from "../components/Hero/HeroWithForm";
-import GithubIcon from "../components/icons/Github";
-import GoogleIcon from "../components/icons/Google";
-import { company, oauth } from "../config/constants";
-import { authStore, login } from "../stores/auth";
-import { NotificationService } from "../services/NotificationService";
+import DefaultLayout from "~/layouts/DefaultLayout";
+import HeroWithForm from "~/components/Hero/HeroWithForm";
+import GithubIcon from "~/components/icons/Github";
+import GoogleIcon from "~/components/icons/Google";
+import { company, oauth } from "~/config/constants";
+import { authStore, login } from "~/stores/auth";
+import { NotificationService } from "~/services/NotificationService";
 
 const Login: Component = () => {
   const navigate = useNavigate()
@@ -60,7 +60,7 @@ const Login: Component = () => {
           />
 
           <label class="label">
-            <a href="#" class="label-text-alt link link-hover">Forgot password?</a>
+            <Link href="/forgot-password" class="label-text-alt link link-hover">Forgot password?</Link>
           </label>
         </div>
 

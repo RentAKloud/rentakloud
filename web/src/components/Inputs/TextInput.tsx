@@ -15,6 +15,9 @@ type FormInputType = {
   onInput?: JSX.EventHandler<HTMLInputElement, InputEvent>;
   onChange?: JSX.EventHandler<HTMLInputElement, Event>;
   onBlur?: JSX.EventHandler<HTMLInputElement, FocusEvent>;
+
+  inputClass?: string
+  required?: boolean
 }
 
 const TextInput: Component<FormInputType> = (props) => {
@@ -35,7 +38,7 @@ const TextInput: Component<FormInputType> = (props) => {
         {...props}
         placeholder={placeholder}
         value={props.value}
-        class="input input-bordered"
+        class={`input input-bordered ${props.inputClass || ''}`}
         classList={{
           "input-error": !!props.error
         }}

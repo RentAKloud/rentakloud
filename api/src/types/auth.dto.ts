@@ -1,6 +1,12 @@
+import { IsEmail, IsStrongPassword, Min } from "class-validator";
+
 export class RegisterReq {
+  @IsEmail()
   email: string;
+
+  @IsStrongPassword()
   password: string;
+
   firstName: string;
   lastName: string;
 }
