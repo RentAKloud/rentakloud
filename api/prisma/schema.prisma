@@ -11,22 +11,30 @@ datasource db {
 }
 
 model User {
-  id              Int       @id @default(autoincrement())
-  email           String    @unique
+  id              Int              @id @default(autoincrement())
+  email           String           @unique
   firstName       String
   lastName        String?
   password        String
   phoneNumber     String?
   emailVerifiedAt DateTime?
+  //
+  type            UserType         @default(User)
+  //
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @default(now())
+  //
+  profile         Profile?
+  orders          Order[]
+  products        UserToProducts[] // active/subscribed products
+  diskImages      DiskImage[]
+  notifications   Notification[]
+}
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
-
-  profile       Profile?
-  orders        Order[]
-  products      UserToProducts[] // active/subscribed products
-  diskImages    DiskImage[]
-  notifications Notification[]
+enum UserType {
+  Admin
+  User
+  Staff
 }
 
 model Profile {

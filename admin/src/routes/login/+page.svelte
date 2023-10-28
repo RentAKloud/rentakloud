@@ -2,23 +2,26 @@
   import { Http } from "$lib/http";
   import { Button, Label, Input, Checkbox, Card } from "flowbite-svelte";
   import { auth } from "$lib/stores";
-    import { goto } from "$app/navigation";
 
   const searchParams = new URLSearchParams(location.search);
   let email: string = searchParams.get("email") || "";
   let password: string = searchParams.get("password") || "";
+  let inTransit = false
 
   async function login(e: SubmitEvent) {
-    const d = await Http.post("/auth/login", { email, password }) as { access_token: string };
+    inTransit = true
+    const d = (await Http.post("/auth/login", { email, password })) as {
+      access_token: string;
+    };
 
     if (d.access_token) {
       auth.update((a) => {
         a.token = d.access_token;
         return a;
-      })
-      localStorage.setItem('access_token', d.access_token)
-      goto("/")
+      });
+      localStorage.setItem("access_token", d.access_token);
     }
+    inTransit = false
   }
 </script>
 
@@ -31,7 +34,7 @@
   style="background-image: url(https://images.pexels.com/photos/4508751/pexels-photo-4508751.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2);"
 >
   <Card class="w-full max-w-md">
-    <form class="flex flex-col space-y-6" on:submit={login}>
+    <form class="flex flex-col space-y-6" class:animate-pulse={inTransit} on:submit={login}>
       <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">
         Sign in
       </h3>
@@ -64,7 +67,7 @@
           Lost password?
         </a>
       </div>
-      <Button type="submit" class="w-full1">Login to your account</Button>
+      <Button type="submit" class="w-full" disabled={inTransit}>Login to your account</Button>
       <!-- <div class="text-sm font-medium text-gray-500 dark:text-gray-300">
         Not registered? <a
           href="/"

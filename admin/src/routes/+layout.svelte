@@ -14,9 +14,10 @@
     FooterLink,
   } from "flowbite-svelte";
   import "../app.css";
-  import { auth } from "$lib/stores";
+  import { UserType, auth } from "$lib/stores";
   import { Http } from "$lib/http";
   import { onDestroy } from "svelte";
+  import { goto } from "$app/navigation";
 
   const unsub = auth.subscribe(async (a) => {
     if (a.isLoggedIn() && !a.user) {
@@ -29,9 +30,18 @@
     auth.update((a) => {
       a.user = undefined;
       a.token = undefined;
-      localStorage.removeItem('access_token')
+      localStorage.removeItem("access_token");
       return a;
     });
+  }
+
+  $: if ($auth.user) {
+    if ($auth.user.type !== UserType.Admin) {
+      alert("Unauthorized");
+      logout();
+    } else {
+      goto("/");
+    }
   }
 
   onDestroy(unsub);
@@ -53,7 +63,7 @@
   <NavHamburger on:click={toggle} />
   <NavUl {hidden}>
     {#if $auth.isLoggedIn()}
-      <NavLi>{$auth.user?.email || ''}</NavLi>
+      <NavLi>{$auth.user?.email || ""}</NavLi>
       <NavLi href="/" active={true}>Dashboard</NavLi>
       <NavLi href="#" on:click={logout}>Logout</NavLi>
     {:else}

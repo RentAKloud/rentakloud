@@ -5,6 +5,13 @@ type User = {
   email: string
   firstName: string
   lastName: string
+  type: UserType
+}
+
+export enum UserType {
+  Admin = 'Admin',
+  User = 'User',
+  Staff = 'Staff'
 }
 
 type AuthState = {
