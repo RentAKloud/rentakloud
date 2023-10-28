@@ -162,6 +162,9 @@ model Order {
   coupons           CouponCode[]
   status            OrderStatus  @default(Pending)
   notes             String
+  // Final amount that should be/was charged. This is just for historical record
+  // otherwise this amount can be calculated using total from items, shipping costs and coupons
+  amount            Decimal?     @db.Decimal(10, 2)
   //
   createdAt         DateTime     @default(now())
   updatedAt         DateTime     @default(now())
@@ -173,10 +176,11 @@ model CouponCode {
   code               String
   //
   type               CouponType @default(Flat)
-  flatDiscount       Decimal
+  flatDiscount       Decimal    @db.Decimal(10, 2)
   percentageDiscount Int
   //
   maxUses            Int?
+  startsAt           DateTime?
   expiresAt          DateTime?
   active             Boolean    @default(true)
   //

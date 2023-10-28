@@ -51,8 +51,10 @@ export class CouponsController {
     const coupon = coupons[0]
     if (!coupon.active) {
       throw new HttpException("This coupon code is not available at the moment", HttpStatus.NOT_ACCEPTABLE)
+    } else if (coupon.startsAt && new Date() < coupon.startsAt) {
+      throw new HttpException("This coupon cannot be used yet", HttpStatus.NOT_ACCEPTABLE)
     } else if (coupon.expiresAt && new Date() > coupon.expiresAt) {
-      throw new HttpException("Coupon has expired", HttpStatus.NOT_ACCEPTABLE)
+      throw new HttpException("This coupon has expired", HttpStatus.NOT_ACCEPTABLE)
     } else if (await this.couponsService.orderCount(coupon.code) > coupon.maxUses) {
       throw new HttpException("This coupon code cannot be redeemed anymore (max limit reached)", HttpStatus.NOT_ACCEPTABLE)
     }

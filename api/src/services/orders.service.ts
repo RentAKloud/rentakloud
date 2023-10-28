@@ -40,7 +40,6 @@ export class OrdersService {
 
   async createOrder(data: Prisma.OrderCreateInput): Promise<Order & {
     coupons: CouponCode[];
-    amount?: number; // used for transaction on frontend
   }> {
     const order = await this.prisma.order.create({
       data,

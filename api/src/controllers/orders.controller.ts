@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Param, ParseIntPipe, Post, Request, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { CouponType, ProductType } from '@prisma/client';
+import { CouponType, Prisma, ProductType } from '@prisma/client';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 import { ParseOrderPipe, ParsedCreateOrderReq } from 'src/pipes/parse-order';
 import { OrdersService } from 'src/services/orders.service';
@@ -62,20 +62,25 @@ export class OrdersController {
 
     // Calculate order total amount. This amount is used for confirmCardPayment at frontend.
     // excludes amount for subscriptions
-    order.amount = order.items.reduce<number>((sum: number, curr: { product: any, quantity: number }) => {
+    order.amount = new Prisma.Decimal(order.items.reduce<number>((sum: number, curr: { product: any, quantity: number }) => {
       if (curr.product.productType === ProductType.OnlineService) {
         return sum
       }
       const amount = curr.product.prices[0].saleAmount || curr.product.prices[0].amount
       return sum + amount * curr.quantity
-    }, 0)
+    }, 0))
     const discounts = order.coupons.reduce((sum, curr) => {
       return (curr.type === CouponType.Percentage ?
-        order.amount * curr.percentageDiscount / 100
+        order.amount.toNumber() * curr.percentageDiscount / 100
         :
         curr.flatDiscount.toNumber()) + sum
     }, 0.0)
-    order.amount = +(order.amount - discounts).toFixed(2)
+    order.amount = new Prisma.Decimal(+(order.amount.toNumber() - discounts).toFixed(2))
+
+    this.ordersService.updateOrder({
+      where: { id: order.id },
+      data: { amount: order.amount }
+    })
 
     return order
   }
