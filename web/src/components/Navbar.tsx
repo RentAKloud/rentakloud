@@ -39,7 +39,7 @@ const Navbar: Component<{}> = () => {
               Products
               <svg class="fill-current" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z" /></svg>
             </Link>
-            <ul class="dropdown-content menu xl:menu-horizontal lg:min-w-max bg-base-100 rounded-box z-10 ml-[-10em]">
+            <ul class="dropdown-content menu xl:menu-horizontal lg:min-w-max bg-base-100 rounded-box z-10 ml-[-0.1em]">
               <For each={productsMenu()}>
                 {
                   (item) => (
@@ -96,6 +96,10 @@ const Navbar: Component<{}> = () => {
             <div class="dropdown dropdown-end">
               <Notifications />
             </div>
+
+            <ul class="menu menu-horizontal">
+              <li><Link href="/dashboard">Dashboard</Link></li>
+            </ul>
 
             <div class="dropdown dropdown-end">
               <Profile />
@@ -172,11 +176,11 @@ const Profile: Component = () => {
       </label>
 
       <ul tabindex="0" class="dropdown-content menu menu-compact mt-3 p-2 z-10 shadow bg-base-100 rounded-box w-52">
-        <li>
+        {/* <li>
           <Link href="/dashboard" end class="justify-between">
             Dashboard
           </Link>
-        </li>
+        </li> */}
         <li>
           <Link href="/dashboard/profile" class="justify-between">
             Profile

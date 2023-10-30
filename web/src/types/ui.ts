@@ -20,6 +20,7 @@ export type HeroWithBgProps = {
   contain?: boolean,
   align?: "center" | "left",
   notFullScreen?: boolean
+  class?: string
 }
 
 export type Card = {

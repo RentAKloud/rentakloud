@@ -22,7 +22,7 @@ type SelectSearchProps = {
   onInput?: JSX.EventHandler<HTMLSelectElement, InputEvent>;
   onChange: JSX.EventHandler<HTMLSelectElement, Event>;
   onBlur?: JSX.EventHandler<HTMLSelectElement, FocusEvent>;
-  onValueChange?: (value: string|number) => void;
+  onValueChange?: (value: string | number) => void;
 }
 
 const SelectSearch: Component<SelectSearchProps> = (props) => {
@@ -81,7 +81,9 @@ const SelectSearch: Component<SelectSearchProps> = (props) => {
         )}
       >
         <Show when={props.label}>
-          <Combobox.Label class="label">{props.label}</Combobox.Label>
+          <div class="label">
+            <Combobox.Label class="label-text">{props.label}</Combobox.Label>
+          </div>
         </Show>
 
         <Combobox.Control class="relative" aria-label={props.label}>

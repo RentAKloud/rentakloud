@@ -8,9 +8,18 @@ const Hero: Component<{
   reverse?: boolean,
   centered?: boolean,
   actions?: JSXElement,
-}> = ({ title, subtitle, content, children, actions, reverse = false, centered = false }) => {
+  fullScreen?: boolean
+}> = (props) => {
+  const { title, subtitle, content, children, actions, reverse = false, centered = false, fullScreen = true } = props
+
   return (
-    <div class="hero min-h-screen bg-base-200 relative">
+    <div
+      class="hero bg-base-200 relative"
+      classList={{
+        "min-h-screen": fullScreen,
+        "py-14": !fullScreen
+      }}
+    >
       <div
         class="hero-content flex-col text-center"
         classList={{

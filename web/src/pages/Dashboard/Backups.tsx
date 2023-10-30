@@ -1,4 +1,4 @@
-import { Component, For, Show, createEffect, createResource, createSignal } from "solid-js";
+import { Component, ErrorBoundary, For, Show, createEffect, createResource, createSignal } from "solid-js";
 import { Link, useSearchParams } from "@solidjs/router";
 import { DateTime } from "~/components/DateTime";
 import Modal from "~/components/Modal";
@@ -63,7 +63,14 @@ const Backups: Component = () => {
   }
 
   return (
-    <>
+    <ErrorBoundary fallback={(err) => {
+      return (
+        <section>
+          <p>Woops! Something went wrong</p>
+          <code>{err}</code>
+        </section>
+      )
+    }}>
       <h2 class="text-4xl font-bold mb-2">Backups ({images.latest?.total})</h2>
       <p class="mb-5">Your backups. You can download them or create VMs based of these images.</p>
 
@@ -174,7 +181,7 @@ const Backups: Component = () => {
             <button class="btn btn-error" onclick={() => deleteDiskImage(selectedProduct()!.id)}>Yes</button>
           </>
         } />
-    </>
+    </ErrorBoundary>
   )
 }
 

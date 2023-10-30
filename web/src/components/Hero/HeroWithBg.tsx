@@ -5,7 +5,7 @@ const HeroWithBg: Component<HeroWithBgProps> = (props) => {
   const { children, actions, header, contain, align = "center" } = props
 
   return (
-    <div class="hero h-[70vh]" classList={{
+    <div class={`hero h-[70vh] ${props.class || ''}`} classList={{
       'min-h-screen': !props.notFullScreen,
       'md:justify-items-start': align === 'left',
       'bg-right': align === 'left',

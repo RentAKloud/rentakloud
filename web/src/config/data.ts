@@ -2,56 +2,56 @@ import { products } from "~/stores/products"
 import { ProductType } from "~/types/product"
 
 export const productsMenu = () => [
-  {
-    title: "Databases Cloud Hosting",
-    slug: "?category=databases",
-    submenu: products.latest
-      .filter(p => p.categories
-        .map(c => c.slug)
-        .includes("databases"))
-      .map(p => ({ title: p.name, slug: p.slug }))
-  },
-  {
-    title: "ERP/CRM Cloud Hosting",
-    slug: "?category=erp&category=crm",
-    submenu: products.latest
-      .filter(p => {
-        const x = p.categories.map(c => c.slug)
-        return ["erp", "crm"].some(c => x.includes(c))
-      })
-      .map(p => ({ title: p.name, slug: p.slug }))
-  },
-  {
-    title: "CMS/Ecommerce",
-    slug: "?category=cms",
-    submenu: products.latest
-      .filter(p => {
-        const x = p.categories.map(c => c.slug)
-        return x.includes("cms") || x.includes("ecommerce")
-      })
-      .map(p => ({ title: p.name, slug: p.slug }))
-  },
-  {
-    title: "Others",
-    slug: "?category=",
-    submenu: products.latest
-      .filter(p => {
-        const categories = p.categories.map(c => c.slug)
-        const includeAllExcept = ["databases", "runtimes", "cms", "erp", "hardware", "crm", "message-queueing"]
-        return includeAllExcept.every(c => !categories.includes(c)) && p.productType === ProductType.OnlineService
-      })
-      .map(p => ({ title: p.name, slug: p.slug }))
-  },
-  {
-    title: "Runtimes",
-    slug: "",
-    submenu: [
-      { title: "NodeJS", slug: "nodejs-cloud-hosting" },
-      { title: "Python", slug: "python-django-cloud-hosting" },
-      { title: "Ruby", slug: "ruby-ror-cloud-hosting" },
-      { title: "Java", slug: "java-spring-boot-tomcat-cloud-hosting" }
-    ]
-  },
+  // {
+  //   title: "Databases Cloud Hosting",
+  //   slug: "?category=databases",
+  //   submenu: products.latest
+  //     .filter(p => p.categories
+  //       .map(c => c.slug)
+  //       .includes("databases"))
+  //     .map(p => ({ title: p.name, slug: p.slug }))
+  // },
+  // {
+  //   title: "ERP/CRM Cloud Hosting",
+  //   slug: "?category=erp&category=crm",
+  //   submenu: products.latest
+  //     .filter(p => {
+  //       const x = p.categories.map(c => c.slug)
+  //       return ["erp", "crm"].some(c => x.includes(c))
+  //     })
+  //     .map(p => ({ title: p.name, slug: p.slug }))
+  // },
+  // {
+  //   title: "CMS/Ecommerce",
+  //   slug: "?category=cms",
+  //   submenu: products.latest
+  //     .filter(p => {
+  //       const x = p.categories.map(c => c.slug)
+  //       return x.includes("cms") || x.includes("ecommerce")
+  //     })
+  //     .map(p => ({ title: p.name, slug: p.slug }))
+  // },
+  // {
+  //   title: "Others",
+  //   slug: "?category=",
+  //   submenu: products.latest
+  //     .filter(p => {
+  //       const categories = p.categories.map(c => c.slug)
+  //       const includeAllExcept = ["databases", "runtimes", "cms", "erp", "hardware", "crm", "message-queueing"]
+  //       return includeAllExcept.every(c => !categories.includes(c)) && p.productType === ProductType.OnlineService
+  //     })
+  //     .map(p => ({ title: p.name, slug: p.slug }))
+  // },
+  // {
+  //   title: "Runtimes",
+  //   slug: "",
+  //   submenu: [
+  //     { title: "NodeJS", slug: "nodejs-cloud-hosting" },
+  //     { title: "Python", slug: "python-django-cloud-hosting" },
+  //     { title: "Ruby", slug: "ruby-ror-cloud-hosting" },
+  //     { title: "Java", slug: "java-spring-boot-tomcat-cloud-hosting" }
+  //   ]
+  // },
   {
     title: "Hardware",
     slug: "?category=hardware",
