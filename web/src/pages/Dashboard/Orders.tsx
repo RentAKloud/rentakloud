@@ -1,4 +1,5 @@
 import { Component, For, Show, createResource } from "solid-js";
+import { Link } from "@solidjs/router";
 import OrdersApi from "~/api/orders";
 import Loader from "~/components/Loader";
 import { DateTime } from "~/components/DateTime";
@@ -53,6 +54,9 @@ const Orders: Component = () => {
                         <td><DateTime value={order.createdAt} /></td>
                         <td>{formatPrice(total - discounts)}</td>
                         <td>{order.status}</td>
+                        <td>
+                          <Link href={`/dashboard/orders/${order.id}`}>Details</Link>
+                        </td>
                       </tr>
                     )
                   }

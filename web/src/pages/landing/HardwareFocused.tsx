@@ -17,7 +17,7 @@ const LandingHardwareFocused: Component = () => {
           <Link href="/register" class="btn btn-primary">Get Started</Link>
         }
         bgUrl="https://images.pexels.com/photos/6466141/pexels-photo-6466141.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-        class="h-[60vh]"
+        class="h-[45vh] bg-fixed"
         notFullScreen
         align="left"
       >

@@ -15,6 +15,9 @@ export class OrdersService {
   ): Promise<Order | null> {
     return this.prisma.order.findUnique({
       where: orderWhereUniqueInput,
+      include: {
+        coupons: true
+      }
     });
   }
 

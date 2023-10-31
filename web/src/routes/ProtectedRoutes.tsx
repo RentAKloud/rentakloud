@@ -18,6 +18,7 @@ import Guidance from '~/pages/ProductDashboard/Guidance';
 import Dashboard from '~/pages/Dashboard/Dashboard';
 import DashboardHome from '~/pages/Dashboard/Home';
 import Orders from '~/pages/Dashboard/Orders';
+import Order from "~/pages/Orders/Order";
 import Payments from '~/pages/Dashboard/Payments';
 import Settings from '~/pages/Dashboard/Settings';
 import Instances from '~/pages/Dashboard/Instances';
@@ -64,7 +65,10 @@ const ProtectedRoutes: Component = () => {
         </Route>
         <Route path="/images" component={Images} />
         <Route path="/backups" component={Backups} />
-        <Route path="/orders" component={Orders} />
+        <Route path="/orders">
+          <Route path="/" component={Orders} />
+          <Route path="/:id" component={Order} />
+        </Route>
         <Route path="/payments" component={Payments} />
         <Route path="/settings" component={Settings} />
       </Route>

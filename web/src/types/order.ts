@@ -1,6 +1,6 @@
 import { Accessor, Setter } from "solid-js";
 import { Part } from "solid-js/store";
-import { CartItem } from "./product";
+import { CartItem, ProductPrice } from "./product";
 import { Stripe } from "@stripe/stripe-js";
 import { User } from "./user";
 
@@ -40,7 +40,14 @@ export type Order = {
   shippingZip: string;
   shippingCountry: string;
 
-  items: any[];
+  items: {
+    product: {
+      id: number
+      name: string
+      prices: ProductPrice[]
+    }
+    quantity: number
+  }[];
   coupons: CouponCode[];
   status: OrderStatus;
   notes: string;

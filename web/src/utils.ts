@@ -1,4 +1,4 @@
-import { CouponCode, CouponType } from "./types/order"
+import { CouponCode, CouponType, Order } from "./types/order"
 
 export function formatPrice(amount: number, currency = 'usd') {
   const f = new Intl.NumberFormat('en-US', {
@@ -15,6 +15,13 @@ export function pluralize(qty: number, word: string, plural = word + 's') {
 
 export function truncate(text: string, limit: number): string {
   return text.length <= limit ? text : text.slice(0, limit) + '...'
+}
+
+export function getOrderSubTotal(order: Order) {
+  return order.items.reduce((sum, curr) => {
+    const price = curr.product.prices[0]
+    return sum + (price.saleAmount || price.amount)
+  }, 0)
 }
 
 export function getTotalDiscounts(couponCodes: CouponCode[], total: number) {
