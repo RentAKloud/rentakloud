@@ -1,4 +1,4 @@
-import { Component, For, Show } from "solid-js";
+import { Component, For, Show, createSignal } from "solid-js";
 import { Link } from "@solidjs/router";
 import DefaultLayout from "~/layouts/DefaultLayout";
 import { getCartTotal, cart, resetCart, incrQty, decrQty, removeFromCart } from "~/stores/cart";
@@ -6,8 +6,11 @@ import { getProductById, getProductPrice, products } from "~/stores/products";
 import Loader from "~/components/Loader";
 import { formatPrice } from "~/utils";
 import TrashIcon from "~/components/icons/Trash";
+import Modal from "~/components/Modal";
 
 const Cart: Component = () => {
+  const [isClearModalOpen, setIsClearModalOpen] = createSignal(false)
+
   return (
     <DefaultLayout>
       <section class="min-h-screen bg-base-100 pt-32 md:px-20">
@@ -90,11 +93,23 @@ const Cart: Component = () => {
           </div>
 
           <div class="mt-10 flex gap-5 justify-center">
-            <button class="btn btn-error" onclick={resetCart}>Clear Cart</button>
+            <button class="btn btn-error" onclick={() => setIsClearModalOpen(true)}>Clear Cart</button>
             <Link href="/checkout" class="btn btn-primary">Checkout</Link>
           </div>
         </Show>
       </section>
+
+      <Modal
+        isOpen={isClearModalOpen()}
+        onClose={() => setIsClearModalOpen(false)}
+        title="Confirm Delete"
+        description={`Are you sure you want to clear your cart?`}
+        actions={
+          <>
+            <button class="btn" onclick={() => setIsClearModalOpen(false)}>Cancel</button>
+            <button class="btn btn-error" onclick={() => { resetCart(); setIsClearModalOpen(false); }}>Yes</button>
+          </>
+        } />
     </DefaultLayout>
   )
 }
