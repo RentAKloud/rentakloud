@@ -109,48 +109,51 @@ const Order: Component = () => {
           </tbody>
         </table>
 
-        <Show when={order()!.items.length > 0}>
-          <div class="flex justify-between gap-6">
-            <div>
-              <h4 class="font-bold mb-2">Coupons Applied</h4>
-              <Show when={order()!.coupons.length === 0}>
-                No coupons were applied
-              </Show>
+        <div class="flex justify-between gap-6">
+          <div>
+            <h4 class="font-bold mb-2">Coupons Applied</h4>
+            <Show when={order()!.coupons.length === 0}>
+              No coupons were applied
+            </Show>
 
-              <ul class="list-disc ml-4">
-                <For each={order()!.coupons}>
-                  {(coupon) => {
-                    return <li>{coupon.title} - {coupon.code}</li>
-                  }}
-                </For>
-              </ul>
+            <ul class="list-disc ml-4">
+              <For each={order()!.coupons}>
+                {(coupon) => {
+                  return <li>{coupon.title} - {coupon.code}</li>
+                }}
+              </For>
+            </ul>
+          </div>
+
+          <div class="w-96">
+            <div class="flex justify-between mt-5">
+              <strong>Subtotal</strong>
+              <span>{formatPrice(subTotal())}</span>
+            </div>
+            <div class="flex justify-between">
+              <strong>Discount</strong>
+              <span>-{formatPrice(discounts())}</span>
+            </div>
+            <div class="flex justify-between">
+              <strong>Taxes</strong>
+              <span>{formatPrice(0)}</span>
+            </div>
+            <div class="flex justify-between">
+              <strong>Shipping</strong>
+              <span>{formatPrice(0)}</span>
             </div>
 
-            <div class="w-96">
-              <div class="flex justify-between mt-5">
-                <strong>Subtotal</strong>
-                <span>{formatPrice(subTotal())}</span>
-              </div>
-              <div class="flex justify-between">
-                <strong>Discount</strong>
-                <span>-{formatPrice(discounts())}</span>
-              </div>
-              <div class="flex justify-between">
-                <strong>Taxes</strong>
-                <span>{formatPrice(0)}</span>
-              </div>
-              <div class="flex justify-between">
-                <strong>Shipping</strong>
-                <span>{formatPrice(0)}</span>
-              </div>
-
-              <div class="flex justify-between mt-5">
-                <strong>Total</strong>
-                <span>{formatPrice(finalTotal())}</span>
-              </div>
+            <div class="flex justify-between mt-5">
+              <strong>Total</strong>
+              <span>{formatPrice(finalTotal())}</span>
             </div>
           </div>
-        </Show>
+        </div>
+
+        <div>
+          <h4 class="font-bold mb-2">Notes</h4>
+          <p>{order()!.notes}</p>
+        </div>
       </Show>
 
       <div class="mb-20"></div>

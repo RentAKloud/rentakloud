@@ -9,6 +9,7 @@ import { getCartTotal } from "~/stores/cart";
 import { formatPrice } from "~/utils";
 import { ONLINE_ORDER_AMOUNT_LIMIT } from "~/config/constants";
 import { OrderDetails } from "./_OrderDetails";
+import { Congrats } from "./_Congrats";
 
 const _Checkout: Component = () => {
   const {
@@ -64,9 +65,7 @@ const _Checkout: Component = () => {
             <Show when={step() === 'congrats'}>
               <div class="-mt-8 mb-8 bg-base-200 px-1 w-fit text-gray-400">Success</div>
 
-              <p class="mb-10">
-                Your order has been placed! You'll receive an email shortly.
-              </p>
+              <Congrats />
 
               <div class="flex gap-5">
                 <Link href={`/dashboard/orders/${order()?.id}`} class="btn">Order Details</Link>

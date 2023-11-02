@@ -98,7 +98,7 @@ const Navbar: Component<{}> = () => {
             </div>
 
             <ul class="menu menu-horizontal">
-              <li><Link href="/dashboard">Dashboard</Link></li>
+              <li><Link href="/dashboard" end>Dashboard</Link></li>
             </ul>
 
             <div class="dropdown dropdown-end">

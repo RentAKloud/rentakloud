@@ -47,12 +47,8 @@ export const CheckoutProvider: Component<{ children: JSXElement }> = (props) => 
   const [subscriptionsPaid, setSubscriptionsPaid] = createSignal<boolean>()
 
   onMount(async () => {
-    if (isContinuingOrder() && order()) {
-      setParams({ step: 'payment' })
-    }
-
     if (!step()) {
-      setParams({ step: 'address' })
+      setStep('address')
     }
 
     const result = await loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY)
@@ -62,6 +58,10 @@ export const CheckoutProvider: Component<{ children: JSXElement }> = (props) => 
   createEffect(() => {
     if (formErrors().find(e => e.includes("billingAddress")) !== undefined) {
       setStep("address")
+    }
+
+    if (isContinuingOrder() && order()) {
+      setStep(order()!.status === OrderStatus.Paid ? 'congrats' : 'payment')
     }
   })
 
@@ -83,7 +83,7 @@ export const CheckoutProvider: Component<{ children: JSXElement }> = (props) => 
       checkoutSuccessful()
     } else if (hasServices && subscriptionsPaid()) {
       checkoutSuccessful()
-    } else if (isContinuingOrder()) {
+    } else if (isContinuingOrder() && paymentSuccess()) {
       checkoutSuccessful()
     }
   })
@@ -121,10 +121,9 @@ export const CheckoutProvider: Component<{ children: JSXElement }> = (props) => 
     (async () => {
       const { result, error } = await OrdersApi.one(+params.order)
       if (error) {
-        console.log("Could not fetch existing order")
+        console.error("Could not fetch existing order", error)
       }
 
-      console.log("it seems that an order already exists")
       setOrder(result!)
     })()
   }
