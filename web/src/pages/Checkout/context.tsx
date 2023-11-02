@@ -8,7 +8,7 @@ import { authStore } from "~/stores/auth";
 import OrdersApi from "~/api/orders";
 import { cart, getCartTotal, resetCart } from "~/stores/cart";
 import { getProductById } from "~/stores/products";
-import { CartItem, ProductType } from "~/types/product";
+import { ProductType } from "~/types/product";
 import PaymentsApi from "~/api/payments";
 import ProductsApi from "~/api/products";
 import { ONLINE_ORDER_AMOUNT_LIMIT } from "~/config/constants";
@@ -21,6 +21,13 @@ export const useCheckoutContext = () => {
 
 export const CheckoutProvider: Component<{ children: JSXElement }> = (props) => {
   const { user } = authStore
+  const [params, setParams] = useSearchParams()
+  const step = () => params.step as CheckoutSteps
+  function setStep(step: CheckoutSteps) {
+    setParams({ step })
+  }
+  const isContinuingOrder = () => !!params.order
+
   const [shippingSameAsBilling, setShippingSameAsBilling] = createSignal(true)
   const [orderStore, setOrderStore] = createStore<OrderStore>({
     ...defaultCheckout.orderStore,
@@ -33,12 +40,6 @@ export const CheckoutProvider: Component<{ children: JSXElement }> = (props) => 
   })
   const [formErrors, setFormErrors] = createSignal<string[]>([])
 
-  const [params, setParams] = useSearchParams()
-  const step = () => params.step as CheckoutSteps
-  function setStep(step: CheckoutSteps) {
-    setParams({ step })
-  }
-
   const [stripe, setStripe] = createSignal<Stripe | null>(null)
   const [clientSecret, setClientSecret] = createSignal<string>()
   const [subClientSecrets, setSubClientSecrets] = createSignal<string[]>()
@@ -46,6 +47,10 @@ export const CheckoutProvider: Component<{ children: JSXElement }> = (props) => 
   const [subscriptionsPaid, setSubscriptionsPaid] = createSignal<boolean>()
 
   onMount(async () => {
+    if (isContinuingOrder() && order()) {
+      setParams({ step: 'payment' })
+    }
+
     if (!step()) {
       setParams({ step: 'address' })
     }
@@ -77,6 +82,8 @@ export const CheckoutProvider: Component<{ children: JSXElement }> = (props) => 
     } else if (hasPhysical && paymentSuccess()) {
       checkoutSuccessful()
     } else if (hasServices && subscriptionsPaid()) {
+      checkoutSuccessful()
+    } else if (isContinuingOrder()) {
       checkoutSuccessful()
     }
   })
@@ -110,6 +117,18 @@ export const CheckoutProvider: Component<{ children: JSXElement }> = (props) => 
   const [inTransit, setInTransit] = createSignal(false)
   const [order, setOrder] = createSignal<Order>()
 
+  if (isContinuingOrder()) {
+    (async () => {
+      const { result, error } = await OrdersApi.one(+params.order)
+      if (error) {
+        console.log("Could not fetch existing order")
+      }
+
+      console.log("it seems that an order already exists")
+      setOrder(result!)
+    })()
+  }
+
   async function submit() {
     try {
       setInTransit(true)
@@ -129,7 +148,7 @@ export const CheckoutProvider: Component<{ children: JSXElement }> = (props) => 
       }
 
       if (getCartTotal() <= ONLINE_ORDER_AMOUNT_LIMIT) {
-        _paymentsFlow(physicalItems)
+        _paymentsFlow(physicalItems.length > 0)
       } else {
         checkoutSuccessful()
       }
@@ -141,8 +160,8 @@ export const CheckoutProvider: Component<{ children: JSXElement }> = (props) => 
     }
   }
 
-  async function _paymentsFlow(physicalItems: CartItem[]) {
-    if (physicalItems.length > 0) {
+  async function _paymentsFlow(chargeOrder: boolean) {
+    if (chargeOrder || isContinuingOrder()) {
       // orderResp.amount excludes amount for subscriptions
       const resp2 = await PaymentsApi.createPaymentIntent(user!.email, order()!.amount!)
       if (!resp2.error) {
@@ -182,6 +201,9 @@ export const CheckoutProvider: Component<{ children: JSXElement }> = (props) => 
 
   return (
     <CheckoutContext.Provider value={{
+      isContinuingOrder,
+      order,
+
       step,
       setStep,
       shippingSameAsBilling,

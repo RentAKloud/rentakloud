@@ -18,6 +18,7 @@ type FormInputType = {
 
   inputClass?: string
   required?: boolean
+  disabled?: boolean
 }
 
 const TextInput: Component<FormInputType> = (props) => {

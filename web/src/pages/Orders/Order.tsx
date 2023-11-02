@@ -1,5 +1,5 @@
 import { Component, For, Show, createResource } from "solid-js";
-import { useParams } from "@solidjs/router";
+import { Link, useParams } from "@solidjs/router";
 import OrdersApi from "~/api/orders";
 import Loader from "~/components/Loader";
 import { DateTime } from "~/components/DateTime";
@@ -32,14 +32,19 @@ const Order: Component = () => {
       <Show when={order()}>
         <div class="flex justify-between mb-8">
           <h3 class="text-2xl"><DateTime value={order()!.createdAt} /></h3>
-          <h4
-            class="text-xl"
-            classList={{
-              "text-green-500": [OrderStatus.Paid, OrderStatus.Completed].includes(order()!.status),
-              "text-yellow-500": [OrderStatus.Pending, OrderStatus.OnHold].includes(order()!.status),
-              "text-red-500": [OrderStatus.Cancelled].includes(order()!.status)
-            }}
-          >{order()!.status}</h4>
+          <div>
+            <h4
+              class="text-xl"
+              classList={{
+                "text-green-500": [OrderStatus.Paid, OrderStatus.Completed].includes(order()!.status),
+                "text-yellow-500": [OrderStatus.Pending, OrderStatus.OnHold].includes(order()!.status),
+                "text-red-500": [OrderStatus.Cancelled].includes(order()!.status)
+              }}
+            >{order()!.status}</h4>
+            <Show when={order()!.status === OrderStatus.Pending}>
+              <Link href={`/checkout?order=${order()!.id}`}><span class="link link-hover">Continue checkout</span> &rarr;</Link>
+            </Show>
+          </div>
         </div>
 
         <div class="flex gap-20 mb-10">

@@ -10,7 +10,7 @@ export function getProductById(id: number) {
   return products.latest.find(p => p.id === id)
 }
 
-export function getProductPrice(product: Product, priceId?: string): ProductPrice {
+export function getProductPrice(product: Partial<Product>, priceId?: string): ProductPrice {
   return priceId ? product.prices?.find(p => p.priceId === priceId)! : product.prices![0]
 }
 

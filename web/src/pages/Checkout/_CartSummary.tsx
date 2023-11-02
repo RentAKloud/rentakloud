@@ -1,25 +1,26 @@
 import { Component, For, Show } from "solid-js";
-import { getProductPrice } from "~/stores/products";
+import { cart, getCartTotal } from "~/stores/cart";
+import { getProductById, getProductPrice, products } from "~/stores/products";
 import { useCheckoutContext } from "./context";
 import Lottie from "~/components/Lottie";
-import { formatPrice, getOrderSubTotal, getTotalDiscounts } from "~/utils";
+import { formatPrice, getTotalDiscounts } from "~/utils";
 
-export const OrderDetails: Component = () => {
-  const { step, order } = useCheckoutContext()
-  const subTotal = () => order() ? getOrderSubTotal(order()!) : 0
-  const discounts = () => order() ? getTotalDiscounts(order()!.coupons, subTotal()) : 0
+export const CartSummary: Component = () => {
+  const { step, orderStore } = useCheckoutContext()
+  const subTotal = () => getCartTotal()
+  const discounts = () => getTotalDiscounts(orderStore.couponCodes, subTotal())
   const finalTotal = () => subTotal() - discounts()
 
   return (
     <>
-      <Show when={step() !== 'congrats' && order()}>
+      <Show when={step() !== 'congrats' && !products.loading}>
         <h4 class="font-bold">Items</h4>
 
-        <For each={order()!.items} fallback={"Your cart is empty."}>
+        <For each={cart.items} fallback={"Your cart is empty."}>
           {
             (item) => {
-              const product = () => item.product
-              const price = () => getProductPrice(product(), product().prices[0].priceId)
+              const product = () => getProductById(item.productId)!
+              const price = () => getProductPrice(product(), item.priceId)
               const interval = () => price().priceId ? ` &cross; ${price().planName} ${price().interval}ly` : ""
               const formattedPrice = () => formatPrice(price().saleAmount || price().amount)
 
@@ -36,7 +37,7 @@ export const OrderDetails: Component = () => {
           }
         </For>
 
-        <Show when={order()!.items.length > 0}>
+        <Show when={cart.items.length > 0}>
           <div class="flex justify-between mt-5">
             <strong>Subtotal</strong>
             <span>{formatPrice(subTotal())}</span>

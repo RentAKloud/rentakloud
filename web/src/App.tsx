@@ -16,7 +16,7 @@ const App: Component = () => {
   createEffect(() => {
     if (isLoggedIn()) return
     // if logged out and on protected route
-    const currentRoute = location.pathname
+    const currentRoute = location.pathname + location.search
     if (protectedRoots.includes(currentRoute.split('/')[1])) {
       navigate(`/login?next=${currentRoute}`)
     }

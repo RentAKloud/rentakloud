@@ -98,6 +98,8 @@ export type OrderStore = {
 export type CheckoutSteps = "address" | "payment" | "congrats"
 
 export type CheckoutContextProps = {
+  isContinuingOrder: () => boolean
+  order: Accessor<Order | undefined>
   step: () => CheckoutSteps;
   setStep: (step: CheckoutSteps) => void;
   shippingSameAsBilling: Accessor<boolean>;
@@ -120,6 +122,8 @@ export type CheckoutContextProps = {
 }
 
 export const defaultCheckout: CheckoutContextProps = {
+  isContinuingOrder: () => false,
+  order: () => undefined,
   step: () => "address",
   setStep(step) { },
   shippingSameAsBilling: () => true,

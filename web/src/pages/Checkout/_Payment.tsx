@@ -11,6 +11,7 @@ export const Payment: Component = () => {
     orderStore,
     updateNotes,
     updateCoupons,
+    isContinuingOrder,
   } = useCheckoutContext()
 
   const [coupon, setCoupon] = createSignal("")
@@ -39,7 +40,11 @@ export const Payment: Component = () => {
       </div>
 
       <div class="mb-5">
-        <TextInput label="Order Notes" value={orderStore.orderNotes} onChange={(e) => updateNotes(e.currentTarget.value)} />
+        <TextInput
+          label="Order Notes" value={orderStore.orderNotes}
+          onChange={(e) => updateNotes(e.currentTarget.value)}
+          disabled={isContinuingOrder()}
+        />
       </div>
 
       <div class="mb-10">
@@ -47,6 +52,7 @@ export const Payment: Component = () => {
           label="Coupon Code"
           value={coupon()} error={couponError()}
           onInput={(e) => setCoupon(e.currentTarget.value)}
+          disabled={isContinuingOrder()}
         />
 
         <div class="flex justify-between mt-2">
