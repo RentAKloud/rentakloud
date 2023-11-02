@@ -1,7 +1,7 @@
 import { Component, For, Match, Show, Switch, createResource } from "solid-js";
 import { Link } from "@solidjs/router";
 import { company } from "~/config/constants";
-import { authStore, logout } from "~/stores/auth";
+import { authStore } from "~/stores/auth";
 import { productsMenu } from "~/config/data";
 import { cart } from "~/stores/cart";
 import MenuIcon from "./icons/Menu";
@@ -10,6 +10,7 @@ import BellIcon from "./icons/Bell";
 import { DateTime } from "./DateTime";
 import { NotificationStatus } from "~/types/notification";
 import EyeIcon from "./icons/Eye";
+import ProfileDropdown from "./ProfileDropdown";
 
 const Navbar: Component<{}> = () => {
   const loggedIn = () => !!authStore.user
@@ -71,7 +72,7 @@ const Navbar: Component<{}> = () => {
         </ul>
       </div>
 
-      <div class="hidden lg:flex navbar-end gap-5">
+      <div class="navbar-end gap-5">
         <Show when={cartLength() > 0}>
           <Link href="/cart">
             <div class="btn btn-ghost btn-circle">
@@ -85,27 +86,29 @@ const Navbar: Component<{}> = () => {
           </Link>
         </Show>
 
-        <Switch>
-          <Match when={!loggedIn()}>
-            <ul class="menu menu-horizontal">
-              <li><Link href="/register">Signup</Link></li>
-              <li><Link href="/login">Login</Link></li>
-            </ul>
-          </Match>
-          <Match when={loggedIn()}>
-            <div class="dropdown dropdown-end">
-              <Notifications />
-            </div>
+        <div class="hidden lg:flex">
+          <Switch>
+            <Match when={!loggedIn()}>
+              <ul class="menu menu-horizontal">
+                <li><Link href="/register">Signup</Link></li>
+                <li><Link href="/login">Login</Link></li>
+              </ul>
+            </Match>
+            <Match when={loggedIn()}>
+              <div class="dropdown dropdown-end">
+                <Notifications />
+              </div>
 
-            <ul class="menu menu-horizontal">
-              <li><Link href="/dashboard" end>Dashboard</Link></li>
-            </ul>
+              <ul class="menu menu-horizontal">
+                <li><Link href="/dashboard" end>Dashboard</Link></li>
+              </ul>
 
-            <div class="dropdown dropdown-end">
-              <Profile />
-            </div>
-          </Match>
-        </Switch>
+              <div class="dropdown dropdown-end">
+                <ProfileDropdown />
+              </div>
+            </Match>
+          </Switch>
+        </div>
       </div>
     </nav>
   )
@@ -162,34 +165,6 @@ const Notifications: Component = () => {
           }}
         </For>
       </div>
-    </>
-  )
-}
-
-const Profile: Component = () => {
-  return (
-    <>
-      <label tabindex="0" class="btn btn-ghost btn-circle avatar">
-        <div class="w-10 rounded-full">
-          <img src="https://spectrum.ieee.org/media-library/ceo-of-comma-ai-george-geohot-hotz-speaks-onstage-during-techcrunch-disrupt-sf-2016-at-pier-48-on-september-13-2016-in-san-fr.jpg?id=25582060&width=980" />
-        </div>
-      </label>
-
-      <ul tabindex="0" class="dropdown-content menu menu-compact mt-3 p-2 z-10 shadow bg-base-100 rounded-box w-52">
-        {/* <li>
-          <Link href="/dashboard" end class="justify-between">
-            Dashboard
-          </Link>
-        </li> */}
-        <li>
-          <Link href="/dashboard/profile" class="justify-between">
-            Profile
-            {/* <span class="badge">New</span> */}
-          </Link>
-        </li>
-        <li><Link href="/dashboard/settings">Settings</Link></li>
-        <li><a onClick={logout}>Logout</a></li>
-      </ul>
     </>
   )
 }

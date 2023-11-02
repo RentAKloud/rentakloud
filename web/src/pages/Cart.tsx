@@ -28,7 +28,7 @@ const Cart: Component = () => {
 
         <Show when={cart.items.length > 0 && !products.loading}>
           <div class="overflow-x-auto">
-            <table class="table w-full">
+            <table class="table">
               <thead>
                 <tr>
                   <th></th>
