@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpException, HttpStatus, Param, ParseIntPipe, Post, Request, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpException, HttpStatus, Param, ParseIntPipe, Post, Put, Request, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { CouponCode } from '@prisma/client';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
@@ -63,7 +63,7 @@ export class CouponsController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Post('/:id')
+  @Put('/:id')
   updateCoupon(
     @Param('id', ParseIntPipe) id: number,
     @Body() body: CouponCode

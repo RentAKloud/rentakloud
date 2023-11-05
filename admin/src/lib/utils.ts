@@ -6,3 +6,10 @@ export function price(amount: number, currency = 'usd') {
 
   return `${f.format(amount)} ${currency.toUpperCase()}`
 }
+
+export function formatDateForDB(date: string | Date | null): Date | null {
+  if (date) {
+    return new Date(date)
+  }
+  return null
+}

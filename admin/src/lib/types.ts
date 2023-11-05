@@ -6,11 +6,30 @@ export class Product {
     public name: string,
     public shortDescription: string,
     public description: string,
+    public productType: ProductType,
     public descriptionEditor: OutputData,
     public categories: Category[],
-    public prices: { amount: number, saleAmount?: number, currency: string }[],
-    public images: { alt: string, src: string }[]
+    public prices: ProductPrice[],
+    public images: { alt: string, src: string }[],
+    public stock: number
   ) { }
+}
+
+export type ProductPrice = {
+  currency: string;
+  amount: number;
+  saleAmount?: number;
+
+  // for subscriptions
+  planName?: string;
+  priceId?: string;
+  interval?: string;
+  intervalCount?: string;
+}
+
+export enum ProductType {
+  Physical = 'Physical',
+  OnlineService = 'OnlineService'
 }
 
 export class Category {
@@ -89,6 +108,14 @@ export type CouponCode = {
   type: CouponType;
   flatDiscount: string; // Type Decimal is returned as string from backend
   percentageDiscount: number;
+  active: boolean
+  maxUses?: number
+
+  startsAt: string | Date | null
+  expiresAt: string | Date | null
+
+  createdAt: string
+  updatedAt: string
 }
 
 export enum CouponType {

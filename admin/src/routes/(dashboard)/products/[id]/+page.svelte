@@ -1,8 +1,7 @@
 <script lang="ts">
   import { page } from "$app/stores";
   import { Http } from "$lib/http";
-  import type { Category, Product } from "$lib/types";
-  import { price } from "$lib/utils";
+  import { ProductType, type Category, type Product } from "$lib/types";
   import { Button, Input, Label, MultiSelect, Textarea } from "flowbite-svelte";
   import type EditorJS from "@editorjs/editorjs";
 
@@ -34,8 +33,18 @@
     const data: any = product;
     data.oldCategories = data.categories.map((c: Category) => c.id);
     data.categories = selectedCategories;
-    data.descriptionEditor = await descriptionEditor.save()
-    product = await Http.put(`/products`, data);
+    data.descriptionEditor = await descriptionEditor.save();
+
+    data.stock = +product.stock
+    data.prices = product.prices.map(p => {
+      const d = {...p, amount: +p.amount}
+      if (p.saleAmount) {
+        d.saleAmount = +p.saleAmount
+      }
+      return d
+    })
+
+    product = await Http.put(`/products/${product.id}`, data);
   }
 </script>
 
@@ -84,7 +93,10 @@
 
     <div class="mb-6">
       <Label for="description" class="block mb-2">Description</Label>
-      <Editor bind:editor={descriptionEditor} data={product.descriptionEditor} />
+      <Editor
+        bind:editor={descriptionEditor}
+        data={product.descriptionEditor}
+      />
     </div>
 
     <div class="mb-6">
@@ -117,6 +129,13 @@
         </div>
       {/each}
     </div>
+
+    {#if product.productType === ProductType.Physical}
+      <div class="mb-6">
+        <Label for="stock" class="block mb-2">Stock</Label>
+        <Input id="stock" type="number" bind:value={product.stock} />
+      </div>
+    {/if}
 
     <Button type="submit">Save</Button>
   </form>

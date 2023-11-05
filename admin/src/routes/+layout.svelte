@@ -39,8 +39,6 @@
     if ($auth.user.type !== UserType.Admin) {
       alert("Unauthorized");
       logout();
-    } else {
-      goto("/");
     }
   }
 

@@ -50,6 +50,7 @@
           <SidebarDropdownItem label="Products" href="/products" />
           <SidebarDropdownItem label="Orders" href="/orders" />
           <SidebarDropdownItem label="Categories" href="/categories" />
+          <SidebarDropdownItem label="Coupons" href="/coupons" />
         </SidebarDropdownWrapper>
         <SidebarItem label="Configs" {spanClass}>
           <svelte:fragment slot="icon">
