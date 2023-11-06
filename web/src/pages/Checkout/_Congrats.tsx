@@ -1,9 +1,13 @@
 import { Component, For, Show } from "solid-js";
 import { useCheckoutContext } from "./context";
-import { formatPrice } from "~/utils";
+import { formatPrice, getOrderSubTotal, getTotalDiscounts } from "~/utils";
 
 export const Congrats: Component = () => {
   const { order } = useCheckoutContext()
+
+  const subTotal = () => order() ? getOrderSubTotal(order()!) : 0
+  const discounts = () => order() ? getTotalDiscounts(order()!.coupons, subTotal()) : 0
+  const finalTotal = () => subTotal() - discounts()
 
   return (
     <div class="mb-10">
@@ -11,7 +15,7 @@ export const Congrats: Component = () => {
 
       <h3 class="font-bold mb-2">Order Summary</h3>
       <Show when={order()}>
-        <table class="table mb-14">
+        <table class="table mb-2">
           <thead>
             <tr>
               <th>Sr.</th>
@@ -44,6 +48,23 @@ export const Congrats: Component = () => {
             </For>
           </tbody>
         </table>
+
+        <div class="flex justify-end gap-4">
+          <div class="flex flex-col ">
+            <strong>Subtotal</strong>
+            <strong>Discount</strong>
+            <strong>Taxes</strong>
+            <strong>Shipping</strong>
+            <strong class="mt-2">Total</strong>
+          </div>
+          <div class="flex flex-col text-right">
+            <span>{formatPrice(subTotal())}</span>
+            <span>-{formatPrice(discounts())}</span>
+            <span>{formatPrice(0)}</span>
+            <span>{formatPrice(0)}</span>
+            <span class="mt-2">{formatPrice(finalTotal())}</span>
+          </div>
+        </div>
       </Show>
     </div>
   )

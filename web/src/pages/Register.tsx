@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "@solidjs/router";
+import { Link, useNavigate, useSearchParams } from "@solidjs/router";
 import { Component, createEffect, createSignal } from "solid-js";
 import HeroWithForm from "~/components/Hero/HeroWithForm";
 import TextInput from "~/components/Inputs/TextInput";
@@ -48,7 +48,8 @@ const Register: Component = () => {
     const { user } = authStore
 
     if (user) {
-      navigate("/dashboard")
+      const [params] = useSearchParams()
+      navigate(params.next || "/dashboard")
     }
   })
 
@@ -93,7 +94,7 @@ const Register: Component = () => {
           />
 
           <label class="label">
-            <Link href="/login" class="label-text-alt link link-hover">Already have an account?</Link>
+            <Link href={`/login${location.search}`} class="label-text-alt link link-hover">Already have an account?</Link>
           </label>
 
           <label class="label-text">

@@ -64,6 +64,10 @@ const Login: Component = () => {
           </label>
         </div>
 
+        <label class="">
+          Don't have an account? <Link href={`/register${location.search}`} class="link link-hover">Register now</Link>.
+        </label>
+
         <div class="form-control mt-6">
           <button class="btn btn-primary" onClick={loginHandler}>Login</button>
         </div>
