@@ -147,14 +147,13 @@ export const CheckoutProvider: Component<{ children: JSXElement }> = (props) => 
       }
 
       if (getCartTotal() <= ONLINE_ORDER_AMOUNT_LIMIT) {
-        _paymentsFlow(physicalItems.length > 0)
+        await _paymentsFlow(physicalItems.length > 0)
       } else {
         checkoutSuccessful()
       }
     } catch (err: any) {
       NotificationService.error("Something went wrong")
       setFormErrors(err.message.split(","))
-    } finally {
       setInTransit(false)
     }
   }

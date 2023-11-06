@@ -12,28 +12,24 @@ export const StripeElementsWrapper = () => {
   } = useCheckoutContext()
   const elements = useStripeElements()
 
-  createEffect(() => {
+  createEffect(async () => {
     if (!clientSecret()) return
 
     try {
-      setInTransit(true);
-
-      (async () => {
-        const result = await stripe()!.confirmCardPayment(clientSecret()!, {
-          payment_method: {
-            card: elements().getElement(Card)!,
-            billing_details: {},
-          }
-        })
-
-        if (result.error) {
-          NotificationService.error("Payment failed")
+      const result = await stripe()!.confirmCardPayment(clientSecret()!, {
+        payment_method: {
+          card: elements().getElement(Card)!,
+          billing_details: {},
         }
-        else {
-          NotificationService.success("Payment successfull")
-          setPaymentSuccess(true)
-        }
-      })()
+      })
+
+      if (result.error) {
+        NotificationService.error("Payment failed")
+      }
+      else {
+        NotificationService.success("Payment successfull")
+        setPaymentSuccess(true)
+      }
     } catch (err) {
       console.log(err)
     } finally {
