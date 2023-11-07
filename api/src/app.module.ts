@@ -15,6 +15,7 @@ import { PrometheusModule } from '@willsoto/nestjs-prometheus';
 import { NotificationsModule } from './modules/notifications.module';
 import { CategoriesModule } from './modules/categories.module';
 import { CouponsModule } from './modules/coupons.module';
+import { UsersModule } from './modules/users.module';
 
 @Module({
   imports: [
@@ -33,7 +34,8 @@ import { CouponsModule } from './modules/coupons.module';
     OrdersModule,
     CouponsModule,
     DiskImagesModule,
-    NotificationsModule
+    NotificationsModule,
+    UsersModule
   ],
   controllers: [AppController],
   providers: [AppService],

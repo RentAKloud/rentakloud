@@ -112,6 +112,10 @@ jobs:
             yarn install
             npx prisma migrate deploy
             npx prisma generate
-            yarn start:prod -f
+            if [ "$(pm2 id main)" = "[]" ]; then
+              yarn start:prod
+            else
+              pm2 reload main
+            fi
           # -o in `unzip` forces overwrite option. Without it we get a prompt at runtime asking if we
           # want to overwrite existing files, like .env

@@ -13,7 +13,7 @@ export class MailService {
 
   @OnEvent('user.created')
   async sendUserConfirmation(user: User, token: string) {
-    const url = `rkcloud.com/auth/confirm?token=${token}`;
+    const url = `rentakloud.com/auth/confirm?token=${token}`;
 
     await this.mailerService.sendMail({
       to: user.email,
@@ -38,6 +38,7 @@ export class MailService {
       context: {
         name: user.firstName + " " + user.lastName,
         order,
+        createdAt: order.createdAt.toDateString().replace(/^\S+\s/,'') // replace first non-space chars along with white-space
       },
     });
   }

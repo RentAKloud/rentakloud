@@ -24,6 +24,7 @@ import { UsersModule } from './users.module';
         defaults: {
           from: config.get('SMTP_DEFAULT_FROM'),
         },
+        // preview: true, // opens up the SENT email in browser
         template: {
           dir: join(__dirname, '../../templates'),
           adapter: new HandlebarsAdapter(),
@@ -31,6 +32,14 @@ import { UsersModule } from './users.module';
             strict: true,
           },
         },
+        options: {
+          partials: {
+            dir: join(__dirname, '../../templates/partials'),
+            options: {
+              strict: true,
+            },
+          },
+        }
       }),
       inject: [ConfigService],
     }),
