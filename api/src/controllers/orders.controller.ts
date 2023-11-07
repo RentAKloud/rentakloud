@@ -1,10 +1,10 @@
 import { Body, Controller, Get, Param, ParseIntPipe, Post, Request, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { CouponType, Prisma, ProductType } from '@prisma/client';
-import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
-import { ParseOrderPipe, ParsedCreateOrderReq } from 'src/pipes/parse-order';
-import { OrdersService } from 'src/services/orders.service';
-import { ProductsService } from 'src/services/products.service';
+import { JwtAuthGuard } from '../guards/jwt-auth.guard';
+import { ParseOrderPipe, ParsedCreateOrderReq } from '../pipes/parse-order';
+import { OrdersService } from '../services/orders.service';
+import { ProductsService } from '../services/products.service';
 
 @ApiTags('Orders')
 @Controller('orders')

@@ -1,12 +1,13 @@
 import { Module } from '@nestjs/common';
-import { ProductsController } from 'src/controllers/products.controller';
-import { ProductsService } from 'src/services/products.service';
+import { ProductsController } from '../controllers/products.controller';
+import { ProductsService } from '../services/products.service';
 import { PrismaModule } from './prisma.module';
+import { EventEmitter2, EventEmitterModule } from '@nestjs/event-emitter';
 
 @Module({
-  imports: [PrismaModule],
+  imports: [PrismaModule, EventEmitterModule],
   controllers: [ProductsController],
-  providers: [ProductsService],
+  providers: [ProductsService, EventEmitter2],
   exports: [ProductsService]
 })
 export class ProductsModule { }

@@ -1,8 +1,8 @@
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, Request, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Product } from '@prisma/client';
-import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
-import { ProductsService } from 'src/services/products.service';
+import { JwtAuthGuard } from '../guards/jwt-auth.guard';
+import { ProductsService } from '../services/products.service';
 import * as edjsHTML from "editorjs-html";
 
 @ApiTags('Products')
