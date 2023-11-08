@@ -40,11 +40,14 @@ export class AppController {
       user = await this.usersService.user({ id: +q.userId })
     }
 
+    hbs.registerPartial("_head", await this.loadTemplate('partials/_head'))
     hbs.registerPartial("_footer", await this.loadTemplate('partials/_footer'))
+    hbs.registerPartial("_end", await this.loadTemplate('partials/_end'))
 
     switch (q.name) {
       case 'user_confirmation':
         if ('renderOnly' in q) {
+          hbs.registerPartial("_header", await this.loadTemplate('partials/_header', { title: "Welcome to RentAKloud!" }))
           return this.loadTemplate("user_confirmation")
         } else {
           this.mailService.sendUserConfirmation(user, 'xddinside')
@@ -55,10 +58,11 @@ export class AppController {
           return "orderId is required"
         }
         const order = await this.ordersService.order({ id: +q.orderId })
-        const createdAt = order.createdAt.toDateString().replace(/^\S+\s/,'') // replace first non-space chars along with white-space
+        const createdAt = order.createdAt.toDateString().replace(/^\S+\s/, '') // replace first non-space chars along with white-space
         const u = await this.usersService.user({ id: order.userId })
 
         if ('renderOnly' in q) {
+          hbs.registerPartial("_header", await this.loadTemplate('partials/_header', { title: "Thank you for your order" }))
           hbs.registerPartial("_order_details", await this.loadTemplate('partials/_order_details', { order }))
           return this.loadTemplate("order_received", { order, name: u.firstName, createdAt })
         } else {
