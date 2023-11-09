@@ -1,6 +1,4 @@
 import { Component } from "solid-js";
-import { Link } from "@solidjs/router";
-import { company } from "~/config/constants";
 import LegalLayout from "~/layouts/LegalLayout";
 
 const PrivacyPolicy: Component = () => {
@@ -50,10 +48,7 @@ const PrivacyPolicy: Component = () => {
         </li>
       </ol>
       <p>
-        <strong>
-          Supplemented Data
-        </strong>
-        may be received about you from other sources, for example, from publicly available databases, social media
+        <strong>Supplemented Data</strong> may be received about you from other sources, for example, from publicly available databases, social media
         platforms, or third parties from whom we have purchased data, in which case we may combine this data with
         information we already have about you so that we can update, expand and analyze the accuracy of our records,
         identify new customers, and provide products and services that may be of interest to you. If you provide us personal

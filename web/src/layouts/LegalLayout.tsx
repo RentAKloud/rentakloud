@@ -83,7 +83,7 @@ const LegalLayout: Component<LayoutProps & {
               Last Revised: <time>{props.revisionDateTime}</time>
             </p>
 
-            <div class="document-content">
+            <div class="prose">
               {props.children}
             </div>
           </div>
