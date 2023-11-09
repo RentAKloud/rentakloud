@@ -7,11 +7,11 @@ const Footer: Component = () => {
     <>
       <footer class="footer p-10 bg-base-200 text-base-content">
         <div>
-          <span class="footer-title">Services</span>
-          <Link href="#" class="link link-hover">Branding</Link>
-          <a class="link link-hover">Design</a>
-          <a class="link link-hover">Marketing</a>
-          <a class="link link-hover">Advertisement</a>
+          <span class="footer-title">Products</span>
+          <Link href="/our-products/rak-kvm" class="link link-hover">RAK KVM</Link>
+          <Link href="/our-products/rk-server-1" class="link link-hover">RAK R5950X</Link>
+          <Link href="/our-products/rak-router-1" class="link link-hover">RAK Router</Link>
+          {/* <Link href="/services" class="link link-hover">Advertisement</Link> */}
         </div>
         <div>
           <span class="footer-title">Company</span>

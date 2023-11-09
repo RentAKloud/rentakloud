@@ -58,7 +58,7 @@ export const productsMenu = () => [
     submenu: [
       { title: "RAK KVM", slug: "rak-kvm" },
       { title: "RAK R5950X", slug: "rk-server-1" },
-      { title: "RAK Router", slug: "rk-router-1" }
+      { title: "RAK Router", slug: "rak-router-1" }
     ]
   },
 ]
@@ -67,7 +67,7 @@ export const home = () => ({
   featuredHardware: [
     products.latest.find(p => p.slug === 'rak-kvm'),
     products.latest.find(p => p.slug === 'rk-server-1'),
-    products.latest.find(p => p.slug === 'rk-router-1'),
+    products.latest.find(p => p.slug === 'rak-router-1'),
   ],
   featuredProducts: [
     {

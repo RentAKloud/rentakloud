@@ -4,7 +4,7 @@ type FormInputType = {
   name?: string;
 
   label: string;
-  value: string;
+  value?: string | number;
   placeholder?: string;
   type?: string;
   min?: number;
@@ -39,7 +39,7 @@ const TextInput: Component<FormInputType> = (props) => {
         {...props}
         placeholder={placeholder}
         value={props.value}
-        class={`input input-bordered ${props.inputClass || ''}`}
+        class={`input input-bordered ${props.inputClass || ''} placeholder:text-slate-500`}
         classList={{
           "input-error": !!props.error
         }}

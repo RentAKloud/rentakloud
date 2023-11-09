@@ -55,7 +55,7 @@ const Orders: Component = () => {
                         <td>{formatPrice(total - discounts)}</td>
                         <td>{order.status}</td>
                         <td>
-                          <Link href={`/dashboard/orders/${order.id}`}>Details</Link>
+                          <Link href={`/dashboard/orders/${order.id}`} class="btn btn-info btn-xs link-hover">Details</Link>
                         </td>
                       </tr>
                     )

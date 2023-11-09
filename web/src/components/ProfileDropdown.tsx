@@ -12,17 +12,17 @@ const ProfileDropdown: Component = () => {
       </label>
 
       <ul tabindex="0" class="dropdown-content menu menu-compact mt-3 p-2 z-10 shadow bg-base-100 rounded-box w-52">
-        {/* <li>
+        <li>
           <Link href="/dashboard" end class="justify-between">
             Dashboard
           </Link>
-        </li> */}
-        <li>
+        </li>
+        {/* <li>
           <Link href="/dashboard/profile" class="justify-between">
             Profile
-            {/* <span class="badge">New</span> */}
+            <span class="badge">New</span>
           </Link>
-        </li>
+        </li> */}
         <li><Link href="/dashboard/settings">Settings</Link></li>
         <li><a onClick={logout}>Logout</a></li>
       </ul>
