@@ -1,14 +1,16 @@
 import { Link } from "@solidjs/router"
 import { Component } from "solid-js"
 import { logout } from "~/stores/auth"
+import { Icon } from "./icons"
 
 const ProfileDropdown: Component = () => {
   return (
     <>
       <label tabindex="0" class="btn btn-ghost btn-circle avatar">
-        <div class="w-10 rounded-full">
+        {/* <div class="w-10 rounded-full">
           <img src="https://spectrum.ieee.org/media-library/ceo-of-comma-ai-george-geohot-hotz-speaks-onstage-during-techcrunch-disrupt-sf-2016-at-pier-48-on-september-13-2016-in-san-fr.jpg?id=25582060&width=980" />
-        </div>
+        </div> */}
+          <Icon.UserCircle class="w-8" />
       </label>
 
       <ul tabindex="0" class="dropdown-content menu menu-compact mt-3 p-2 z-10 shadow bg-base-100 rounded-box w-52">

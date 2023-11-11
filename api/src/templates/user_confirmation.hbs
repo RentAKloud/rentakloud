@@ -1,10 +1,10 @@
 {{> _head }}
 {{> _header title="Welcome to RentAKloud!" }}
-<tr>
-  <td>Hello {{ name }}</td>
-</tr>
-<tr>
-  <td>This is a confirmation email.</td>
-</tr>
+
+{{> _content_start }}
+<p>Hello {{ name }},</p>
+
+<p>This is a confirmation email.</p>
+{{> _content_end }}
 
 {{> _end }}

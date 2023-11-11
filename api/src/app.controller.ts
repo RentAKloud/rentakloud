@@ -41,6 +41,8 @@ export class AppController {
     }
 
     hbs.registerPartial("_head", await this.loadTemplate('partials/_head'))
+    hbs.registerPartial("_content_start", await this.loadTemplate('partials/_content_start'))
+    hbs.registerPartial("_content_end", await this.loadTemplate('partials/_content_end'))
     hbs.registerPartial("_footer", await this.loadTemplate('partials/_footer'))
     hbs.registerPartial("_end", await this.loadTemplate('partials/_end'))
 
@@ -48,7 +50,8 @@ export class AppController {
       case 'user_confirmation':
         if ('renderOnly' in q) {
           hbs.registerPartial("_header", await this.loadTemplate('partials/_header', { title: "Welcome to RentAKloud!" }))
-          return this.loadTemplate("user_confirmation")
+          //@ts-ignore
+          return this.loadTemplate("user_confirmation", { name: user.fullName })
         } else {
           this.mailService.sendUserConfirmation(user, 'xddinside')
           return
