@@ -1,5 +1,5 @@
 import { ApiResponse, HttpService } from "~/services/HttpService";
-import { OrderRequest, OrderResponse as CreateOrderResponse, Order, OrderStatus, CouponCode } from "~/types/order";
+import { OrderRequest, OrderResponse as CreateOrderResponse, Order, OrderStatus, CouponCode, Address, Tax } from "~/types/order";
 
 class OrdersApi {
   static async all(): ApiResponse<Order[]> {
@@ -20,6 +20,10 @@ class OrdersApi {
 
   static async validateCoupon(code: string): ApiResponse<CouponCode> {
     return await HttpService.post<CouponCode>(`/coupons/validate`, { code })
+  }
+
+  static async estimateTaxes(address: Partial<Address> & { amount: number }): ApiResponse<Tax[]> {
+    return await HttpService.post('/orders/estimate-taxes', address)
   }
 }
 

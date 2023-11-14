@@ -11,8 +11,9 @@ import { authStore, register } from "~/stores/auth";
 const Register: Component = () => {
   const navigate = useNavigate()
   const [formData, setFormData] = createSignal<{
-    email: string | null,
-    password: string | null,
+    email: string,
+    password: string,
+    confirmPassword?: string
     firstName: string,
     lastName: string
   }>({
@@ -29,7 +30,7 @@ const Register: Component = () => {
     setErrors({ email: "", password: "", confirmPassword: "" })
 
     const fd = formData()
-    const errs = await register(fd.email || "", fd.password || "", fd.firstName, fd.lastName)
+    const errs = await register(fd.email!, fd.password!, fd.firstName, fd.lastName)
 
     if (errs) {
       for (let message of errs.message) {
@@ -52,6 +53,8 @@ const Register: Component = () => {
       navigate(params.next || "/dashboard")
     }
   })
+
+  const canSubmit =() => formData().email.length > 5 && formData().password.length > 6 && formData().password === formData().confirmPassword
 
   return (
     <DefaultLayout>
@@ -101,11 +104,12 @@ const Register: Component = () => {
           type="password"
           placeholder="Confirm Password"
           inputClass="input-primary"
-          onInput={(e) =>
+          onInput={(e) => {
+            setFormData({ ...formData(), confirmPassword: e.currentTarget.value })
             e.currentTarget.value !== formData().password ?
               setErrors({ ...errors(), confirmPassword: "Passwords don't match" }) :
               setErrors({ ...errors(), confirmPassword: '' })
-          }
+          }}
           error={errors().confirmPassword}
         />
 
@@ -118,7 +122,7 @@ const Register: Component = () => {
         </label>
 
         <div class="form-control mt-6">
-          <button class="btn btn-primary" disabled={inTransit()} onClick={registerHandler}>Register</button>
+          <button class="btn btn-primary" disabled={!canSubmit() || inTransit()} onClick={registerHandler}>Register</button>
         </div>
 
         <div class="divider">or</div>

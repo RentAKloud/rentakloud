@@ -45,6 +45,7 @@ export const CheckoutProvider: Component<{ children: JSXElement }> = (props) => 
   const [subClientSecrets, setSubClientSecrets] = createSignal<string[]>()
   const [paymentSuccess, setPaymentSuccess] = createSignal<boolean>()
   const [subscriptionsPaid, setSubscriptionsPaid] = createSignal<boolean>()
+  const [isCardInfoComplete, setIsCardInfoComplete] = createSignal<boolean>(false)
 
   onMount(async () => {
     if (!step()) {
@@ -113,6 +114,18 @@ export const CheckoutProvider: Component<{ children: JSXElement }> = (props) => 
   function updateCoupons(val: CouponCode[]) {
     setOrderStore("couponCodes", val)
   }
+
+  createEffect(async () => {
+    const { city, state, zip, country } = orderStore.billingAddress
+    if (city || state || zip || country) {
+      const { result, error } = await OrdersApi.estimateTaxes({ city, state, country, zip, amount: getCartTotal() })
+      if (!error) {
+        setOrderStore({
+          taxes: result!
+        })
+      }
+    }
+  })
 
   const [inTransit, setInTransit] = createSignal(false)
   const [order, setOrder] = createSignal<Order>()
@@ -217,6 +230,8 @@ export const CheckoutProvider: Component<{ children: JSXElement }> = (props) => 
       subClientSecrets,
       setPaymentSuccess,
       setSubscriptionsPaid,
+      isCardInfoComplete,
+      setIsCardInfoComplete,
       submit,
       inTransit,
       setInTransit,

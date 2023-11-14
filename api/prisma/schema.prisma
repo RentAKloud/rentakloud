@@ -108,6 +108,8 @@ model Product {
   //
   createdAt         DateTime         @default(now())
   updatedAt         DateTime         @default(now())
+  //
+  taxRates          TaxRate[]
 }
 
 // Instance configurations (also used as plans)
@@ -140,6 +142,7 @@ model Category {
   title    String
   slug     String
   products Product[]
+  taxRates TaxRate[]
 }
 
 model Order {
@@ -168,6 +171,7 @@ model Order {
   //
   items             Json[]
   coupons           CouponCode[]
+  taxes             Json         @default("[]")
   status            OrderStatus  @default(Pending)
   notes             String
   // Final amount that should be/was charged. This is just for historical record
@@ -196,6 +200,25 @@ model CouponCode {
   updatedAt          DateTime   @default(now())
   //
   orders             Order[]
+}
+
+model TaxRate {
+  id          Int     @id @default(autoincrement())
+  countryCode String? @db.Char(2) // leave blank to apply to all
+  stateCode   String? @db.Char(2)
+  zip         String?
+  city        String?
+  //
+  rate        Decimal @db.Decimal(10, 2)
+  name        String
+  //
+  compound    Boolean @default(false) // compund rates are applied on top of other tax rates
+  shipping    Boolean @default(true) // does it applies to shipping
+  priority    Int     @default(1)
+
+  products     Product[]
+  productTypes ProductType[]
+  categories   Category[]
 }
 
 enum Gender {

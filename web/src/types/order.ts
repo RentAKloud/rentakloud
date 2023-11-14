@@ -8,6 +8,7 @@ export type Address = {
   firstName: string;
   lastName: string;
   email: string;
+  phoneNumber: string
   address: string;
   address2: string;
   city: string;
@@ -20,7 +21,7 @@ export type Order = {
   id: number;
   user: User;
   userId: number;
-  
+
   billingFirstName: string;
   billingLastName: string;
   billingEmail: string;
@@ -49,6 +50,7 @@ export type Order = {
     quantity: number
   }[];
   coupons: CouponCode[];
+  taxes: Tax[]
   status: OrderStatus;
   notes: string;
 
@@ -83,7 +85,7 @@ export enum OrderStatus {
 }
 
 export const defaultAddress: Address = {
-  firstName: "", lastName: "", email: "",
+  firstName: "", lastName: "", email: "", phoneNumber: "",
   address: "", address2: "", city: "", state: "",
   zip: "", country: ""
 }
@@ -93,6 +95,13 @@ export type OrderStore = {
   shippingAddress: Address;
   orderNotes: string;
   couponCodes: CouponCode[];
+  taxes: Tax[]
+}
+
+export type Tax = {
+  title: string
+  amount: number
+  rate: number
 }
 
 export type CheckoutSteps = "address" | "payment" | "congrats"
@@ -115,6 +124,8 @@ export type CheckoutContextProps = {
   subClientSecrets: Accessor<string[] | undefined>;
   setPaymentSuccess: Setter<boolean>;
   setSubscriptionsPaid: Setter<boolean>;
+  isCardInfoComplete: Accessor<boolean>
+  setIsCardInfoComplete: Setter<boolean>
   submit: () => void;
   inTransit: Accessor<boolean>;
   setInTransit: Setter<boolean>;
@@ -137,12 +148,15 @@ export const defaultCheckout: CheckoutContextProps = {
     shippingAddress: defaultAddress,
     orderNotes: "",
     couponCodes: [],
+    taxes: []
   },
   stripe: () => null,
   clientSecret: () => undefined,
   subClientSecrets: () => undefined,
   setPaymentSuccess: (val: any) => val,
   setSubscriptionsPaid: (val: any) => val,
+  isCardInfoComplete: () => false,
+  setIsCardInfoComplete: (val: any) => val,
   submit() { },
   inTransit: () => false,
   setInTransit: (val: any) => val,

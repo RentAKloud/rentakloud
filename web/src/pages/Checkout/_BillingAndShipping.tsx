@@ -1,8 +1,8 @@
-import { Component, Show } from "solid-js";
+import { Component, Show, createResource } from "solid-js";
 import TextInput from "~/components/Inputs/TextInput";
 import { useCheckoutContext } from "./context";
 import SelectSearch from "~/components/Inputs/SelectSearch";
-// import { authStore } from "../../stores/auth";
+import { HttpService } from "~/services/HttpService";
 
 export const BillingAndShipping: Component = () => {
   const {
@@ -15,6 +15,24 @@ export const BillingAndShipping: Component = () => {
     formErrors,
   } = useCheckoutContext()
 
+  const [countryOptions] = createResource(async () => {
+    const { result, error } = await HttpService.get<{ name: string, code: string }[]>('/countries')
+    if (error) throw error
+    return result!.map(c => ({ label: c.name, value: c.code }))
+  })
+  const [stateOptionsBilling] = createResource(() => orderStore.billingAddress.country, async () => {
+    const { result, error } = await HttpService.get<{ name: string, code: string }[]>(`/states?country=${orderStore.billingAddress.country}`)
+    if (error) throw error
+    if (!result) return null
+    return result!.map(c => ({ label: c.name, value: c.code }))
+  })
+  const [stateOptionsShipping] = createResource(() => orderStore.shippingAddress.country, async () => {
+    const { result, error } = await HttpService.get<{ name: string, code: string }[]>(`/states?country=${orderStore.shippingAddress.country}`)
+    if (error) throw error
+    if (!result) return null
+    return result!.map(c => ({ label: c.name, value: c.code }))
+  })
+
   return (
     <form>
       <div class="flex flex-col md:flex-row md:gap-5">
@@ -24,6 +42,7 @@ export const BillingAndShipping: Component = () => {
           // defaultVal={user?.firstName}
           onChange={(e) => updateBilling("firstName", e.currentTarget.value)}
           error={formErrors().find(e => e.includes("billingAddress.firstName"))}
+          required
         />
 
         <TextInput
@@ -52,28 +71,40 @@ export const BillingAndShipping: Component = () => {
       <TextInput label="Address 2 (optional)" value={orderStore.billingAddress.address2} onChange={(e) => updateBilling("address2", e.currentTarget.value)} />
 
       <div class="flex flex-col md:flex-row md:gap-5 justify-center">
+        <SelectSearch
+          name="country"
+          label="Country"
+          options={countryOptions.latest || []}
+          default={countryOptions.latest?.at(0)}
+          value={orderStore.billingAddress.country}
+          onChange={() => { }}
+          onValueChange={(e) => { updateBilling("country", e); updateBilling("state", ""); }}
+        />
+
+        <Show when={stateOptionsBilling.latest} fallback={
+          <TextInput
+            label="State"
+            value={orderStore.billingAddress.state}
+            onChange={(e) => updateBilling("state", e.currentTarget.value)}
+          />
+        }>
+          <SelectSearch
+            name="state"
+            label="State"
+            options={stateOptionsBilling.latest || []}
+            default={stateOptionsBilling.latest?.at(0)}
+            value={orderStore.billingAddress.state}
+            onChange={() => { }}
+            onValueChange={(e) => updateBilling("state", e)}
+          />
+        </Show>
+      </div>
+
+      <div class="flex flex-col md:flex-row md:gap-5 justify-center">
         <TextInput
           label="City"
           value={orderStore.billingAddress.city}
           onChange={(e) => updateBilling("city", e.currentTarget.value)}
-        />
-
-        <TextInput
-          label="State"
-          value={orderStore.billingAddress.state}
-          onChange={(e) => updateBilling("state", e.currentTarget.value)}
-        />
-      </div>
-
-      <div class="flex flex-col md:flex-row md:gap-5 justify-center mb-5">
-        <SelectSearch
-          name="country"
-          label="Country"
-          options={[{ label: "USA", value: "us" }, { label: "Canada", value: "ca" }]}
-          default={{value: "us", label: "USA"}}
-          value={orderStore.billingAddress.country}
-
-          onChange={(e) => updateBilling("country", e.currentTarget.value)}
         />
 
         <TextInput
@@ -82,6 +113,15 @@ export const BillingAndShipping: Component = () => {
           onChange={(e) => updateBilling("zip", e.currentTarget.value)}
         />
       </div>
+
+      <TextInput
+        label="Phone"
+        type="tel"
+        value={orderStore.billingAddress.phoneNumber}
+        onChange={(e) => updateBilling("phoneNumber", e.currentTarget.value)}
+      />
+
+      <div class="mb-5" />
 
       <div class="form-control mb-5">
         <label class="cursor-pointer label">
@@ -114,22 +154,47 @@ export const BillingAndShipping: Component = () => {
         <TextInput label="Address 2 (optional)" value={orderStore.shippingAddress.address2} onChange={(e) => updateShipping("address2", e.currentTarget.value)} />
 
         <div class="flex gap-5 justify-center">
-          <TextInput label="City" value={orderStore.shippingAddress.city} onChange={(e) => updateShipping("city", e.currentTarget.value)} />
-
-          <TextInput label="State" value={orderStore.shippingAddress.state} onChange={(e) => updateShipping("state", e.currentTarget.value)} />
-        </div>
-
-        <div class="flex gap-5 justify-center mb-10">
           <SelectSearch
             name="country"
             label="Country"
-            options={[{ label: "USA", value: "us" }, { label: "Canada", value: "ca" }]}
+            options={countryOptions.latest || []}
+            default={countryOptions.latest?.at(0)}
             value={orderStore.shippingAddress.country}
-
             onChange={(e) => updateShipping("country", e.currentTarget.value)}
+            onValueChange={(e) => { updateShipping("country", e); updateShipping("state", ""); }}
           />
 
-          <TextInput label="Zip" value={orderStore.shippingAddress.zip} onChange={(e) => updateShipping("zip", e.currentTarget.value)} />
+          <Show when={stateOptionsShipping.latest} fallback={
+            <TextInput
+              label="State"
+              value={orderStore.shippingAddress.state}
+              onChange={(e) => updateShipping("state", e.currentTarget.value)}
+            />
+          }>
+            <SelectSearch
+              name="state"
+              label="State"
+              options={stateOptionsShipping.latest || []}
+              default={stateOptionsShipping.latest?.at(0)}
+              value={orderStore.shippingAddress.state}
+              onChange={() => { }}
+              onValueChange={(e) => updateShipping("state", e)}
+            />
+          </Show>
+        </div>
+
+        <div class="flex flex-col md:flex-row md:gap-5 justify-center mb-10">
+          <TextInput
+            label="City"
+            value={orderStore.shippingAddress.city}
+            onChange={(e) => updateShipping("city", e.currentTarget.value)}
+          />
+
+          <TextInput
+            label="Zip" value={orderStore.shippingAddress.zip}
+            onChange={(e) => updateShipping("zip", e.currentTarget.value)}
+            required
+          />
         </div>
       </Show>
     </form >

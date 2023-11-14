@@ -3,7 +3,7 @@ import { Link } from "@solidjs/router";
 import OrdersApi from "~/api/orders";
 import Loader from "~/components/Loader";
 import { DateTime } from "~/components/DateTime";
-import { formatPrice, getTotalDiscounts } from "~/utils";
+import { formatPrice } from "~/utils";
 
 const Orders: Component = () => {
   const [orders] = createResource(async () => {
@@ -44,15 +44,15 @@ const Orders: Component = () => {
                 {
                   (order, i) => {
                     const items = order.items.length > 1 ? `${order.items.length} items` : order.items[0].product.name
-                    const total = order.items.reduce((i, j) => i + (j.product.prices[0].saleAmount || j.product.prices[0].amount) * j.quantity, 0)
-                    const discounts = getTotalDiscounts(order.coupons, total)
+                    // const total = order.items.reduce((i, j) => i + (j.product.prices[0].saleAmount || j.product.prices[0].amount) * j.quantity, 0)
+                    // const discounts = getTotalDiscounts(order.coupons, total)
 
                     return (
                       <tr>
                         <th>{i() + 1}</th>
                         <td>{items}</td>
                         <td><DateTime value={order.createdAt} /></td>
-                        <td>{formatPrice(total - discounts)}</td>
+                        <td>{formatPrice(order.amount || 0)}</td>
                         <td>{order.status}</td>
                         <td>
                           <Link href={`/dashboard/orders/${order.id}`} class="btn btn-info btn-xs link-hover">Details</Link>

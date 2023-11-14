@@ -8,6 +8,7 @@ import { OrdersService } from './services/orders.service';
 import { readFile } from 'fs/promises';
 import { cwd } from 'process';
 import * as hbs from 'handlebars';
+import * as states from './data/states.json'
 
 @Controller()
 export class AppController {
@@ -25,6 +26,21 @@ export class AppController {
   @Get()
   getHello() {
     return this.appService.getHello();
+  }
+
+  @Get('/countries')
+  countriesList() {
+    return [
+      { name: "United States (USA)", code: "US" },
+      { name: "United Kingdom (UK)", code: "GB" },
+      { name: "Canada", code: "CA" },
+      { name: "Australia", code: "AU" }
+    ]
+  }
+
+  @Get('/states')
+  statesList(@Query('country') country: string) {
+    return country ? states[country] : states['US']
   }
 
   @Get('/mail')

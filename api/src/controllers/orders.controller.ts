@@ -5,13 +5,15 @@ import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 import { ParseOrderPipe, ParsedCreateOrderReq } from '../pipes/parse-order';
 import { OrdersService } from '../services/orders.service';
 import { ProductsService } from '../services/products.service';
+import { TaxRatesService } from 'src/services/tax-rates.service';
 
 @ApiTags('Orders')
 @Controller('orders')
 export class OrdersController {
   constructor(
     private readonly ordersService: OrdersService,
-    private productsService: ProductsService
+    private productsService: ProductsService,
+    private readonly taxRatesService: TaxRatesService,
   ) { }
 
   @UseGuards(JwtAuthGuard)
@@ -55,7 +57,7 @@ export class OrdersController {
       .filter((_, i) => products[i].productType === ProductType.Physical)
       .map((item, i) => ({
         quantity: item.quantity,
-        product: products[i] as any // idk
+        product: products[i]
       }))
 
     const order = await this.ordersService.createOrder(data)
@@ -75,14 +77,54 @@ export class OrdersController {
         :
         curr.flatDiscount.toNumber()) + sum
     }, 0.0)
-    order.amount = new Prisma.Decimal(+(order.amount.toNumber() - discounts).toFixed(2))
+
+    // Get tax rates and calculate taxes
+    const rates = await this.taxRatesService.taxRates({
+      where: {
+        countryCode: order.shippingCountry,
+        // zip,
+        stateCode: order.shippingState
+      }
+    })
+    order.taxes = rates.map(r => ({
+      title: r.name,
+      amount: +(r.rate.toNumber() * order.amount.toNumber()).toFixed(2),
+      rate: r.rate.toNumber()
+    }))
+    const taxesTotal = rates.reduce((sum, curr) => {
+      return sum + order.amount.toNumber() * curr.rate.toNumber()
+    }, 0)
+
+    order.amount = new Prisma.Decimal(+(order.amount.toNumber() + taxesTotal - discounts).toFixed(2))
 
     this.ordersService.updateOrder({
       where: { id: order.id },
-      data: { amount: order.amount }
+      data: {
+        amount: order.amount,
+        taxes: order.taxes
+      }
     })
 
     return order
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('/estimate-taxes')
+  async estimateTaxes(@Body() body) {
+    const { country, zip, state, amount } = body
+
+    const rates = await this.taxRatesService.taxRates({
+      where: {
+        countryCode: country,
+        // zip,
+        stateCode: state
+      }
+    })
+
+    return rates.map(r => ({
+      title: r.name,
+      amount: amount * r.rate.toNumber(),
+    }))
   }
 
   // TODO add validation using filter to make sure the user owns the order

@@ -20,7 +20,7 @@ export function truncate(text: string, limit: number): string {
 export function getOrderSubTotal(order: Order) {
   return order.items.reduce((sum, curr) => {
     const price = curr.product.prices[0]
-    return sum + (price.saleAmount || price.amount)
+    return sum + +(price.saleAmount || price.amount)
   }, 0)
 }
 

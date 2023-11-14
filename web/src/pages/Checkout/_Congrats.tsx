@@ -7,7 +7,8 @@ export const Congrats: Component = () => {
 
   const subTotal = () => order() ? getOrderSubTotal(order()!) : 0
   const discounts = () => order() ? getTotalDiscounts(order()!.coupons, subTotal()) : 0
-  const finalTotal = () => subTotal() - discounts()
+  const taxes = () => order() ? order()!.taxes.reduce((curr, next) => curr + next.amount, 0) : 0
+  const finalTotal = () => subTotal() + taxes() - discounts()
 
   return (
     <div class="mb-10">
@@ -52,16 +53,20 @@ export const Congrats: Component = () => {
         <div class="flex justify-end gap-4">
           <div class="flex flex-col ">
             <strong>Subtotal</strong>
-            <strong>Discount</strong>
-            <strong>Taxes</strong>
+            <Show when={discounts() > 0}>
+              <strong>Discount</strong>
+            </Show>
             <strong>Shipping</strong>
+            <strong>Taxes</strong>
             <strong class="mt-2">Total</strong>
           </div>
           <div class="flex flex-col text-right">
             <span>{formatPrice(subTotal())}</span>
-            <span>-{formatPrice(discounts())}</span>
+            <Show when={discounts() > 0}>
+              <span>-{formatPrice(discounts())}</span>
+            </Show>
             <span>{formatPrice(0)}</span>
-            <span>{formatPrice(0)}</span>
+            <span>{formatPrice(taxes())}</span>
             <span class="mt-2">{formatPrice(finalTotal())}</span>
           </div>
         </div>

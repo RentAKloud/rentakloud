@@ -9,7 +9,8 @@ export const CartSummary: Component = () => {
   const { step, orderStore } = useCheckoutContext()
   const subTotal = () => getCartTotal()
   const discounts = () => getTotalDiscounts(orderStore.couponCodes, subTotal())
-  const finalTotal = () => subTotal() - discounts()
+  const taxesTotal = () => orderStore.taxes.reduce((curr, next) => curr + next.amount, 0)
+  const finalTotal = () => subTotal() + taxesTotal() - discounts()
 
   return (
     <>
@@ -42,17 +43,19 @@ export const CartSummary: Component = () => {
             <strong>Subtotal</strong>
             <span>{formatPrice(subTotal())}</span>
           </div>
-          <div class="flex justify-between">
-            <strong>Discount</strong>
-            <span>-{formatPrice(discounts())}</span>
-          </div>
-          <div class="flex justify-between">
-            <strong>Taxes</strong>
-            <span>{formatPrice(0)}</span>
-          </div>
+          <Show when={discounts() > 0}>
+            <div class="flex justify-between">
+              <strong>Discount</strong>
+              <span>-{formatPrice(discounts())}</span>
+            </div>
+          </Show>
           <div class="flex justify-between">
             <strong>Shipping</strong>
             <span>{formatPrice(0)}</span>
+          </div>
+          <div class="flex justify-between">
+            <strong>Taxes</strong>
+            <span>{formatPrice(taxesTotal())}</span>
           </div>
 
           <div class="flex justify-between mt-5">

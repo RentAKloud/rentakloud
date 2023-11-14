@@ -14,7 +14,8 @@ import { Congrats } from "./_Congrats";
 const _Checkout: Component = () => {
   const {
     submit, inTransit, step,
-    setStep, isContinuingOrder, order
+    setStep, isContinuingOrder, order,
+    isCardInfoComplete
   } = useCheckoutContext()
 
   return (
@@ -57,7 +58,7 @@ const _Checkout: Component = () => {
               <Show when={!inTransit()} fallback={"Processing..."}>
                 <div class="flex gap-5">
                   <button class="btn" onclick={() => setStep('address')} disabled={isContinuingOrder()}>Back</button>
-                  <button class="btn btn-primary" onclick={submit}>Confirm & Pay</button>
+                  <button class="btn btn-primary" onclick={submit} disabled={!isCardInfoComplete()}>Confirm & Pay</button>
                 </div>
               </Show>
             </Show>
@@ -68,8 +69,8 @@ const _Checkout: Component = () => {
               <Congrats />
 
               <div class="flex gap-5">
-                <Link href={`/dashboard/orders/${order()?.id}`} class="btn">Order Details</Link>
-                <Link href="/dashboard/orders" class="btn btn-primary">Order History</Link>
+                <Link href={`/dashboard/orders/${order()?.id}`} class="btn btn-primary">Order Details</Link>
+                <Link href="/dashboard/orders" class="btn btn-outline">Order History</Link>
               </div>
             </Show>
           </section>

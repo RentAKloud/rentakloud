@@ -8,7 +8,7 @@ export const StripeElementsWrapper = () => {
   const {
     stripe, clientSecret, subClientSecrets,
     setInTransit, setPaymentSuccess,
-    setSubscriptionsPaid,
+    setSubscriptionsPaid, setIsCardInfoComplete
   } = useCheckoutContext()
   const elements = useStripeElements()
 
@@ -69,6 +69,6 @@ export const StripeElementsWrapper = () => {
   })
 
   return (
-    <Card onChange={(e) => console.log(e.complete)} />
+    <Card onChange={(e) => setIsCardInfoComplete(e.complete)} />
   )
 }

@@ -8,7 +8,8 @@ export const OrderDetails: Component = () => {
   const { step, order } = useCheckoutContext()
   const subTotal = () => order() ? getOrderSubTotal(order()!) : 0
   const discounts = () => order() ? getTotalDiscounts(order()!.coupons, subTotal()) : 0
-  const finalTotal = () => subTotal() - discounts()
+  const taxes = () => order() ? order()!.taxes.reduce((curr, next) => curr + next.amount, 0) : 0
+  const finalTotal = () => subTotal() + taxes() - discounts()
 
   return (
     <>
@@ -46,12 +47,12 @@ export const OrderDetails: Component = () => {
             <span>-{formatPrice(discounts())}</span>
           </div>
           <div class="flex justify-between">
-            <strong>Taxes</strong>
+            <strong>Shipping</strong>
             <span>{formatPrice(0)}</span>
           </div>
           <div class="flex justify-between">
-            <strong>Shipping</strong>
-            <span>{formatPrice(0)}</span>
+            <strong>Taxes</strong>
+            <span>{formatPrice(taxes())}</span>
           </div>
 
           <div class="flex justify-between mt-5">

@@ -1,11 +1,11 @@
 import { Combobox, createFilter } from "@kobalte/core"
-import { Component, JSX, Show, createEffect, createSignal, splitProps } from "solid-js"
+import { Component, JSX, Show, createEffect, createSignal, onMount, splitProps } from "solid-js"
 import CheckIcon from "../icons/Check";
 import ChevronUpDownIcon from "../icons/ChevronUpDown";
 
 type Option = {
-  label: string;
-  value: string | number
+  label: string
+  value: string
 }
 
 type SelectSearchProps = {
@@ -22,11 +22,11 @@ type SelectSearchProps = {
   onInput?: JSX.EventHandler<HTMLSelectElement, InputEvent>;
   onChange: JSX.EventHandler<HTMLSelectElement, Event>;
   onBlur?: JSX.EventHandler<HTMLSelectElement, FocusEvent>;
-  onValueChange?: (value: string | number) => void;
+  onValueChange?: (value: string) => void;
 }
 
 const SelectSearch: Component<SelectSearchProps> = (props) => {
-  const [rootProps, selectProps] = splitProps(
+  const [rootProps, selectProps, others] = splitProps(
     props,
     ['name', 'placeholder', 'required', 'disabled'],
     ['placeholder', 'ref', 'onInput', 'onChange', 'onBlur']
@@ -47,18 +47,21 @@ const SelectSearch: Component<SelectSearchProps> = (props) => {
       setOptions(props.options)
     }
   }
+  onMount(() => {
+    others.onValueChange?.(others.default?.value || '')
+  })
 
-  const [getValue, setValue] = createSignal<Option>();
+  const [value, setValue] = createSignal<Option>();
   createEffect(() => {
     setValue(props.options.find((option) => props.value === option.value));
   });
 
   return (
-    <div class="form-control">
+    <div class="form-control flex-1">
       <Combobox.Root<Option>
         {...rootProps}
-        defaultValue={props.default}
-        value={getValue()}
+        defaultValue={others.default}
+        value={value()}
         options={options()}
         optionLabel="label"
         optionTextValue="label"
@@ -99,7 +102,7 @@ const SelectSearch: Component<SelectSearchProps> = (props) => {
         </Combobox.Control>
         <Combobox.Portal>
           <Combobox.Content class="dropdown bg-base-100 border-[1px] rounded-md w-full px-3" style={{ "border-color": "hsl(var(--bc) / 0.2)" }}>
-            <Combobox.Listbox class="" />
+            <Combobox.Listbox class="max-h-96 overflow-y-scroll" />
           </Combobox.Content>
         </Combobox.Portal>
 
