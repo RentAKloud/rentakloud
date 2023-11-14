@@ -5,7 +5,7 @@ import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 import { ParseOrderPipe, ParsedCreateOrderReq } from '../pipes/parse-order';
 import { OrdersService } from '../services/orders.service';
 import { ProductsService } from '../services/products.service';
-import { TaxRatesService } from 'src/services/tax-rates.service';
+import { TaxRatesService } from '../services/tax-rates.service';
 
 @ApiTags('Orders')
 @Controller('orders')

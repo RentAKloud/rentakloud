@@ -5,7 +5,6 @@ import { MailModule } from './modules/mail.module';
 import { ConfigModule } from '@nestjs/config';
 import { UsersModule } from './modules/users.module';
 import { OrdersModule } from './modules/orders.module';
-import { ProductsModule } from './modules/products.module';
 
 describe('AppController', () => {
   let app: TestingModule;
