@@ -50,7 +50,10 @@ export const PhysicalProduct: Component<{ product: Product }> = (props) => {
 
         <div class="md:w-2/5 mt-3 text-center md:text-left px-6 md:px-0">
           <h1 class="text-3xl text-bold">{product().name}</h1>
-          <p class="my-5" innerHTML={product().shortDescription} />
+          <div class="my-5">
+            <div innerHTML={product().shortDescription} />
+            <a href="#details" class="link">More details</a>.
+          </div>
 
           <Show when={price() !== null} fallback={"Not available for purchase right now. Please check back soon."}>
             <h4 class="text-xl mb-2">
@@ -91,7 +94,7 @@ export const PhysicalProduct: Component<{ product: Product }> = (props) => {
         </div>
       </section>
 
-      <section class="mt-5">
+      <section class="mt-5" id="details">
         {/* <Tabs.Root aria-label="Main navigation"> */}
         {/* <Tabs.List class="tabs">
             <Tabs.Trigger class="tab tab-bordered ui-selected:tab-active" value="details">Details</Tabs.Trigger>

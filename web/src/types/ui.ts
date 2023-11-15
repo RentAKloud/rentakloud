@@ -11,8 +11,8 @@ export type Icon = {
 }
 
 export type HeroWithBgProps = {
-  title: string,
-  subtitle: string,
+  title?: string,
+  subtitle?: string,
   children?: JSXElement,
   bgUrl?: string,
   actions?: JSXElement,
@@ -21,6 +21,7 @@ export type HeroWithBgProps = {
   align?: "center" | "left",
   notFullScreen?: boolean
   class?: string
+  bgFixed?: boolean
 }
 
 export type Card = {

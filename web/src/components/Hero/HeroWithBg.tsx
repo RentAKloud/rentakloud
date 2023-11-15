@@ -11,6 +11,7 @@ const HeroWithBg: Component<HeroWithBgProps> = (props) => {
       'bg-right': align === 'left',
       'bg-contain': contain,
       'bg-no-repeat': contain,
+      'bg-fixed': props.bgFixed,
     }} style={props.bgUrl ? `background-image: url(${props.bgUrl});` : ''}>
       <Show when={props.bgUrl}>
         <div class="hero-overlay bg-opacity-90"></div>
@@ -23,8 +24,12 @@ const HeroWithBg: Component<HeroWithBgProps> = (props) => {
         {children}
         <div class="max-w-md">
           {header}
-          <h1 class="mb-5 text-5xl font-bold">{props.title}</h1>
-          <p class="mb-5">{props.subtitle}</p>
+          <Show when={props.title}>
+            <h1 class="mb-5 text-5xl font-bold">{props.title}</h1>
+          </Show>
+          <Show when={props.subtitle}>
+            <p class="mb-5 text-xl">{props.subtitle}</p>
+          </Show>
           {actions}
         </div>
       </div>

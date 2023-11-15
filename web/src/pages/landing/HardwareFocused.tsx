@@ -55,95 +55,39 @@ const LandingHardwareFocused: Component = () => {
         </div>
       </section>
 
-      <section class="p-10 bg-base-200">
-        <h2 class="text-3xl text-center font-bold mb-5">Built Different</h2>
-        <p class="text-center mb-10">Cutting-edge infrastructure. 100% Uptime. Automatic Backups.</p>
+      <section class="bg-base-200 flex flex-col-reverse md:flex-row md:py-10">
+        <div class="flex flex-col justify-center flex-1 p-10">
+          <h2 class="text-4xl font-bold mb-5">Why Depend On RentAKloud?</h2>
+          <p class="text-lg">We specialize in transforming the seemingly impossible into reality. By integrating cutting-edge
+            hardware, extensive industry expertise, and strategic ecosystem partnerships, we tackle the most intricate technology
+            challenges of today.</p>
+        </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 place-items-center items-stretch gap-5">
-          <Card
-            center
-            title="Infrastructure"
-            description={
-              <ul>
-                <li>World-Class Hardware</li>
-                <li>Best Data Centers</li>
-                <li>Crafted Cloud Platform</li>
-                <li>Proactive Monitoring</li>
-              </ul>
-            }
-            class="w-96"
-            img={{ uri: "https://images.cloudclusters.io/57daa7380d554d859b7566b8b97be586/Infrastructure%20for%20CCS%20Cloud%20Hosting.png", alt: "" }}
-          />
-
-          <Card
-            center
-            title="High Speed"
-            description={
-              <ul>
-                <li>Instant Deployment</li>
-                <li>Top-tier Network</li>
-                <li>Pure SSD</li>
-              </ul>
-            }
-            class="w-96"
-            img={{ uri: "https://images.cloudclusters.io/68465fbdf2774c0eae58e720ba76eb51/Speed%20Matters.png", alt: "" }}
-          />
-
-          <Card
-            center
-            title="Comprehensive Protection"
-            description={
-              <ul>
-                <li>Auto-update</li>
-                <li>Powerful Firewall</li>
-                <li>SSL Everywhere</li>
-                <li>Free Backup</li>
-              </ul>
-            }
-            class="w-96"
-            img={{ uri: "https://images.cloudclusters.io/128998bd6c8444988ba6374fac064693/Comprehensive%20Protection%20for%20Cloud%20Applications%20on%20CCS%20platform.png", alt: "" }}
-          />
-
-          <Card
-            center
-            title="Tech Support"
-            description={
-              <ul>
-                <li>24/7 Support</li>
-                <li>Free Migration</li>
-              </ul>
-            }
-            class="w-96"
-            img={{ uri: "https://images.cloudclusters.io/1ebca492f6b84f04902f8f3aa89ac5ac/Tech%20Support%20for%20Open-Source%20Applications.png", alt: "" }}
-          />
+        <div class="flex-1">
+          <img class="w-full" src="https://images.pexels.com/photos/442150/pexels-photo-442150.jpeg?auto=compress&cs=tinysrgb&w=640&dpr=1" />
         </div>
       </section>
 
-      <section class="py-10 flex flex-col items-center">
-        <h2 class="text-3xl text-center font-bold mb-5">Testimonials</h2>
-        <p class="text-center mb-10">Loved by all of our customers.</p>
+      <HeroWithBg
+        title=""
+        subtitle={`In a landscape saturated with options, RentAKloud stands out as the provider
+        that not only delivers scalable solutions but also delivers on a promise of reliability, innovation, and unparalleled service.`}
+        bgUrl="https://unsplash.com/photos/lVZjvw-u9V8/download?ixid=M3wxMjA3fDB8MXxzZWFyY2h8NHx8c2VydmVyc3xlbnwwfHx8fDE3MDAwMDE1MDl8MA&force=true&w=1920"
+        class="h-[50vh]"
+        notFullScreen
+        bgFixed
+      />
 
-        <div class="carousel w-64">
-          <For each={home().testimonials}>
-            {
-              (t, i) =>
-                <div id={`item${i() + 1}`} class="carousel-item w-full justify-center">
-                  <Testimonial
-                    name={t.name}
-                    text={t.text}
-                    img={{ uri: t.img, alt: `${t.name} profile` }}
-                  />
-                </div>
-            }
-          </For>
+      <section class="bg-base-200 flex flex-col md:flex-row py-10">
+        <div class="flex-1">
+          <img class="w-full" src="https://unsplash.com/photos/6b5uqlWabB0/download?ixid=M3wxMjA3fDB8MXxzZWFyY2h8MTV8fHNlcnZlciUyMGNwdSUyMHVuaXR8ZW58MHx8fHwxNjk5OTY5MTM3fDA&force=true&w=640" />
         </div>
-        <div class="flex justify-center w-full py-2 gap-2">
-          <For each={home().testimonials}>
-            {
-              (_, i) =>
-                <a href={`#item${i() + 1}`} class="btn btn-xs">{i() + 1}</a>
-            }
-          </For>
+
+        <div class="flex flex-col justify-center flex-1 p-10">
+          <h2 class="text-4xl font-bold mb-5">What Makes Us Different?</h2>
+          <p class="text-lg mb-10">What sets us apart is our unwavering commitment to providing a distinctive server solution
+            experience. Unlike generic providers, we pride ourselves on staying at the forefront of technology trends, ensuring
+            that our clients benefit from cutting-edge hardware and innovative configurations.</p>
         </div>
       </section>
     </>
