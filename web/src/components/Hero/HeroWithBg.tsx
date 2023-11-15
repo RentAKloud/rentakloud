@@ -5,8 +5,9 @@ const HeroWithBg: Component<HeroWithBgProps> = (props) => {
   const { children, actions, header, contain, align = "center" } = props
 
   return (
-    <div class={`hero h-[70vh] ${props.class || ''}`} classList={{
+    <div class={`hero ${props.class || ''}`} classList={{
       'min-h-screen': !props.notFullScreen,
+      'h-[70vh]': !props.class?.includes('h-'),
       'md:justify-items-start': align === 'left',
       'bg-right': align === 'left',
       'bg-contain': contain,
