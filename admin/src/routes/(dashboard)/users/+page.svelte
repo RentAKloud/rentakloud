@@ -1,6 +1,6 @@
 <script lang="ts">
-    import { Http } from "$lib/http";
-    import { User } from "$lib/types";
+  import { Http } from "$lib/http";
+  import { User } from "$lib/types";
   import {
     TableBody,
     TableBodyCell,
@@ -10,22 +10,23 @@
     Checkbox,
     TableSearch,
   } from "flowbite-svelte";
-    import { onMount } from "svelte";
+  import { onMount } from "svelte";
 
   let searchTerm = "";
   let items: User[] = [];
   $: filteredItems = items.filter(
-    (item) => item.firstName.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1
+    (item) =>
+      item.firstName.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1
   );
 
   async function loadData() {
-    const data = await Http.get<User[]>('/users')
-    items = data
+    const data = await Http.get<User[]>("/users");
+    items = data;
   }
 
   onMount(() => {
-    loadData()
-  })
+    loadData();
+  });
 </script>
 
 <svelte:head>
@@ -33,9 +34,7 @@
 </svelte:head>
 
 <section class="p-5">
-  <h1
-    class="text-2xl font-semibold text-left text-gray-900 dark:text-white"
-  >
+  <h1 class="text-2xl font-semibold text-left text-gray-900 dark:text-white">
     Users
   </h1>
   <p class="mt-1 text-sm font-normal text-gray-500 dark:text-gray-400">
@@ -58,19 +57,19 @@
     </TableHeadCell>
   </TableHead>
   <TableBody tableBodyClass="divide-y">
-    {#each filteredItems as item}
+    {#each filteredItems as user}
       <TableBodyRow>
         <TableBodyCell class="!p-4">
           <Checkbox />
         </TableBodyCell>
-        <TableBodyCell>{item.id}</TableBodyCell>
-        <TableBodyCell>{User.fullName(item)}</TableBodyCell>
-        <TableBodyCell>{item.email}</TableBodyCell>
-        <TableBodyCell>{item.createdAt}</TableBodyCell>
-        <TableBodyCell>{item.updatedAt}</TableBodyCell>
+        <TableBodyCell>{user.id}</TableBodyCell>
+        <TableBodyCell>{User.fullName(user)}</TableBodyCell>
+        <TableBodyCell>{user.email}</TableBodyCell>
+        <TableBodyCell>{user.createdAt}</TableBodyCell>
+        <TableBodyCell>{user.updatedAt}</TableBodyCell>
         <TableBodyCell>
           <a
-            href="/tables"
+            href="/users/{user.id}"
             class="font-medium text-primary-600 hover:underline dark:text-primary-500"
             >Edit</a
           >

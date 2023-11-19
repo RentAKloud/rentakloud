@@ -17,6 +17,7 @@ import { UsersModule } from './users.module';
           host: config.get('SMTP_HOST'),
           port: config.get('SMTP_PORT'),
           secure: false,
+          pool: true,
           auth: {
             user: config.get('SMTP_USER'),
             pass: config.get('SMTP_PASS'),

@@ -1,6 +1,6 @@
-import { Body, Controller, Get, Param, ParseIntPipe, Post, Request, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, ParseIntPipe, Post, Put, Request, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { CouponType, Prisma, ProductType } from '@prisma/client';
+import { CouponType, Order, Prisma, ProductType } from '@prisma/client';
 import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 import { ParseOrderPipe, ParsedCreateOrderReq } from '../pipes/parse-order';
 import { OrdersService } from '../services/orders.service';
@@ -21,6 +21,7 @@ export class OrdersController {
   orders(@Request() req) {
     return this.ordersService.orders({
       where: { userId: req.user.userId },
+      orderBy: { createdAt: 'desc' }
     })
   }
 
@@ -106,6 +107,15 @@ export class OrdersController {
     })
 
     return order
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Put('/:id')
+  async updateOrder(@Body() order: Order) {
+    return this.ordersService.updateOrder({
+      where: { id: order.id },
+      data: order
+    })
   }
 
   @UseGuards(JwtAuthGuard)

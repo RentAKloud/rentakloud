@@ -8,7 +8,7 @@ CREATE TABLE "TaxRate" (
     "stateCode" CHAR(2),
     "zip" TEXT,
     "city" TEXT,
-    "rate" DECIMAL(10,2) NOT NULL,
+    "rate" DECIMAL(10,6) NOT NULL,
     "name" TEXT NOT NULL,
     "compound" BOOLEAN NOT NULL DEFAULT false,
     "shipping" BOOLEAN NOT NULL DEFAULT true,

@@ -1,5 +1,5 @@
 import { Type } from "class-transformer";
-import { ArrayMinSize, IsArray, IsEmail, IsNotEmpty, ValidateNested } from "class-validator";
+import { ArrayMinSize, IsArray, IsEmail, IsNotEmpty, IsPhoneNumber, ValidateNested } from "class-validator";
 
 class Address {
   @IsNotEmpty()
@@ -10,6 +10,9 @@ class Address {
 
   @IsEmail()
   email?: string;
+
+  @IsPhoneNumber()
+  phone?: string;
 
   @IsNotEmpty()
   address: string;

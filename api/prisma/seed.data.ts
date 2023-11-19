@@ -2,7 +2,7 @@ import { Prisma, ProductType } from "@prisma/client"
 
 export const products: Prisma.XOR<Prisma.ProductCreateInput, Prisma.ProductUncheckedCreateInput>[] = [
   {
-    name: "RemoteHands", slug: "remote-hands",
+    name: "RAK KVM", slug: "rak-kvm",
     shortDescription: `A very simple and fully functional Orange Pi-based KVM over IP that you can make with your own hands 
     without any soldering!<br /><br />This device helps to manage servers or workstations remotely, regardless of the health 
     of the operating system or whether one is installed. You can fix any problem, configure the BIOS, and even reinstall the OS 
@@ -58,7 +58,7 @@ export const products: Prisma.XOR<Prisma.ProductCreateInput, Prisma.ProductUnche
     }
   },
   {
-    name: "RK Router 1", slug: "rk-router-1",
+    name: "RAK Router 1", slug: "rak-router-1",
     shortDescription: `Dual Band Wireless Internet Router, Gigabit Router, Easy Mesh, Works with Alexa - A Certified for Humans Device`,
     description: `
     <ul class="list-disc">

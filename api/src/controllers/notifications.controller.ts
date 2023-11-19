@@ -14,7 +14,10 @@ export class NotificationsController {
   @UseGuards(JwtAuthGuard)
   @Get()
   orders(@Request() req) {
-    return this.notificationsService.notifications({ where: { userId: req.user.userId } })
+    return this.notificationsService.notifications({
+      where: { userId: req.user.userId },
+      orderBy: { createdAt: 'desc' }
+    })
   }
 
   @UseGuards(JwtAuthGuard)

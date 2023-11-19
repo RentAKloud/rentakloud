@@ -4,6 +4,15 @@ import { products } from "./seed.data";
 const prisma = new PrismaClient()
 
 async function main() {
+  // users
+  await prisma.user.create({
+    data: {
+      firstName: "Test", lastName: "Acc",
+      email: "test.acc@yopmail.com", password: "$2b$14$kTqWqctH2sPCfnsTzugkOu3HDZ92zC4SAMtAhrea21fLpJn0tMf9i", // Password
+      profile: { create: {} }
+    }
+  })
+
   // categories
   await prisma.category.createMany({
     data: [

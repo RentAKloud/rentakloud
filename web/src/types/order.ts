@@ -8,7 +8,7 @@ export type Address = {
   firstName: string;
   lastName: string;
   email: string;
-  phoneNumber: string
+  phone: string
   address: string;
   address2: string;
   city: string;
@@ -25,6 +25,7 @@ export type Order = {
   billingFirstName: string;
   billingLastName: string;
   billingEmail: string;
+  billingPhone: string;
   billingAddress: string;
   billingAddress2?: string;
   billingCity: string;
@@ -85,7 +86,7 @@ export enum OrderStatus {
 }
 
 export const defaultAddress: Address = {
-  firstName: "", lastName: "", email: "", phoneNumber: "",
+  firstName: "", lastName: "", email: "", phone: "",
   address: "", address2: "", city: "", state: "",
   zip: "", country: ""
 }

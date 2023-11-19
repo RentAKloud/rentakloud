@@ -85,18 +85,19 @@ export class Order {
     public shippingCountry: string,
 
     public items: any[],
-    public coupons: CouponCode[],
     public status: OrderStatus,
     public notes: string,
-
-    public createdAt: string,
+    
+    public createdAt: string | Date | null,
     public updatedAt: string,
-
+    
+    public coupons?: CouponCode[],
+    public taxes?: any[],
     public amount?: number, // only in create response
   ) { }
 
   static searchStr(order: Order) {
-    return order.billingFirstName + " " + order.billingLastName
+    return order.billingFirstName + " " + order.billingLastName + " " + order.billingEmail
   }
 }
 

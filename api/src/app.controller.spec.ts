@@ -5,13 +5,20 @@ import { MailModule } from './modules/mail.module';
 import { ConfigModule } from '@nestjs/config';
 import { UsersModule } from './modules/users.module';
 import { OrdersModule } from './modules/orders.module';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 
 describe('AppController', () => {
   let app: TestingModule;
 
   beforeAll(async () => {
     app = await Test.createTestingModule({
-      imports: [MailModule, ConfigModule, UsersModule, OrdersModule],
+      imports: [
+        MailModule,
+        ConfigModule,
+        UsersModule,
+        OrdersModule,
+        EventEmitterModule.forRoot()
+      ],
       controllers: [AppController],
       providers: [AppService],
     }).compile();

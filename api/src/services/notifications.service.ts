@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { Notification, NotificationStatus, Order, Prisma, User } from "@prisma/client";
+import { Notification, NotificationStatus, Order, OrderStatus, Prisma, User } from "@prisma/client";
 import { PrismaService } from "./prisma.service";
 import { OnEvent } from "@nestjs/event-emitter";
 
@@ -75,6 +75,28 @@ export class NotificationService {
       user: { connect: { id: order.userId } },
       title: `Order #${order.id} was placed successfully`,
       body: `Your order was placed. You can see its details on the billing page. We will notify you once its status changes.`,
+      status: NotificationStatus.Created
+    })
+  }
+
+  @OnEvent('order.status.changed')
+  async orderStatusChanged(order: Order) {
+    const statuses: OrderStatus[] = [OrderStatus.Completed, OrderStatus.Cancelled, OrderStatus.Shipped]
+    if (!statuses.includes(order.status)) {
+      return
+    }
+
+    const notifications = {
+      [OrderStatus.Completed]: {
+        title: `Order #${order.id} has been completed.`,
+        body: "Your order has been delivered and completed successfully."
+      },
+    }
+  
+    this.createNotification({
+      user: { connect: { id: order.userId } },
+      title: notifications[order.status].title,
+      body: notifications[order.status].body,
       status: NotificationStatus.Created
     })
   }

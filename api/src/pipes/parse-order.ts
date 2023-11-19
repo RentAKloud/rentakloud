@@ -16,6 +16,7 @@ export class ParseOrderPipe implements PipeTransform<CreateOrderReq, ParsedCreat
       billingAddress: billingAddress.address,
       billingAddress2: billingAddress.address2,
       billingEmail: billingAddress.email,
+      billingPhone: billingAddress.phone,
       billingCity: billingAddress.city,
       billingState: billingAddress.state,
       billingZip: billingAddress.zip,

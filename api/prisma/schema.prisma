@@ -153,6 +153,7 @@ model Order {
   billingFirstName  String
   billingLastName   String
   billingEmail      String
+  billingPhone      String
   billingAddress    String
   billingAddress2   String?
   billingCity       String
@@ -173,13 +174,16 @@ model Order {
   coupons           CouponCode[]
   taxes             Json         @default("[]")
   status            OrderStatus  @default(Pending)
+  // paymentMethod     PaymentMethod @relation(fields: [paymentMethodId], references: [id])
   notes             String
   // Final amount that should be/was charged. This is just for historical record
   // otherwise this amount can be calculated using total from items, shipping costs and coupons
   amount            Decimal?     @db.Decimal(10, 2)
   //
+  paidAt            DateTime?
   createdAt         DateTime     @default(now())
   updatedAt         DateTime     @default(now())
+  // paymentMethodId   Int
 }
 
 model CouponCode {
@@ -209,7 +213,7 @@ model TaxRate {
   zip         String?
   city        String?
   //
-  rate        Decimal @db.Decimal(10, 2)
+  rate        Decimal @db.Decimal(10, 6)
   name        String
   //
   compound    Boolean @default(false) // compund rates are applied on top of other tax rates
@@ -283,3 +287,9 @@ enum DiskImageOS {
   Windows
   macOS
 }
+
+// model PaymentMethod {
+//   id     Int     @id @default(autoincrement())
+//   name   String
+//   orders Order[]
+// }

@@ -1,6 +1,6 @@
 <script lang="ts">
-    import { Http } from "$lib/http";
-  import { Order } from "$lib/types";
+  import { Http } from "$lib/http";
+  import { Order, OrderStatus } from "$lib/types";
   import {
     TableBody,
     TableBodyCell,
@@ -9,13 +9,16 @@
     TableHeadCell,
     Checkbox,
     TableSearch,
+    A,
   } from "flowbite-svelte";
-    import { onMount } from "svelte";
+  import { onMount } from "svelte";
 
   let searchTerm = "";
   let items: Order[] = [];
   $: filteredItems = items.filter(
-    (item) => Order.searchStr(item).toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1
+    (item) =>
+      Order.searchStr(item).toLowerCase().indexOf(searchTerm.toLowerCase()) !==
+      -1
   );
 
   async function loadData() {
@@ -47,27 +50,33 @@
     <TableHeadCell class="!p-4">
       <Checkbox />
     </TableHeadCell>
-    <TableHeadCell>Product name</TableHeadCell>
-    <TableHeadCell>Color</TableHeadCell>
-    <TableHeadCell>Category</TableHeadCell>
-    <TableHeadCell>Price</TableHeadCell>
+    <TableHeadCell>Order ID</TableHeadCell>
+    <TableHeadCell>User ID</TableHeadCell>
+    <TableHeadCell># of Items</TableHeadCell>
+    <TableHeadCell>Total</TableHeadCell>
+    <TableHeadCell>Status</TableHeadCell>
+    <TableBodyCell>Created At</TableBodyCell>
     <TableHeadCell>
       <span class="sr-only">Edit</span>
     </TableHeadCell>
   </TableHead>
   <TableBody tableBodyClass="divide-y">
-    {#each filteredItems as item}
+    {#each filteredItems as order}
       <TableBodyRow>
         <TableBodyCell class="!p-4">
           <Checkbox />
         </TableBodyCell>
-        <TableBodyCell>{item.billingEmail}</TableBodyCell>
-        <TableBodyCell>{item.billingFirstName} {item.billingLastName}</TableBodyCell>
-        <TableBodyCell>{item.items.length}</TableBodyCell>
-        <TableBodyCell>${item.createdAt}</TableBodyCell>
+        <TableBodyCell>{order.id}</TableBodyCell>
+        <TableBodyCell>
+          <A href="/users/{order.userId}">{order.userId}</A>
+        </TableBodyCell>
+        <TableBodyCell>{order.items.length}</TableBodyCell>
+        <TableBodyCell>${order.amount}</TableBodyCell>
+        <TableBodyCell tdClass={order.status === OrderStatus.Paid ? 'text-green-500' : ''}>{order.status}</TableBodyCell>
+        <TableBodyCell>{order.createdAt}</TableBodyCell>
         <TableBodyCell>
           <a
-            href="/tables"
+            href="/orders/{order.id}"
             class="font-medium text-primary-600 hover:underline dark:text-primary-500"
             >Edit</a
           >

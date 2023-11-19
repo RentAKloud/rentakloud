@@ -57,8 +57,8 @@ const Order: Component = () => {
               {order()!.billingAddress2 ? <>{order()!.billingAddress2}<br /></> : ''}
               {order()!.billingCity}, {order()!.billingState}, {order()!.billingZip}<br />
               {order()!.billingCountry}<br />
-              {order()!.billingEmail}
-              {/* {order()!.billingPhone} */}
+              {order()!.billingEmail}<br />
+              {order()!.billingPhone}
             </p>
           </div>
 

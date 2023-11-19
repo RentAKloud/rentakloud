@@ -69,8 +69,8 @@ export class AppController {
           //@ts-ignore
           return this.loadTemplate("user_confirmation", { name: user.fullName })
         } else {
-          this.mailService.sendUserConfirmation(user, 'xddinside')
-          return
+          this.mailService.sendUserConfirmation(user, '11223344')
+          return 'Success'
         }
       case 'order_received':
         if (!q.orderId) {
@@ -91,11 +91,11 @@ export class AppController {
       default:
         return `param 'name' is required. Valid values:<br/>
         - user_confirmation <br/>
+        -- userId: number<br/>
         - order_received <br/>
+        -- orderId: number<br/>
         <br/>
         Optional params:<br/>
-        - userId: number<br/>
-        - orderId: number<br/>
         - renderOnly (to not actually send an email, just see preview)`
     }
   }

@@ -117,8 +117,8 @@ export const BillingAndShipping: Component = () => {
       <TextInput
         label="Phone"
         type="tel"
-        value={orderStore.billingAddress.phoneNumber}
-        onChange={(e) => updateBilling("phoneNumber", e.currentTarget.value)}
+        value={orderStore.billingAddress.phone}
+        onChange={(e) => updateBilling("phone", e.currentTarget.value)}
       />
 
       <div class="mb-5" />

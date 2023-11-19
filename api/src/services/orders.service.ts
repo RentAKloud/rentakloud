@@ -61,10 +61,19 @@ export class OrdersService {
     data: Prisma.OrderUpdateInput;
   }): Promise<Order> {
     const { where, data } = params;
-    return this.prisma.order.update({
+
+    const oldOrder = await this.order({ id: where.id })
+
+    const order = await this.prisma.order.update({
       data,
       where,
     });
+
+    if (oldOrder.status != data.status) {
+      this.ee.emit('order.status.changed', order)
+    }
+
+    return order
   }
 
   async deleteOrder(where: Prisma.OrderWhereUniqueInput): Promise<Order> {

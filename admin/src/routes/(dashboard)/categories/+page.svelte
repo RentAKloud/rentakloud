@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { Http } from "$lib/http";
+  import { Http } from "$lib/http";
   import type { Category } from "$lib/types";
   import {
     TableBody,
@@ -10,7 +10,7 @@
     Checkbox,
     TableSearch,
   } from "flowbite-svelte";
-    import { onMount } from "svelte";
+  import { onMount } from "svelte";
 
   let searchTerm = "";
   let items: Category[] = [];
@@ -19,13 +19,13 @@
   );
 
   async function loadData() {
-    const data = await Http.get<Category[]>('/categories')
-    items = data
+    const data = await Http.get<Category[]>("/categories");
+    items = data;
   }
 
   onMount(() => {
-    loadData()
-  })
+    loadData();
+  });
 </script>
 
 <svelte:head>
@@ -63,7 +63,7 @@
         <TableBodyCell>{item.id}</TableBodyCell>
         <TableBodyCell>{item.title}</TableBodyCell>
         <TableBodyCell>{item.slug}</TableBodyCell>
-        <TableBodyCell>5</TableBodyCell>
+        <TableBodyCell>-</TableBodyCell>
         <TableBodyCell>
           <a
             href={`/categories/${item.id}`}
