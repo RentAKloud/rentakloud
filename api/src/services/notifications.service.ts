@@ -91,6 +91,14 @@ export class NotificationService {
         title: `Order #${order.id} has been completed.`,
         body: "Your order has been delivered and completed successfully."
       },
+      [OrderStatus.Cancelled]: {
+        title: `Order #${order.id} has been cancelled.`,
+        body: "Unfortunately, your order was cancelled."
+      },
+      [OrderStatus.Shipped]: {
+        title: `Order #${order.id} has been shipped.`,
+        body: "Your order is on its way."
+      },
     }
   
     this.createNotification({

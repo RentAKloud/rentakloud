@@ -47,7 +47,7 @@
       delete data.coupons;
     }
 
-    data.createdAt = formatDateForDB(data.createdAt)
+    data.createdAt = formatDateForDB(data.createdAt + "Z");
 
     order = await Http.put(`/orders/${order.id}`, data);
   }
@@ -56,6 +56,7 @@
     { value: OrderStatus.Pending, name: "Pending" },
     { value: OrderStatus.OnHold, name: "On Hold" },
     { value: OrderStatus.Paid, name: "Paid" },
+    { value: OrderStatus.Shipped, name: "Shipped" },
     { value: OrderStatus.Completed, name: "Completed" },
     { value: OrderStatus.Cancelled, name: "Cancelled" },
   ];
@@ -64,8 +65,10 @@
   let editShippingInfo = false;
 
   $: if (order?.createdAt) {
-    const createdAt = order.createdAt.toString().endsWith("Z") ? order.createdAt : order.createdAt + "Z"
-    order.createdAt = new Date(createdAt).toISOString().split("Z")[0];
+    let createdAt = order.createdAt.toString().endsWith("Z")
+      ? order.createdAt
+      : order.createdAt + "Z";
+    order.createdAt = new Date(createdAt).toISOString().split(".")[0];
   }
 
   const subTotal = () => (order ? getOrderSubTotal(order) : 0);
@@ -102,7 +105,11 @@
         <div class="flex flex-col gap-6">
           <div>
             <Label class="mb-2">Created At</Label>
-            <Input type="datetime-local" step="1" bind:value={order.createdAt} />
+            <Input
+              type="datetime-local"
+              step="1"
+              bind:value={order.createdAt}
+            />
           </div>
 
           <div>
