@@ -5,5 +5,5 @@
 
 */
 -- AlterTable
-ALTER TABLE "Order" ADD COLUMN     "billingPhone" TEXT NOT NULL,
+ALTER TABLE "Order" ADD COLUMN     "billingPhone" TEXT NOT NULL DEFAULT '',
 ADD COLUMN     "paidAt" TIMESTAMP(3);

@@ -153,7 +153,7 @@ model Order {
   billingFirstName  String
   billingLastName   String
   billingEmail      String
-  billingPhone      String
+  billingPhone      String       @default("")
   billingAddress    String
   billingAddress2   String?
   billingCity       String
