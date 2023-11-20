@@ -77,12 +77,15 @@ export class AppController {
           return "orderId is required"
         }
         const order = await this.ordersService.order({ id: +q.orderId })
+        const subTotal = order.items.reduce((curr, next: any) => curr + next.product.prices[0].saleAmount || next.product.prices[0].amount, 0)
+        const taxesTotal = (order.taxes as any[]).reduce((curr, next) => curr + next.amount, 0)
         const createdAt = order.createdAt.toDateString().replace(/^\S+\s/, '') // replace first non-space chars along with white-space
+        const currency = (order.items[0] as any).product.prices[0].currency
         const u = await this.usersService.user({ id: order.userId })
 
         if ('renderOnly' in q) {
           hbs.registerPartial("_header", await this.loadTemplate('partials/_header', { title: "Thank you for your order" }))
-          hbs.registerPartial("_order_details", await this.loadTemplate('partials/_order_details', { order }))
+          hbs.registerPartial("_order_details", await this.loadTemplate('partials/_order_details', { order, subTotal, taxesTotal, currency }))
           return this.loadTemplate("order_received", { order, name: u.firstName, createdAt })
         } else {
           this.mailService.sendOrderReceivedNotification(order)

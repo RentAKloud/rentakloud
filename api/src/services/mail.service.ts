@@ -30,6 +30,9 @@ export class MailService {
   @OnEvent('order.created')
   async sendOrderReceivedNotification(order: Order) {
     const user = await this.usersService.user({ id: order.userId })
+    const subTotal = order.items.reduce((curr, next: any) => curr + next.product.prices[0].saleAmount || next.product.prices[0].amount, 0)
+    const taxesTotal = (order.taxes as any[]).reduce((curr, next) => curr + next.amount, 0)
+    const currency = (order.items[0] as any).product.prices[0].currency
 
     await this.mailerService.sendMail({
       to: user.email,
@@ -38,7 +41,10 @@ export class MailService {
       context: {
         name: user.firstName + " " + user.lastName,
         order,
-        createdAt: order.createdAt.toDateString().replace(/^\S+\s/,'') // replace first non-space chars along with white-space
+        subTotal,
+        taxesTotal,
+        currency,
+        createdAt: order.createdAt.toDateString().replace(/^\S+\s/, '') // replace first non-space chars along with white-space
       },
     });
   }

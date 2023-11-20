@@ -29,8 +29,7 @@
         {{ order.billingFirstName }} {{ order.billingLastName }}<br>{{
         order.billingAddress }}<br>{{ order.billingCity }}<br>{{ order.billingState
         }}<br>{{ order.billingZip }} <br><a href="tel:123123123"
-          style="color: #7f54b3; font-weight: normal; text-decoration: underline;">+1
-          123 123 1234</a>
+          style="color: #7f54b3; font-weight: normal; text-decoration: underline;">{{ order.billingPhone }}</a>
         <br>{{ order.billingEmail }}
       </address>
     </td>
