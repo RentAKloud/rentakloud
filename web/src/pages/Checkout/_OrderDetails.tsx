@@ -1,7 +1,6 @@
 import { Component, For, Show } from "solid-js";
 import { getProductPrice } from "~/stores/products";
 import { useCheckoutContext } from "./context";
-import Lottie from "~/components/Lottie";
 import { formatPrice, getOrderSubTotal, getTotalDiscounts } from "~/utils";
 
 export const OrderDetails: Component = () => {
@@ -62,9 +61,9 @@ export const OrderDetails: Component = () => {
         </Show>
       </Show>
 
-      <Show when={step() === 'congrats'}>
+      {/* <Show when={step() === 'congrats'}>
         <Lottie src="https://assets7.lottiefiles.com/packages/lf20_m3ixidnq.json" />
-      </Show>
+      </Show> */}
     </>
   )
 }

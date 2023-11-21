@@ -11,8 +11,8 @@ const LandingHardwareFocused: Component = () => {
   return (
     <>
       <HeroWithBg
-        title="Power Your Business With Our Cutting-Edge Tech"
-        subtitle="Your One-Stop Shop for High-Performance Servers and Accessories."
+        title="Cloud & Data Center Products And Services"
+        subtitle="Efficient, Secure & Eco-friendly."
         actions={
           <Link href="/register" class="btn btn-primary">Get Started</Link>
         }

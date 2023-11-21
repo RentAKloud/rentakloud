@@ -62,7 +62,7 @@ export const CheckoutProvider: Component<{ children: JSXElement }> = (props) => 
     }
 
     if (isContinuingOrder() && order()) {
-      setStep(order()!.status === OrderStatus.Paid ? 'congrats' : 'payment')
+      setStep(order()!.status === OrderStatus.Pending ? 'payment' : 'congrats')
     }
   })
 
