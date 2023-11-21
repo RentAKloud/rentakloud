@@ -1,11 +1,12 @@
 import { Body, Controller, Get, Param, ParseIntPipe, Post, Put, Request, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { CouponType, Order, Prisma, ProductType } from '@prisma/client';
+import { CouponType, Order, Prisma, ProductType, UserType } from '@prisma/client';
 import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 import { ParseOrderPipe, ParsedCreateOrderReq } from '../pipes/parse-order';
 import { OrdersService } from '../services/orders.service';
 import { ProductsService } from '../services/products.service';
 import { TaxRatesService } from '../services/tax-rates.service';
+import { UsersService } from '../services/users.service';
 
 @ApiTags('Orders')
 @Controller('orders')
@@ -14,21 +15,36 @@ export class OrdersController {
     private readonly ordersService: OrdersService,
     private productsService: ProductsService,
     private readonly taxRatesService: TaxRatesService,
+    private readonly usersService: UsersService
   ) { }
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  orders(@Request() req) {
+  async orders(@Request() req) {
+    const user = await this.usersService.user({ id: req.user.userId })
+    
+    const where: Prisma.OrderWhereInput = {}
+    if (user.type !== UserType.Admin) {
+      where.userId = user.id
+    }
+
     return this.ordersService.orders({
-      where: { userId: req.user.userId },
+      where,
       orderBy: { createdAt: 'desc' }
     })
   }
 
   @UseGuards(JwtAuthGuard)
   @Get('/:id')
-  order(@Param('id') id: number) {
-    return this.ordersService.order({ id })
+  async order(@Request() req, @Param('id') id: number) {
+    const user = await this.usersService.user({ id: req.user.userId })
+  
+    const where: Prisma.OrderWhereUniqueInput = { id }
+    if (user.type !== UserType.Admin) {
+      where.userId = user.id
+    }
+  
+    return this.ordersService.order(where)
   }
 
   // This is for physical products only. We don't create orders for products of type OnlineService (subscription based)
