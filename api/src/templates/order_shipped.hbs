@@ -1,11 +1,11 @@
 {{> _head }}
-{{> _header title="Thank you for your order" }}
+{{> _header title="Your Order Is On Its Ways" }}
 
 {{> _content_start }}
 <p style="margin: 0 0 16px;">Hi {{ name }},</p>
-<p style="margin: 0 0 16px;">Just to let you know — we've received your order #{{
-  order.id }},
-  and it is now being processed:</p>
+<p style="margin: 0 0 16px;">Your <a href="https://rentakloud.com/dashboard/orders/{{ order.id }}" style="color: #7f54b3; font-weight: normal; text-decoration: underline;">order #{{
+  order.id }}</a>,
+  has been shipped and will be delivered to you soon:</p>
 
 <h2
   style='color: #7f54b3; display: block; font-family: "Helvetica Neue",Helvetica,Roboto,Arial,sans-serif; font-size: 18px; font-weight: bold; line-height: 130%; margin: 0 0 18px; text-align: left;'>

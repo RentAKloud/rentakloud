@@ -43,6 +43,7 @@ export class AppController {
     return country ? states[country] : states['US']
   }
 
+  // TODO see https://nodemailer.com/transports/stream/ and implement for proper testing
   @Get('/mail')
   async testMail(
     @Query() q,
@@ -72,7 +73,8 @@ export class AppController {
           this.mailService.sendUserConfirmation(user, '11223344')
           return 'Success'
         }
-      case 'order_received':
+      case 'order_received': {
+
         if (!q.orderId) {
           return "orderId is required"
         }
@@ -91,11 +93,33 @@ export class AppController {
           this.mailService.sendOrderReceivedNotification(order)
           return "Sent order confirmation"
         }
+      }
+      case 'order_cancelled':
+        if (!q.orderId) {
+          return "orderId is required"
+        }
+        const order = await this.ordersService.order({ id: +q.orderId })
+        const subTotal = order.items.reduce((curr, next: any) => curr + next.product.prices[0].saleAmount || next.product.prices[0].amount, 0)
+        const taxesTotal = (order.taxes as any[]).reduce((curr, next) => curr + next.amount, 0)
+        const createdAt = order.createdAt.toDateString().replace(/^\S+\s/, '') // replace first non-space chars along with white-space
+        const currency = (order.items[0] as any).product.prices[0].currency
+        const u = await this.usersService.user({ id: order.userId })
+        if ('renderOnly' in q) {
+          hbs.registerPartial("_header", await this.loadTemplate('partials/_header', { title: "Your Order Has Been Cancelled!" }))
+          hbs.registerPartial("_order_details", await this.loadTemplate('partials/_order_details', { order, subTotal, taxesTotal, currency }))
+          //@ts-ignore
+          return this.loadTemplate("order_cancelled", { name: u.firstName, order, createdAt })
+        } else {
+          this.mailService.orderStatusChanged(order)
+          return 'Success'
+        }
       default:
         return `param 'name' is required. Valid values:<br/>
         - user_confirmation <br/>
         -- userId: number<br/>
         - order_received <br/>
+        -- orderId: number<br/>
+        - order_cancelled<br/>
         -- orderId: number<br/>
         <br/>
         Optional params:<br/>
