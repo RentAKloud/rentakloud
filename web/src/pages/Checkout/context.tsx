@@ -6,11 +6,11 @@ import { NotificationService } from "~/services/NotificationService";
 import { Address, CheckoutContextProps, CheckoutSteps, CouponCode, Order, OrderStatus, OrderStore, defaultCheckout } from "~/types/order";
 import { authStore } from "~/stores/auth";
 import OrdersApi from "~/api/orders";
+import PaymentsApi from "~/api/payments";
+import ProductsApi from "~/api/products";
 import { cart, getCartTotal, resetCart } from "~/stores/cart";
 import { getProductById } from "~/stores/products";
 import { ProductType } from "~/types/product";
-import PaymentsApi from "~/api/payments";
-import ProductsApi from "~/api/products";
 import { ONLINE_ORDER_AMOUNT_LIMIT } from "~/config/constants";
 
 const CheckoutContext = createContext<CheckoutContextProps>(defaultCheckout)
@@ -116,7 +116,9 @@ export const CheckoutProvider: Component<{ children: JSXElement }> = (props) => 
   }
 
   createEffect(async () => {
-    const { city, state, zip, country } = orderStore.billingAddress
+    // taxes are based on shipping address
+    const { city, state, zip, country } = shippingSameAsBilling() ? orderStore.billingAddress : orderStore.shippingAddress
+
     if (city || state || zip || country) {
       const { result, error } = await OrdersApi.estimateTaxes({ city, state, country, zip, amount: getCartTotal() })
       if (!error) {

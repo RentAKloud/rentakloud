@@ -4,6 +4,10 @@ import { useCheckoutContext } from "./context";
 import SelectSearch from "~/components/Inputs/SelectSearch";
 import { HttpService } from "~/services/HttpService";
 
+
+type CountryCode = { name: string, code: string }
+type StateCode = CountryCode
+
 export const BillingAndShipping: Component = () => {
   const {
     shippingSameAsBilling,
@@ -16,18 +20,18 @@ export const BillingAndShipping: Component = () => {
   } = useCheckoutContext()
 
   const [countryOptions] = createResource(async () => {
-    const { result, error } = await HttpService.get<{ name: string, code: string }[]>('/countries')
+    const { result, error } = await HttpService.get<CountryCode[]>('/countries')
     if (error) throw error
     return result!.map(c => ({ label: c.name, value: c.code }))
   })
   const [stateOptionsBilling] = createResource(() => orderStore.billingAddress.country, async () => {
-    const { result, error } = await HttpService.get<{ name: string, code: string }[]>(`/states?country=${orderStore.billingAddress.country}`)
+    const { result, error } = await HttpService.get<StateCode[]>(`/states?country=${orderStore.billingAddress.country}`)
     if (error) throw error
     if (!result) return null
     return result!.map(c => ({ label: c.name, value: c.code }))
   })
   const [stateOptionsShipping] = createResource(() => orderStore.shippingAddress.country, async () => {
-    const { result, error } = await HttpService.get<{ name: string, code: string }[]>(`/states?country=${orderStore.shippingAddress.country}`)
+    const { result, error } = await HttpService.get<StateCode[]>(`/states?country=${orderStore.shippingAddress.country}`)
     if (error) throw error
     if (!result) return null
     return result!.map(c => ({ label: c.name, value: c.code }))

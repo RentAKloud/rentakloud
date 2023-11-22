@@ -3,7 +3,7 @@ import { Component, JSX, Show } from "solid-js";
 type FormInputType = {
   name?: string;
 
-  label: string;
+  label?: string;
   value?: string | number;
   placeholder?: string;
   type?: string;

@@ -10,6 +10,7 @@ import { formatPrice } from "~/utils";
 import { ONLINE_ORDER_AMOUNT_LIMIT } from "~/config/constants";
 import { OrderDetails } from "./_OrderDetails";
 import { Congrats } from "./_Congrats";
+import { Coupons } from "./_Coupons";
 
 const _Checkout: Component = () => {
   const {
@@ -65,10 +66,16 @@ const _Checkout: Component = () => {
             </section>
 
             <section>
-              <div class="rounded-box bg-base-100 p-10 w-96 sticky top-20">
-                <Show when={isContinuingOrder()} fallback={<CartSummary />}>
-                  <OrderDetails />
-                </Show>
+              <div class="flex flex-col gap-8 sticky top-20">
+                <div class="rounded-box bg-base-100 p-10 w-96">
+                  <Show when={isContinuingOrder()} fallback={<CartSummary />}>
+                    <OrderDetails />
+                  </Show>
+                </div>
+
+                <div class="rounded-box bg-base-100 p-10 w-96">
+                  <Coupons />
+                </div>
               </div>
             </section>
           </div>

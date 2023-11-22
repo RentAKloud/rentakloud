@@ -1,6 +1,6 @@
 import { Component } from "solid-js";
 
-const Lottie: Component<{ src: string }> = ({ src }) => {
+const Lottie: Component<{ src: string | any }> = ({ src }) => {
   return (
     <lottie-player
       src={src}

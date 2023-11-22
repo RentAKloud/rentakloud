@@ -1,9 +1,9 @@
 import { Component, For, Show, createSignal } from "solid-js";
+import { Link } from "@solidjs/router";
 import { useCheckoutContext } from "./context";
 import { formatPrice, getOrderSubTotal, getTotalDiscounts } from "~/utils";
 import Lottie from "~/components/Lottie";
-import { Link } from "@solidjs/router";
-import Modal from "~/components/Modal";
+import confetti from '~/assets/lotties/lf20_m3ixidnq.json'
 
 export const Congrats: Component = () => {
   const { order } = useCheckoutContext()
@@ -17,7 +17,6 @@ export const Congrats: Component = () => {
 
   setTimeout(() => {
     setShowConfetti(false)
-    console.log("sat show confetti to false")
   }, 2400)
 
   return (
@@ -32,7 +31,7 @@ export const Congrats: Component = () => {
         }}
       >
         <div class="absolute bg-base-300 opacity-50 w-full h-full" />
-        <Lottie src="https://assets7.lottiefiles.com/packages/lf20_m3ixidnq.json" />
+        <Lottie src={confetti} />
       </div>
 
       <p class="mb-6">
