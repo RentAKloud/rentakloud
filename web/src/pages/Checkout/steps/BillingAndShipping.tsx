@@ -1,6 +1,6 @@
 import { Component, Show, createResource } from "solid-js";
 import TextInput from "~/components/Inputs/TextInput";
-import { useCheckoutContext } from "./context";
+import { useCheckoutContext } from "../context";
 import SelectSearch from "~/components/Inputs/SelectSearch";
 import { HttpService } from "~/services/HttpService";
 

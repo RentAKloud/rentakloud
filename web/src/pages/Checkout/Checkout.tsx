@@ -1,22 +1,22 @@
 import { Component, Show } from "solid-js";
-import { Link } from "@solidjs/router";
 import DefaultLayout from "~/layouts/DefaultLayout";
 import { CartSummary } from "./_CartSummary";
-import { BillingAndShipping } from "./_BillingAndShipping";
+import { BillingAndShipping } from "./steps/BillingAndShipping";
 import { CheckoutProvider, useCheckoutContext } from "./context";
-import { Payment } from "./_Payment";
+import { Payment } from "./steps/Payment";
 import { getCartTotal } from "~/stores/cart";
 import { formatPrice } from "~/utils";
 import { ONLINE_ORDER_AMOUNT_LIMIT } from "~/config/constants";
 import { OrderDetails } from "./_OrderDetails";
-import { Congrats } from "./_Congrats";
+import { Congrats } from "./steps/Congrats";
 import { Coupons } from "./_Coupons";
 
 const _Checkout: Component = () => {
   const {
     submit, inTransit, step,
-    setStep, isContinuingOrder, order,
-    isCardInfoComplete
+    setStep, isContinuingOrder,
+    isCardInfoComplete,
+    inReview, setInReview,
   } = useCheckoutContext()
 
   return (
@@ -52,14 +52,21 @@ const _Checkout: Component = () => {
                   </p>
                 </Show>
 
-                <p class="mb-10">
-                  Please confirm all the details. Then click <strong>Confirm & Pay</strong> to finalize the order and make payment.
+                <p class="my-10">
+                  <Show when={inReview()} fallback={"Next review your order information, then confirm to make payment."}>
+                    Please confirm all the details. Then click <strong>Confirm & Pay</strong> to finalize the order and make payment.
+                  </Show>
                 </p>
 
                 <Show when={!inTransit()} fallback={"Processing..."}>
                   <div class="flex gap-5">
                     <button class="btn" onclick={() => setStep('address')} disabled={isContinuingOrder()}>Back</button>
-                    <button class="btn btn-primary" onclick={submit} disabled={!isCardInfoComplete()}>Confirm & Pay</button>
+                    <Show
+                      when={!inReview()}
+                      fallback={<button class="btn btn-primary" onclick={submit} disabled={!isCardInfoComplete()}>Confirm & Pay</button>}
+                    >
+                      <button class="btn btn-primary" onclick={() => setInReview(true)} disabled={!isCardInfoComplete()}>Review</button>
+                    </Show>
                   </div>
                 </Show>
               </Show>

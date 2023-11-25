@@ -26,6 +26,7 @@ export const CheckoutProvider: Component<{ children: JSXElement }> = (props) => 
   function setStep(step: CheckoutSteps) {
     setParams({ step })
   }
+  const [inReview, setInReview] = createSignal(false)
   const isContinuingOrder = () => !!params.order
 
   const [shippingSameAsBilling, setShippingSameAsBilling] = createSignal(true)
@@ -216,6 +217,8 @@ export const CheckoutProvider: Component<{ children: JSXElement }> = (props) => 
     <CheckoutContext.Provider value={{
       isContinuingOrder,
       order,
+      inReview,
+      setInReview,
 
       step,
       setStep,

@@ -2,11 +2,10 @@ import { Component, For, Show } from "solid-js";
 import { cart, getCartTotal } from "~/stores/cart";
 import { getProductById, getProductPrice, products } from "~/stores/products";
 import { useCheckoutContext } from "./context";
-import Lottie from "~/components/Lottie";
 import { formatPrice, getTotalDiscounts } from "~/utils";
 
-export const CartSummary: Component = () => {
-  const { step, orderStore } = useCheckoutContext()
+export const CartSummary: Component<{ showAddresses?: boolean }> = (props) => {
+  const { orderStore, shippingSameAsBilling } = useCheckoutContext()
   const subTotal = () => getCartTotal()
   const discounts = () => getTotalDiscounts(orderStore.couponCodes, subTotal())
   const taxesTotal = () => orderStore.taxes.reduce((curr, next) => curr + next.amount, 0)
@@ -14,7 +13,33 @@ export const CartSummary: Component = () => {
 
   return (
     <>
-      <Show when={step() !== 'congrats' && !products.loading}>
+      <Show when={props.showAddresses}>
+        <h4 class="font-bold">Billing Address</h4>
+        <p class="mb-4">
+          {orderStore.billingAddress.firstName} {orderStore.billingAddress.lastName}<br />
+          {orderStore.billingAddress.address}<br />
+          {orderStore.billingAddress.address2 ? <>{orderStore.billingAddress.address2}<br /></> : ''}
+          {orderStore.billingAddress.city}, {orderStore.billingAddress.state}<br />
+          {orderStore.billingAddress.country}<br />
+          {orderStore.billingAddress.zip}<br />
+          {orderStore.billingAddress.email}<br />
+          {orderStore.billingAddress.phone}<br />
+        </p>
+
+        <Show when={!shippingSameAsBilling()} fallback={<p class="mb-4">Shipping address is same as billing address.</p>}>
+          <h4 class="font-bold">Shipping Address</h4>
+          <p class="mb-4">
+            {orderStore.shippingAddress.firstName} {orderStore.shippingAddress.lastName}<br />
+            {orderStore.shippingAddress.address}<br />
+            {orderStore.shippingAddress.address2 ? <>{orderStore.shippingAddress.address2}<br /></> : ''}
+            {orderStore.shippingAddress.city}, {orderStore.shippingAddress.state}<br />
+            {orderStore.shippingAddress.country}<br />
+            {orderStore.shippingAddress.zip}<br />
+          </p>
+        </Show>
+      </Show>
+
+      <Show when={!products.loading}>
         <h4 class="font-bold">Items</h4>
 
         <For each={cart.items} fallback={"Your cart is empty."}>
@@ -65,9 +90,9 @@ export const CartSummary: Component = () => {
         </Show>
       </Show>
 
-      <Show when={step() === 'congrats'}>
+      {/* <Show when={step() === 'congrats'}>
         <Lottie src="https://assets7.lottiefiles.com/packages/lf20_m3ixidnq.json" />
-      </Show>
+      </Show> */}
     </>
   )
 }

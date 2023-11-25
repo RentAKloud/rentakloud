@@ -1,11 +1,8 @@
-import { Component, For, Show, createSignal } from "solid-js";
-import { Link } from "@solidjs/router";
-import { useCheckoutContext } from "./context";
+import { Component, For, Show } from "solid-js";
 import { formatPrice, getOrderSubTotal, getTotalDiscounts } from "~/utils";
-import Lottie from "~/components/Lottie";
-import confetti from '~/assets/lotties/lf20_m3ixidnq.json'
+import { useCheckoutContext } from "./context";
 
-export const Congrats: Component = () => {
+export const OrderSummary: Component = () => {
   const { order } = useCheckoutContext()
 
   const subTotal = () => order() ? getOrderSubTotal(order()!) : 0
@@ -13,33 +10,8 @@ export const Congrats: Component = () => {
   const taxes = () => order() ? order()!.taxes.reduce((curr, next) => curr + next.amount, 0) : 0
   const finalTotal = () => subTotal() + taxes() - discounts()
 
-  const [showConfetti, setShowConfetti] = createSignal(true)
-
-  setTimeout(() => {
-    setShowConfetti(false)
-  }, 2400)
-
   return (
-    <>
-      <h1 class="text-4xl md:text-5xl text-center font-bold my-14">Congratulations!</h1>
-
-      <div
-        class="fixed top-0 bottom-0 left-0 right-0 z-10 grid place-content-center transition duration-1000 pointer-events-none"
-        classList={{
-          "opacity-100": showConfetti(),
-          "opacity-0": !showConfetti(),
-        }}
-      >
-        <div class="absolute bg-base-300 opacity-50 w-full h-full" />
-        <Lottie src={confetti} />
-      </div>
-
-      <p class="mb-6">
-        Your order has been placed successfully! You'll receive an email soon with the your order details.
-        We will also email you once your order has been shipped.
-      </p>
-
-      <div class="w-full md:w-1/2">
+    <div class="w-full md:w-1/2">
         <h3 class="font-bold mb-2">Order Summary</h3>
         <Show when={order()}>
           <table class="table mb-2">
@@ -98,11 +70,5 @@ export const Congrats: Component = () => {
           </div>
         </Show>
       </div>
-
-      <div class="flex gap-5 mt-10">
-        <Link href={`/dashboard/orders/${order()?.id}`} class="btn btn-primary">Order Details</Link>
-        <Link href="/dashboard/orders" class="btn btn-outline">Order History</Link>
-      </div>
-    </>
   )
 }
