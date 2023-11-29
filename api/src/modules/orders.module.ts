@@ -5,9 +5,10 @@ import { OrdersService } from '../services/orders.service';
 import { ProductsModule } from './products.module';
 import { TaxRatesService } from '../services/tax-rates.service';
 import { UsersModule } from './users.module';
+import { CouponsModule } from './coupons.module';
 
 @Module({
-  imports: [PrismaModule, ProductsModule, UsersModule],
+  imports: [PrismaModule, ProductsModule, UsersModule, CouponsModule],
   controllers: [OrdersController],
   providers: [OrdersService, TaxRatesService],
   exports: [OrdersService]

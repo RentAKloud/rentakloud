@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, ParseIntPipe, Post, Put, Request, UseGuards } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, Param, ParseIntPipe, Post, Put, Request, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { CouponType, Order, Prisma, ProductType, UserType } from '@prisma/client';
 import { JwtAuthGuard } from '../guards/jwt-auth.guard';
@@ -7,6 +7,7 @@ import { OrdersService } from '../services/orders.service';
 import { ProductsService } from '../services/products.service';
 import { TaxRatesService } from '../services/tax-rates.service';
 import { UsersService } from '../services/users.service';
+import { CouponsService } from '../services/coupons.service';
 
 @ApiTags('Orders')
 @Controller('orders')
@@ -15,14 +16,15 @@ export class OrdersController {
     private readonly ordersService: OrdersService,
     private productsService: ProductsService,
     private readonly taxRatesService: TaxRatesService,
-    private readonly usersService: UsersService
+    private readonly usersService: UsersService,
+    private readonly couponsService: CouponsService,
   ) { }
 
   @UseGuards(JwtAuthGuard)
   @Get()
   async orders(@Request() req) {
     const user = await this.usersService.user({ id: req.user.userId })
-    
+
     const where: Prisma.OrderWhereInput = {}
     if (user.type !== UserType.Admin) {
       where.userId = user.id
@@ -38,12 +40,12 @@ export class OrdersController {
   @Get('/:id')
   async order(@Request() req, @Param('id') id: number) {
     const user = await this.usersService.user({ id: req.user.userId })
-  
+
     const where: Prisma.OrderWhereUniqueInput = { id }
     if (user.type !== UserType.Admin) {
       where.userId = user.id
     }
-  
+
     return this.ordersService.order(where)
   }
 
@@ -55,7 +57,28 @@ export class OrdersController {
     @Request() req,
     @Body(ParseOrderPipe) data: ParsedCreateOrderReq
   ) {
+    const couponIds = req.body.couponCodes.map(cc => cc.id)
     const { items } = data
+
+    // check for duplicate coupons
+    if (couponIds.length != new Array(new Set(couponIds)).length) {
+      return new BadRequestException("A coupon code can be used only once per order")
+    }
+    const coupons = await this.couponsService.couponCodes({
+      where: {
+        id: { in: couponIds }
+      }
+    })
+    data.coupons = {
+      create: coupons.map(c => ({
+        couponCodeId: c.id,
+        title: c.title,
+        code: c.code,
+        type: c.type,
+        flatDiscount: c.flatDiscount,
+        percentageDiscount: c.percentageDiscount
+      }))
+    }
 
     // TODO we should also just select the specific price
     const products = await this.productsService.productsWithSelect({
@@ -151,6 +174,12 @@ export class OrdersController {
       title: r.name,
       amount: amount * r.rate.toNumber(),
     }))
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('/available-shipping-methods')
+  async availableShippingMethods(@Body() body) {
+
   }
 
   // TODO add validation using filter to make sure the user owns the order

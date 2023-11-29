@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { PrismaModule } from './prisma.module';
-import { CouponsController } from 'src/controllers/coupons.controller';
-import { CouponsService } from 'src/services/coupons.service';
+import { CouponsController } from '../controllers/coupons.controller';
+import { CouponsService } from '../services/coupons.service';
 
 @Module({
   imports: [PrismaModule],

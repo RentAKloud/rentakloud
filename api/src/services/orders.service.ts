@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { CouponCode, Order, Prisma } from "@prisma/client";
+import { CouponCodeToOrder, Order, Prisma } from "@prisma/client";
 import { PrismaService } from "./prisma.service";
 import { EventEmitter2 } from "@nestjs/event-emitter";
 
@@ -42,7 +42,7 @@ export class OrdersService {
   }
 
   async createOrder(data: Prisma.OrderCreateInput): Promise<Order & {
-    coupons: CouponCode[];
+    coupons: CouponCodeToOrder[];
   }> {
     const order = await this.prisma.order.create({
       data,

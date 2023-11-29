@@ -146,14 +146,14 @@ model Category {
 }
 
 model Order {
-  id                Int          @id @default(autoincrement())
-  user              User         @relation(fields: [userId], references: [id])
+  id                Int                 @id @default(autoincrement())
+  user              User                @relation(fields: [userId], references: [id])
   userId            Int
   //
   billingFirstName  String
   billingLastName   String
   billingEmail      String
-  billingPhone      String       @default("")
+  billingPhone      String              @default("")
   billingAddress    String
   billingAddress2   String?
   billingCity       String
@@ -171,39 +171,54 @@ model Order {
   shippingCountry   String
   //
   items             Json[]
-  coupons           CouponCode[]
-  taxes             Json         @default("[]")
-  status            OrderStatus  @default(Pending)
+  coupons           CouponCodeToOrder[]
+  taxes             Json                @default("[]")
+  status            OrderStatus         @default(Pending)
   // paymentMethod     PaymentMethod @relation(fields: [paymentMethodId], references: [id])
   notes             String
   // Final amount that should be/was charged. This is just for historical record
   // otherwise this amount can be calculated using total from items, shipping costs and coupons
-  amount            Decimal?     @db.Decimal(10, 2)
+  amount            Decimal?            @db.Decimal(10, 2)
   //
   paidAt            DateTime?
-  createdAt         DateTime     @default(now())
-  updatedAt         DateTime     @default(now())
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @default(now())
   // paymentMethodId   Int
 }
 
 model CouponCode {
-  id                 Int        @id @default(autoincrement())
+  id                 Int                 @id @default(autoincrement())
   title              String
   code               String
   //
-  type               CouponType @default(Flat)
-  flatDiscount       Decimal    @db.Decimal(10, 2)
+  type               CouponType          @default(Flat)
+  flatDiscount       Decimal             @db.Decimal(10, 2)
   percentageDiscount Int
   //
   maxUses            Int?
   startsAt           DateTime?
   expiresAt          DateTime?
-  active             Boolean    @default(true)
+  active             Boolean             @default(true)
   //
-  createdAt          DateTime   @default(now())
-  updatedAt          DateTime   @default(now())
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @default(now())
   //
-  orders             Order[]
+  orders             CouponCodeToOrder[]
+}
+
+model CouponCodeToOrder {
+  id                 String     @id @default(uuid())
+  //
+  order              Order      @relation(fields: [orderId], references: [id])
+  orderId            Int
+  couponCode         CouponCode @relation(fields: [couponCodeId], references: [id])
+  couponCodeId       Int
+  //
+  title              String
+  code               String
+  type               CouponType
+  flatDiscount       Decimal   @db.Decimal(10, 2)
+  percentageDiscount Int
 }
 
 model TaxRate {
@@ -292,4 +307,22 @@ enum DiskImageOS {
 //   id     Int     @id @default(autoincrement())
 //   name   String
 //   orders Order[]
+// }
+
+// model ShippingZone {
+//   id   Int    @id @default(autoincrement())
+//   name String
+//   //
+//   country String
+//   state String
+//   city String
+//   zip String
+//   //
+//   shippingMethods Json
+// }
+
+// model ShippingMethods {
+//   id   Int    @id @default(autoincrement())
+//   name String
+//   type String // free, local, flat
 // }

@@ -1,13 +1,15 @@
-import { PipeTransform, Injectable, ArgumentMetadata, BadRequestException } from '@nestjs/common';
+import { PipeTransform, Injectable, ArgumentMetadata } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { CreateOrderReq } from 'src/types/order';
 
-export type ParsedCreateOrderReq = Prisma.OrderCreateInput & { items: any[] }
+export type ParsedCreateOrderReq = Prisma.OrderCreateInput & {
+  items: any[]
+}
 
 @Injectable()
 export class ParseOrderPipe implements PipeTransform<CreateOrderReq, ParsedCreateOrderReq> {
   transform(input: CreateOrderReq, metadata: ArgumentMetadata): ParsedCreateOrderReq {
-    const { billingAddress, shippingAddress, shippingSameAsBilling, orderNotes, items, couponCodes } = input
+    const { billingAddress, shippingAddress, shippingSameAsBilling, orderNotes, items } = input
     const _shippingAddress = shippingSameAsBilling ? billingAddress : shippingAddress
 
     const orderInput = {
@@ -33,10 +35,7 @@ export class ParseOrderPipe implements PipeTransform<CreateOrderReq, ParsedCreat
 
       notes: orderNotes,
       user: {},
-      items,
-      coupons: {
-        connect: couponCodes
-      }
+      items
     }
 
     return orderInput

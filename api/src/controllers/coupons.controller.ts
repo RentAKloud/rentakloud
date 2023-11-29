@@ -1,8 +1,8 @@
 import { Body, Controller, Get, HttpException, HttpStatus, Param, ParseIntPipe, Post, Put, Request, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { CouponCode } from '@prisma/client';
-import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
-import { CouponsService } from 'src/services/coupons.service';
+import { JwtAuthGuard } from '../guards/jwt-auth.guard';
+import { CouponsService } from '../services/coupons.service';
 
 @ApiTags('Coupons')
 @Controller('coupons')
