@@ -42,7 +42,8 @@ export const products: Prisma.XOR<Prisma.ProductCreateInput, Prisma.ProductUnche
     ],
     categories: {
       connect: [{ id: 1 }]
-    }
+    },
+    weight: 0.5
   },
   {
     name: "RK Server 1", slug: "rk-server-1",
@@ -55,7 +56,8 @@ export const products: Prisma.XOR<Prisma.ProductCreateInput, Prisma.ProductUnche
     images: [],
     categories: {
       connect: [{ id: 1 }, { id: 10 }]
-    }
+    },
+    weight: 13.
   },
   {
     name: "RAK Router 1", slug: "rak-router-1",

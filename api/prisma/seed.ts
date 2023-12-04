@@ -36,6 +36,32 @@ async function main() {
       data: product
     })
   })
+
+  await prisma.shippingZone.createMany({
+    data: [
+      { name: "United States", countries: ['US'] },
+      { name: "Other Regions" }
+    ]
+  })
+
+  await prisma.shippingMethod.createMany({
+    data: [
+      {
+        name: "Standard", description: "Delivered in 3-7 days once your order has been shipped.",
+        cost: `if (w <= 5) 50
+          else if (w <= 10) 100
+          else 200`,
+        shippingZoneId: 1
+      },
+      {
+        name: "Express", description: "Delivered in 1-3 days once your order has been shipped.",
+        cost: `if (w <= 5) 110
+          else if (w <= 10) 170
+          else 300`,
+        shippingZoneId: 1
+      }
+    ]
+  })
 }
 
 main()

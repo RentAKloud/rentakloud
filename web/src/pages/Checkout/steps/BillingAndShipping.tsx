@@ -94,7 +94,7 @@ export const BillingAndShipping: Component = () => {
         }>
           <SelectSearch
             name="state"
-            label="State"
+            label="State/Province"
             options={stateOptionsBilling.latest || []}
             default={stateOptionsBilling.latest?.at(0)}
             value={orderStore.billingAddress.state}
@@ -112,7 +112,7 @@ export const BillingAndShipping: Component = () => {
         />
 
         <TextInput
-          label="Zip"
+          label="Zip/Postal Code"
           value={orderStore.billingAddress.zip}
           onChange={(e) => updateBilling("zip", e.currentTarget.value)}
         />
@@ -177,7 +177,7 @@ export const BillingAndShipping: Component = () => {
           }>
             <SelectSearch
               name="state"
-              label="State"
+              label="State/Province"
               options={stateOptionsShipping.latest || []}
               default={stateOptionsShipping.latest?.at(0)}
               value={orderStore.shippingAddress.state}
@@ -195,7 +195,7 @@ export const BillingAndShipping: Component = () => {
           />
 
           <TextInput
-            label="Zip" value={orderStore.shippingAddress.zip}
+            label="Zip/Postal Code" value={orderStore.shippingAddress.zip}
             onChange={(e) => updateShipping("zip", e.currentTarget.value)}
             required
           />

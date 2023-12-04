@@ -1,5 +1,5 @@
 import { ApiResponse, HttpService } from "~/services/HttpService";
-import { OrderRequest, OrderResponse as CreateOrderResponse, Order, OrderStatus, CouponCode, Address, Tax } from "~/types/order";
+import { OrderRequest, OrderResponse as CreateOrderResponse, Order, OrderStatus, CouponCode, Address, Tax, ShippingMethod } from "~/types/order";
 
 class OrdersApi {
   static async all(): ApiResponse<Order[]> {
@@ -22,8 +22,12 @@ class OrdersApi {
     return await HttpService.post<CouponCode>(`/coupons/validate`, { code })
   }
 
-  static async estimateTaxes(address: Partial<Address> & { amount: number }): ApiResponse<Tax[]> {
-    return await HttpService.post('/orders/estimate-taxes', address)
+  static async estimateTaxes(address: Partial<Address>, amount: number): ApiResponse<Tax[]> {
+    return await HttpService.post('/orders/estimate-taxes', { address, amount })
+  }
+
+  static async getShippingMethods(address: Partial<Address>, productIds: number[]): ApiResponse<ShippingMethod[]> {
+    return await HttpService.post('/orders/available-shipping-methods', { address, productIds })
   }
 }
 

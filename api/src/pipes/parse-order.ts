@@ -9,7 +9,10 @@ export type ParsedCreateOrderReq = Prisma.OrderCreateInput & {
 @Injectable()
 export class ParseOrderPipe implements PipeTransform<CreateOrderReq, ParsedCreateOrderReq> {
   transform(input: CreateOrderReq, metadata: ArgumentMetadata): ParsedCreateOrderReq {
-    const { billingAddress, shippingAddress, shippingSameAsBilling, orderNotes, items } = input
+    const {
+      billingAddress, shippingAddress, shippingSameAsBilling,
+      orderNotes, items,
+    } = input
     const _shippingAddress = shippingSameAsBilling ? billingAddress : shippingAddress
 
     const orderInput = {
@@ -35,7 +38,7 @@ export class ParseOrderPipe implements PipeTransform<CreateOrderReq, ParsedCreat
 
       notes: orderNotes,
       user: {},
-      items
+      items,
     }
 
     return orderInput

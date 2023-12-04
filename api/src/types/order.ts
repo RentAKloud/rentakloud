@@ -1,3 +1,4 @@
+import { ShippingMethod } from "@prisma/client";
 import { Type } from "class-transformer";
 import { ArrayMinSize, IsArray, IsEmail, IsNotEmpty, IsPhoneNumber, ValidateNested } from "class-validator";
 
@@ -42,6 +43,8 @@ export class CreateOrderReq {
 
   orderNotes: string;
   shippingSameAsBilling: boolean;
+
+  shippingMethod: ShippingMethod
 
   @IsArray()
   @ArrayMinSize(1)

@@ -8,8 +8,9 @@ export const CartSummary: Component<{ showAddresses?: boolean }> = (props) => {
   const { orderStore, shippingSameAsBilling } = useCheckoutContext()
   const subTotal = () => getCartTotal()
   const discounts = () => getTotalDiscounts(orderStore.couponCodes, subTotal())
+  const shipping = () => orderStore.shippingMethod?.cost || 0
   const taxesTotal = () => orderStore.taxes.reduce((curr, next) => curr + next.amount, 0)
-  const finalTotal = () => subTotal() + taxesTotal() - discounts()
+  const finalTotal = () => subTotal() + shipping() + taxesTotal() - discounts()
 
   return (
     <>
@@ -76,7 +77,7 @@ export const CartSummary: Component<{ showAddresses?: boolean }> = (props) => {
           </Show>
           <div class="flex justify-between">
             <strong>Shipping</strong>
-            <span>{formatPrice(0)}</span>
+            <span>{formatPrice(shipping())}</span>
           </div>
           <div class="flex justify-between">
             <strong>Taxes</strong>

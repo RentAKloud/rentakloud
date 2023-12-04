@@ -7,8 +7,9 @@ export const OrderSummary: Component = () => {
 
   const subTotal = () => order() ? getOrderSubTotal(order()!) : 0
   const discounts = () => order() ? getTotalDiscounts(order()!.coupons, subTotal()) : 0
+  const shipping = () => order() ? order()!.shipping.amount : 0
   const taxes = () => order() ? order()!.taxes.reduce((curr, next) => curr + next.amount, 0) : 0
-  const finalTotal = () => subTotal() + taxes() - discounts()
+  const finalTotal = () => subTotal() + shipping() + taxes() - discounts()
 
   return (
     <div class="w-full md:w-1/2">
@@ -63,7 +64,7 @@ export const OrderSummary: Component = () => {
               <Show when={discounts() > 0}>
                 <span>-{formatPrice(discounts())}</span>
               </Show>
-              <span>{formatPrice(0)}</span>
+              <span>{formatPrice(shipping())}</span>
               <span>{formatPrice(taxes())}</span>
               <span class="mt-2">{formatPrice(finalTotal())}</span>
             </div>

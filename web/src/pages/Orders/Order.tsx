@@ -19,8 +19,9 @@ const Order: Component = () => {
 
   const subTotal = () => order() ? getOrderSubTotal(order()!) : 0
   const discounts = () => order() ? getTotalDiscounts(order()!.coupons, subTotal()) : 0
+  const shipping = () => order() ? order()!.shipping.amount : 0
   const taxes = () => order() ? order()!.taxes.reduce((curr, next) => curr + next.amount, 0) : 0
-  const finalTotal = () => subTotal() + taxes() - discounts()
+  const finalTotal = () => subTotal() + shipping() + taxes() - discounts()
 
   return (
     <>
@@ -141,7 +142,7 @@ const Order: Component = () => {
             </div>
             <div class="flex justify-between">
               <strong>Shipping</strong>
-              <span>{formatPrice(0)}</span>
+              <span>{formatPrice(shipping())}</span>
             </div>
 
             <div class="flex justify-between mt-5">

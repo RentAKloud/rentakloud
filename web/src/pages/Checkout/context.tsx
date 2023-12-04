@@ -3,7 +3,7 @@ import { Part, createStore } from "solid-js/store";
 import { Stripe, loadStripe } from "@stripe/stripe-js";
 import { useSearchParams } from "@solidjs/router";
 import { NotificationService } from "~/services/NotificationService";
-import { Address, CheckoutContextProps, CheckoutSteps, CouponCode, Order, OrderStatus, OrderStore, defaultCheckout } from "~/types/order";
+import { Address, CheckoutContextProps, CheckoutSteps, CouponCode, Order, OrderStatus, OrderStore, ShippingMethod, defaultCheckout } from "~/types/order";
 import { authStore } from "~/stores/auth";
 import OrdersApi from "~/api/orders";
 import PaymentsApi from "~/api/payments";
@@ -39,6 +39,7 @@ export const CheckoutProvider: Component<{ children: JSXElement }> = (props) => 
       email: user?.email || ''
     }
   })
+  const [availableShippingMethods, setAvailableShippingMethods] = createSignal<ShippingMethod[]>([])
   const [formErrors, setFormErrors] = createSignal<string[]>([])
 
   const [stripe, setStripe] = createSignal<Stripe | null>(null)
@@ -108,6 +109,10 @@ export const CheckoutProvider: Component<{ children: JSXElement }> = (props) => 
     })
   }
 
+  function updateShippingMethod(val: ShippingMethod) {
+    setOrderStore({ shippingMethod: val })
+  }
+
   function updateNotes(val: string) {
     setOrderStore("orderNotes", val)
   }
@@ -117,15 +122,26 @@ export const CheckoutProvider: Component<{ children: JSXElement }> = (props) => 
   }
 
   createEffect(async () => {
-    // taxes are based on shipping address
+    // shipping methods & taxes are based on shipping address
     const { city, state, zip, country } = shippingSameAsBilling() ? orderStore.billingAddress : orderStore.shippingAddress
 
     if (city || state || zip || country) {
-      const { result, error } = await OrdersApi.estimateTaxes({ city, state, country, zip, amount: getCartTotal() })
+      const { result, error } = await OrdersApi.estimateTaxes({ city, state, country, zip }, getCartTotal())
       if (!error) {
         setOrderStore({
           taxes: result!
         })
+      }
+    }
+
+    if (city || state || country) {
+      const { result, error } = await OrdersApi.getShippingMethods(
+        { city, state, country, zip },
+        cart.items.map(i => i.productId)
+      )
+      if (!error) {
+        setAvailableShippingMethods(result!)
+        updateShippingMethod(result![0])
       }
     }
   })
@@ -225,8 +241,10 @@ export const CheckoutProvider: Component<{ children: JSXElement }> = (props) => 
       shippingSameAsBilling,
       setShippingSameAsBilling,
       orderStore,
+      availableShippingMethods,
       updateBilling,
       updateShipping,
+      updateShippingMethod,
       updateNotes,
       updateCoupons,
 

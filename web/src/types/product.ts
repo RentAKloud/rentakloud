@@ -13,6 +13,7 @@ export type Product = {
     alt: string
   }[]
   productType: ProductType;
+  weight: number
 }
 
 export type ProductPrice = {

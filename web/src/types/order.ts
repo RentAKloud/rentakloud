@@ -51,6 +51,7 @@ export type Order = {
     quantity: number
   }[];
   coupons: CouponCode[];
+  shipping: ShippingMethod & { amount: number }
   taxes: Tax[]
   status: OrderStatus;
   notes: string;
@@ -97,6 +98,7 @@ export type OrderStore = {
   orderNotes: string;
   couponCodes: CouponCode[];
   taxes: Tax[]
+  shippingMethod: ShippingMethod | null
 }
 
 export type Tax = {
@@ -105,7 +107,14 @@ export type Tax = {
   rate: number
 }
 
-export type CheckoutSteps = "address" | "payment" | "congrats"
+export type ShippingMethod = {
+  id: number
+  name: string
+  description: string
+  cost: number
+}
+
+export type CheckoutSteps = "address" | "shipping" | "payment" | "congrats"
 
 export type CheckoutContextProps = {
   isContinuingOrder: () => boolean
@@ -117,8 +126,10 @@ export type CheckoutContextProps = {
   shippingSameAsBilling: Accessor<boolean>;
   setShippingSameAsBilling: Setter<boolean>;
   orderStore: OrderStore;
+  availableShippingMethods: Accessor<ShippingMethod[]>;
   updateBilling: (key: Part<Address, keyof Address>, val: string) => void;
   updateShipping: (key: Part<Address, keyof Address>, val: string) => void;
+  updateShippingMethod: (val: ShippingMethod) => void;
   updateNotes: (val: string) => void;
   updateCoupons: (val: CouponCode[]) => void;
 
@@ -146,6 +157,7 @@ export const defaultCheckout: CheckoutContextProps = {
   setShippingSameAsBilling: (val: any) => val,
   updateBilling() { },
   updateShipping() { },
+  updateShippingMethod() { },
   updateNotes() { },
   updateCoupons() { },
   orderStore: {
@@ -153,8 +165,10 @@ export const defaultCheckout: CheckoutContextProps = {
     shippingAddress: defaultAddress,
     orderNotes: "",
     couponCodes: [],
-    taxes: []
+    taxes: [],
+    shippingMethod: null
   },
+  availableShippingMethods: () => [],
   stripe: () => null,
   clientSecret: () => undefined,
   subClientSecrets: () => undefined,

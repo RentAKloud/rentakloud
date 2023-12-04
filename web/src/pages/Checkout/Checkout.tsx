@@ -10,6 +10,7 @@ import { ONLINE_ORDER_AMOUNT_LIMIT } from "~/config/constants";
 import { OrderDetails } from "./_OrderDetails";
 import { Congrats } from "./steps/Congrats";
 import { Coupons } from "./_Coupons";
+import { ShippingMethod } from "./steps/ShippingMethod";
 
 const _Checkout: Component = () => {
   const {
@@ -36,7 +37,18 @@ const _Checkout: Component = () => {
 
                 <BillingAndShipping />
 
-                <button class="btn btn-primary" onclick={() => setStep('payment')}>Next</button>
+                <button class="btn btn-primary" onclick={() => setStep('shipping')}>Next</button>
+              </Show>
+
+              <Show when={step() === 'shipping'}>
+                <h2 class="-mt-8 mb-8 bg-base-200 px-1 w-fit text-gray-400">Shipping Method</h2>
+
+                <ShippingMethod />
+
+                <div class="flex gap-4">
+                  <button class="btn" onclick={() => setStep('address')}>Back</button>
+                  <button class="btn btn-primary" onclick={() => setStep('payment')}>Next</button>
+                </div>
               </Show>
 
               <Show when={step() === 'payment'}>
@@ -60,7 +72,7 @@ const _Checkout: Component = () => {
 
                 <Show when={!inTransit()} fallback={"Processing..."}>
                   <div class="flex gap-5">
-                    <button class="btn" onclick={() => setStep('address')} disabled={isContinuingOrder()}>Back</button>
+                    <button class="btn" onclick={() => setStep('shipping')} disabled={isContinuingOrder()}>Back</button>
                     <Show
                       when={!inReview()}
                       fallback={<button class="btn btn-primary" onclick={submit} disabled={!isCardInfoComplete()}>Confirm & Pay</button>}

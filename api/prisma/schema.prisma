@@ -102,6 +102,7 @@ model Product {
   stock             Int              @default(1)
   images            Json             @default("[]")
   stripeId          String?          @unique
+  weight            Decimal?         @db.Decimal(12, 6) // kg only plz
   //
   categories        Category[]
   users             UserToProducts[] // subscribed users
@@ -173,6 +174,7 @@ model Order {
   items             Json[]
   coupons           CouponCodeToOrder[]
   taxes             Json                @default("[]")
+  shipping          Json                @default("{}")
   status            OrderStatus         @default(Pending)
   // paymentMethod     PaymentMethod @relation(fields: [paymentMethodId], references: [id])
   notes             String
@@ -217,7 +219,7 @@ model CouponCodeToOrder {
   title              String
   code               String
   type               CouponType
-  flatDiscount       Decimal   @db.Decimal(10, 2)
+  flatDiscount       Decimal    @db.Decimal(10, 2)
   percentageDiscount Int
 }
 
@@ -309,20 +311,33 @@ enum DiskImageOS {
 //   orders Order[]
 // }
 
-// model ShippingZone {
-//   id   Int    @id @default(autoincrement())
-//   name String
-//   //
-//   country String
-//   state String
-//   city String
-//   zip String
-//   //
-//   shippingMethods Json
-// }
+model ShippingZone {
+  id              Int              @id @default(autoincrement())
+  name            String
+  //
+  countries       String[]
+  states          String[]
+  cities          String[]
+  zips            String[]
+  //
+  shippingMethods ShippingMethod[]
+}
 
-// model ShippingMethods {
-//   id   Int    @id @default(autoincrement())
-//   name String
-//   type String // free, local, flat
-// }
+model ShippingMethod {
+  id             Int                @id @default(autoincrement())
+  name           String
+  description    String
+  type           ShippingMethodType @default(Flat)
+  cost           String
+  taxable        Boolean            @default(false)
+  order          Int                @default(1) // for visual ordering
+  //
+  shippingZone   ShippingZone?      @relation(fields: [shippingZoneId], references: [id])
+  shippingZoneId Int?
+}
+
+enum ShippingMethodType {
+  Free
+  Flat
+  Local
+}
