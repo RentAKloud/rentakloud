@@ -54,7 +54,10 @@ const Register: Component = () => {
     }
   })
 
-  const canSubmit =() => formData().email.length > 5 && formData().password.length > 6 && formData().password === formData().confirmPassword
+  const canSubmit =() => 
+    formData().email.length > 5 &&
+    formData().password.length > 6 &&
+    formData().password === formData().confirmPassword
 
   return (
     <DefaultLayout>

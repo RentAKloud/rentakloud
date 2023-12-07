@@ -1,4 +1,5 @@
 import { Body, Controller, Get, Post, Request, UseGuards } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { ApiBody, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 import { LocalAuthGuard } from 'src/guards/local-auth.guard';
@@ -12,6 +13,7 @@ export class AuthController {
   constructor(
     private readonly authService: AuthService,
     private readonly usersService: UsersService,
+    private readonly jwtService: JwtService
   ) { }
 
   @UseGuards(LocalAuthGuard)
@@ -32,5 +34,29 @@ export class AuthController {
   @Get('me')
   me(@Request() req) {
     return this.usersService.user({ id: req.user.userId })
+  }
+
+  @Post('confirm-email')
+  async confirmEmail(@Body() body) {
+    const { token } = body
+
+    try {
+      // TODO 1 day expiry for token
+      const payload = this.jwtService.verify(token) as { email: string, sub: number }
+  
+      await this.usersService.updateUser({
+        where: {
+          id: payload.sub,
+          emailVerifiedAt: null
+        },
+        data: {
+          emailVerifiedAt: new Date()
+        }
+      })
+
+      return true
+    } catch (err) {
+      return false
+    }
   }
 }

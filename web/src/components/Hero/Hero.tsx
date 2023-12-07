@@ -1,6 +1,6 @@
 import { Component, JSXElement } from "solid-js";
 
-const Hero: Component<{
+type HeroProps = {
   title: string,
   subtitle: string,
   content?: JSXElement,
@@ -9,8 +9,10 @@ const Hero: Component<{
   centered?: boolean,
   actions?: JSXElement,
   fullScreen?: boolean
-}> = (props) => {
-  const { title, subtitle, content, children, actions, reverse = false, centered = false, fullScreen = true } = props
+}
+
+const Hero: Component<HeroProps> = (props) => {
+  const { content, children, actions, reverse = false, centered = false, fullScreen = true } = props
 
   return (
     <div
@@ -30,8 +32,8 @@ const Hero: Component<{
         {/* <img src="/images/stock/photo-1635805737707-575885ab0820.jpg" class="max-w-sm rounded-lg shadow-2xl" /> */}
         {children}
         <div class="max-w-xl">
-          <h1 class="text-5xl font-bold">{title}</h1>
-          <p class="py-6">{subtitle}</p>
+          <h1 class="text-5xl font-bold">{props.title}</h1>
+          <p class="py-6">{props.subtitle}</p>
           {content}
 
           {actions}

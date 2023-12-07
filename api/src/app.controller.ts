@@ -1,4 +1,4 @@
-import { Controller, Get, HttpException, HttpStatus, ParseIntPipe, Query } from '@nestjs/common';
+import { Controller, Get, HttpException, HttpStatus, Query } from '@nestjs/common';
 import { AppService } from './app.service';
 import { MailService } from './services/mail.service';
 import { ConfigService } from '@nestjs/config';
@@ -9,6 +9,8 @@ import { readFile } from 'fs/promises';
 import { cwd } from 'process';
 import * as hbs from 'handlebars';
 import * as states from './data/states.json'
+import { JwtPayload } from './types/auth.dto';
+import { JwtService } from '@nestjs/jwt';
 
 @Controller()
 export class AppController {
@@ -17,7 +19,8 @@ export class AppController {
     private readonly mailService: MailService,
     private readonly config: ConfigService,
     private readonly usersService: UsersService,
-    private readonly ordersService: OrdersService
+    private readonly ordersService: OrdersService,
+    private readonly jwtService: JwtService,
   ) { }
 
   /**
@@ -65,12 +68,16 @@ export class AppController {
 
     switch (q.name) {
       case 'user_confirmation':
+        const payload: JwtPayload = { email: user.email, sub: user.id }
+        const jwt = this.jwtService.sign(payload)
         if ('renderOnly' in q) {
           hbs.registerPartial("_header", await this.loadTemplate('partials/_header', { title: "Welcome to RentAKloud!" }))
+          const dev = this.config.get('NODE_ENV') === 'development'
+          const url = `${dev ? 'http://localhost:3001' : 'https://rentakloud.com'}/confirm-email?token=${jwt}`;
           //@ts-ignore
-          return this.loadTemplate("user_confirmation", { name: user.fullName })
+          return this.loadTemplate("user_confirmation", { name: user.fullName, url })
         } else {
-          this.mailService.sendUserConfirmation(user, '11223344')
+          this.mailService.sendUserConfirmation(user, jwt)
           return 'Success'
         }
       case 'order_received': {

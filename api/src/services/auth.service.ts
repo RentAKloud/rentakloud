@@ -38,11 +38,12 @@ export class AuthService {
 
     const user = await this.users.createUser(data)
     const payload: JwtPayload = { email: user.email, sub: user.id }
+    const jwt = this.jwtService.sign(payload)
 
-    this.ee.emit('user.created', user)
+    this.ee.emit('user.created', user, jwt)
 
     return {
-      access_token: this.jwtService.sign(payload)
+      access_token: jwt
     }
   }
 }

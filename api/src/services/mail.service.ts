@@ -3,17 +3,20 @@ import { Injectable } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import { Order, OrderStatus, User } from '@prisma/client';
 import { UsersService } from './users.service';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class MailService {
   constructor(
     private mailerService: MailerService,
+    private readonly config: ConfigService,
     private readonly usersService: UsersService,
   ) { }
 
   @OnEvent('user.created')
   async sendUserConfirmation(user: User, token: string) {
-    const url = `rentakloud.com/auth/confirm?token=${token}`;
+    const dev = this.config.get('NODE_ENV') === 'development'
+    const url = `${dev ? 'http://localhost:3001' : 'https://rentakloud.com'}/confirm-email?token=${token}`;
 
     await this.mailerService.sendMail({
       to: user.email,
@@ -25,6 +28,21 @@ export class MailService {
         url,
       },
     });
+  }
+
+  async sendResetPasswordMail(user: User, token: string) {
+    const dev = this.config.get('NODE_ENV') === 'development'
+    const url = `${dev ? 'http://localhost:3001' : 'https://rentakloud.com'}/forgot-password?token=${token}`
+
+    await this.mailerService.sendMail({
+      to: user.email,
+      subject: "Reset Your RentAKloud Password",
+      template: './user_reset_password',
+      context: {
+        name: user.firstName + " " + user.lastName,
+        resetUrl: url
+      }
+    })
   }
 
   @OnEvent('order.created')

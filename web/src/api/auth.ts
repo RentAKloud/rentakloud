@@ -26,6 +26,10 @@ class AuthApi {
     const resp = await HttpService.get<User>("/auth/me")
     return resp.result!
   }
+
+  static async confirmEmail(token: string) {
+    return HttpService.post("/auth/confirm-email", { token })
+  }
 }
 
 export default AuthApi

@@ -11,6 +11,7 @@ import { UsersModule } from './users.module';
   imports: [
     UsersModule,
     JwtModule.registerAsync({
+      global: true,
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
         secret: configService.get('JWT_SECRET'),
@@ -22,4 +23,4 @@ import { UsersModule } from './users.module';
   controllers: [AuthController],
   providers: [AuthService, LocalStrategy, JwtStrategy],
 })
-export class AuthModule {}
+export class AuthModule { }

@@ -1,18 +1,18 @@
-import { Component, createSignal } from "solid-js";
+import { Component } from "solid-js";
 import { useNavigate } from "@solidjs/router";
+import { createForm } from "@modular-forms/solid";
 import DefaultLayout from "~/layouts/DefaultLayout";
 import HeroWithForm from "~/components/Hero/HeroWithForm";
 import { NotificationService } from "~/services/NotificationService";
+import TextInput from "~/components/Inputs/TextInput";
+
+type ResetPasswordForm = {
+  email: string
+}
 
 const ForgotPassword: Component = () => {
   const navigate = useNavigate()
-  const [formData, setFormData] = createSignal<{
-    email: string | null,
-    password: string | null
-  }>({
-    email: "",
-    password: ""
-  })
+  const [resetPasswordForm, { Form, Field }] = createForm<ResetPasswordForm>()
 
   async function loginHandler() {
     try {
@@ -31,19 +31,26 @@ const ForgotPassword: Component = () => {
         title="Forgot Password"
         subtitle={`We will send a password reset email to the email address you registered your account with`}
       >
-        <div class="form-control">
-          <label class="label">
-            <span class="label-text">Email</span>
-          </label>
-          <input
-            type="email" placeholder="Email" class="input input-bordered input-primary"
-            onInput={(e) => setFormData({ ...formData(), email: e.currentTarget.value })}
-          />
-        </div>
+        <Form onSubmit={() => { }}>
+          <Field name="email">
+            {(field, props) => (
+              <TextInput
+                {...props}
+                value={field.value}
+                error={field.error}
+                type="email"
+                label="Email"
+                placeholder="john.doe@example.com"
+                inputClass="input-primary"
+                required
+              />
+            )}
+          </Field>
 
-        <div class="form-control mt-6">
-          <button class="btn btn-primary" onClick={loginHandler}>Reset</button>
-        </div>
+          <div class="form-control mt-6">
+            <button class="btn btn-primary" onClick={loginHandler}>Reset</button>
+          </div>
+        </Form>
       </HeroWithForm>
     </DefaultLayout>
   )

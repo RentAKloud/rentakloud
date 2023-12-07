@@ -4,6 +4,7 @@ import { Component, lazy } from "solid-js";
 import Home from '~/pages/Home';
 const Login = lazy(() => import('~/pages/Login'));
 const Register = lazy(() => import('~/pages/Register'));
+const ConfirmEmail = lazy(() => import('~/pages/ConfirmEmail'));
 const ForgotPassword = lazy(() => import("~/pages/ForgotPassword"));
 import Products from '~/pages/Products/Products';
 import ProductDetail from '~/pages/Products/ProductDetail';
@@ -26,6 +27,7 @@ const PublicRoutes: Component = () => {
       <Route path="/" component={Home} />
       <Route path="/login" component={Login} />
       <Route path="/register" component={Register} />
+      <Route path="/confirm-email" component={ConfirmEmail} />
       <Route path="/forgot-password" component={ForgotPassword} />
       <Route path="/oauth/github" component={GithubCallback} />
       <Route path="/about" component={About} />

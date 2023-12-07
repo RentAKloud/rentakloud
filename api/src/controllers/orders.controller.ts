@@ -128,7 +128,7 @@ export class OrdersController {
     const shippingTotal = await this.evalShippingCost(sm.cost, products.map(p => p.id))
     order.shipping = {
       ...sm,
-      amount: shippingTotal
+      amount: shippingTotal.toFixed(2)
     }
 
     // Get tax rates and calculate taxes
@@ -148,7 +148,8 @@ export class OrdersController {
       return sum + order.amount.toNumber() * curr.rate.toNumber()
     }, 0)
 
-    order.amount = new Prisma.Decimal(+(order.amount.toNumber() + shippingTotal + taxesTotal - discounts).toFixed(2))
+    const amountTotal = order.amount.toNumber() + shippingTotal + taxesTotal - discounts
+    order.amount = new Prisma.Decimal(amountTotal.toFixed(2))
 
     this.ordersService.updateOrder({
       where: { id: order.id },

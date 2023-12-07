@@ -1,11 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { EventEmitterModule } from '@nestjs/event-emitter';
+import { JwtModule } from '@nestjs/jwt';
+import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { MailModule } from './modules/mail.module';
-import { ConfigModule } from '@nestjs/config';
 import { UsersModule } from './modules/users.module';
 import { OrdersModule } from './modules/orders.module';
-import { EventEmitterModule } from '@nestjs/event-emitter';
 
 describe('AppController', () => {
   let app: TestingModule;
@@ -14,10 +15,13 @@ describe('AppController', () => {
     app = await Test.createTestingModule({
       imports: [
         MailModule,
-        ConfigModule,
+        ConfigModule.forRoot({
+          isGlobal: true
+        }),
         UsersModule,
         OrdersModule,
-        EventEmitterModule.forRoot()
+        EventEmitterModule.forRoot(),
+        JwtModule
       ],
       controllers: [AppController],
       providers: [AppService],

@@ -1,5 +1,6 @@
 import { Component, createEffect } from "solid-js";
 import { Link, useNavigate, useSearchParams } from "@solidjs/router";
+import { createForm } from "@modular-forms/solid";
 import DefaultLayout from "~/layouts/DefaultLayout";
 import HeroWithForm from "~/components/Hero/HeroWithForm";
 import GithubIcon from "~/components/icons/Github";
@@ -7,7 +8,6 @@ import GoogleIcon from "~/components/icons/Google";
 import { company, oauth } from "~/config/constants";
 import { authStore, login } from "~/stores/auth";
 import { NotificationService } from "~/services/NotificationService";
-import { createForm } from "@modular-forms/solid";
 import { LoginForm } from "~/types/auth";
 import TextInput from "~/components/Inputs/TextInput";
 
@@ -83,7 +83,12 @@ const Login: Component = () => {
           </label>
 
           <div class="form-control mt-6">
-            <button class="btn btn-primary" type="submit">Login</button>
+            <button
+              class="btn btn-primary" type="submit"
+              disabled={!loginForm.dirty || loginForm.invalid || loginForm.submitting}
+            >
+              Login
+            </button>
           </div>
         </Form>
 
