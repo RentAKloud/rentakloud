@@ -46,6 +46,8 @@ export class CouponsService {
     data: Prisma.CouponCodeUpdateInput;
   }): Promise<CouponCode> {
     const { where, data } = params;
+    data.updatedAt = new Date()
+
     return this.prisma.couponCode.update({
       data,
       where,

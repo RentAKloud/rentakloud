@@ -5,7 +5,7 @@ import Home from '~/pages/Home';
 const Login = lazy(() => import('~/pages/Login'));
 const Register = lazy(() => import('~/pages/Register'));
 const ConfirmEmail = lazy(() => import('~/pages/ConfirmEmail'));
-const ForgotPassword = lazy(() => import("~/pages/ForgotPassword"));
+const ForgotPassword = lazy(() => import("~/pages/ForgotPassword/ForgotPassword"));
 import Products from '~/pages/Products/Products';
 import ProductDetail from '~/pages/Products/ProductDetail';
 import Services from '~/pages/Services';

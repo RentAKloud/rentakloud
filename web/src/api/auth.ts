@@ -30,6 +30,14 @@ class AuthApi {
   static async confirmEmail(token: string) {
     return HttpService.post("/auth/confirm-email", { token })
   }
+
+  static async requestPasswordReset(email: string) {
+    return HttpService.post("/auth/request-password-reset", { email })
+  }
+
+  static async passwordReset(password: string, token: string) {
+    return HttpService.post("/auth/reset-password", { password, token })
+  }
 }
 
 export default AuthApi

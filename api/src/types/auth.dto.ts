@@ -19,4 +19,5 @@ export class LoginReq {
 export type JwtPayload = {
   email: string;
   sub: number | string;
+  expiresAt?: Date
 }

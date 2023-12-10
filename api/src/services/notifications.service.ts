@@ -47,6 +47,8 @@ export class NotificationService {
     data: Prisma.NotificationUpdateInput;
   }): Promise<Notification> {
     const { where, data } = params;
+    data.updatedAt = new Date()
+
     return this.prisma.notification.update({
       data,
       where,

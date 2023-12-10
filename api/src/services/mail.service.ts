@@ -30,6 +30,7 @@ export class MailService {
     });
   }
 
+  @OnEvent('user.reset-password')
   async sendResetPasswordMail(user: User, token: string) {
     const dev = this.config.get('NODE_ENV') === 'development'
     const url = `${dev ? 'http://localhost:3001' : 'https://rentakloud.com'}/forgot-password?token=${token}`

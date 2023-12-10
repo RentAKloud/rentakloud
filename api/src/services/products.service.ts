@@ -63,6 +63,8 @@ export class ProductsService {
     data: Prisma.ProductUpdateInput;
   }): Promise<Product> {
     const { where, data } = params;
+    data.updatedAt = new Date()
+
     return this.prisma.product.update({
       data,
       where,

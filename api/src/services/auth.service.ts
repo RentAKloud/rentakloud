@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { compareSync, hashSync, genSaltSync } from "bcrypt";
+import { compareSync, genSalt, hash } from "bcrypt";
 import { UsersService } from './users.service';
 import { JwtPayload, RegisterReq } from 'src/types/auth.dto';
 import { JwtService } from '@nestjs/jwt';
@@ -32,9 +32,7 @@ export class AuthService {
   }
 
   async register(data: RegisterReq) {
-    const saltRounds = 14
-    const salt = genSaltSync(saltRounds)
-    data.password = hashSync(data.password, salt)
+    data.password = await this.hashPassword(data.password)
 
     const user = await this.users.createUser(data)
     const payload: JwtPayload = { email: user.email, sub: user.id }
@@ -45,5 +43,11 @@ export class AuthService {
     return {
       access_token: jwt
     }
+  }
+
+  async hashPassword(password: string) {
+    const saltRounds = 14
+    const salt = await genSalt(saltRounds)
+    return hash(password, salt)
   }
 }

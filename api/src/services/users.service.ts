@@ -72,6 +72,8 @@ export class UsersService {
     data: Prisma.UserUpdateInput;
   }): Promise<User> {
     const { where, data } = params;
+    data.updatedAt = new Date()
+
     return this.prisma.user.update({
       data,
       where,

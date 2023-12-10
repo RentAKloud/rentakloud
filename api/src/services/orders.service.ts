@@ -61,6 +61,7 @@ export class OrdersService {
     data: Prisma.OrderUpdateInput;
   }): Promise<Order> {
     const { where, data } = params;
+    data.updatedAt = new Date()
 
     const oldOrder = await this.order({ id: where.id })
 

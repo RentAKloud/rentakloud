@@ -29,3 +29,5 @@ export function getTotalDiscounts(couponCodes: CouponCode[], total: number) {
     return (curr.type === CouponType.Percentage ? total * curr.percentageDiscount / 100 : +curr.flatDiscount) + sum
   }, 0)
 }
+
+export const complexPasswordRegEx = /^(?:(?=.*[a-z])(?:(?=.*[A-Z])(?=.*[\d\W])|(?=.*\W)(?=.*\d))|(?=.*\W)(?=.*[A-Z])(?=.*\d)).{8,}$/
