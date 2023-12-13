@@ -37,3 +37,8 @@ export type Card = {
 export type SearchProps = {
   onInput?: (value: string) => void
 }
+
+export type SelectOption = {
+  label: string
+  value: string
+}

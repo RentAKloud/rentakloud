@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
-import { Prisma, Product, UserProductStatus } from "@prisma/client";
+import { Order, OrderStatus, Prisma, Product, UserProductStatus } from "@prisma/client";
 import { PrismaService } from "./prisma.service";
-import { EventEmitter2 } from "@nestjs/event-emitter";
+import { EventEmitter2, OnEvent } from "@nestjs/event-emitter";
 
 @Injectable()
 export class ProductsService {
@@ -107,5 +107,29 @@ export class ProductsService {
     this.ee.emit("user_product.deleted", result)
 
     return result
+  }
+
+  @OnEvent("order.created")
+  async inventoryManagement(order: Order) {
+    order.items.forEach((i: { product: any, quantity: number }) => {
+      this.updateProduct({
+        where: { id: i.product.id },
+        data: { stock: { decrement: i.quantity } }
+      })
+    })
+  }
+
+  @OnEvent('order.status.changed')
+  async moreInventoryManagement(order: Order) {
+    const statuses: OrderStatus[] = [OrderStatus.Cancelled]
+
+    if (statuses.includes(order.status)) {
+      order.items.forEach((i: { product: any, quantity: number }) => {
+        this.updateProduct({
+          where: { id: i.product.id },
+          data: { stock: { increment: i.quantity } }
+        })
+      })
+    }
   }
 }

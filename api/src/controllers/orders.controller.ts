@@ -105,6 +105,8 @@ export class OrdersController {
         product: products[i]
       }))
 
+    // TODO stock validation
+
     const order = await this.ordersService.createOrder(data)
 
     // Calculate order total amount. This amount is used for confirmCardPayment at frontend.

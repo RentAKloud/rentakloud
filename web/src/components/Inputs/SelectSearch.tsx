@@ -48,7 +48,9 @@ const SelectSearch: Component<SelectSearchProps> = (props) => {
     }
   }
   onMount(() => {
-    others.onValueChange?.(others.default?.value || '')
+    if (!props.value) {
+      others.onValueChange?.(others.default?.value || '')
+    }
   })
 
   const [value, setValue] = createSignal<Option>();

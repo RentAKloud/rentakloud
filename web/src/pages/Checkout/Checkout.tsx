@@ -35,9 +35,7 @@ const _Checkout: Component = () => {
               <Show when={step() === 'address'}>
                 <h2 class="-mt-8 mb-8 bg-base-200 px-1 w-fit text-gray-400">Billing & Shipping</h2>
 
-                <BillingAndShipping />
-
-                <button class="btn btn-primary" onclick={() => setStep('shipping')}>Next</button>
+                <BillingAndShipping next="shipping" />
               </Show>
 
               <Show when={step() === 'shipping'}>

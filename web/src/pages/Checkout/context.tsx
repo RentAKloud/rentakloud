@@ -1,4 +1,4 @@
-import { Component, JSXElement, createContext, createEffect, createSignal, onMount, useContext } from "solid-js";
+import { Component, JSXElement, createContext, createEffect, createResource, createSignal, onMount, useContext } from "solid-js";
 import { Part, createStore } from "solid-js/store";
 import { Stripe, loadStripe } from "@stripe/stripe-js";
 import { useSearchParams } from "@solidjs/router";
@@ -12,6 +12,8 @@ import { cart, getCartTotal, resetCart } from "~/stores/cart";
 import { getProductById } from "~/stores/products";
 import { ProductType } from "~/types/product";
 import { ONLINE_ORDER_AMOUNT_LIMIT } from "~/config/constants";
+import { CountryCode, StateCode } from "~/types/common";
+import { HttpService } from "~/services/HttpService";
 
 const CheckoutContext = createContext<CheckoutContextProps>(defaultCheckout)
 
@@ -48,6 +50,24 @@ export const CheckoutProvider: Component<{ children: JSXElement }> = (props) => 
   const [paymentSuccess, setPaymentSuccess] = createSignal<boolean>()
   const [subscriptionsPaid, setSubscriptionsPaid] = createSignal<boolean>()
   const [isCardInfoComplete, setIsCardInfoComplete] = createSignal<boolean>(false)
+
+  const [countryOptions] = createResource(async () => {
+    const { result, error } = await HttpService.get<CountryCode[]>('/countries')
+    if (error) throw error
+    return result!.map(c => ({ label: c.name, value: c.code }))
+  })
+  const [stateOptionsBilling] = createResource(() => orderStore.billingAddress.country, async () => {
+    const { result, error } = await HttpService.get<StateCode[]>(`/states?country=${orderStore.billingAddress.country}`)
+    if (error) throw error
+    if (!result) return null
+    return result!.map(c => ({ label: c.name, value: c.code }))
+  })
+  const [stateOptionsShipping] = createResource(() => orderStore.shippingAddress.country, async () => {
+    const { result, error } = await HttpService.get<StateCode[]>(`/states?country=${orderStore.shippingAddress.country}`)
+    if (error) throw error
+    if (!result) return null
+    return result!.map(c => ({ label: c.name, value: c.code }))
+  })
 
   onMount(async () => {
     if (!step()) {
@@ -241,6 +261,9 @@ export const CheckoutProvider: Component<{ children: JSXElement }> = (props) => 
       shippingSameAsBilling,
       setShippingSameAsBilling,
       orderStore,
+      countryOptions,
+      stateOptionsBilling,
+      stateOptionsShipping,
       availableShippingMethods,
       updateBilling,
       updateShipping,

@@ -1,8 +1,9 @@
-import { Accessor, Setter } from "solid-js";
+import { Accessor, Resource, Setter } from "solid-js";
 import { Part } from "solid-js/store";
 import { CartItem, ProductPrice } from "./product";
 import { Stripe } from "@stripe/stripe-js";
 import { User } from "./user";
+import { SelectOption } from "./ui";
 
 export type Address = {
   firstName: string;
@@ -115,6 +116,10 @@ export type ShippingMethod = {
 }
 
 export type CheckoutSteps = "address" | "shipping" | "payment" | "congrats"
+export type Step = {
+  next?: CheckoutSteps
+  previous?: CheckoutSteps
+}
 
 export type CheckoutContextProps = {
   isContinuingOrder: () => boolean
@@ -126,6 +131,9 @@ export type CheckoutContextProps = {
   shippingSameAsBilling: Accessor<boolean>;
   setShippingSameAsBilling: Setter<boolean>;
   orderStore: OrderStore;
+  countryOptions: Resource<SelectOption[]>
+  stateOptionsBilling: Resource<SelectOption[] | null>
+  stateOptionsShipping: Resource<SelectOption[] | null>
   availableShippingMethods: Accessor<ShippingMethod[]>;
   updateBilling: (key: Part<Address, keyof Address>, val: string) => void;
   updateShipping: (key: Part<Address, keyof Address>, val: string) => void;
@@ -168,6 +176,13 @@ export const defaultCheckout: CheckoutContextProps = {
     taxes: [],
     shippingMethod: null
   },
+  // TODO fix types for default value of Resource
+  //@ts-ignore
+  countryOptions: undefined,
+  //@ts-ignore
+  stateOptionsBilling: undefined,
+  //@ts-ignore
+  stateOptionsShipping: undefined,
   availableShippingMethods: () => [],
   stripe: () => null,
   clientSecret: () => undefined,
