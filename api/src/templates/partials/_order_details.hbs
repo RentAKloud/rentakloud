@@ -65,11 +65,13 @@
       <td class="td"
         style="color: #636363; border: 1px solid #e5e5e5; vertical-align: middle; padding: 12px; text-align: left;"
         align="left">
-        {{ order.shipping.name }}
-        <span class="woocommerce-Price-currencySymbol">
-          {{ currency }}
-        </span>
-        {{ order.shipping.amount }}
+        {{#if order.shipping.name }}
+          {{ order.shipping.name }}
+          <span class="woocommerce-Price-currencySymbol">
+            {{ currency }}
+          </span>
+          {{ order.shipping.amount }}
+        {{/if}}
       </td>
     </tr>
     <tr>

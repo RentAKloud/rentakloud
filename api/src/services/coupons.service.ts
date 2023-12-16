@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { CouponCode, Order, Prisma } from "@prisma/client";
+import { CouponCode, Prisma } from "@prisma/client";
 import { PrismaService } from "./prisma.service";
 
 @Injectable()
@@ -61,10 +61,10 @@ export class CouponsService {
   }
 
   async orderCount(code: string) {
-    return (await this.prisma.order.findMany({
+    return (await this.prisma.order.count({
       where: {
-        coupons: { every: { code } },
-      }
-    })).length
+        coupons: { some: { code } },
+      },
+    }))
   }
 }

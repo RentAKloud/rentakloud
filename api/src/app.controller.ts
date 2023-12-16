@@ -86,8 +86,11 @@ export class AppController {
           return "orderId is required"
         }
         const order = await this.ordersService.order({ id: +q.orderId })
-        const subTotal = order.items.reduce((curr, next: any) => curr + next.product.prices[0].saleAmount || next.product.prices[0].amount, 0)
-        const taxesTotal = (order.taxes as any[]).reduce((curr, next) => curr + next.amount, 0)
+        const subTotal = order.items.reduce<number>((sum, next: { product: any, quantity: number }) => {
+          const amount: number = next.product.prices[0].saleAmount || next.product.prices[0].amount
+          return sum + (amount) * next.quantity
+        }, 0)
+        const taxesTotal = (order.taxes as any[]).reduce((curr, next) => curr + +next.amount, 0).toFixed(2)
         const createdAt = order.createdAt.toDateString().replace(/^\S+\s/, '') // replace first non-space chars along with white-space
         const currency = (order.items[0] as any).product.prices[0].currency
         const u = await this.usersService.user({ id: order.userId })

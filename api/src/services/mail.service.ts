@@ -49,8 +49,11 @@ export class MailService {
   @OnEvent('order.created')
   async sendOrderReceivedNotification(order: Order) {
     const user = await this.usersService.user({ id: order.userId })
-    const subTotal = order.items.reduce((curr, next: any) => curr + next.product.prices[0].saleAmount || next.product.prices[0].amount, 0)
-    const taxesTotal = (order.taxes as any[]).reduce((curr, next) => curr + next.amount, 0)
+    const subTotal = order.items.reduce<number>((curr, next: any) => {
+      const amount = next.product.prices[0].saleAmount || next.product.prices[0].amount
+      return curr + amount * next.quantity
+    }, 0)
+    const taxesTotal = (order.taxes as any[]).reduce((curr, next) => curr + +next.amount, 0).toFixed(2)
     const currency = (order.items[0] as any).product.prices[0].currency
 
     await this.mailerService.sendMail({
@@ -76,7 +79,10 @@ export class MailService {
     }
 
     const user = await this.usersService.user({ id: order.userId })
-    const subTotal = order.items.reduce((curr, next: any) => curr + next.product.prices[0].saleAmount || next.product.prices[0].amount, 0)
+    const subTotal = order.items.reduce<number>((sum, next: any) => {
+      const amount = next.product.prices[0].saleAmount || next.product.prices[0].amount
+      return sum + amount * next.quantity
+    }, 0)
     const taxesTotal = (order.taxes as any[]).reduce((curr, next) => curr + next.amount, 0)
     const currency = (order.items[0] as any).product.prices[0].currency
     const commonContext = {

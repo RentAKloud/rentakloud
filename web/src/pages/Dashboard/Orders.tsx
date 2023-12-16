@@ -47,7 +47,7 @@ const Orders: Component = () => {
           <table class="table w-full">
             <thead>
               <tr>
-                <th></th>
+                <th>Order #</th>
                 <th>Items</th>
                 <th>Date</th>
                 <th>Total</th>
@@ -56,32 +56,36 @@ const Orders: Component = () => {
             </thead>
             <tbody>
               <For each={orders()}>
-                {
-                  (order, i) => {
-                    const items = order.items.length > 1 ? `${order.items.length} items` : order.items[0].product.name
-                    // const total = order.items.reduce((i, j) => i + (j.product.prices[0].saleAmount || j.product.prices[0].amount) * j.quantity, 0)
-                    // const discounts = getTotalDiscounts(order.coupons, total)
+                {(order) => {
+                  const itemNames = order.items.map(i => i.product.name).join(", ")
+                  // const total = order.items.reduce((i, j) => i + (j.product.prices[0].saleAmount || j.product.prices[0].amount) * j.quantity, 0)
+                  // const discounts = getTotalDiscounts(order.coupons, total)
 
-                    return (
-                      <tr>
-                        <th>{i() + 1}</th>
-                        <td>{items}</td>
-                        <td><DateTime value={order.createdAt} /></td>
-                        <td>{formatPrice(order.amount || 0)}</td>
-                        <td>{order.status}</td>
-                        <td class="flex gap-4">
-                          <Link href={`/dashboard/orders/${order.id}`} class="btn btn-info btn-xs link-hover">Details</Link>
-                          <Show when={[OrderStatus.Pending, OrderStatus.OnHold, OrderStatus.Paid].includes(order.status)}>
-                            <button class="btn btn-error btn-xs" onclick={() => {
-                              setSelectedOrder(order)
-                              setIsCancelModalOpen(true)
-                            }}>Cancel</button>
-                          </Show>
-                        </td>
-                      </tr>
-                    )
-                  }
-                }
+                  return (
+                    <tr>
+                      <th>{order.id}</th>
+                      <td>
+                        <Show when={order.items.length > 1} fallback={order.items[0].product.name}>
+                          <span class="tooltip underline" data-tip={itemNames}>
+                            {order.items.length} items
+                          </span>
+                        </Show>
+                      </td>
+                      <td><DateTime value={order.createdAt} /></td>
+                      <td>{formatPrice(order.amount || 0)}</td>
+                      <td>{order.status}</td>
+                      <td class="flex gap-4">
+                        <Link href={`/dashboard/orders/${order.id}`} class="btn btn-info btn-xs link-hover">Details</Link>
+                        <Show when={[OrderStatus.Pending, OrderStatus.OnHold, OrderStatus.Paid].includes(order.status)}>
+                          <button class="btn btn-error btn-xs" onclick={() => {
+                            setSelectedOrder(order)
+                            setIsCancelModalOpen(true)
+                          }}>Cancel</button>
+                        </Show>
+                      </td>
+                    </tr>
+                  )
+                }}
               </For>
             </tbody>
           </table>

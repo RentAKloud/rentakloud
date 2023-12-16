@@ -52,8 +52,8 @@ export type Order = {
     quantity: number
   }[];
   coupons: CouponCode[];
-  shipping: ShippingMethod & { amount: number }
-  taxes: Tax[]
+  shipping: ShippingMethod & { amount: string }
+  taxes: (Omit<Tax, 'amount'> & { amount: string })[]
   status: OrderStatus;
   notes: string;
 

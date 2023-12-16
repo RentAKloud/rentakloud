@@ -107,20 +107,18 @@ export class OrdersController {
 
     // TODO stock validation
 
-    const order = await this.ordersService.createOrder(data)
-
     // Calculate order total amount. This amount is used for confirmCardPayment at frontend.
     // excludes amount for subscriptions
-    order.amount = new Prisma.Decimal(order.items.reduce<number>((sum: number, curr: { product: any, quantity: number }) => {
+    const subTotal = new Prisma.Decimal(data.items.reduce<number>((sum: number, curr: { product: any, quantity: number }) => {
       if (curr.product.productType === ProductType.OnlineService) {
         return sum
       }
       const amount = curr.product.prices[0].saleAmount || curr.product.prices[0].amount
       return sum + amount * curr.quantity
     }, 0))
-    const discounts = order.coupons.reduce((sum, curr) => {
+    const discounts = coupons.reduce((sum, curr) => {
       return (curr.type === CouponType.Percentage ?
-        order.amount.toNumber() * curr.percentageDiscount / 100
+        subTotal.toNumber() * curr.percentageDiscount / 100
         :
         curr.flatDiscount.toNumber()) + sum
     }, 0.0)
@@ -128,7 +126,7 @@ export class OrdersController {
     // Shipping costs
     const sm = await this.shippingMethodsService.shippingMethod({ id: shippingMethodId })
     const shippingTotal = await this.evalShippingCost(sm.cost, products.map(p => p.id))
-    order.shipping = {
+    data.shipping = {
       ...sm,
       amount: shippingTotal.toFixed(2)
     }
@@ -136,31 +134,24 @@ export class OrdersController {
     // Get tax rates and calculate taxes
     const rates = await this.taxRatesService.taxRates({
       where: {
-        countryCode: order.shippingCountry,
+        countryCode: data.shippingCountry,
         // zip,
-        stateCode: order.shippingState
+        stateCode: data.shippingState
       }
     })
-    order.taxes = rates.map(r => ({
+    data.taxes = rates.map(r => ({
       title: r.name,
-      amount: +(r.rate.toNumber() * order.amount.toNumber()).toFixed(2),
+      amount: (r.rate.toNumber() * subTotal.toNumber()).toFixed(2),
       rate: r.rate.toNumber()
     }))
     const taxesTotal = rates.reduce((sum, curr) => {
-      return sum + order.amount.toNumber() * curr.rate.toNumber()
+      return sum + subTotal.toNumber() * curr.rate.toNumber()
     }, 0)
 
-    const amountTotal = order.amount.toNumber() + shippingTotal + taxesTotal - discounts
-    order.amount = new Prisma.Decimal(amountTotal.toFixed(2))
+    const amountTotal = subTotal.toNumber() + shippingTotal + taxesTotal - discounts
+    data.amount = new Prisma.Decimal(amountTotal.toFixed(2))
 
-    this.ordersService.updateOrder({
-      where: { id: order.id },
-      data: {
-        amount: order.amount,
-        taxes: order.taxes,
-        shipping: order.shipping
-      }
-    })
+    const order = await this.ordersService.createOrder(data)
 
     return order
   }
@@ -237,7 +228,7 @@ export class OrdersController {
           },
         })
       }
-      w = products.reduce((sum, curr) => sum + curr.weight.toNumber(), 0)
+      w = products.reduce((sum, curr) => sum + (curr.weight?.toNumber() || 0), 0)
     }
     return eval(cost)
   }
