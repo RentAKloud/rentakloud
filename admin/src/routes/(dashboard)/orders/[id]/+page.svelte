@@ -32,7 +32,10 @@
   let errors: { [k in keyof Order]?: string } = {};
 
   async function loadData() {
-    order = await Http.get<Order>(`/orders/${id}`);
+    const { result } = await Http.get<Order>(`/orders/${id}`);
+    if (result) {
+      order = result;
+    }
   }
 
   onMount(() => {
@@ -49,7 +52,10 @@
 
     data.createdAt = formatDateForDB(data.createdAt + "Z");
 
-    order = await Http.put(`/orders/${order.id}`, data);
+    const { result } = await Http.put<Order>(`/orders/${order.id}`, data);
+    if (result) {
+      order = result;
+    }
   }
 
   const statusOptions = [

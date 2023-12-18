@@ -9,23 +9,26 @@
     TableHeadCell,
     Checkbox,
     TableSearch,
+    Button,
   } from "flowbite-svelte";
-    import { onMount } from "svelte";
+  import { onMount } from "svelte";
 
   let searchTerm = "";
   let items: CouponCode[] = [];
   $: filteredItems = items.filter(
-    (item) => item.title.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1
+    (item) => item.title.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1,
   );
 
   async function loadData() {
-    const data = await Http.get<CouponCode[]>('/coupons')
-    items = data
+    const { result } = await Http.get<CouponCode[]>("/coupons");
+    if (result) {
+      items = result;
+    }
   }
 
   onMount(() => {
-    loadData()
-  })
+    loadData();
+  });
 </script>
 
 <svelte:head>
@@ -33,14 +36,16 @@
 </svelte:head>
 
 <section class="p-5">
-  <h1
-    class="text-2xl font-semibold text-left text-gray-900 dark:text-white"
-  >
+  <h1 class="text-2xl font-semibold text-left text-gray-900 dark:text-white">
     Coupon Codes
   </h1>
   <p class="mt-1 text-sm font-normal text-gray-500 dark:text-gray-400">
     Manage coupon codes from here.
   </p>
+
+  <div class="mt-4">
+    <Button href="/coupons/new">New</Button>
+  </div>
 </section>
 
 <TableSearch hoverable={true} striped bind:inputValue={searchTerm}>
@@ -68,7 +73,11 @@
         <TableBodyCell>{item.title}</TableBodyCell>
         <TableBodyCell>{item.code}</TableBodyCell>
         <TableBodyCell>{item.type}</TableBodyCell>
-        <TableBodyCell>{item.type === CouponType.Flat ? item.flatDiscount: item.percentageDiscount + '%'}</TableBodyCell>
+        <TableBodyCell
+          >{item.type === CouponType.Flat
+            ? item.flatDiscount
+            : item.percentageDiscount + "%"}</TableBodyCell
+        >
         <TableBodyCell>
           <a
             href={`/coupons/${item.id}`}

@@ -16,12 +16,14 @@
   let items: User[] = [];
   $: filteredItems = items.filter(
     (item) =>
-      item.firstName.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1
+      item.firstName.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1,
   );
 
   async function loadData() {
-    const data = await Http.get<User[]>("/users");
-    items = data;
+    const { result } = await Http.get<User[]>("/users");
+    if (result) {
+      items = result;
+    }
   }
 
   onMount(() => {

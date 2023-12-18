@@ -11,16 +11,17 @@
 
   async function login(e: SubmitEvent) {
     inTransit = true;
-    const d = (await Http.post("/auth/login", { email, password })) as {
-      access_token: string;
-    };
+    const { result } = await Http.post<{ access_token: string }>(
+      "/auth/login",
+      { email, password },
+    );
 
-    if (d.access_token) {
+    if (result && result.access_token) {
       auth.update((a) => {
-        a.token = d.access_token;
+        a.token = result.access_token;
         return a;
       });
-      localStorage.setItem("access_token", d.access_token);
+      localStorage.setItem("access_token", result.access_token);
       goto("/");
     }
     inTransit = false;

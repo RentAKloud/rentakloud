@@ -1,7 +1,7 @@
 <script lang="ts">
   import { Http } from "$lib/http";
   import type { Product } from "$lib/types";
-    import { price } from "$lib/utils";
+  import { price } from "$lib/utils";
   import {
     TableBody,
     TableBodyCell,
@@ -11,22 +11,24 @@
     Checkbox,
     TableSearch,
   } from "flowbite-svelte";
-    import { onMount } from "svelte";
+  import { onMount } from "svelte";
 
   let searchTerm = "";
   let items: Product[] = [];
   $: filteredItems = items.filter(
-    (item) => item.name.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1
+    (item) => item.name.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1,
   );
 
   async function loadData() {
-    const data = await Http.get<Product[]>('/products')
-    items = data
+    const { result } = await Http.get<Product[]>("/products");
+    if (result) {
+      items = result;
+    }
   }
 
   onMount(() => {
-    loadData()
-  })
+    loadData();
+  });
 </script>
 
 <svelte:head>
@@ -34,9 +36,7 @@
 </svelte:head>
 
 <section class="p-5">
-  <h1
-    class="text-2xl font-semibold text-left text-gray-900 dark:text-white"
-  >
+  <h1 class="text-2xl font-semibold text-left text-gray-900 dark:text-white">
     Products
   </h1>
   <p class="mt-1 text-sm font-normal text-gray-500 dark:text-gray-400">
@@ -66,7 +66,11 @@
         <TableBodyCell>{item.id}</TableBodyCell>
         <TableBodyCell>{item.name}</TableBodyCell>
         <TableBodyCell>{item.categories[0]?.title || "-"}</TableBodyCell>
-        <TableBodyCell>{item.prices[0]?.amount ? price(item.prices[0]?.amount) : "-"}</TableBodyCell>
+        <TableBodyCell
+          >{item.prices[0]?.amount
+            ? price(item.prices[0]?.amount)
+            : "-"}</TableBodyCell
+        >
         <TableBodyCell>
           <a
             href={`/products/${item.id}`}

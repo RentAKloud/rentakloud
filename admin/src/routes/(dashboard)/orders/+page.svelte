@@ -18,12 +18,14 @@
   $: filteredItems = items.filter(
     (item) =>
       Order.searchStr(item).toLowerCase().indexOf(searchTerm.toLowerCase()) !==
-      -1
+      -1,
   );
 
   async function loadData() {
-    const data = await Http.get<Order[]>("/orders");
-    items = data;
+    const { result } = await Http.get<Order[]>("/orders");
+    if (result) {
+      items = result;
+    }
   }
 
   onMount(() => {
@@ -72,7 +74,10 @@
         </TableBodyCell>
         <TableBodyCell>{order.items.length}</TableBodyCell>
         <TableBodyCell>${order.amount}</TableBodyCell>
-        <TableBodyCell tdClass={order.status === OrderStatus.Paid ? 'text-green-500' : ''}>{order.status}</TableBodyCell>
+        <TableBodyCell
+          tdClass={order.status === OrderStatus.Paid ? "text-green-500" : ""}
+          >{order.status}</TableBodyCell
+        >
         <TableBodyCell>{order.createdAt}</TableBodyCell>
         <TableBodyCell>
           <a

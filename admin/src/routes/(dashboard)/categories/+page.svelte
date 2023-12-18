@@ -15,12 +15,14 @@
   let searchTerm = "";
   let items: Category[] = [];
   $: filteredItems = items.filter(
-    (item) => item.title.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1
+    (item) => item.title.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1,
   );
 
   async function loadData() {
-    const data = await Http.get<Category[]>("/categories");
-    items = data;
+    const { result } = await Http.get<Category[]>("/categories");
+    if (result) {
+      items = result;
+    }
   }
 
   onMount(() => {

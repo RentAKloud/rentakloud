@@ -12,7 +12,10 @@
   let errors: { [k in keyof User]?: string } = {};
 
   async function loadData() {
-    user = await Http.get<User>(`/users/${id}`);
+    const { result } = await Http.get<User>(`/users/${id}`);
+    if (result) {
+      user = result;
+    }
   }
 
   onMount(() => {
@@ -23,7 +26,10 @@
     errors = {};
     const data: User = user;
 
-    user = await Http.put(`/users/${user.id}`, data);
+    const { result } = await Http.put<User>(`/users/${user.id}`, data);
+    if (result) {
+      user = result;
+    }
   }
 </script>
 

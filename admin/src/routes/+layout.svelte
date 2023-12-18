@@ -17,12 +17,14 @@
   import { UserType, auth } from "$lib/stores";
   import { Http } from "$lib/http";
   import { onDestroy } from "svelte";
-  import { goto } from "$app/navigation";
 
   const unsub = auth.subscribe(async (a) => {
     if (a.isLoggedIn() && !a.user) {
-      const user = await Http.get("/auth/me");
-      $auth.user = user;
+      const { result } = await Http.get("/auth/me");
+      auth.update((aa) => {
+        aa.user = result;
+        return aa;
+      });
     }
   });
 

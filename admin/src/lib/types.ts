@@ -11,7 +11,8 @@ export class Product {
     public categories: Category[],
     public prices: ProductPrice[],
     public images: { alt: string, src: string }[],
-    public stock: number
+    public stock: number,
+    public weight: number
   ) { }
 }
 
@@ -87,13 +88,13 @@ export class Order {
     public items: any[],
     public status: OrderStatus,
     public notes: string,
-    
+
     public createdAt: string | Date | null,
     public updatedAt: string,
-    
+
     public coupons?: CouponCode[],
     public taxes?: any[],
-    public amount?: number, // only in create response
+    public amount?: number,
   ) { }
 
   static searchStr(order: Order) {
@@ -102,7 +103,7 @@ export class Order {
 }
 
 export type CouponCode = {
-  id: number;
+  id?: number;
   title: string;
   code: string;
 
@@ -115,13 +116,24 @@ export type CouponCode = {
   startsAt: string | Date | null
   expiresAt: string | Date | null
 
-  createdAt: string
-  updatedAt: string
+  createdAt?: string
+  updatedAt?: string
 }
 
 export enum CouponType {
   Flat = 'Flat',
   Percentage = 'Percentage'
+}
+
+export const defaultCouponCode: CouponCode = {
+  title: "",
+  code: "",
+  type: CouponType.Flat,
+  flatDiscount: "0",
+  percentageDiscount: 0,
+  active: true,
+  startsAt: null,
+  expiresAt: null,
 }
 
 export enum OrderStatus {
@@ -132,3 +144,14 @@ export enum OrderStatus {
   OnHold = 'OnHold',
   Cancelled = 'Cancelled',
 }
+
+// TODO put this in proper place
+declare global {
+  interface Date {
+    toLocaleISOString(): string
+  }
+}
+
+Date.prototype.toLocaleISOString = function (): string {
+  return new Date(this.getTime() - this.getTimezoneOffset() * 1000 * 60).toISOString().replace('Z', '');
+};

@@ -15,11 +15,16 @@
   const id = $page.params.id;
 
   async function loadData() {
-    product = await Http.get<Product>(`/products/${id}`);
-    categories = (await Http.get<Category[]>(`/categories`)).map((c) => ({
-      value: c.id,
-      name: c.title,
-    }));
+    const { result } = await Http.get<Product>(`/products/${id}`);
+    if (result) {
+      product = result;
+    }
+    categories = (await Http.get<Category[]>(`/categories`)).result!.map(
+      (c) => ({
+        value: c.id,
+        name: c.title,
+      }),
+    );
     selectedCategories = product.categories
       ? product.categories.map((c) => c.id)
       : [];
@@ -35,16 +40,19 @@
     data.categories = selectedCategories;
     data.descriptionEditor = await descriptionEditor.save();
 
-    data.stock = +product.stock
-    data.prices = product.prices.map(p => {
-      const d = {...p, amount: +p.amount}
+    data.stock = +product.stock;
+    data.prices = product.prices.map((p) => {
+      const d = { ...p, amount: +p.amount };
       if (p.saleAmount) {
-        d.saleAmount = +p.saleAmount
+        d.saleAmount = +p.saleAmount;
       }
-      return d
-    })
+      return d;
+    });
 
-    product = await Http.put(`/products/${product.id}`, data);
+    const { result } = await Http.put<Product>(`/products/${product.id}`, data);
+    if (result) {
+      product = result;
+    }
   }
 </script>
 
@@ -134,6 +142,11 @@
       <div class="mb-6">
         <Label for="stock" class="block mb-2">Stock</Label>
         <Input id="stock" type="number" bind:value={product.stock} />
+      </div>
+
+      <div class="mb-6">
+        <Label for="weight" class="block mb-2">Weight (kg)</Label>
+        <Input id="weight" type="number" bind:value={product.weight} step="0.1" />
       </div>
     {/if}
 

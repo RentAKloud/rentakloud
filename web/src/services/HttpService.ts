@@ -26,6 +26,14 @@ export class HttpService {
     return wrapper(endpoint, options)
   }
 
+  static async put<T>(endpoint: string, body: any): ApiResponse<T> {
+    const options = {
+      method: "PUT",
+      body: JSON.stringify(body)
+    }
+    return wrapper(endpoint, options)
+  }
+
   static async patch<T>(endpoint: string, body: any): ApiResponse<T> {
     const options = {
       method: "PATCH",
