@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { CouponCode, Prisma } from "@prisma/client";
+import { CouponCode, Prisma, Product } from "@prisma/client";
 import { PrismaService } from "./prisma.service";
 
 @Injectable()
@@ -10,9 +10,11 @@ export class CouponsService {
 
   async couponCode(
     couponCodeWhereUniqueInput: Prisma.CouponCodeWhereUniqueInput,
+    include?: Prisma.CouponCodeInclude
   ): Promise<CouponCode | null> {
     return this.prisma.couponCode.findUnique({
       where: couponCodeWhereUniqueInput,
+      include
     });
   }
 
@@ -22,14 +24,16 @@ export class CouponsService {
     cursor?: Prisma.CouponCodeWhereUniqueInput;
     where?: Prisma.CouponCodeWhereInput;
     orderBy?: Prisma.CouponCodeOrderByWithRelationInput;
-  }): Promise<CouponCode[]> {
-    const { skip, take, cursor, where, orderBy } = params;
+    include?: Prisma.CouponCodeInclude;
+  }): Promise<(CouponCode & { products?: Product[] })[]> {
+    const { skip, take, cursor, where, orderBy, include } = params;
     return this.prisma.couponCode.findMany({
       skip,
       take,
       cursor,
       where,
       orderBy,
+      include
     });
   }
 
@@ -51,6 +55,9 @@ export class CouponsService {
     return this.prisma.couponCode.update({
       data,
       where,
+      include: {
+        products: true
+      }
     });
   }
 

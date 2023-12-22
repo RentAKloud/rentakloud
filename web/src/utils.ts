@@ -24,9 +24,24 @@ export function getOrderSubTotal(order: Order) {
   }, 0)
 }
 
-export function getTotalDiscounts(couponCodes: CouponCode[], total: number) {
+export function getTotalDiscounts(couponCodes: CouponCode[], total: number, products: { id: number, price: number, qty: number }[]) {
   return couponCodes.reduce((sum, curr) => {
-    return (curr.type === CouponType.Percentage ? total * curr.percentageDiscount / 100 : +curr.flatDiscount) + sum
+    const apply = (value: number) => curr.type === CouponType.Percentage ?
+      value * curr.percentageDiscount / 100 :
+      +curr.flatDiscount
+
+    const applicableProducts = curr.products.map(p => p.id)
+    if (applicableProducts.length > 0) {
+      return products.reduce(
+        (psum, pcurr) =>
+          applicableProducts.includes(pcurr.id) ?
+            apply(pcurr.price * pcurr.qty) :
+            psum
+        , 0
+      ) + sum
+    }
+
+    return apply(total) + sum
   }, 0)
 }
 

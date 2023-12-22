@@ -1,6 +1,6 @@
 import { Accessor, Resource, Setter } from "solid-js";
 import { Part } from "solid-js/store";
-import { CartItem, ProductPrice } from "./product";
+import { CartItem, Product, ProductPrice } from "./product";
 import { Stripe } from "@stripe/stripe-js";
 import { User } from "./user";
 import { SelectOption } from "./ui";
@@ -71,6 +71,7 @@ export type CouponCode = {
   type: CouponType;
   flatDiscount: string; // Type Decimal is returned as string from backend
   percentageDiscount: number;
+  products: Product[] // to limit coupon usage to specific products
 }
 
 export enum CouponType {

@@ -80,7 +80,7 @@ const LandingHardwareFocused: Component = () => {
 
       <section class="bg-base-200 flex flex-col md:flex-row py-10">
         <div class="flex-1">
-          <img class="w-full" src="https://unsplash.com/photos/6b5uqlWabB0/download?ixid=M3wxMjA3fDB8MXxzZWFyY2h8MTV8fHNlcnZlciUyMGNwdSUyMHVuaXR8ZW58MHx8fHwxNjk5OTY5MTM3fDA&force=true&w=640" />
+          <img class="w-full" src="https://i.imgur.com/HcQN4CT.jpg" />
         </div>
 
         <div class="flex flex-col justify-center flex-1 p-10">

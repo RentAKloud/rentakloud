@@ -1,6 +1,6 @@
 import { Body, Controller, Get, HttpException, HttpStatus, Param, ParseIntPipe, Post, Put, Request, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { CouponCode } from '@prisma/client';
+import { CouponCode, Prisma } from '@prisma/client';
 import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 import { CouponsService } from '../services/coupons.service';
 
@@ -20,17 +20,22 @@ export class CouponsController {
   @UseGuards(JwtAuthGuard)
   @Get('/:id')
   coupon(@Param('id') id: number) {
-    return this.couponsService.couponCode({ id })
+    return this.couponsService.couponCode({ id }, { products: true })
   }
 
   @UseGuards(JwtAuthGuard)
   @Post()
   async createCoupon(
-    @Body() data
+    @Body() body: CouponCode & { products: number[] }
   ) {
-    const couponCode = await this.couponsService.createCouponCode(data)
+    const { products, ...coupon } = body
+    const data: Prisma.CouponCodeCreateInput = coupon
 
-    return couponCode
+    data.products = {
+      connect: products.filter(p => !!p).map(id => ({ id }))
+    }
+
+    return this.couponsService.createCouponCode(data)
   }
 
   @UseGuards(JwtAuthGuard)
@@ -41,6 +46,11 @@ export class CouponsController {
     const coupons = await this.couponsService.couponCodes({
       where: {
         code: body.code
+      },
+      include: {
+        products: {
+          select: { id: true }
+        }
       }
     })
 
@@ -49,14 +59,19 @@ export class CouponsController {
     }
 
     const coupon = coupons[0]
+    let error = ""
     if (!coupon.active) {
-      throw new HttpException("This coupon code is not available at the moment", HttpStatus.NOT_ACCEPTABLE)
+      error = "This coupon code is not available at the moment"
     } else if (coupon.startsAt && new Date() < coupon.startsAt) {
-      throw new HttpException("This coupon cannot be used yet", HttpStatus.NOT_ACCEPTABLE)
+      error = "This coupon cannot be used yet"
     } else if (coupon.expiresAt && new Date() > coupon.expiresAt) {
-      throw new HttpException("This coupon has expired", HttpStatus.NOT_ACCEPTABLE)
+      error = "This coupon has expired"
     } else if (coupon.maxUses && await this.couponsService.orderCount(coupon.code) > coupon.maxUses) {
-      throw new HttpException("This coupon code cannot be redeemed anymore (max limit reached)", HttpStatus.NOT_ACCEPTABLE)
+      error = "This coupon code cannot be redeemed anymore (max limit reached)"
+    }
+
+    if (error) {
+      throw new HttpException(error, HttpStatus.NOT_ACCEPTABLE)
     }
 
     return coupon
@@ -66,11 +81,23 @@ export class CouponsController {
   @Put('/:id')
   updateCoupon(
     @Param('id', ParseIntPipe) id: number,
-    @Body() body: CouponCode
+    @Body() body: CouponCode & { products: number[], oldProducts: number[] }
   ) {
+    const { products: productIds, oldProducts, ...coupon } = body
+    const toRemove = oldProducts.filter(x => !productIds.includes(x))
+
+    const data: Prisma.CouponCodeUpdateInput = coupon
+
+    if (productIds) {
+      data.products = {
+        connect: productIds.map(id => ({ id })),
+        disconnect: toRemove.map(id => ({ id }))
+      }
+    }
+
     return this.couponsService.updateCouponCode({
       where: { id },
-      data: body
+      data
     })
   }
 }

@@ -195,6 +195,9 @@ export const CheckoutProvider: Component<{ children: JSXElement }> = (props) => 
         })
         if (!orderResp.error) {
           setOrder(orderResp.result!)
+        } else {
+          setInTransit(false)
+          return
         }
       }
 

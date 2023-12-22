@@ -62,6 +62,15 @@ async function main() {
       }
     ]
   })
+
+  await prisma.taxRate.create({
+    data: {
+      countryCode: 'US',
+      stateCode: 'TX',
+      rate: 0.008250,
+      name: "Sales Tax"
+    }
+  })
 }
 
 main()

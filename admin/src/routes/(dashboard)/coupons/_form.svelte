@@ -1,15 +1,44 @@
 <script lang="ts">
-  import { CouponType, type CouponCode } from "$lib/types";
+  import { Http } from "$lib/http";
+  import { CouponType, type CouponCode, Product, ProductType, type CreateCouponCode } from "$lib/types";
   import { formatDateForDB } from "$lib/utils";
-  import { Button, Helper, Input, Label, Radio, Toggle } from "flowbite-svelte";
+  import {
+    Button,
+    Helper,
+    Input,
+    Label,
+    MultiSelect,
+    Radio,
+    Toggle,
+  } from "flowbite-svelte";
+  import { onMount } from "svelte";
 
   export let coupon: CouponCode;
-  export let onSubmit: (data: CouponCode) => void;
+  export let onSubmit: (data: CreateCouponCode) => void;
   export let errors: { [k in keyof CouponCode]?: string };
+  let products: Product[];
+  let selectedProducts: number[] = [];
+
+  onMount(async () => {
+    const { result } = await Http.get<Product[]>(
+      `/products?productType=${ProductType.Physical}`,
+    );
+    if (result) {
+      products = result;
+      selectedProducts = coupon.products.map(p => p.id)
+    }
+  });
 
   function validateFormatAndSubmit() {
     errors = {};
-    const data: CouponCode = coupon;
+    const temp: any = coupon
+    // if new, oldProducts don't exist
+    if (coupon.id) {
+      temp.oldProducts = coupon.products.map(p => p.id)
+    }
+    temp.products = selectedProducts
+  
+    const data: CreateCouponCode = temp;
 
     if (data.type === CouponType.Percentage) {
       data.percentageDiscount = +data.percentageDiscount;
@@ -58,6 +87,12 @@
   </div>
 
   <div class="mb-6">
+    <Label for="is-private" class="block mb-2">Is Private?</Label>
+    <Toggle id="is-private" bind:checked={coupon.isPrivate} />
+    <Helper id="is-private-help" class="pl-6">Private coupons don't get autofilled on checkout.</Helper>
+  </div>
+
+  <div class="mb-6">
     <Label class="block mb-2">Type</Label>
 
     <Radio
@@ -74,8 +109,7 @@
       bind:group={coupon.type}
       value={CouponType.Flat}>Flat</Radio
     >
-    <Helper id="type-flat" class="pl-6">For a fixed amount, e.g. $10 off</Helper
-    >
+    <Helper id="type-flat" class="pl-6">For a fixed amount, e.g. $10 off</Helper>
   </div>
 
   {#if coupon.type === CouponType.Percentage}
@@ -132,6 +166,20 @@
     />
     <Helper id="max-uses-help" class="mt-2">Leave blank to remove limit</Helper>
   </div>
+
+  {#if products}
+    <div class="mb-6">
+      <Label for="limit-to" class="block mb-2">Limit To</Label>
+      <MultiSelect
+        items={products.map((p) => ({ value: p.id, name: p.name }))}
+        bind:value={selectedProducts}
+        size="lg"
+      />
+      <Helper id="limit-to-help" class="mt-2"
+        >Limit usage to specific products.</Helper
+      >
+    </div>
+  {/if}
 
   <Button type="submit">Save</Button>
 </form>

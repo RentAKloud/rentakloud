@@ -111,6 +111,7 @@ model Product {
   updatedAt         DateTime         @default(now())
   //
   taxRates          TaxRate[]
+  couponCodes       CouponCode[]
 }
 
 // Instance configurations (also used as plans)
@@ -191,7 +192,7 @@ model Order {
 model CouponCode {
   id                 Int                 @id @default(autoincrement())
   title              String
-  code               String
+  code               String              @unique
   //
   type               CouponType          @default(Flat)
   flatDiscount       Decimal             @db.Decimal(10, 2)
@@ -201,11 +202,14 @@ model CouponCode {
   startsAt           DateTime?
   expiresAt          DateTime?
   active             Boolean             @default(true)
+  isPrivate          Boolean             @default(false)
   //
   createdAt          DateTime            @default(now())
   updatedAt          DateTime            @default(now())
   //
   orders             CouponCodeToOrder[]
+  //
+  products           Product[] // limits usage to specific products
 }
 
 model CouponCodeToOrder {
@@ -221,6 +225,7 @@ model CouponCodeToOrder {
   type               CouponType
   flatDiscount       Decimal    @db.Decimal(10, 2)
   percentageDiscount Int
+  products           Int[]
 }
 
 model TaxRate {
@@ -340,4 +345,9 @@ enum ShippingMethodType {
   Free
   Flat
   Local
+}
+
+model Option {
+  key   String @unique
+  value Json
 }

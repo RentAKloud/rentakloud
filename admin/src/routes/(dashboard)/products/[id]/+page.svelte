@@ -15,11 +15,12 @@
   const id = $page.params.id;
 
   async function loadData() {
+    const fetchCategories = Http.get<Category[]>(`/categories`)
     const { result } = await Http.get<Product>(`/products/${id}`);
     if (result) {
       product = result;
     }
-    categories = (await Http.get<Category[]>(`/categories`)).result!.map(
+    categories = (await fetchCategories).result!.map(
       (c) => ({
         value: c.id,
         name: c.title,

@@ -29,6 +29,10 @@ class OrdersApi {
   static async getShippingMethods(address: Partial<Address>, productIds: number[]): ApiResponse<ShippingMethod[]> {
     return await HttpService.post('/orders/available-shipping-methods', { address, productIds })
   }
+
+  static async getAvailableCoupons(items: any): ApiResponse<CouponCode[]> {
+    return HttpService.post('/orders/available-coupons', { items })
+  }
 }
 
 export default OrdersApi

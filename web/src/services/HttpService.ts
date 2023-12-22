@@ -72,6 +72,8 @@ async function wrapper(endpoint: string, options?: RequestInit) {
 
     if (toReturn.statusCode) {
       return { result: null, error: toReturn }
+    } else if (toReturn.response?.statusCode) {
+      return { result: null, error: toReturn.response }
     }
 
     return { result: toReturn, error: null }

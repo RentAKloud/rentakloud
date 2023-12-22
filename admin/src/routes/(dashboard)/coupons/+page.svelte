@@ -58,7 +58,7 @@
     <TableHeadCell>Code</TableHeadCell>
     <TableHeadCell>Type</TableHeadCell>
     <TableHeadCell>Discount</TableHeadCell>
-    <TableHeadCell>Created At</TableHeadCell>
+    <TableHeadCell>Active</TableHeadCell>
     <TableHeadCell>
       <span class="sr-only">Edit</span>
     </TableHeadCell>
@@ -78,6 +78,7 @@
             ? item.flatDiscount
             : item.percentageDiscount + "%"}</TableBodyCell
         >
+        <TableBodyCell>{item.active ? "Yes" : "No"}</TableBodyCell>
         <TableBodyCell>
           <a
             href={`/coupons/${item.id}`}

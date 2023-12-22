@@ -4,6 +4,7 @@ import HeroWithBg from "~/components/Hero/HeroWithBg";
 import { Product } from "~/types/product";
 import PricingCard from "~/components/PricingCard";
 import { addToCart } from "~/stores/cart";
+import Accordion from "~/components/Accordion/Accordion";
 
 export const ServiceProduct: Component<{ product: Product }> = (props) => {
   const [showYearly, setShowYearly] = createSignal(false)
@@ -63,7 +64,27 @@ export const ServiceProduct: Component<{ product: Product }> = (props) => {
 
       <section class="p-10">
         <h2 class="text-3xl text-center font-bold">FAQ</h2>
-        <p class="text-center">Your frequently asked questions answered right here.</p>
+        <p class="text-center mb-12">Your frequently asked questions answered right here.</p>
+
+        <div class="mx-20">
+          <Accordion items={[
+            {
+              heading: "How do you ensure payments are secure?",
+              body: "Payment security is our top priority. Encrypted payment details are stored in an external vault separate from our system. The vault has the highest PCI-DSS Level 1 compliance to ensure the highest security standards are met."
+            },
+            {
+              heading: "What is your refund policy?",
+              body: <>
+                We offer a 30-day money back guarantee. For more information, please view
+                our.
+              </>
+            },
+            {
+              heading: "Having issues making a payment?",
+              body: `At , we make sure that all your payments reach us safely. If you’re having issues making a payment, you may contact us at support@rentakloud.com`
+            }
+          ]} />
+        </div>
       </section>
     </>
   )

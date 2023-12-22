@@ -7,7 +7,15 @@ import { formatPrice, getTotalDiscounts } from "~/utils";
 export const CartSummary: Component<{ showAddresses?: boolean }> = (props) => {
   const { orderStore, shippingSameAsBilling } = useCheckoutContext()
   const subTotal = () => getCartTotal()
-  const discounts = () => getTotalDiscounts(orderStore.couponCodes, subTotal())
+  const discounts = () => getTotalDiscounts(
+    orderStore.couponCodes,
+    subTotal(),
+    cart.items.map(i => ({
+      id: i.productId,
+      price: getProductPrice(getProductById(i.productId)!).amount,
+      qty: i.quantity
+    }))
+  )
   const shipping = () => orderStore.shippingMethod?.cost || 0
   const taxesTotal = () => orderStore.taxes.reduce((curr, next) => curr + next.amount, 0)
   const finalTotal = () => subTotal() + shipping() + taxesTotal() - discounts()

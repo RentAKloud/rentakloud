@@ -111,10 +111,13 @@ export type CouponCode = {
   flatDiscount: string; // Type Decimal is returned as string from backend
   percentageDiscount: number;
   active: boolean
+  isPrivate: boolean
   maxUses?: number
 
   startsAt: string | Date | null
   expiresAt: string | Date | null
+
+  products: Product[] // limit usage to these products
 
   createdAt?: string
   updatedAt?: string
@@ -132,8 +135,15 @@ export const defaultCouponCode: CouponCode = {
   flatDiscount: "0",
   percentageDiscount: 0,
   active: true,
+  isPrivate: false,
   startsAt: null,
   expiresAt: null,
+  products: []
+}
+
+export type CreateCouponCode = Omit<CouponCode, 'products'> & {
+  products: number[]
+  oldProducts: number[]
 }
 
 export enum OrderStatus {

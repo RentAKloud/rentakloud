@@ -10,6 +10,7 @@ import { UsersService } from '../services/users.service';
 import { CouponsService } from '../services/coupons.service';
 import { ShippingZonesService } from '../services/shipping-zones.service';
 import { ShippingMethodsService } from '../services/shipping-methods.service';
+import { OrderItem, CartItem } from 'src/types/order';
 
 @ApiTags('Orders')
 @Controller('orders')
@@ -66,14 +67,20 @@ export class OrdersController {
     const shippingMethodId = req.body.shippingMethod.id
 
     // check for duplicate coupons
-    if (couponIds.length > 0 && couponIds.length != new Array(new Set(couponIds)).length) {
+    if (couponIds.length > 0 && couponIds.length != Array.from(new Set(couponIds)).length) {
       return new BadRequestException("A coupon code can be used only once per order")
     }
     const coupons = await this.couponsService.couponCodes({
       where: {
         id: { in: couponIds }
+      },
+      include: {
+        products: {
+          select: { id: true }
+        }
       }
     })
+    // TODO validate coupons
     data.coupons = {
       create: coupons.map(c => ({
         couponCodeId: c.id,
@@ -81,7 +88,8 @@ export class OrdersController {
         code: c.code,
         type: c.type,
         flatDiscount: c.flatDiscount,
-        percentageDiscount: c.percentageDiscount
+        percentageDiscount: c.percentageDiscount,
+        products: c.products.map(p => p.id)
       }))
     }
 
@@ -109,7 +117,7 @@ export class OrdersController {
 
     // Calculate order total amount. This amount is used for confirmCardPayment at frontend.
     // excludes amount for subscriptions
-    const subTotal = new Prisma.Decimal(data.items.reduce<number>((sum: number, curr: { product: any, quantity: number }) => {
+    const subTotal = new Prisma.Decimal(data.items.reduce<number>((sum: number, curr: OrderItem) => {
       if (curr.product.productType === ProductType.OnlineService) {
         return sum
       }
@@ -117,10 +125,21 @@ export class OrdersController {
       return sum + amount * curr.quantity
     }, 0))
     const discounts = coupons.reduce((sum, curr) => {
-      return (curr.type === CouponType.Percentage ?
-        subTotal.toNumber() * curr.percentageDiscount / 100
-        :
-        curr.flatDiscount.toNumber()) + sum
+      const apply = (value: number) => curr.type === CouponType.Percentage ?
+        value * curr.percentageDiscount / 100 :
+        +curr.flatDiscount
+
+      const applicableProducts = curr.products.map(p => p.id)
+      if (applicableProducts.length > 0) {
+        return data.items.reduce<number>(
+          (psum, pcurr: OrderItem) =>
+            applicableProducts.includes(pcurr.product.id) ?
+              apply(pcurr.product.prices[0].amount * pcurr.quantity) :
+              psum
+          , 0) + sum
+      }
+
+      return apply(subTotal.toNumber()) + sum
     }, 0.0)
 
     // Shipping costs
@@ -215,6 +234,35 @@ export class OrdersController {
         cost: await this.evalShippingCost(sm.cost, productIds)
       }
     }))
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('/available-coupons')
+  async availableCoupons(@Body() body: { items: CartItem[] }) {
+    const { items } = body
+    const productIds = items.map(i => i.productId)
+
+    const coupons = await this.couponsService.couponCodes({
+      where: {
+        products: {
+          every: {
+            id: { in: productIds }
+          }
+        },
+        active: true,
+        isPrivate: false,
+        OR: [
+          { startsAt: { lte: new Date() } },
+          { startsAt: null }
+        ]
+      }
+    })
+
+    // TODO check for validity
+    // coupons do get revalidated at frontend when applied, so need to validate here?
+    // probably because shouldnt show coupons that cant be used
+
+    return coupons
   }
 
   async evalShippingCost(cost: string, productIds: number[]): Promise<number> {

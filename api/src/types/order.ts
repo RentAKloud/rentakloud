@@ -53,3 +53,10 @@ export class CreateOrderReq {
   @IsArray()
   couponCodes: { id: number }[]
 }
+
+export type CartItem = {
+  productId: number
+  quantity: number
+}
+
+export type OrderItem = { product: any, quantity: number }

@@ -1,8 +1,7 @@
 <script lang="ts">
   import { page } from "$app/stores";
   import { Http } from "$lib/http";
-  import type { CouponCode } from "$lib/types";
-  import { formatDateForDB } from "$lib/utils";
+  import type { CouponCode, CreateCouponCode } from "$lib/types";
 
   import { onMount } from "svelte";
   import Form from "../_form.svelte";
@@ -22,7 +21,7 @@
     loadData();
   });
 
-  async function update(data: CouponCode) {
+  async function update(data: CreateCouponCode) {
     const { result } = await Http.put<CouponCode>(
       `/coupons/${coupon.id}`,
       data,

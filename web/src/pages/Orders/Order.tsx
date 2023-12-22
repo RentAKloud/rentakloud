@@ -18,7 +18,15 @@ const Order: Component = () => {
   })
 
   const subTotal = () => order() ? getOrderSubTotal(order()!) : 0
-  const discounts = () => order() ? getTotalDiscounts(order()!.coupons, subTotal()) : 0
+  const discounts = () => order() ? getTotalDiscounts(
+    order()!.coupons,
+    subTotal(),
+    order()!.items.map(i => ({
+      id: i.product.id,
+      price: i.product.prices[0].amount,
+      qty: i.quantity
+    }))
+  ) : 0
   const shipping = () => order() ? +order()!.shipping.amount : 0
   const taxes = () => order() ? order()!.taxes.reduce((curr, next) => curr + +next.amount, 0) : 0
   const finalTotal = () => subTotal() + shipping() + taxes() - discounts()
