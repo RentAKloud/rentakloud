@@ -11,7 +11,7 @@ export type Icon = {
 }
 
 export type HeroWithBgProps = {
-  title?: string,
+  title?: string | JSXElement,
   subtitle?: string,
   children?: JSXElement,
   bgUrl?: string,

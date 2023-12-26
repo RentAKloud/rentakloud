@@ -23,7 +23,7 @@ const HeroWithBg: Component<HeroWithBgProps> = (props) => {
         'text-neutral-content': !!props.bgUrl
       }}>
         {children}
-        <div class="max-w-md">
+        <div class="">
           {header}
           <Show when={props.title}>
             <h1 class="mb-5 text-5xl font-bold">{props.title}</h1>

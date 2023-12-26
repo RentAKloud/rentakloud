@@ -11,7 +11,12 @@ const LandingHardwareFocused: Component = () => {
   return (
     <>
       <HeroWithBg
-        title="Cloud & Datacenter Products And Services"
+        title={
+          <>
+            <h1>Cloud & Data Center</h1>
+            <h1>Products And Services</h1>
+          </>
+        }
         subtitle="Efficient, Secure & Eco-friendly."
         actions={
           <Link href="/register" class="btn btn-primary">Get Started</Link>
@@ -57,14 +62,14 @@ const LandingHardwareFocused: Component = () => {
 
       <section class="bg-base-200 flex flex-col-reverse md:flex-row md:py-10">
         <div class="flex flex-col justify-center flex-1 p-10">
-          <h2 class="text-4xl font-bold mb-5">Why Depend On RentAKloud?</h2>
-          <p class="text-lg">We specialize in transforming the seemingly impossible into reality. By integrating cutting-edge
-            hardware, extensive industry expertise, and strategic ecosystem partnerships, we tackle the most intricate technology
-            challenges of today.</p>
+          <h2 class="text-4xl font-bold mb-5">Why RentAKloud?</h2>
+          <p class="text-lg">Our team with more than twenty-five years of experience is building solutions that address real needs and challenges.
+            Our products and services help small businesses run their complete IT infrastructure in the cloud or help extend the current IT infrastructure with new servers and virtual machines.
+            Data center providers can use our products to improve issue resolution and technology support.</p>
         </div>
 
         <div class="flex-1">
-          <img class="w-full" src="https://images.pexels.com/photos/442150/pexels-photo-442150.jpeg?auto=compress&cs=tinysrgb&w=640&dpr=1" />
+          <img class="h-[500px] w-full object-contain" src="https://i.imgur.com/jn025GT.jpg" />
         </div>
       </section>
 
@@ -80,14 +85,14 @@ const LandingHardwareFocused: Component = () => {
 
       <section class="bg-base-200 flex flex-col md:flex-row py-10">
         <div class="flex-1">
-          <img class="w-full" src="https://i.imgur.com/HcQN4CT.jpg" />
+          <img class="h-[500px] w-full object-contain" src="https://i.imgur.com/HcQN4CT.jpg" />
         </div>
 
         <div class="flex flex-col justify-center flex-1 p-10">
           <h2 class="text-4xl font-bold mb-5">What Makes Us Different?</h2>
-          <p class="text-lg mb-10">What sets us apart is our unwavering commitment to providing a distinctive server solution
-            experience. Unlike generic providers, we pride ourselves on staying at the forefront of technology trends, ensuring
-            that our clients benefit from cutting-edge hardware and innovative configurations.</p>
+          <p class="text-lg mb-10">We are committed to providing additional features and functionality compared to our competitors.
+          We like to stay at the forefront of technology and put a lot of emphasis on research and development of our products and servers to benefit our customers.
+          Our experienced team is committed to our continuous improvement process to offer solutions to problems others don't provide.</p>
         </div>
       </section>
     </>

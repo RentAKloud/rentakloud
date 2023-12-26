@@ -7,7 +7,7 @@ const About: Component = () => {
     <DefaultLayout>
       <HeroWithBg
         title="About Us"
-        subtitle="Your Trusted Partner In Servers & Hardware Accessories"
+        subtitle="Your Trusted Partner In Cloud & Data Center Solutions"
         bgUrl="https://unsplash.com/photos/lVZjvw-u9V8/download?ixid=M3wxMjA3fDB8MXxzZWFyY2h8NHx8c2VydmVyc3xlbnwwfHx8fDE3MDAwMDE1MDl8MA&force=true&w=1920"
         bgFixed
         notFullScreen
@@ -39,7 +39,7 @@ const About: Component = () => {
         </p>
       </section>
 
-      <section class="py-20 px-10 text-xl max-w-5xl m-auto">
+      {/* <section class="py-20 px-10 text-xl max-w-5xl m-auto">
         <h2 class="text-4xl font-bold text-center mb-6">Why Choose RentAKloud?</h2>
 
         <div class="flex items-center">
@@ -71,20 +71,24 @@ const About: Component = () => {
           <p>5. Flexible Rental Plans:
             We offer flexible rental plans to accommodate businesses of all sizes. Whether you need a server for a short-term project or a long-term commitment, we have the right plan for you.</p>
         </div>
-      </section>
+      </section> */}
+
+      <HeroWithBg bgUrl="https://images.unsplash.com/photo-1544197150-b99a580bb7a8?q=80&w=1920&auto=format&fit=crop" notFullScreen bgFixed>
+        <div>
+          <h2 class="text-4xl font-bold mb-4">Our Commitment</h2>
+
+          <p class="mb-4 text-xl">At RentAKloud, we are committed to excellence in every aspect of our service. From the quality of our servers to
+            the responsiveness of our support team, we strive to exceed your expectations. We believe that your success is our
+            success, and we are dedicated to helping you achieve your goals in the ever-evolving digital landscape.</p>
+
+          <p class="mb-8 text-xl">Thank you for considering RentAKloud as your partner in server solutions. We look forward to the opportunity to
+            serve you and contribute to the success of your business. If you have any questions or would like to discuss your
+            server needs, feel free to contact us – we're here to help.</p>
+        </div>
+      </HeroWithBg>
 
       <section class="max-w-5xl m-auto text-center py-20 text-xl">
-        <h2 class="text-4xl font-bold mb-4">Our Commitment</h2>
-
-        <p class="mb-4">At RentAKloud, we are committed to excellence in every aspect of our service. From the quality of our servers to
-          the responsiveness of our support team, we strive to exceed your expectations. We believe that your success is our
-          success, and we are dedicated to helping you achieve your goals in the ever-evolving digital landscape.</p>
-
-        <p class="mb-8">Thank you for considering RentAKloud as your partner in server solutions. We look forward to the opportunity to
-          serve you and contribute to the success of your business. If you have any questions or would like to discuss your
-          server needs, feel free to contact us – we're here to help.</p>
-
-        <h2 class="text-4xl italic font-bold">Welcome to a new era of server solutions. Welcome to RentAKloud!</h2>
+        <h2 class="text-4xl italic font-bold">Welcome to a new era of cloud & data center solutions!</h2>
       </section>
     </DefaultLayout>
   )

@@ -6,11 +6,9 @@ const RefundPolicy: Component = () => {
     <LegalLayout title="Refund Policy" revisionDateTime="2023-06-25 14:53:15">
       <h3>STANDARD REFUND TERMS</h3>
       <p>
-        Products purchased from RentAKloud Inc, registered address, 916 Slate Lane Celina TX 75009 (hereinafter referred to as &ldquo;RentAKloud&rdquo; or &ldquo;Company&rdquo;) may be refunded only if canceled within 30 days of the date of the transaction. A restocking fee of 15% applies to all cancelations in addition to the cost of all parts that cannot be returned to RentAKloud. Customer may request to cancel the order by contacting RentAKloud at
-        <a href="mailto:refunds@rentakloud.com">
-          refunds@rentakloud.com
-        </a>
-        . Unauthorized returns will be refused and returned to the sender. All orders for services are non-cancelable, except as expressly mutually agreed to by the parties.
+        Products purchased from RentAKloud Inc, registered address, 916 Slate Lane Celina TX 75009 (hereinafter referred to as &ldquo;RentAKloud&rdquo; or &ldquo;Company&rdquo;) may be refunded only if canceled within 30 days of the date of the transaction.
+        A restocking fee of 15% applies to all cancelations in addition to the cost of all parts that cannot be returned to RentAKloud. Customer may request to cancel the order by contacting RentAKloud at <a href="mailto:refunds@rentakloud.com">refunds@rentakloud.com</a>.
+        Unauthorized returns will be refused and returned to the sender. All orders for services are non-cancelable, except as expressly mutually agreed to by the parties.
       </p>
       <p>
         <strong>

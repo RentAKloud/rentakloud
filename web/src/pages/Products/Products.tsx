@@ -1,10 +1,10 @@
 import { Component, For, Show } from "solid-js";
-import Hero from "../../components/Hero/Hero";
-import Card from "../../components/Card/Card"
-import DefaultLayout from "../../layouts/DefaultLayout";
 import { Link, useSearchParams } from "@solidjs/router";
-import { productCategories } from "../../types/product";
-import { products } from "../../stores/products";
+import Hero from "~/components/Hero/Hero";
+import Card from "~/components/Card/Card"
+import DefaultLayout from "~/layouts/DefaultLayout";
+import { productCategories } from "~/types/product";
+import { products } from "~/stores/products";
 import { truncate } from "~/utils";
 
 const Products: Component<{}> = () => {
@@ -48,6 +48,7 @@ const Products: Component<{}> = () => {
             </For>
           </div>
         }
+        fullScreen={false}
         centered
       />
 

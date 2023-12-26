@@ -42,27 +42,28 @@ const Navbar: Component<{}> = () => {
             </Link>
             <ul class="dropdown-content menu xl:menu-horizontal lg:min-w-max bg-base-100 rounded-box z-10 ml-[-0.1em]">
               <For each={productsMenu()}>
-                {
-                  (item) => (
-                    item.submenu ? (
-                      <li>
-                        <Link href={`/our-products/${item.slug}`} activeClass="">{item.title}</Link>
+                {(item) => (
+                  item.submenu ? (
+                    <li>
+                      <Link href='#' activeClass="">
+                      {/* <Link href={`/our-products/${item.slug}`} activeClass=""> */}
+                        {item.title}
+                      </Link>
 
-                        <ul>
-                          <For each={item.submenu}>
-                            {
-                              (subItem) => <li><Link href={`/our-products/${subItem.slug}`}>{subItem.title}</Link></li>
-                            }
-                          </For>
-                        </ul>
-                      </li>
-                    ) : (
-                      <li>
-                        <Link href={`/our-products/${item.slug}`}>{item.title}</Link>
-                      </li>
-                    )
+                      <ul>
+                        <For each={item.submenu}>
+                          {
+                            (subItem) => <li><Link href={`/our-products/${subItem.slug}`}>{subItem.title}</Link></li>
+                          }
+                        </For>
+                      </ul>
+                    </li>
+                  ) : (
+                    <li>
+                      <Link href={`/our-products/${item.slug}`}>{item.title}</Link>
+                    </li>
                   )
-                }
+                )}
               </For>
             </ul>
           </li>

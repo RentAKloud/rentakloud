@@ -54,9 +54,9 @@ const LegalLayout: Component<LayoutProps & {
             <li><Link href="/legal/privacy-policy" class="link link-hover [&.active]:text-indigo-500">Privacy Policy</Link></li>
           </ul>
 
-          <h2 class="font-bold">Policies</h2>
+          <h2 class="font-bold">Other Policies</h2>
           <ul>
-            <li><Link href="/legal/privacy-policy" class="link link-hover [&.active]:text-indigo-500">Privacy Policy</Link></li>
+            {/* <li><Link href="/legal/privacy-policy" class="link link-hover [&.active]:text-indigo-500">Privacy Policy</Link></li> */}
             <li><Link href="/legal/cookie-policy" class="link link-hover [&.active]:text-indigo-500">Cookie Policy</Link></li>
             <li><Link href="/legal/delivery-policy" class="link link-hover [&.active]:text-indigo-500">Delivery/Shipping Policy</Link></li>
             <li><Link href="/legal/refund-policy" class="link link-hover [&.active]:text-indigo-500">Refund Policy</Link></li>
