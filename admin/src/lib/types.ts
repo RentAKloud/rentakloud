@@ -10,7 +10,7 @@ export class Product {
     public descriptionEditor: OutputData,
     public categories: Category[],
     public prices: ProductPrice[],
-    public images: { alt: string, src: string }[],
+    public images: { alt: string, src: string, bg?: string }[],
     public stock: number,
     public weight: number
   ) { }

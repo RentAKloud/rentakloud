@@ -2,7 +2,15 @@
   import { page } from "$app/stores";
   import { Http } from "$lib/http";
   import { ProductType, type Category, type Product } from "$lib/types";
-  import { Button, Input, Label, MultiSelect, Textarea } from "flowbite-svelte";
+  import {
+    Button,
+    Img,
+    Input,
+    Label,
+    MultiSelect,
+    Textarea,
+  } from "flowbite-svelte";
+  import { PlusSolid, TrashBinSolid } from "flowbite-svelte-icons";
   import type EditorJS from "@editorjs/editorjs";
 
   import { onMount } from "svelte";
@@ -15,17 +23,15 @@
   const id = $page.params.id;
 
   async function loadData() {
-    const fetchCategories = Http.get<Category[]>(`/categories`)
+    const fetchCategories = Http.get<Category[]>(`/categories`);
     const { result } = await Http.get<Product>(`/products/${id}`);
     if (result) {
       product = result;
     }
-    categories = (await fetchCategories).result!.map(
-      (c) => ({
-        value: c.id,
-        name: c.title,
-      }),
-    );
+    categories = (await fetchCategories).result!.map((c) => ({
+      value: c.id,
+      name: c.title,
+    }));
     selectedCategories = product.categories
       ? product.categories.map((c) => c.id)
       : [];
@@ -130,13 +136,44 @@
     </div>
 
     <div class="mb-6">
-      <Label for="images" class="block mb-2">Images</Label>
-      {#each product.images as image}
-        <div class="flex gap-5 mb-4">
-          <Input placeholder="Source" bind:value={image.src} />
-          <Input placeholder="Alt" bind:value={image.alt} />
+      <div class="flex gap-4 mb-2 items-center">
+        <Label for="images" class="block mb-2">Images</Label>
+        <Button
+          pill
+          class="!p-2"
+          size="sm"
+          on:click={() =>
+            (product.images = [...product.images, { src: "", alt: "" }])}
+        >
+          <PlusSolid class="dark:text-white" />
+        </Button>
+      </div>
+
+      {#each product.images as image, i}
+        <div class="flex gap-4">
+          <div class="flex flex-col gap-2">
+            <div class="dark:text-white text-center">
+              {i + 1}
+            </div>
+            <Button outline on:click={() => product.images = product.images.filter((img, y) => y !== i)}>
+              <TrashBinSolid />
+            </Button>
+          </div>
+
+          <div class="flex flex-col gap-4 mb-8 flex-1">
+            <div class="flex gap-4">
+              <Input placeholder="Source" bind:value={image.src} />
+              <Img src={image.src} class="w-20" alt={image.alt} style="{image.bg && `background-color: ${image.bg}`}" />
+            </div>
+            <Input placeholder="Alt" bind:value={image.alt} />
+            <Input type="color" bind:value={image.bg} />
+          </div>
         </div>
       {/each}
+
+      {#if product.images.length === 0}
+        <p class="dark:text-white text-sm">No images found.</p>
+      {/if}
     </div>
 
     {#if product.productType === ProductType.Physical}
@@ -147,7 +184,12 @@
 
       <div class="mb-6">
         <Label for="weight" class="block mb-2">Weight (kg)</Label>
-        <Input id="weight" type="number" bind:value={product.weight} step="0.1" />
+        <Input
+          id="weight"
+          type="number"
+          bind:value={product.weight}
+          step="0.1"
+        />
       </div>
     {/if}
 
