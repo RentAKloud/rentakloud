@@ -36,7 +36,8 @@ const Navbar: Component<{}> = () => {
         <ul class="menu menu-horizontal">
           {/* <!-- Navbar menu content here --> */}
           <li tabindex="0" class="dropdown dropdown-hover">
-            <Link href="/our-products">
+            {/* <Link href="/our-products"> */}
+            <Link href='#' activeClass="">
               Products
               <svg class="fill-current" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z" /></svg>
             </Link>
@@ -46,7 +47,7 @@ const Navbar: Component<{}> = () => {
                   item.submenu ? (
                     <li>
                       <Link href='#' activeClass="">
-                      {/* <Link href={`/our-products/${item.slug}`} activeClass=""> */}
+                        {/* <Link href={`/our-products/${item.slug}`} activeClass=""> */}
                         {item.title}
                       </Link>
 

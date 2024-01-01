@@ -3,7 +3,7 @@ import LegalLayout from "~/layouts/LegalLayout";
 
 const CookiePolicy: Component = () => {
   return (
-    <LegalLayout title="Cookie Policy" revisionDateTime="2023-06-25 14:45:08">
+    <LegalLayout title="Cookie Policy" revisionDateTime="2024-02-28 14:45:08">
       <p>
         RentAKloud Inc, registered address, 916 Slate Lane Celina TX 75009 (hereinafter referred to as &ldquo;RentAKloud&rdquo;, &ldquo;Company,&rdquo; or &ldquo;we&rdquo;), shall undertake to ensure the security of personal information and the protection of rights of the visitors of the website (hereinafter referred to as the &ldquo;Visitors&rdquo;) while RentAKloud group websites are used (hereinafter referred to as the &ldquo;Website&rdquo;).
       </p>

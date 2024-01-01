@@ -13,8 +13,7 @@ export class MailService {
     private readonly usersService: UsersService,
   ) { }
 
-  @OnEvent('user.created')
-  async sendUserConfirmation(user: User, token: string) {
+  async _sendUserConfirmation(user: User, token: string) {
     const dev = this.config.get('NODE_ENV') === 'development'
     const url = `${dev ? 'http://localhost:3001' : 'https://rentakloud.com'}/confirm-email?token=${token}`;
 
@@ -28,6 +27,16 @@ export class MailService {
         url,
       },
     });
+  }
+
+  @OnEvent('user.created')
+  userCreated(user: User, token: string) {
+    this._sendUserConfirmation(user, token)
+  }
+
+  @OnEvent('user.resend-confirmation')
+  resendConfirmation(user: User, token: string) {
+    this._sendUserConfirmation(user, token)
   }
 
   @OnEvent('user.reset-password')

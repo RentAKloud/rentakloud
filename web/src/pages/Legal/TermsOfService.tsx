@@ -5,7 +5,7 @@ import LegalLayout from "~/layouts/LegalLayout";
 
 const TermsOfService: Component = () => {
   return (
-    <LegalLayout title="Terms of Service Agreement" revisionDateTime="2023-08-23 15:09:51">
+    <LegalLayout title="Terms of Service Agreement" revisionDateTime="2024-02-28 15:09:51">
       <h3 class="text-2xl mb-4">1. OVERVIEW</h3>
       <p class="mb-4">This Universal Terms of Service Agreement (this “Agreement”) is entered into by and between the relevant {company.DISPLAY_NAME}&nbsp;group entity indicated below (“{company.DISPLAY_NAME}”) and you, and is made effective as of the date of your use of this website (“Site”) or the date of electronic acceptance.</p>
 

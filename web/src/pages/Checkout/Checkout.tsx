@@ -11,6 +11,9 @@ import { OrderDetails } from "./_OrderDetails";
 import { Congrats } from "./steps/Congrats";
 import { Coupons } from "./_Coupons";
 import { ShippingMethod } from "./steps/ShippingMethod";
+import { AlertDialog } from "@kobalte/core";
+import Modal from "~/components/Modal";
+import { authStore } from "~/stores/auth";
 
 const _Checkout: Component = () => {
   const {
@@ -19,6 +22,7 @@ const _Checkout: Component = () => {
     isCardInfoComplete,
     inReview, setInReview,
   } = useCheckoutContext()
+  const { user } = authStore
 
   return (
     <DefaultLayout>
@@ -102,6 +106,25 @@ const _Checkout: Component = () => {
           <Congrats />
         </Show>
       </div>
+
+      <Modal
+        isOpen={!user?.emailVerifiedAt}
+        title="Email Confirmation Required"
+        description={
+          <>
+            <p class="mb-2">You need to confirm your email address before you can access this section.
+              Check your inbox for the confirmation email.</p>
+            <p>Reload the page if you have confirmed your email.</p>
+          </>
+        }
+        actions={
+          <>
+            <button class="btn btn-sm" onclick={() => history.back()}>Go Back</button>
+            <button class="btn btn-sm btn-info" onclick={() => location.reload()}>Reload</button>
+          </>
+        }
+        hideCloseBtn
+      />
     </DefaultLayout>
   )
 }

@@ -77,7 +77,7 @@ export class AppController {
           //@ts-ignore
           return this.loadTemplate("user_confirmation", { name: user.fullName, url })
         } else {
-          this.mailService.sendUserConfirmation(user, jwt)
+          this.mailService._sendUserConfirmation(user, jwt)
           return 'Success'
         }
       case 'order_received': {

@@ -4,7 +4,7 @@ import LegalLayout from "~/layouts/LegalLayout";
 
 const DeliveryPolicy: Component = () => {
   return (
-    <LegalLayout title="Delivery/Shipping Policy" revisionDateTime="2022-10-12 14:45:08">
+    <LegalLayout title="Delivery/Shipping Policy" revisionDateTime="2024-02-28 14:45:08">
       <h3 id="international-shipping-and-delivery-estimates">International Shipping and Delivery Estimates</h3>
       <ul>
         <li>

@@ -31,6 +31,10 @@ class AuthApi {
     return HttpService.post("/auth/confirm-email", { token })
   }
 
+  static async requestConfirmationEmail() {
+    return HttpService.post("/auth/request-confirmation-email", {})
+  }
+
   static async requestPasswordReset(email: string) {
     return HttpService.post("/auth/request-password-reset", { email })
   }

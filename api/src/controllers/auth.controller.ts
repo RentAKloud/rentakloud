@@ -39,6 +39,21 @@ export class AuthController {
     return this.usersService.user({ id: req.user.userId })
   }
 
+  @UseGuards(JwtAuthGuard)
+  @Post('request-confirmation-email')
+  async requestConfirmationEmail(@Request() req) {
+    const user = await this.usersService.user({
+      id: req.user.userId
+    })
+
+    const payload: JwtPayload = { email: user.email, sub: user.id, expiresAt: nextDay() }
+    const jwt = this.jwtService.sign(payload)
+
+    this.ee.emit('user.resend-confirmation', user, jwt)
+
+    return true
+  }
+
   @Post('confirm-email')
   async confirmEmail(@Body() body) {
     const { token } = body

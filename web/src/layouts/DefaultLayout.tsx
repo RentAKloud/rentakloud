@@ -8,13 +8,15 @@ import Navbar from "~/components/Navbar";
 import { company } from "~/config/constants";
 import { LayoutProps } from "~/types/ui";
 import { authStore, logout } from "~/stores/auth";
+import NoticeEmailConfirmation from "~/components/NoticeEmailConfirmation";
 
 const DefaultLayout: Component<LayoutProps> = (props) => {
   createEffect(() => {
     document.title = props.title || company.DISPLAY_NAME
   })
   const isRouting = useIsRouting()
-  const loggedIn = () => !!authStore.user
+  const user = () => authStore.user
+  const loggedIn = () => !!user()
 
   return (
     <div class="drawer">
@@ -24,6 +26,10 @@ const DefaultLayout: Component<LayoutProps> = (props) => {
 
       <input id="my-drawer-3" type="checkbox" class="drawer-toggle" />
       <div class="drawer-content flex flex-col">
+        <Show when={loggedIn() && !user()!.emailVerifiedAt}>
+          <NoticeEmailConfirmation />
+        </Show>
+
         {/* <!-- Navbar --> */}
         <Navbar />
 

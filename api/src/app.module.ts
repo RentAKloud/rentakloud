@@ -16,6 +16,7 @@ import { NotificationsModule } from './modules/notifications.module';
 import { CategoriesModule } from './modules/categories.module';
 import { CouponsModule } from './modules/coupons.module';
 import { UsersModule } from './modules/users.module';
+import { OptionsModule } from './modules/options.module';
 
 @Module({
   imports: [
@@ -35,7 +36,8 @@ import { UsersModule } from './modules/users.module';
     CouponsModule,
     DiskImagesModule,
     NotificationsModule,
-    UsersModule
+    UsersModule,
+    OptionsModule
   ],
   controllers: [AppController],
   providers: [AppService],

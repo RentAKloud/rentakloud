@@ -3,7 +3,7 @@ import LegalLayout from "~/layouts/LegalLayout";
 
 const PrivacyPolicy: Component = () => {
   return (
-    <LegalLayout title="Privacy Policy" revisionDateTime="3/05/2023">
+    <LegalLayout title="Privacy Policy" revisionDateTime="2024-02-28">
       <p>
         RentAKloud Inc, registered address, 916 Slate Lane Celina TX 75009 (hereinafter referred to as &ldquo;RentAKloud&rdquo;, &ldquo;Company,&rdquo; or &ldquo;we&rdquo;),
         cares about your privacy. For this reason, we collect and use personal information only as needed for our products,

@@ -3,7 +3,7 @@ import LegalLayout from "~/layouts/LegalLayout";
 
 const RefundPolicy: Component = () => {
   return (
-    <LegalLayout title="Refund Policy" revisionDateTime="2023-06-25 14:53:15">
+    <LegalLayout title="Refund Policy" revisionDateTime="2024-02-28 14:53:15">
       <h3>STANDARD REFUND TERMS</h3>
       <p>
         Products purchased from RentAKloud Inc, registered address, 916 Slate Lane Celina TX 75009 (hereinafter referred to as &ldquo;RentAKloud&rdquo; or &ldquo;Company&rdquo;) may be refunded only if canceled within 30 days of the date of the transaction.

@@ -4,7 +4,7 @@ import HeroWithBg from "~/components/Hero/HeroWithBg";
 
 const About: Component = () => {
   return (
-    <DefaultLayout>
+    <DefaultLayout title="About Us">
       <HeroWithBg
         title="About Us"
         subtitle="Your Trusted Partner In Cloud & Data Center Solutions"
