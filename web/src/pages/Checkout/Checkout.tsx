@@ -1,4 +1,4 @@
-import { Component, Show } from "solid-js";
+import { Component, Show, createEffect } from "solid-js";
 import DefaultLayout from "~/layouts/DefaultLayout";
 import { CartSummary } from "./_CartSummary";
 import { BillingAndShipping } from "./steps/BillingAndShipping";
@@ -23,6 +23,12 @@ const _Checkout: Component = () => {
     inReview, setInReview,
   } = useCheckoutContext()
   const { user } = authStore
+
+  createEffect(() => {
+    if (step()) {
+      scrollTo({ top: 0 })
+    }
+  })
 
   return (
     <DefaultLayout>

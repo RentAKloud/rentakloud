@@ -2,19 +2,23 @@ import type { OutputData } from "@editorjs/editorjs"
 
 export class Product {
   constructor(
-    public id: number,
-    public name: string,
-    public shortDescription: string,
-    public description: string,
-    public productType: ProductType,
-    public descriptionEditor: OutputData,
-    public categories: Category[],
-    public prices: ProductPrice[],
-    public images: { alt: string, src: string, bg?: string }[],
-    public stock: number,
-    public weight: number
+    public id?: number,
+    public name: string = "",
+    public slug: string = "",
+    public shortDescription: string = "",
+    public description: string = "",
+    public productType: ProductType = ProductType.Physical,
+    public descriptionEditor: OutputData = { blocks: [] },
+    public categories: Category[] = [],
+    public prices: ProductPrice[] = [],
+    public images: ProductImage[] = [],
+    public stock: number = 1,
+    public weight: number = 0,
+    public meta: any = {}
   ) { }
 }
+
+type ProductImage = { alt: string, src: string, bg?: string }
 
 export type ProductPrice = {
   currency: string;
@@ -24,8 +28,9 @@ export type ProductPrice = {
   // for subscriptions
   planName?: string;
   priceId?: string;
-  interval?: string;
+  interval?: "month" | "year";
   intervalCount?: string;
+  features?: string[]
 }
 
 export enum ProductType {

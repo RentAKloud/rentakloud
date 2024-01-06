@@ -112,6 +112,8 @@ model Product {
   //
   taxRates          TaxRate[]
   couponCodes       CouponCode[]
+  //
+  meta              Json?            @default("{}") // used for stuff such as UI content etc
 }
 
 // Instance configurations (also used as plans)

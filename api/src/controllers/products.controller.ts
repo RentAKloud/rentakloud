@@ -5,7 +5,8 @@ import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 import { ProductsService } from '../services/products.service';
 import * as edjsHTML from "editorjs-html";
 
-type UpdateProduct = Product & { categories: number[], oldCategories: number[] }
+type CreateProduct = Product & { categories: number[] }
+type UpdateProduct = CreateProduct & { oldCategories: number[] }
 
 @ApiTags('Products')
 @Controller('products')
@@ -36,8 +37,22 @@ export class ProductsController {
 
   @UseGuards(JwtAuthGuard)
   @Post()
-  createProduct(@Body() reqBody) {
-    return this.productsService.createProduct(reqBody)
+  createProduct(@Body() reqBody: CreateProduct) {
+    const { categories } = reqBody
+
+    if (reqBody.descriptionEditor) {
+      //@ts-ignore
+      const parser = edjsHTML()
+      reqBody.description = parser.parse(reqBody.descriptionEditor).join("")
+    }
+
+    return this.productsService.createProduct({
+      ...reqBody,
+      categories: {
+        connect: categories.map(id => ({ id })),
+        // disconnect: toRemove.map(id => ({ id }))
+      }
+    })
   }
 
   @UseGuards(JwtAuthGuard)

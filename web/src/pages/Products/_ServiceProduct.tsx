@@ -9,7 +9,7 @@ import Accordion from "~/components/Accordion/Accordion";
 export const ServiceProduct: Component<{ product: Product }> = (props) => {
   const [showYearly, setShowYearly] = createSignal(false)
   const product = createMemo(() => props.product)
-  const category = () => product().categories[0].title
+  const category = () => product().categories[0]?.title || ""
   const navigate = useNavigate()
 
   function selectPlan(priceId: string) {
@@ -17,14 +17,19 @@ export const ServiceProduct: Component<{ product: Product }> = (props) => {
     navigate("/checkout")
   }
 
+  const title = () => product().meta.headerTitle || `Simple and Reliable ${product().name} ${category()}`
+  const subTitle = () =>  product().meta.headerSubtitle ||`Worry-free ${product().name} hosting so you can focus on building great apps.`
+
   return (
     <>
       <HeroWithBg
-        title={`Simple and Reliable ${product().name} ${category()}`}
-        subtitle={`Worry-free ${product().name} hosting so you can focus on building great apps.`}
+        title={title()}
+        subtitle={subTitle()}
         header={<span class="uppercase">{product().categories.map(c => c.title).join(", ")}</span>}
         bgUrl={product().images[0]?.src || ""}
         align='left'
+        class="h-[30vh]"
+        notFullScreen
         // contain
       >
       </HeroWithBg>
@@ -35,8 +40,8 @@ export const ServiceProduct: Component<{ product: Product }> = (props) => {
       </section>
 
       <section class="p-10">
-        <h2 class="text-3xl text-center font-bold mb-5">Pricing</h2>
-        <p class="text-center mb-5">Choose the plan that fits your needs. No hidden fees. Hassle-free payments.</p>
+        <h2 class="text-3xl text-center font-bold mb-5">Pricing Plans that meet your unique personal and business needs​</h2>
+        {/* <p class="text-center mb-5">Choose the plan that fits your needs. No hidden fees. Hassle-free payments.</p> */}
 
         <div class="flex justify-center gap-8 mb-10">
           <span class="label-text">Show Yearly Prices</span>
@@ -45,13 +50,13 @@ export const ServiceProduct: Component<{ product: Product }> = (props) => {
           />
         </div>
 
-        <div class="grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-3 place-items-center">
+        <div class="grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-3 place-items-center items-stretch">
           <For each={props.product.prices}>
             {
               (price, index) =>
                 <PricingCard
                   planName={price.planName || `Plan ${index() + 1}`} ppm={price.amount} showYearly={showYearly}
-                  points={[
+                  points={price.features || [
                     "2.8 GHz 8-core CPU", "20 GB Cloud storage",
                     "Integration help", "SSH Access", "24×7 phone & email support"
                   ]}

@@ -8,13 +8,13 @@ export type Product = {
   categories: ProductCategory[];
   prices?: ProductPrice[]
   stock: number
-  images: {
-    src: string
-    alt: string
-  }[]
+  images: ProductImage[]
   productType: ProductType;
   weight: number
+  meta: any
 }
+
+type ProductImage = { alt: string, src: string, bg?: string }
 
 export type ProductPrice = {
   currency: string;
@@ -26,6 +26,7 @@ export type ProductPrice = {
   priceId?: string;
   interval?: string;
   intervalCount?: string;
+  features?: string[]
 }
 
 export enum ProductType {

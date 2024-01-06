@@ -10,7 +10,9 @@
     TableHeadCell,
     Checkbox,
     TableSearch,
+    Button,
   } from "flowbite-svelte";
+  import { TrashBinSolid } from "flowbite-svelte-icons";
   import { onMount } from "svelte";
 
   let searchTerm = "";
@@ -23,6 +25,14 @@
     const { result } = await Http.get<Product[]>("/products");
     if (result) {
       items = result;
+    }
+  }
+
+  async function deleteProduct(id: number) {
+    const { result } = await Http.delete(`/products/${id}`);
+
+    if (result) {
+      loadData()
     }
   }
 
@@ -42,6 +52,10 @@
   <p class="mt-1 text-sm font-normal text-gray-500 dark:text-gray-400">
     Manage products from here.
   </p>
+
+  <div class="mt-4">
+    <Button href="/products/new">New</Button>
+  </div>
 </section>
 
 <TableSearch hoverable={true} striped bind:inputValue={searchTerm}>
@@ -71,12 +85,15 @@
             ? price(item.prices[0]?.amount)
             : "-"}</TableBodyCell
         >
-        <TableBodyCell>
+        <TableBodyCell tdClass="flex gap-4 items-center py-4">
           <a
             href={`/products/${item.id}`}
             class="font-medium text-primary-600 hover:underline dark:text-primary-500"
             >Edit</a
           >
+          <Button size="xs" outline on:click={() => item.id && deleteProduct(item.id)}>
+            <TrashBinSolid />
+          </Button>
         </TableBodyCell>
       </TableBodyRow>
     {/each}

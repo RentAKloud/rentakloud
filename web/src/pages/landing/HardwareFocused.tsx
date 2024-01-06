@@ -18,11 +18,11 @@ const LandingHardwareFocused: Component = () => {
           </>
         }
         subtitle="Efficient, Secure & Eco-friendly."
-        actions={
-          <Link href="/register" class="btn btn-primary">Get Started</Link>
-        }
+        // actions={
+        //   <Link href="/register" class="btn btn-primary">Get Started</Link>
+        // }
         bgUrl="https://images.pexels.com/photos/6466141/pexels-photo-6466141.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-        class="h-[60vh] md:h-[45vh] bg-fixed"
+        class="h-[60vh] md:h-[25vh] bg-fixed"
         notFullScreen
         align="left"
       >
@@ -31,10 +31,10 @@ const LandingHardwareFocused: Component = () => {
       </HeroWithBg>
 
       <section class="p-10 bg-base-200">
-        <h2 class="text-3xl text-center font-bold mb-5">Popular Products</h2>
-        <p class="text-center mb-10">Cutting-edge, high performance hardware. Intense computation with efficient energy usage.</p>
+        {/* <h2 class="text-3xl text-center font-bold mb-5">Popular Products</h2> */}
+        {/* <p class="text-center mb-10">Cutting-edge, high performance hardware. Intense computation with efficient energy usage.</p> */}
 
-        <div class="grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-3 place-items-center items-stretch">
+        <div class="flex flex-wrap gap-10 justify-center items-stretch">
           <For each={home().featuredHardware}>
             {
               (product) =>

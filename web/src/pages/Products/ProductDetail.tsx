@@ -15,7 +15,8 @@ const ProductDetail: Component<{}> = () => {
   const isAHarwareProduct = () => product()?.productType === ProductType.Physical
 
   const title = () => {
-    return isAHarwareProduct() ? product()?.name : `${product()?.name} ${product()?.categories[0].title} Hosting`
+    const category = () => product()?.categories[0]?.title || ""
+    return isAHarwareProduct() ? product()?.name : product()?.meta.pageTitle || `${product()?.name} ${category()} Hosting`
   }
 
   return (

@@ -1,11 +1,11 @@
 <script lang="ts">
   import { Http } from "$lib/http";
-    import { Toggle } from "flowbite-svelte";
+  import { Toggle } from "flowbite-svelte";
   import { onMount } from "svelte";
 
   let data;
   async function loadData() {
-    const { result } = await Http.get<{key:string, value: string}>("/users");
+    const { result } = await Http.get<{ key: string; value: string }>("/options");
     if (result) {
       data = result;
     }
@@ -32,4 +32,3 @@
 <section>
   <Toggle>Stripe Test Mode</Toggle>
 </section>
-
