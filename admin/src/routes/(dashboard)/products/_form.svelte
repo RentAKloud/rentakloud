@@ -12,7 +12,7 @@
     Select,
     Textarea,
   } from "flowbite-svelte";
-  import { PlusSolid, TrashBinSolid } from "flowbite-svelte-icons";
+  import { CopySolid, PlusSolid, TrashBinSolid } from "flowbite-svelte-icons";
   import type EditorJS from "@editorjs/editorjs";
   import Editor from "../../../components/Editor.svelte";
   import { onMount } from "svelte";
@@ -130,13 +130,20 @@
 
       {#each product.prices as price, i}
         <div class="flex gap-4 mb-4">
-          <div>
+          <div class="flex flex-col gap-2">
             <Button
               outline
               on:click={() =>
                 (product.prices = product.prices.filter((p, y) => y !== i))}
             >
               <TrashBinSolid />
+            </Button>
+
+            <Button
+              outline
+              on:click={() => (product.prices = [...product.prices, price])}
+            >
+              <CopySolid />
             </Button>
           </div>
 
