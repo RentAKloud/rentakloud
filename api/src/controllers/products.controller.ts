@@ -59,7 +59,7 @@ export class ProductsController {
   @Put('/:id')
   updateProduct(@Body() reqBody: UpdateProduct) {
     const { categories, oldCategories } = reqBody
-    const toRemove = oldCategories.filter(x => !categories.includes(x))
+    const toRemove = oldCategories?.filter(x => !categories.includes(x)) || []
     delete reqBody['oldCategories']
 
     if (reqBody.descriptionEditor) {

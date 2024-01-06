@@ -56,6 +56,9 @@
 
     onSubmit(data);
   }
+
+  let isOnlineService: boolean;
+  $: isOnlineService = product.productType === ProductType.OnlineService;
 </script>
 
 <form
@@ -138,7 +141,7 @@
           </div>
 
           <div class="flex flex-col gap-4 mb-4">
-            {#if product.productType === ProductType.OnlineService}
+            {#if isOnlineService}
               <Input placeholder="Plan name" bind:value={price.planName} />
             {/if}
             <div class="flex gap-4">
@@ -156,7 +159,7 @@
               />
               <Input placeholder="Currency" bind:value={price.currency} />
 
-              {#if product.productType === ProductType.OnlineService}
+              {#if isOnlineService}
                 <Select
                   items={[
                     { value: "month", name: "Monthly" },
@@ -167,7 +170,7 @@
               {/if}
             </div>
 
-            {#if product.productType === ProductType.OnlineService}
+            {#if isOnlineService}
               <div>
                 <div class="flex gap-4 items-center mb-2">
                   <Label>Features</Label>
@@ -258,32 +261,34 @@
       {/if}
     </div>
 
-    <div class="mb-6">
-      <Label for="page-title" class="block mb-2">Page Title</Label>
-      <Input
-        id="page-title"
-        placeholder="Page Title"
-        bind:value={product.meta.pageTitle}
-      />
-    </div>
+    {#if isOnlineService}
+      <div class="mb-6">
+        <Label for="page-title" class="block mb-2">Page Title</Label>
+        <Input
+          id="page-title"
+          placeholder="Page Title"
+          bind:value={product.meta.pageTitle}
+        />
+      </div>
 
-    <div class="mb-6">
-      <Label for="header-title" class="block mb-2">Header Title</Label>
-      <Input
-        id="header-title"
-        placeholder="Header Title"
-        bind:value={product.meta.headerTitle}
-      />
-    </div>
+      <div class="mb-6">
+        <Label for="header-title" class="block mb-2">Header Title</Label>
+        <Input
+          id="header-title"
+          placeholder="Header Title"
+          bind:value={product.meta.headerTitle}
+        />
+      </div>
 
-    <div class="mb-6">
-      <Label for="header-subtitle" class="block mb-2">Header Subtitle</Label>
-      <Input
-        id="header-subtitle"
-        placeholder="Header Title"
-        bind:value={product.meta.headerSubtitle}
-      />
-    </div>
+      <div class="mb-6">
+        <Label for="header-subtitle" class="block mb-2">Header Subtitle</Label>
+        <Input
+          id="header-subtitle"
+          placeholder="Header Title"
+          bind:value={product.meta.headerSubtitle}
+        />
+      </div>
+    {/if}
   </section>
 
   <section>
