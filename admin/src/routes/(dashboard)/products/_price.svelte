@@ -18,7 +18,7 @@
       <TrashBinSolid />
     </Button>
 
-    <Button outline on:click={() => (prices = [...prices, { ...price }])}>
+    <Button outline on:click={() => (prices = [...prices, structuredClone(price)])}>
       <CopySolid />
     </Button>
   </div>

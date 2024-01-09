@@ -1,9 +1,18 @@
-import { Component } from "solid-js"
+import { Component, createSignal, onMount } from "solid-js"
 import Card from "../../components/Card/Card"
 import { authStore } from "../../stores/auth"
+import StatsApi from "~/api/stats"
 
 const Home: Component<{}> = () => {
   const { user } = authStore
+  const [stats, setStats] = createSignal<any>()
+  onMount(async () => {
+    const { result, error } = await StatsApi.dashboard()
+
+    if (result) {
+      setStats(result)
+    }
+  })
 
   return (
     <>
@@ -27,8 +36,8 @@ const Home: Component<{}> = () => {
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="inline-block w-8 h-8 stroke-current"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
           </div>
           <div class="stat-title">Total Orders</div>
-          <div class="stat-value text-secondary">13</div>
-          <div class="stat-desc">5 in last month</div>
+          <div class="stat-value text-secondary">{stats()?.orders}</div>
+          <div class="stat-desc">{stats()?.ordersInLastMonth} in last month</div>
         </div>
 
         <div class="stat">

@@ -18,7 +18,9 @@ export const ServiceProduct: Component<{ product: Product }> = (props) => {
   }
 
   const title = () => product().meta.headerTitle || `Simple and Reliable ${product().name} ${category()}`
-  const subTitle = () =>  product().meta.headerSubtitle ||`Worry-free ${product().name} hosting so you can focus on building great apps.`
+  const subTitle = () => product().meta.headerSubtitle || `Worry-free ${product().name} hosting so you can focus on building great apps.`
+  const secTitle = () => product().meta.secondSecTitle || `Deploy High-Performance ${product().name} Clusters`
+  const secContent = () => product().meta.secondSecContent || `Simplify the deployment and maintenance of-highly available ${product().name} ${category()} for your web applications.`
 
   return (
     <>
@@ -30,13 +32,13 @@ export const ServiceProduct: Component<{ product: Product }> = (props) => {
         align='left'
         class="h-[30vh]"
         notFullScreen
-        // contain
+      // contain
       >
       </HeroWithBg>
 
       <section class="text-center my-20">
-        <h2 class="text-4xl mb-3">Deploy High-Performance {product().name} Clusters</h2>
-        <h3 class="text-xl">Simplify the deployment and maintenance of-highly available {product().name} {category()} for your web applications.</h3>
+        <h2 class="text-4xl mb-3">{secTitle()}</h2>
+        <h3 class="text-xl" innerHTML={secContent()} />
       </section>
 
       <section class="p-10">

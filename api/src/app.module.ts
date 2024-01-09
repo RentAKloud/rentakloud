@@ -17,6 +17,7 @@ import { CategoriesModule } from './modules/categories.module';
 import { CouponsModule } from './modules/coupons.module';
 import { UsersModule } from './modules/users.module';
 import { OptionsModule } from './modules/options.module';
+import { StatsModule } from './modules/stats.module';
 
 @Module({
   imports: [
@@ -37,7 +38,8 @@ import { OptionsModule } from './modules/options.module';
     DiskImagesModule,
     NotificationsModule,
     UsersModule,
-    OptionsModule
+    OptionsModule,
+    StatsModule
   ],
   controllers: [AppController],
   providers: [AppService],

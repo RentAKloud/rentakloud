@@ -6,18 +6,17 @@
     Img,
     Input,
     Label,
-    Modal,
     MultiSelect,
     Radio,
-    Select,
     Textarea,
   } from "flowbite-svelte";
-  import { CopySolid, PlusSolid, TrashBinSolid } from "flowbite-svelte-icons";
+  import { PlusSolid, TrashBinSolid } from "flowbite-svelte-icons";
   import type EditorJS from "@editorjs/editorjs";
   import Editor from "../../../components/Editor.svelte";
   import { onMount } from "svelte";
   import { Http } from "$lib/http";
-    import Price from "./_price.svelte";
+  import Price from "./_price.svelte";
+  import Meta from "./_meta.svelte";
 
   export let product: Product;
   export let onSubmit: (data: Product) => Promise<void>;
@@ -185,32 +184,7 @@
     </div>
 
     {#if isOnlineService}
-      <div class="mb-6">
-        <Label for="page-title" class="block mb-2">Page Title</Label>
-        <Input
-          id="page-title"
-          placeholder="Page Title"
-          bind:value={product.meta.pageTitle}
-        />
-      </div>
-
-      <div class="mb-6">
-        <Label for="header-title" class="block mb-2">Header Title</Label>
-        <Input
-          id="header-title"
-          placeholder="Header Title"
-          bind:value={product.meta.headerTitle}
-        />
-      </div>
-
-      <div class="mb-6">
-        <Label for="header-subtitle" class="block mb-2">Header Subtitle</Label>
-        <Input
-          id="header-subtitle"
-          placeholder="Header Title"
-          bind:value={product.meta.headerSubtitle}
-        />
-      </div>
+      <Meta {product} />
     {/if}
   </section>
 
