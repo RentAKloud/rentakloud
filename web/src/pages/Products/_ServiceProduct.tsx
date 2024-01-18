@@ -1,4 +1,4 @@
-import { Component, For, createMemo, createSignal } from "solid-js";
+import { Component, ErrorBoundary, For, createMemo, createSignal } from "solid-js";
 import { useNavigate } from "@solidjs/router";
 import HeroWithBg from "~/components/Hero/HeroWithBg";
 import { Product } from "~/types/product";
@@ -56,12 +56,17 @@ export const ServiceProduct: Component<{ product: Product }> = (props) => {
           <For each={props.product.prices}>
             {
               (plan, index) =>
-                <PricingCard
-                  index={index()}
-                  plan={plan}
-                  showYearly={showYearly}
-                  submitHandler={(priceId) => selectPlan(priceId)}
-                />
+                <ErrorBoundary fallback={(err) => {
+                  console.log(err)
+                  return "Something went wrong"
+                }}>
+                  <PricingCard
+                    index={index()}
+                    plan={plan}
+                    showYearly={showYearly}
+                    submitHandler={(priceId) => selectPlan(priceId)}
+                  />
+                </ErrorBoundary>
             }
           </For>
         </div>
