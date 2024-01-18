@@ -13,6 +13,14 @@
   export let price: ProductPrice;
   export let isOnlineService: boolean;
   export let i: number;
+
+  function swap(arr: any[], i: number, j: number) {
+    const x = structuredClone(arr);
+    const temp = x[i];
+    x[i] = x[j];
+    x[j] = temp;
+    return x;
+  }
 </script>
 
 <div class="flex gap-4 mb-4">
@@ -129,11 +137,25 @@
 
         {#each price.features || [] as feature, j}
           <div class="flex gap-4 mb-2 items-center">
-            <div class="flex flex-col gap-2">
-              <Button size="xs" outline>
+            <div class="flex flex-col gap-1">
+              <Button
+                size="xs"
+                outline
+                on:click={() => {
+                  if (j > 0)
+                    price.features = swap(price.features || [], j, j - 1);
+                }}
+              >
                 <ArrowUpOutline size="xs" />
               </Button>
-              <Button size="xs" outline>
+              <Button
+                size="xs"
+                outline
+                on:click={() => {
+                  if (j < (price.features || []).length)
+                    price.features = swap(price.features || [], j, j + 1);
+                }}
+              >
                 <ArrowDownOutline size="xs" />
               </Button>
             </div>
