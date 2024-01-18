@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Request, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseBoolPipe, ParseIntPipe, Post, Query, Request, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 import { UsersService } from '../services/users.service';
@@ -16,7 +16,13 @@ export class UsersController {
 
   @UseGuards(JwtAuthGuard)
   @Get('/:id')
-  user(@Param('id', ParseIntPipe) id: number) {
+  user(
+    @Param('id', ParseIntPipe) id: number,
+    @Query('profile', ParseBoolPipe) profile: boolean
+  ) {
+    if (profile) {
+      return this.usersService.userWithProfile({ id })
+    }
     return this.usersService.user({ id })
   }
 

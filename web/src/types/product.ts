@@ -23,10 +23,17 @@ export type ProductPrice = {
 
   // for subscriptions
   planName?: string;
-  priceId?: string;
-  interval?: string;
-  intervalCount?: string;
+  prices?: PlanPrice[]
   features?: string[]
+}
+
+export type PlanPrice = {
+  priceId: string
+  interval: "month" | "year"
+  intervalCount?: string
+  currency: string
+  amount: number
+  saleAmount?: number
 }
 
 export enum ProductType {

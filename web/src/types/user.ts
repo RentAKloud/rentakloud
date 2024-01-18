@@ -4,6 +4,7 @@ export class User {
   email: string;
   phoneNumber: string;
   emailVerifiedAt: string;
+  profile?: Profile
 
   constructor(user: User) {
     this.firstName = user.firstName
@@ -11,6 +12,7 @@ export class User {
     this.email = user.email
     this.phoneNumber = user.phoneNumber
     this.emailVerifiedAt = user.emailVerifiedAt
+    this.profile = user.profile
   }
 
   fullName() {
@@ -20,4 +22,9 @@ export class User {
   isEmailVerified() {
     return !!this.emailVerifiedAt
   }
+}
+
+export type Profile = {
+  preferredTheme: string
+  stripeCustomerId: string
 }

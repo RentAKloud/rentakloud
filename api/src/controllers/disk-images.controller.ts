@@ -29,7 +29,7 @@ export class DiskImagesController {
       filters.AND = { tags: { hasEvery: tags } }
     }
     if (excludeTags) {
-      filters.NOT = { tags: { hasSome: excludeTags } }
+      filters.NOT = { tags: { hasSome: excludeTags.filter(x => !!x) } }
     }
     if (q) {
       filters.AND = {

@@ -1,11 +1,12 @@
 import { Component, For, Show } from "solid-js";
 import { cart, getCartTotal } from "~/stores/cart";
-import { getProductById, getProductPrice, products } from "~/stores/products";
+import { getPlanPrice, getProductById, getProductPrice, products } from "~/stores/products";
 import { useCheckoutContext } from "./context";
 import { formatPrice, getTotalDiscounts } from "~/utils";
+import CrossIcon from "~/components/icons/Cross";
 
 export const CartSummary: Component<{ showAddresses?: boolean }> = (props) => {
-  const { orderStore, shippingSameAsBilling } = useCheckoutContext()
+  const { orderStore, shippingSameAsBilling, hasPhysical } = useCheckoutContext()
   const subTotal = () => getCartTotal()
   const discounts = () => getTotalDiscounts(
     orderStore.couponCodes,
@@ -35,7 +36,7 @@ export const CartSummary: Component<{ showAddresses?: boolean }> = (props) => {
           {orderStore.billingAddress.phone}<br />
         </p>
 
-        <Show when={!shippingSameAsBilling()} fallback={<p class="mb-4">Shipping address is same as billing address.</p>}>
+        <Show when={!shippingSameAsBilling()} fallback={hasPhysical() && <p class="mb-4">Shipping address is same as billing address.</p>}>
           <h4 class="font-bold">Shipping Address</h4>
           <p class="mb-4">
             {orderStore.shippingAddress.firstName} {orderStore.shippingAddress.lastName}<br />
@@ -56,15 +57,16 @@ export const CartSummary: Component<{ showAddresses?: boolean }> = (props) => {
             (item) => {
               const product = () => getProductById(item.productId)!
               const price = () => getProductPrice(product(), item.priceId)
-              const interval = () => price().priceId ? ` &cross; ${price().planName} ${price().interval}ly` : ""
-              const formattedPrice = () => formatPrice(price().saleAmount || price().amount)
+              const planPrice = () => getPlanPrice(price(), item.priceId!)
+              const interval = () => planPrice() ? ` - ${price().planName} ${planPrice()!.interval}ly` : ""
+              const formattedPrice = () => formatPrice(price().saleAmount || price().amount || planPrice()!.amount)
 
               return (
                 <div class="flex justify-between">
                   <div>{product().name} <Show when={interval()}><span innerHTML={interval()} /></Show></div>
                   <div>
                     <span>{formattedPrice()}</span>
-                    <span> &cross; {item.quantity}</span>
+                    <span> <CrossIcon class="inline w-5" /> {item.quantity}</span>
                   </div>
                 </div>
               )
@@ -83,10 +85,12 @@ export const CartSummary: Component<{ showAddresses?: boolean }> = (props) => {
               <span>-{formatPrice(discounts())}</span>
             </div>
           </Show>
-          <div class="flex justify-between">
-            <strong>Shipping</strong>
-            <span>{formatPrice(shipping())}</span>
-          </div>
+          <Show when={hasPhysical()}>
+            <div class="flex justify-between">
+              <strong>Shipping</strong>
+              <span>{formatPrice(shipping())}</span>
+            </div>
+          </Show>
           <div class="flex justify-between">
             <strong>Taxes</strong>
             <span>{formatPrice(taxesTotal())}</span>

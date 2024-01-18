@@ -14,6 +14,7 @@ type BillingAndShippingForm = {
 
 export const BillingAndShipping: Component<Step> = (props) => {
   const {
+    hasPhysical,
     shippingSameAsBilling,
     setShippingSameAsBilling,
     orderStore,
@@ -97,7 +98,7 @@ export const BillingAndShipping: Component<Step> = (props) => {
           default={countryOptions.latest?.at(0)}
           value={orderStore.billingAddress.country}
           onChange={() => { }}
-          onValueChange={(e) => {updateBilling("country", e); updateBilling("state", ""); }}
+          onValueChange={(e) => { updateBilling("country", e); updateBilling("state", ""); }}
         />
 
         <Show when={stateOptionsBilling.latest} fallback={
@@ -233,15 +234,17 @@ export const BillingAndShipping: Component<Step> = (props) => {
 
       <div class="mb-5" />
 
-      <div class="form-control mb-5">
-        <label class="cursor-pointer label">
-          <span class="label-text">Shipping Address Same As Billing?</span>
-          <input type="checkbox" class="toggle toggle-primary"
-            checked={shippingSameAsBilling()}
-            onchange={() => setShippingSameAsBilling(!shippingSameAsBilling())}
-          />
-        </label>
-      </div>
+      <Show when={hasPhysical()}>
+        <div class="form-control mb-5">
+          <label class="cursor-pointer label">
+            <span class="label-text">Shipping Address Same As Billing?</span>
+            <input type="checkbox" class="toggle toggle-primary"
+              checked={shippingSameAsBilling()}
+              onchange={() => setShippingSameAsBilling(!shippingSameAsBilling())}
+            />
+          </label>
+        </div>
+      </Show>
 
       <Show when={!shippingSameAsBilling()}>
         <ShippingAddressFields />

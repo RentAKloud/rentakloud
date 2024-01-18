@@ -1,7 +1,8 @@
 import { Component, For, Show } from "solid-js";
-import { getProductPrice } from "~/stores/products";
+import { getPlanPrice, getProductPrice } from "~/stores/products";
 import { useCheckoutContext } from "./context";
 import { formatPrice, getOrderSubTotal, getTotalDiscounts } from "~/utils";
+import CrossIcon from "~/components/icons/Cross";
 
 export const OrderDetails: Component = () => {
   const { step, order } = useCheckoutContext()
@@ -28,8 +29,10 @@ export const OrderDetails: Component = () => {
           {
             (item) => {
               const product = () => item.product
-              const price = () => getProductPrice(product(), product().prices[0].priceId)
-              const interval = () => price().priceId ? ` &cross; ${price().planName} ${price().interval}ly` : ""
+              const price = () => getProductPrice(product(), product().prices[0].prices![0].priceId)
+              //@ts-ignore orders dont contain subscriptions yet
+              const planPrice = () => getPlanPrice(price(), item.priceId!)
+              const interval = () => planPrice()!.priceId ? ` - ${price().planName} ${planPrice()!.interval}ly` : ""
               const formattedPrice = () => formatPrice(price().saleAmount || price().amount)
 
               return (
@@ -37,7 +40,7 @@ export const OrderDetails: Component = () => {
                   <div>{product().name} <Show when={interval()}><span innerHTML={interval()} /></Show></div>
                   <div>
                     <span>{formattedPrice()}</span>
-                    <span> &cross; {item.quantity}</span>
+                    <span> <CrossIcon class="inline w-5" /> {item.quantity}</span>
                   </div>
                 </div>
               )

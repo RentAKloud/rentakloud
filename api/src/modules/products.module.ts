@@ -7,7 +7,7 @@ import { EventEmitter2, EventEmitterModule } from '@nestjs/event-emitter';
 @Module({
   imports: [PrismaModule, EventEmitterModule],
   controllers: [ProductsController],
-  providers: [ProductsService, EventEmitter2],
+  providers: [ProductsService],
   exports: [ProductsService]
 })
 export class ProductsModule { }

@@ -113,7 +113,9 @@
 
     <div class="mb-6">
       <div class="flex gap-4 mb-2 items-center">
-        <Label for="price" class="block mb-2">Pricing</Label>
+        <Label for="price" class="block mb-2"
+          >{isOnlineService ? "Plans" : "Pricing"}</Label
+        >
         <Button
           pill
           class="!p-2"
@@ -121,7 +123,11 @@
           on:click={() =>
             (product.prices = [
               ...product.prices,
-              { currency: "USD", amount: 0, interval: "month" },
+              {
+                currency: "USD",
+                amount: 0,
+                prices: [{ interval: "month", priceId: "", currency: "USD" }],
+              },
             ])}
         >
           <PlusSolid class="dark:text-white" />

@@ -98,7 +98,7 @@ model Product {
   descriptionEditor Json?
   contentAfterPrice String?
   productType       ProductType      @default(OnlineService)
-  prices            Json[]
+  prices            Json[] // in case of OnlineService prices act as plans and further contain prices
   stock             Int              @default(1)
   images            Json             @default("[]")
   stripeId          String?          @unique

@@ -1,4 +1,4 @@
-import { Component, Match, Show, Switch, createEffect } from "solid-js";
+import { Component, ErrorBoundary, Match, Show, Switch, createEffect } from "solid-js";
 import { Portal } from "solid-js/web";
 import { Link, useIsRouting } from "@solidjs/router";
 import { Toast } from "@kobalte/core";
@@ -36,7 +36,9 @@ const DefaultLayout: Component<LayoutProps> = (props) => {
         {/* <!-- Page content here --> */}
 
         <main class="bg-base-200">
+          <ErrorBoundary fallback={"Something went wrong"}>
           {props.children}
+          </ErrorBoundary>
         </main>
 
         <Portal>

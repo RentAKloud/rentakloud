@@ -1,6 +1,6 @@
 import { createMutable } from "solid-js/store"
 import { CartItem, Product } from "../types/product"
-import { getProductById, getProductPrice } from "./products"
+import { getPlanPrice, getProductById, getProductPrice } from "./products"
 
 const initialState = JSON.parse(localStorage.getItem('cart') || '{ "items": [] }')
 
@@ -46,7 +46,8 @@ function getCartTotal() {
   return cart.items
     .map(i => {
       const p = getProductPrice(getProductById(i.productId)!, i.priceId)
-      return (p.saleAmount || p.amount) * i.quantity
+      const planPrice = getPlanPrice(p, i.priceId!)
+      return (p.saleAmount || p.amount || planPrice!.amount) * i.quantity
     })
     .reduce((x, y) => x + y, 0)
 }

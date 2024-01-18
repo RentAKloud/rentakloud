@@ -94,23 +94,23 @@ export class OrdersController {
     }
 
     // TODO we should also just select the specific price
-    const products = await this.productsService.productsWithSelect({
+    const products = await this.productsService.products({
       where: {
         id: {
           in: items.map(i => i.productId)
-        }
+        },
       },
-      select: {
-        id: true, name: true, prices: true, productType: true
-      }
     })
+    const productsSelectedFields = products.map(p => ({
+      id: p.id, name: p.name, prices: p.prices, productType: p.productType
+    }))
 
     data.user = { connect: { id: req.user.userId } }
     data.items = items
       .filter((_, i) => products[i].productType === ProductType.Physical)
       .map((item, i) => ({
         quantity: item.quantity,
-        product: products[i]
+        product: productsSelectedFields[i]
       }))
 
     // TODO stock validation
@@ -144,7 +144,7 @@ export class OrdersController {
 
     // Shipping costs
     const sm = await this.shippingMethodsService.shippingMethod({ id: shippingMethodId })
-    const shippingTotal = await this.evalShippingCost(sm.cost, products.map(p => p.id))
+    const shippingTotal = this.evalShippingCost(sm.cost, products)
     data.shipping = {
       ...sm,
       amount: shippingTotal.toFixed(2)
@@ -172,6 +172,7 @@ export class OrdersController {
 
     const order = await this.ordersService.createOrder(data)
 
+    // TODO save address for reuse in user profile (maybe in users.service)
     return order
   }
 
@@ -228,10 +229,22 @@ export class OrdersController {
       return []
     }
 
+    const products = await this.productsService.products({
+      where: {
+        id: { in: productIds },
+        productType: ProductType.Physical
+      },
+    })
+
+    // if there is no physical product
+    if (!products.some((p) => p.productType === ProductType.Physical)) {
+      return []
+    }
+
     return await Promise.all(zones[0].shippingMethods.map(async (sm) => {
       return {
         ...sm,
-        cost: await this.evalShippingCost(sm.cost, productIds)
+        cost: this.evalShippingCost(sm.cost, products)
       }
     }))
   }
@@ -265,17 +278,9 @@ export class OrdersController {
     return coupons
   }
 
-  async evalShippingCost(cost: string, productIds: number[]): Promise<number> {
-    let products: Product[]
+  evalShippingCost(cost: string, products: Product[]): number {
     let w = 0
     if (cost.includes("w")) {
-      if (!products) {
-        products = await this.productsService.products({
-          where: {
-            id: { in: productIds },
-          },
-        })
-      }
       w = products.reduce((sum, curr) => sum + (curr.weight?.toNumber() || 0), 0)
     }
     return eval(cost)

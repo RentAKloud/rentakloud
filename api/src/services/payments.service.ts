@@ -102,7 +102,13 @@ export class PaymentsService {
       });
       this.userService.updateUser({
         where: { id: user.id },
-        data: { profile: {} }
+        data: {
+          profile: {
+            update: {
+              stripeCustomerId: customer.id
+            }
+          }
+        }
       })
     }
 

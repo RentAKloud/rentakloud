@@ -1,6 +1,7 @@
 import { Component, For, Show } from "solid-js";
 import { formatPrice, getOrderSubTotal, getTotalDiscounts } from "~/utils";
 import { useCheckoutContext } from "./context";
+import { getPlanPrice, getProductPrice } from "~/stores/products";
 
 export const OrderSummary: Component = () => {
   const { order } = useCheckoutContext()
@@ -38,8 +39,10 @@ export const OrderSummary: Component = () => {
             <For each={order()!.items} fallback={"This order seems empty."}>
               {(item, i) => {
                 const product = item.product
-                const price = () => product.prices[0]
-                const interval = () => price().priceId ? ` &cross; ${price().planName} ${price().interval}ly` : ""
+                const price = () => getProductPrice(product)
+                //@ts-ignore orders dont contain subscriptions yet
+                const planPrice = () => getPlanPrice(price(), item.priceId!)
+                const interval = () => planPrice() ? ` - ${price().planName} ${planPrice()!.interval}ly` : ""
                 const formattedPrice = () => formatPrice(price().saleAmount || price().amount)
                 const formattedTotal = () => formatPrice((price().saleAmount || price().amount) * item.quantity)
 

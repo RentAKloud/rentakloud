@@ -1,4 +1,4 @@
-import { Component, createSignal } from "solid-js";
+import { Component, Show, createSignal } from "solid-js";
 import { Link } from "@solidjs/router";
 import Lottie from "~/components/Lottie";
 import confetti from '~/assets/lotties/lf20_m3ixidnq.json'
@@ -37,7 +37,9 @@ export const Congrats: Component = () => {
       <OrderSummary />
 
       <div class="flex gap-5 mt-10">
-        <Link href={`/dashboard/orders/${order()?.id}`} class="btn btn-primary">Order Details</Link>
+        <Show when={order()}>
+          <Link href={`/dashboard/orders/${order()!.id}`} class="btn btn-primary">Order Details</Link>
+        </Show>
         <Link href="/dashboard/orders" class="btn btn-outline">Order History</Link>
       </div>
     </>

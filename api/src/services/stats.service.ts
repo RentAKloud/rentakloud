@@ -10,6 +10,7 @@ export class StatsService {
 
   async userDashboard(userId: number) {
     return {
+      instances: await this.prisma.userToProducts.count({ where: { userId } }),
       orders: await this.prisma.order.count({ where: { userId } }),
       ordersInLastMonth: await this.prisma.order.count({ where: { userId, createdAt: { gte: daysAgo(30) } } }),
     }

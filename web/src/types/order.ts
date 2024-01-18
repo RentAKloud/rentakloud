@@ -124,6 +124,7 @@ export type Step = {
 
 export type CheckoutContextProps = {
   isContinuingOrder: () => boolean
+  hasPhysical: () => boolean
   order: Accessor<Order | undefined>
   inReview: Accessor<boolean>
   setInReview: Setter<boolean>

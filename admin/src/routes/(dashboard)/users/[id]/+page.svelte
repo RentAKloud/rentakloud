@@ -12,7 +12,7 @@
   let errors: { [k in keyof User]?: string } = {};
 
   async function loadData() {
-    const { result } = await Http.get<User>(`/users/${id}`);
+    const { result } = await Http.get<User>(`/users/${id}?profile=true`);
     if (result) {
       user = result;
     }
@@ -57,5 +57,19 @@
       <Label for="last-name" class="block mb-2">Last Name</Label>
       <Input id="last-name" placeholder="Doe" bind:value={user.lastName} />
     </div>
+
+    {#if user.profile}
+      <h2 class="dark:text-white text-2xl">Profile</h2>
+
+      <div class="mb-6">
+        <Label for="preferred-theme" class="block mb-2">Preferred Theme</Label>
+        <Input id="preferred-theme" bind:value={user.profile.preferredTheme} />
+      </div>
+
+      <div class="mb-6">
+        <Label for="stripe-customer-id" class="block mb-2">Stripe Customer ID</Label>
+        <Input id="stripe-customer-id" bind:value={user.profile.stripeCustomerId} readonly />
+      </div>
+    {/if}
   </form>
 {/if}

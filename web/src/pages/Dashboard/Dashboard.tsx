@@ -1,6 +1,6 @@
 import { Component } from "solid-js"
 import { Link, Outlet } from "@solidjs/router"
-import DefaultLayout from "../../layouts/DefaultLayout"
+import DefaultLayout from "~/layouts/DefaultLayout"
 
 const Dashboard: Component<{}> = () => {
   return (
@@ -9,8 +9,8 @@ const Dashboard: Component<{}> = () => {
         <div class="py-20">
           <ul class="menu bg-base-100 w-56">
             <li><Link href="/dashboard" end>Home</Link></li>
-            {/* <li><Link href="/dashboard/instances">Instances</Link></li>
-            <li><Link href="/dashboard/images">Images</Link></li>
+            <li><Link href="/dashboard/instances">Instances</Link></li>
+            {/* <li><Link href="/dashboard/images">Images</Link></li>
             <li><Link href="/dashboard/backups">Backups</Link></li> */}
             <li><Link href="/dashboard/orders">Orders</Link></li>
             <li><Link href="/dashboard/payments">Payments</Link></li>

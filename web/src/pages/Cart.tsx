@@ -2,11 +2,12 @@ import { Component, For, Show, createSignal } from "solid-js";
 import { Link } from "@solidjs/router";
 import DefaultLayout from "~/layouts/DefaultLayout";
 import { getCartTotal, cart, resetCart, incrQty, decrQty, removeFromCart } from "~/stores/cart";
-import { getProductById, getProductPrice, products } from "~/stores/products";
+import { getPlanPrice, getProductById, getProductPrice, products } from "~/stores/products";
 import Loader from "~/components/Loader";
 import { formatPrice } from "~/utils";
 import TrashIcon from "~/components/icons/Trash";
 import Modal from "~/components/Modal";
+import { ProductType } from "~/types/product";
 
 const Cart: Component = () => {
   const [isClearModalOpen, setIsClearModalOpen] = createSignal(false)
@@ -44,8 +45,10 @@ const Cart: Component = () => {
                     const product = () => getProductById(item.productId)!
 
                     const price = () => getProductPrice(product(), item.priceId)
-                    const total = () => (price().saleAmount || price().amount) * item.quantity
-                    const interval = () => price().priceId ? ` &cross; ${price().planName} ${price().interval}ly` : ""
+                    const planPrice = () => getPlanPrice(price(), item.priceId!)
+                    const total = () => (price().saleAmount || price().amount || planPrice()!.amount) * item.quantity
+                    const interval = () => planPrice() ? ` &cross; ${price().planName} ${planPrice()!.interval}ly` : ""
+
                     return (
                       <tr class="hover">
                         <th>{i() + 1}</th>
@@ -58,7 +61,7 @@ const Cart: Component = () => {
                           <button
                             class="font-bold text-green-500 btn btn-ghost btn-circle"
                             onclick={() => incrQty(product())}
-                            disabled={item.quantity >= product().stock}
+                            disabled={product().productType === ProductType.Physical && item.quantity >= product().stock}
                           >
                             +
                           </button>

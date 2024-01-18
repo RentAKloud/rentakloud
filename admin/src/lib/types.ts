@@ -10,7 +10,7 @@ export class Product {
     public productType: ProductType = ProductType.Physical,
     public descriptionEditor: OutputData = { blocks: [] },
     public categories: Category[] = [],
-    public prices: ProductPrice[] = [],
+    public prices: ProductPrice[] = [], // in case of OnlineService, this acts as a plan and further contains prices
     public images: ProductImage[] = [],
     public stock: number = 1,
     public weight: number = 0,
@@ -27,10 +27,17 @@ export type ProductPrice = {
 
   // for subscriptions
   planName?: string;
-  priceId?: string;
-  interval?: "month" | "year";
-  intervalCount?: string;
+  prices?: PlanPrice[]
   features?: string[]
+}
+
+export type PlanPrice = {
+  priceId: string;
+  interval: "month" | "year";
+  intervalCount?: string;
+  currency: string;
+  amount?: number;
+  saleAmount?: number;
 }
 
 export enum ProductType {
@@ -53,7 +60,8 @@ export class User {
     public lastName: string,
     public email: string,
     public createdAt: string,
-    public updatedAt: string
+    public updatedAt: string,
+    public profile?: Profile
   ) { }
 
   static fullName(user: User) {
@@ -63,6 +71,11 @@ export class User {
     }
     return firstName || lastName
   }
+}
+
+export type Profile = {
+  preferredTheme: string
+  stripeCustomerId: string
 }
 
 export class Order {

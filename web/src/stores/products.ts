@@ -1,5 +1,5 @@
 import { createResource } from "solid-js";
-import { Product, ProductPrice } from "~/types/product";
+import { PlanPrice, Product, ProductPrice } from "~/types/product";
 import ProductsApi from "~/api/products";
 
 export const [products] = createResource<Product[]>(fetchAndRemix, {
@@ -11,7 +11,15 @@ export function getProductById(id: number) {
 }
 
 export function getProductPrice(product: Partial<Product>, priceId?: string): ProductPrice {
-  return priceId ? product.prices?.find(p => p.priceId === priceId)! : product.prices![0]
+  if (priceId) {
+    return product.prices?.find(p => p.prices!.find(px => px.priceId === priceId))!
+  }
+  
+  return product.prices![0]
+}
+
+export function getPlanPrice(plan: ProductPrice, priceId: string): PlanPrice|undefined {
+  return plan.prices?.find(p => p.priceId === priceId)
 }
 
 async function fetchAndRemix(): Promise<Product[]> {

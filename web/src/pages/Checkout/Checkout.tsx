@@ -21,6 +21,7 @@ const _Checkout: Component = () => {
     setStep, isContinuingOrder,
     isCardInfoComplete,
     inReview, setInReview,
+    hasPhysical,
   } = useCheckoutContext()
   const { user } = authStore
 
@@ -45,7 +46,7 @@ const _Checkout: Component = () => {
               <Show when={step() === 'address'}>
                 <h2 class="-mt-8 mb-8 bg-base-200 px-1 w-fit text-gray-400">Billing & Shipping</h2>
 
-                <BillingAndShipping next="shipping" />
+                <BillingAndShipping next={hasPhysical() ? "shipping" : "payment"} />
               </Show>
 
               <Show when={step() === 'shipping'}>
@@ -80,7 +81,7 @@ const _Checkout: Component = () => {
 
                 <Show when={!inTransit()} fallback={"Processing..."}>
                   <div class="flex gap-5">
-                    <button class="btn" onclick={() => setStep('shipping')} disabled={isContinuingOrder()}>Back</button>
+                    <button class="btn" onclick={() => setStep(hasPhysical() ? 'shipping' : 'address')} disabled={isContinuingOrder()}>Back</button>
                     <Show
                       when={!inReview()}
                       fallback={<button class="btn btn-primary" onclick={submit} disabled={!isCardInfoComplete()}>Confirm & Pay</button>}

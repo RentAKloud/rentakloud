@@ -30,6 +30,8 @@ export const CheckoutProvider: Component<{ children: JSXElement }> = (props) => 
   }
   const [inReview, setInReview] = createSignal(false)
   const isContinuingOrder = () => !!params.order
+  const hasPhysical = () => cart.items.some(i => getProductById(i.productId)?.productType === ProductType.Physical)
+  const hasServices = () => cart.items.some(i => getProductById(i.productId)?.productType === ProductType.OnlineService)
 
   const [shippingSameAsBilling, setShippingSameAsBilling] = createSignal(true)
   const [orderStore, setOrderStore] = createStore<OrderStore>({
@@ -95,16 +97,13 @@ export const CheckoutProvider: Component<{ children: JSXElement }> = (props) => 
       OrdersApi.updateStatus(order()!.id, OrderStatus.Paid)
     }
 
-    const hasPhysical = cart.items.some(i => getProductById(i.productId)?.productType === ProductType.Physical)
-    const hasServices = cart.items.some(i => getProductById(i.productId)?.productType === ProductType.OnlineService)
-
-    if (hasPhysical && hasServices) {
+    if (hasPhysical() && hasServices()) {
       if (paymentSuccess() && subscriptionsPaid()) {
         checkoutSuccessful()
       }
-    } else if (hasPhysical && paymentSuccess()) {
+    } else if (hasPhysical() && paymentSuccess()) {
       checkoutSuccessful()
-    } else if (hasServices && subscriptionsPaid()) {
+    } else if (hasServices() && subscriptionsPaid()) {
       checkoutSuccessful()
     } else if (isContinuingOrder() && paymentSuccess()) {
       checkoutSuccessful()
@@ -255,6 +254,7 @@ export const CheckoutProvider: Component<{ children: JSXElement }> = (props) => 
   return (
     <CheckoutContext.Provider value={{
       isContinuingOrder,
+      hasPhysical,
       order,
       inReview,
       setInReview,

@@ -55,14 +55,12 @@ export const ServiceProduct: Component<{ product: Product }> = (props) => {
         <div class="grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-3 place-items-center items-stretch">
           <For each={props.product.prices}>
             {
-              (price, index) =>
+              (plan, index) =>
                 <PricingCard
-                  planName={price.planName || `Plan ${index() + 1}`} ppm={price.amount} showYearly={showYearly}
-                  points={price.features || [
-                    "2.8 GHz 8-core CPU", "20 GB Cloud storage",
-                    "Integration help", "SSH Access", "24×7 phone & email support"
-                  ]}
-                  submitHandler={() => selectPlan(price.priceId!)}
+                  index={index()}
+                  plan={plan}
+                  showYearly={showYearly}
+                  submitHandler={(priceId) => selectPlan(priceId)}
                 />
             }
           </For>
