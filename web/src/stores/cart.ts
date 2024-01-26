@@ -9,7 +9,12 @@ const cart = createMutable<{
 }>(initialState)
 
 function addToCart(item: Product, qty: number = 1, priceId?: string) {
-  const pi = cart.items.findIndex(p => p.productId === item.id)
+  let pi = -1
+  if (priceId) {
+    pi = cart.items.findIndex(p => p.priceId === priceId)
+  } else {
+    pi = cart.items.findIndex(p => p.productId === item.id)
+  }
 
   if (pi >= 0) {
     cart.items[pi].quantity += qty

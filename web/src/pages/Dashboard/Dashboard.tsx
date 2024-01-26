@@ -13,7 +13,7 @@ const Dashboard: Component<{}> = () => {
             {/* <li><Link href="/dashboard/images">Images</Link></li>
             <li><Link href="/dashboard/backups">Backups</Link></li> */}
             <li><Link href="/dashboard/orders">Orders</Link></li>
-            <li><Link href="/dashboard/payments">Payments</Link></li>
+            <li><Link href="/dashboard/billing">Billing</Link></li>
             <li><Link href="/dashboard/settings">Settings</Link></li>
           </ul>
         </div>

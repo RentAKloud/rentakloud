@@ -36,9 +36,13 @@ export const ServiceProduct: Component<{ product: Product }> = (props) => {
       >
       </HeroWithBg>
 
-      <section class="text-center my-20">
+      <section class="text-center mt-20">
         <h2 class="text-4xl mb-3">{secTitle()}</h2>
         <h3 class="text-xl" innerHTML={secContent()} />
+      </section>
+
+      <section class="text-center mb-10">
+        <button class="btn btn-primary btn-lg mt-20">Start 7-day Trial</button>
       </section>
 
       <section class="p-10">

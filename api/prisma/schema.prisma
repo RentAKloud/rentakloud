@@ -47,8 +47,9 @@ model Profile {
   companyPosition  String?
   preferredTheme   String    @default("system")
   stripeCustomerId String?
-
-  addresses Address[]
+  //
+  addresses        Address[]
+  meta             Json      @default("{}")
 }
 
 model Address {
@@ -134,6 +135,9 @@ model UserToProducts {
   //
   status         UserProductStatus @default(Inactive)
   subscriptionId String            @unique // stripe
+  //
+  title          String            @default("")
+  addons         Json              @default("[]")
   //
   createdAt      DateTime          @default(now())
   updatedAt      DateTime          @default(now())
@@ -276,6 +280,7 @@ enum CouponType {
 }
 
 enum UserProductStatus {
+  Pending
   Active
   Inactive
 }

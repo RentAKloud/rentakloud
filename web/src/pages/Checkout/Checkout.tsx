@@ -11,7 +11,6 @@ import { OrderDetails } from "./_OrderDetails";
 import { Congrats } from "./steps/Congrats";
 import { Coupons } from "./_Coupons";
 import { ShippingMethod } from "./steps/ShippingMethod";
-import { AlertDialog } from "@kobalte/core";
 import Modal from "~/components/Modal";
 import { authStore } from "~/stores/auth";
 

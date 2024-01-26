@@ -3,37 +3,22 @@ import { Link } from "@solidjs/router";
 import ProductsApi from "~/api/products";
 import Card from "~/components/Card/Card";
 import { DateTime } from "~/components/DateTime";
-import Modal from "~/components/Modal";
-import { ActiveProduct } from "~/types/product";
-import { NotificationService } from "~/services/NotificationService";
 import ListIcon from "~/components/icons/List";
 import GridIcon from "~/components/icons/Grid";
 import CLIIcon from "~/components/icons/CLI";
+import DesktopIcon from "~/components/icons/Desktop";
 
 const Instances: Component = () => {
-  const [activeProducts, { refetch }] = createResource(async () => {
-    const { result, error } = await ProductsApi.allMy()
+  const [instances, { refetch }] = createResource(async () => {
+    const { result, error } = await ProductsApi.instances()
     if (error) throw error
     return result
   })
-  const [selectedProduct, setSelectedProduct] = createSignal<ActiveProduct>()
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = createSignal<boolean>(false)
   const [activeView, setActiveView] = createSignal<"grid" | "list">("grid")
-
-  async function deleteActiveProduct(id: string) {
-    try {
-      await ProductsApi.deleteActiveProduct(id)
-      setIsDeleteModalOpen(false)
-      setSelectedProduct(undefined)
-      refetch()
-    } catch (err) {
-      NotificationService.error("Could not delete. Please try again or contact support.")
-    }
-  }
 
   return (
     <>
-      <h2 class="text-4xl font-bold mb-2">Instances ({activeProducts.latest?.length})</h2>
+      <h2 class="text-4xl font-bold mb-2">Instances ({instances.latest?.length})</h2>
       <p class="mb-5">Your active subscriptions.</p>
 
       <section class="mb-10">
@@ -41,11 +26,11 @@ const Instances: Component = () => {
       </section>
 
       <section>
-        <Show when={activeProducts.latest?.length === 0}>
+        <Show when={instances.latest?.length === 0}>
           <p>Nothing to see here.</p>
         </Show>
 
-        <Show when={!activeProducts.loading && activeProducts.latest!.length > 0}>
+        <Show when={!instances.loading && instances.latest!.length > 0}>
 
           {/* View mode */}
           <div class="text-right">
@@ -64,30 +49,27 @@ const Instances: Component = () => {
           </div>
 
           <Show when={activeView() === "grid"}>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
-              <For each={activeProducts.latest}>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+              <For each={instances.latest}>
                 {
-                  (activeProduct) => (
+                  (instance) => (
                     <Card
-                      title={activeProduct.product.name}
+                      title={instance.title || instance.product.name}
                       description={
                         <div class="flex flex-col gap-3">
                           <span classList={{
-                            "text-error": activeProduct.status === "Inactive",
-                            "text-success": activeProduct.status === "Active"
-                          }}>{activeProduct.status}</span>
-                          <p>Instance ID: {activeProduct.id}</p>
+                            "text-error": instance.status === "Inactive",
+                            "text-success": instance.status === "Active"
+                          }}>{instance.status}</span>
+                          <p>Instance ID: {instance.id}</p>
                           {/* <p>{activeProduct.product.shortDescription}</p> */}
-                          <span>Started At: <DateTime value={activeProduct.createdAt} /></span>
+                          <span>Started At: <DateTime value={instance.createdAt} /></span>
                         </div>
                       }
-                      actions={<div class="flex gap-5 items-center justify-start">
-                        <Link href={`/products/${activeProduct.id}`}>Details</Link>
-                        <button class="btn" onclick={() => {
-                          setSelectedProduct(activeProduct)
-                          setIsDeleteModalOpen(true)
-                        }}>Delete</button>
+                      actions={<div class="flex gap-5 items-center justify-start flex-wrap">
+                        <Link href={`/products/${instance.id}`}>Details</Link>
                         <a href="http://204.27.57.219:4200/" target="_blank" class="btn"><CLIIcon /> SSH</a>
+                        <Link href={`/products/${instance.id}/stream`} class="btn"><DesktopIcon /> VNC</Link>
                       </div>} />
                   )
                 }
@@ -115,7 +97,7 @@ const Instances: Component = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  <For each={activeProducts.latest}>
+                  <For each={instances.latest}>
                     {
                       (activeProduct) => (
                         <tr>
@@ -174,18 +156,6 @@ const Instances: Component = () => {
           </Show>
         </Show>
       </section>
-
-      <Modal
-        isOpen={isDeleteModalOpen()}
-        onClose={() => setIsDeleteModalOpen(false)}
-        title="Confirm Delete"
-        description={`Are you sure you want to delete ${selectedProduct()?.product.name}?`}
-        actions={
-          <>
-            <button class="btn" onclick={() => setIsDeleteModalOpen(false)}>Cancel</button>
-            <button class="btn btn-error" onclick={() => deleteActiveProduct(selectedProduct()!.id)}>Yes</button>
-          </>
-        } />
     </>
   )
 }

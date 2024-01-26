@@ -1,16 +1,16 @@
-import { Component, For, Match, Show, Switch, createResource } from "solid-js";
+import { Component, For, Match, Show, Switch } from "solid-js";
 import { Link } from "@solidjs/router";
 import { company } from "~/config/constants";
 import { authStore } from "~/stores/auth";
 import { productsMenu } from "~/config/data";
 import { cart } from "~/stores/cart";
 import MenuIcon from "./icons/Menu";
-import NotificationsApi from "~/api/notifications";
 import BellIcon from "./icons/Bell";
 import { DateTime } from "./DateTime";
 import { NotificationStatus } from "~/types/notification";
 import EyeIcon from "./icons/Eye";
 import ProfileDropdown from "./ProfileDropdown";
+import { notifications } from "~/stores/global";
 
 const Navbar: Component<{}> = () => {
   const loggedIn = () => !!authStore.user
@@ -117,13 +117,6 @@ const Navbar: Component<{}> = () => {
 }
 
 const Notifications: Component = () => {
-  const [notifications, { refetch }] = createResource(async () => {
-    const { result, error } = await NotificationsApi.all()
-    if (!error) {
-      return result
-    }
-  })
-
   return (
     <>
       <button class="btn btn-ghost btn-circle">

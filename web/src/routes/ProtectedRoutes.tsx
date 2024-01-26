@@ -3,23 +3,25 @@ import { Outlet, Route } from "@solidjs/router";
 
 const Checkout = lazy(() => import('~/pages/Checkout/Checkout'));
 
-import ProductDashboard from '~/pages/ProductDashboard/ProductDashboard';
-import Overview from '~/pages/ProductDashboard/Overview';
-import SiteAndSSL from '~/pages/ProductDashboard/SiteAndSSL';
-import Database from '~/pages/ProductDashboard/Database';
-import FileManager from '~/pages/ProductDashboard/FileManager';
-import SSH from '~/pages/ProductDashboard/SSH';
-import FTPS from '~/pages/ProductDashboard/FTPS';
-import Metrics from '~/pages/ProductDashboard/Metrics';
-import Snapshots from '~/pages/ProductDashboard/Snapshots';
-import Events from '~/pages/ProductDashboard/Events';
-import Guidance from '~/pages/ProductDashboard/Guidance';
+import InstanceDashboard from '~/pages/InstanceDashboard/InstanceDashboard';
+import Overview from '~/pages/InstanceDashboard/Overview';
+import VNC from "~/pages/InstanceDashboard/VNC";
+import SSH from '~/pages/InstanceDashboard/SSH';
+import SiteAndSSL from '~/pages/InstanceDashboard/SiteAndSSL';
+import Database from '~/pages/InstanceDashboard/Database';
+import FileManager from '~/pages/InstanceDashboard/FileManager';
+import FTPS from '~/pages/InstanceDashboard/FTPS';
+import Metrics from '~/pages/InstanceDashboard/Metrics';
+import Snapshots from '~/pages/InstanceDashboard/Snapshots';
+import Events from '~/pages/InstanceDashboard/Events';
+import InstanceSettings from "~/pages/InstanceDashboard/InstanceSettings";
+import Guidance from '~/pages/InstanceDashboard/Guidance';
 
 import Dashboard from '~/pages/Dashboard/Dashboard';
 import DashboardHome from '~/pages/Dashboard/Home';
 import Orders from '~/pages/Dashboard/Orders';
 import Order from "~/pages/Orders/Order";
-import Payments from '~/pages/Dashboard/Payments';
+import Billing from '~/pages/Dashboard/Billing';
 import Settings from '~/pages/Dashboard/Settings';
 import Instances from '~/pages/Dashboard/Instances';
 import Images from '~/pages/Dashboard/Images';
@@ -44,8 +46,9 @@ const ProtectedRoutes: Component = () => {
 
   return (
     <Route path="" component={Protected}>
-      <Route path="/products/:id" component={ProductDashboard}>
+      <Route path="/products/:id" component={InstanceDashboard}>
         <Route path={["/", "/overview"]} component={Overview} />
+        <Route path="/stream" component={VNC} />
         <Route path="/site-ssl" component={SiteAndSSL} />
         <Route path="/database" component={Database} />
         <Route path="/file-manager" component={FileManager} />
@@ -54,6 +57,7 @@ const ProtectedRoutes: Component = () => {
         <Route path="/metrics" component={Metrics} />
         <Route path="/snapshots" component={Snapshots} />
         <Route path="/events" component={Events} />
+        <Route path="/settings" component={InstanceSettings} />
         <Route path="/guidance-help" component={Guidance} />
       </Route>
 
@@ -69,7 +73,7 @@ const ProtectedRoutes: Component = () => {
           <Route path="/" component={Orders} />
           <Route path="/:id" component={Order} />
         </Route>
-        <Route path="/payments" component={Payments} />
+        <Route path="/billing" component={Billing} />
         <Route path="/settings" component={Settings} />
       </Route>
 

@@ -3,7 +3,7 @@ import Loader from "~/components/Loader";
 import { DateTime } from "~/components/DateTime";
 import PaymentsApi from "~/api/payments";
 
-const Payments: Component = () => {
+const Billing: Component = () => {
   const [payments] = createResource(async () => {
     const { result, error } = await PaymentsApi.all()
     if (error) throw error
@@ -12,7 +12,7 @@ const Payments: Component = () => {
 
   return (
     <>
-      <h2 class="text-4xl font-bold mb-5">Payments</h2>
+      <h2 class="text-4xl font-bold mb-5">Billing</h2>
 
       <Show when={payments.loading}>
         <Loader />
@@ -56,4 +56,4 @@ const Payments: Component = () => {
   )
 }
 
-export default Payments
+export default Billing

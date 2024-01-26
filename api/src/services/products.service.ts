@@ -80,35 +80,6 @@ export class ProductsService {
     });
   }
 
-  async activeProducts(userId: number) {
-    return this.prisma.userToProducts.findMany({
-      where: { userId },
-      include: { product: true }
-    })
-  }
-
-
-  async createUserProducts(products: { subscriptionId: string, priceId: string, productId: number }[], userId: number) {
-    return this.prisma.userToProducts.createMany({
-      data: products.map((i) => {
-        return {
-          userId: userId,
-          productId: i.productId,
-          subscriptionId: i.subscriptionId,
-          status: UserProductStatus.Active,
-        }
-      })
-    })
-  }
-
-  async deleteUserProduct(id: string) {
-    const result = await this.prisma.userToProducts.delete({ where: { id } })
-
-    this.ee.emit("user_product.deleted", result)
-
-    return result
-  }
-
   @OnEvent("order.created")
   async inventoryManagement(order: Order) {
     order.items.forEach((i: { product: any, quantity: number }) => {

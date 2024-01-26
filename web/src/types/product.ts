@@ -47,11 +47,20 @@ export type ProductCategory = {
   slug: string;
 }
 
-export type ActiveProduct = {
+export type Instance = {
   id: string;
+  title: string
   product: Product;
+  addons: InstanceAddon[]
   createdAt: string;
-  status: "Active" | "Inactive";
+  status: "Pending" | "Active" | "Inactive";
+}
+
+export type InstanceAddonKey = "cpu" | "ram" | "hdd" | "ssd"
+
+export type InstanceAddon = {
+  id: InstanceAddonKey
+  quantity: number
 }
 
 export const productCategories: ProductCategory[] = ["Hardware", "Databases", "ERP", "CRM", "CMS", "Ecommerce", "Message Queueing"].map(c => ({

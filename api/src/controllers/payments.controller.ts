@@ -46,9 +46,18 @@ export class PaymentsController {
     };
   }
 
-  @Post('stripe-webhook')
+  @Post('webhook')
   async webhooks(@Request() request) {
     const event = request.body;
+
+    // const sig = request.headers['stripe-signature'];
+
+    // try {
+    //   let _event = stripe.webhooks.constructEvent(request.body, sig, endpointSecret);
+    // }
+    // catch (err) {
+    //   return `Webhook Error: ${err.message}`
+    // }
 
     switch (event.type) {
       case 'product.created': {
@@ -77,6 +86,10 @@ export class PaymentsController {
         break;
       }
       case 'product.deleted':
+        break;
+      case 'invoice.created':
+        break;
+      case 'customer.subscription.trial_will_end':
         break;
     }
 
