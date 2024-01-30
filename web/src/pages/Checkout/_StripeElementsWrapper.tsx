@@ -45,13 +45,16 @@ export const StripeElementsWrapper = () => {
       const results: PaymentIntentResult[] = [];
       (async () => {
         for (const secret of subClientSecrets()!) {
-          const r = await stripe()!.confirmCardPayment(secret, {
-            payment_method: {
-              card: elements().getElement(Card)!,
-              billing_details: {},
-            }
-          })
-          results.push(r)
+          // secret can be undefined in case of a trial subscription
+          if (secret) {
+            const r = await stripe()!.confirmCardPayment(secret, {
+              payment_method: {
+                card: elements().getElement(Card)!,
+                billing_details: {},
+              }
+            })
+            results.push(r)
+          }
         }
 
         if (results.some(r => !!r.error)) {

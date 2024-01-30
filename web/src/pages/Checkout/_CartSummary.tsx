@@ -59,11 +59,15 @@ export const CartSummary: Component<{ showAddresses?: boolean }> = (props) => {
               const price = () => getProductPrice(product(), item.priceId)
               const planPrice = () => getPlanPrice(price(), item.priceId!)
               const interval = () => planPrice() ? ` - ${price().planName} ${planPrice()!.interval}ly` : ""
-              const formattedPrice = () => formatPrice(price().saleAmount || price().amount || planPrice()!.amount)
+              const formattedPrice = () => formatPrice(
+                price().saleAmount ||
+                price().amount ||
+                (item.isTrial ? 0 : planPrice()!.amount)
+              )
 
               return (
                 <div class="flex justify-between">
-                  <div>{product().name} <Show when={interval()}><span innerHTML={interval()} /></Show></div>
+                  <div>{product().name} <Show when={interval()}><span innerHTML={interval()} /></Show> {item.isTrial && " (Trial)"}</div>
                   <div>
                     <span>{formattedPrice()}</span>
                     <span> <CrossIcon class="inline w-5" /> {item.quantity}</span>

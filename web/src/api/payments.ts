@@ -25,10 +25,11 @@ class PaymentsApi {
     })
   }
 
-  static async createSubscription(userEmail: string, priceId: string): ApiResponse<CreateSubscriptionResponse> {
+  static async createSubscription(userEmail: string, priceId: string, isTrial: boolean): ApiResponse<CreateSubscriptionResponse> {
     return await HttpService.post('/payments/create-subscription', {
       email: userEmail,
-      priceId
+      priceId,
+      isTrial
     })
   }
 }

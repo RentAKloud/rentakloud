@@ -2,7 +2,7 @@ import { Component, Match, Switch } from "solid-js";
 import { pluralize } from "~/utils";
 
 export const DateTime: Component<{
-  value: string
+  value: string|number
   ago?: boolean
 }> = (props) => {
 
@@ -18,7 +18,7 @@ export const DateTime: Component<{
   )
 }
 
-function formatDatetime(datetime: string) {
+function formatDatetime(datetime: string|number) {
   return new Date(datetime)
 }
 

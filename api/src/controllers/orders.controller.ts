@@ -108,10 +108,17 @@ export class OrdersController {
     data.user = { connect: { id: req.user.userId } }
     data.items = items
       .filter((_, i) => products[i].productType === ProductType.Physical)
-      .map((item, i) => ({
-        quantity: item.quantity,
-        product: productsSelectedFields[i]
-      }))
+      .map((item, i) => {
+        const d: any = {
+          quantity: item.quantity,
+          product: productsSelectedFields[i],
+        }
+
+        if (item.isTrial) {
+          d.isTrial = item.isTrial
+        }
+        return d
+      })
 
     // TODO stock validation
 

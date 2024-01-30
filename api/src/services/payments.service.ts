@@ -21,7 +21,7 @@ export class PaymentsService {
     }
   }
 
-  async createSubscription(email: string, priceId: string) {
+  async createSubscription(email: string, priceId: string, isTrial?: boolean) {
     const customer = await this.findOrCreateCustomer(email);
 
     const ephemeralKey = await this.stripe.ephemeralKeys.create(
@@ -29,7 +29,7 @@ export class PaymentsService {
       { apiVersion: '2020-08-27' },
     );
 
-    const subscription = await this.stripe.subscriptions.create({
+    const data: Stripe.SubscriptionCreateParams = {
       customer: customer.id,
       items: [
         {
@@ -41,14 +41,20 @@ export class PaymentsService {
       payment_settings: { save_default_payment_method: 'on_subscription' },
       expand: ['latest_invoice.payment_intent'],
       metadata: { email },
-    });
+    }
+
+    if (isTrial) {
+      data.trial_period_days = 7
+    }
+
+    const subscription = await this.stripe.subscriptions.create(data);
 
     return {
       customer,
       ephemeralKey,
       subscriptionId: subscription.id,
       //@ts-ignore
-      clientSecret: subscription.latest_invoice.payment_intent.client_secret,
+      clientSecret: isTrial ? undefined : subscription.latest_invoice.payment_intent.client_secret,
     };
   }
 
@@ -172,5 +178,11 @@ export class PaymentsService {
     const filter = productId ? { product: productId } : {};
 
     return (await this.stripe.prices.list(filter)).data;
+  }
+
+  async invoices(customerId: string) {
+    return this.stripe.invoices.list({
+      customer: customerId
+    })
   }
 }

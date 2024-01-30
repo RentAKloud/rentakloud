@@ -57,6 +57,11 @@ export class CreateOrderReq {
 export type CartItem = {
   productId: number
   quantity: number
+  isTrial: boolean
 }
 
-export type OrderItem = { product: any, quantity: number }
+export type OrderItem = {
+  product: any
+  quantity: number
+  isTrial: boolean
+}

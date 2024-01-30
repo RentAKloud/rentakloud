@@ -7,10 +7,14 @@ export type Payment = {
   userId: number;
   order: Order;
   orderId: number;
-
+  
   amount: number;
   currency: string;
-
+  
   createdAt: string;
   updatedAt: string;
+  
+  number: string;
+  amount_due: number;
+  created: number;
 }

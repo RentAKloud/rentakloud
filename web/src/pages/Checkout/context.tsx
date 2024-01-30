@@ -10,7 +10,7 @@ import PaymentsApi from "~/api/payments";
 import ProductsApi from "~/api/products";
 import { cart, getCartTotal, resetCart } from "~/stores/cart";
 import { getProductById } from "~/stores/products";
-import { ProductType } from "~/types/product";
+import { CartItem, ProductType } from "~/types/product";
 import { ONLINE_ORDER_AMOUNT_LIMIT } from "~/config/constants";
 import { CountryCode, StateCode } from "~/types/common";
 import { HttpService } from "~/services/HttpService";
@@ -224,7 +224,7 @@ export const CheckoutProvider: Component<{ children: JSXElement }> = (props) => 
     // Handle subscriptions - we create separate subscription for each
     // subscription item so they can be cancelled/updated individually,
     // although stripe allows to include multiple items in one subscription
-    const subscriptionItems = cart.items
+    const subscriptionItems: CartItem[] = cart.items
       .filter(i => getProductById(i.productId)?.productType === ProductType.OnlineService)
       // consider the quantity too
       .map(i => Array(i.quantity).fill(i))
@@ -232,7 +232,7 @@ export const CheckoutProvider: Component<{ children: JSXElement }> = (props) => 
     // TODO should be one bulk request
     if (subscriptionItems.length > 0) {
       const subResponsePromises = subscriptionItems.map(i => {
-        return PaymentsApi.createSubscription(user!.email, i.priceId!)
+        return PaymentsApi.createSubscription(user!.email, i.priceId!, !!i.isTrial)
       })
       const subResponses = await Promise.all(subResponsePromises)
       const subData = subResponses.map((x, i) => ({

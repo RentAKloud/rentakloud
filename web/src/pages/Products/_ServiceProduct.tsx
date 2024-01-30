@@ -17,6 +17,11 @@ export const ServiceProduct: Component<{ product: Product }> = (props) => {
     navigate("/checkout")
   }
 
+  function startTrial() {
+    addToCart(product(), 1, product().prices![0].prices![0].priceId, true)
+    navigate("/checkout")
+  }
+
   const title = () => product().meta.headerTitle || `Simple and Reliable ${product().name} ${category()}`
   const subTitle = () => product().meta.headerSubtitle || `Worry-free ${product().name} hosting so you can focus on building great apps.`
   const secTitle = () => product().meta.secondSecTitle || `Deploy High-Performance ${product().name} Clusters`
@@ -42,7 +47,7 @@ export const ServiceProduct: Component<{ product: Product }> = (props) => {
       </section>
 
       <section class="text-center mb-10">
-        <button class="btn btn-primary btn-lg mt-20">Start 7-day Trial</button>
+        <button class="btn btn-primary btn-lg mt-20" onclick={startTrial}>Start 7-day Trial</button>
       </section>
 
       <section class="p-10">
@@ -57,7 +62,7 @@ export const ServiceProduct: Component<{ product: Product }> = (props) => {
         </div>
 
         <div class="grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-3 place-items-center items-stretch">
-          <For each={props.product.prices}>
+          <For each={product().prices}>
             {
               (plan, index) =>
                 <ErrorBoundary fallback={(err) => {

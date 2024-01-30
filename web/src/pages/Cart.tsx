@@ -46,7 +46,7 @@ const Cart: Component = () => {
 
                     const price = () => getProductPrice(product(), item.priceId)
                     const planPrice = () => getPlanPrice(price(), item.priceId!)
-                    const total = () => (price().saleAmount || price().amount || planPrice()!.amount) * item.quantity
+                    const total = () => item.isTrial ? 0 : (price().saleAmount || price().amount || planPrice()!.amount) * item.quantity
                     const interval = () => planPrice() ? ` &cross; ${price().planName} ${planPrice()!.interval}ly` : ""
 
                     return (
@@ -56,12 +56,13 @@ const Cart: Component = () => {
                           <Show when={interval()}>
                             <span innerHTML={interval()}></span>
                           </Show>
+                          {item.isTrial && " (Trial)"}
                         </td>
                         <td class="flex gap-5 items-center justify-center">
                           <button
                             class="font-bold text-green-500 btn btn-ghost btn-circle"
                             onclick={() => incrQty(product())}
-                            disabled={product().productType === ProductType.Physical && item.quantity >= product().stock}
+                            disabled={item.isTrial || product().productType === ProductType.Physical && item.quantity >= product().stock}
                           >
                             +
                           </button>

@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
-import { Order, OrderStatus, Prisma, Product, UserProductStatus } from "@prisma/client";
+import { Prisma, UserProductStatus } from "@prisma/client";
 import { PrismaService } from "./prisma.service";
-import { EventEmitter2, OnEvent } from "@nestjs/event-emitter";
+import { EventEmitter2 } from "@nestjs/event-emitter";
 
 @Injectable()
 export class InstancesService {
@@ -23,7 +23,6 @@ export class InstancesService {
     })
   }
 
-
   async createUserProducts(products: { subscriptionId: string, priceId: string, productId: number }[], userId: number) {
     return this.prisma.userToProducts.createMany({
       data: products.map((i) => {
@@ -31,7 +30,7 @@ export class InstancesService {
           userId: userId,
           productId: i.productId,
           subscriptionId: i.subscriptionId,
-          status: UserProductStatus.Active,
+          status: UserProductStatus.Pending,
         }
       })
     })

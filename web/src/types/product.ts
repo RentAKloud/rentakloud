@@ -72,6 +72,7 @@ export type CartItem = {
   productId: number;
   quantity: number;
   priceId?: string;
+  isTrial?: boolean
 }
 
 export type SubscriptionData = {

@@ -8,7 +8,7 @@ const cart = createMutable<{
   items: CartItem[]
 }>(initialState)
 
-function addToCart(item: Product, qty: number = 1, priceId?: string) {
+function addToCart(item: Product, qty: number = 1, priceId?: string, isTrial?: boolean) {
   let pi = -1
   if (priceId) {
     pi = cart.items.findIndex(p => p.priceId === priceId)
@@ -22,6 +22,8 @@ function addToCart(item: Product, qty: number = 1, priceId?: string) {
     const cartItem: CartItem = { productId: item.id, quantity: qty }
     if (priceId)
       cartItem.priceId = priceId
+    if (isTrial)
+      cartItem.isTrial = isTrial
 
     cart.items.push(cartItem)
   }
@@ -51,8 +53,8 @@ function getCartTotal() {
   return cart.items
     .map(i => {
       const p = getProductPrice(getProductById(i.productId)!, i.priceId)
-      const planPrice = getPlanPrice(p, i.priceId!)
-      return (p.saleAmount || p.amount || planPrice!.amount) * i.quantity
+      const planPrice = i.isTrial ? 0 : getPlanPrice(p, i.priceId!)!.amount
+      return (p.saleAmount || p.amount || planPrice) * i.quantity
     })
     .reduce((x, y) => x + y, 0)
 }

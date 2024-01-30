@@ -58,6 +58,7 @@ const Instances: Component = () => {
                       description={
                         <div class="flex flex-col gap-3">
                           <span classList={{
+                            "text-warning": instance.status === "Pending",
                             "text-error": instance.status === "Inactive",
                             "text-success": instance.status === "Active"
                           }}>{instance.status}</span>

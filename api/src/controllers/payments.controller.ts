@@ -12,16 +12,18 @@ export class PaymentsController {
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  payments() {
-    return []
+  async payments(@Request() req) {
+    const customer = await this.paymentsService.findOrCreateCustomer(req.user.email)
+    return (await this.paymentsService.invoices(customer.id)).data
   }
 
   @Post('create-subscription')
   async createSubscription(@Request() request) {
-    const { email, priceId } = request.body;
+    // TODO check if user has already used a trial
+    const { email, priceId, isTrial } = request.body;
 
     const { clientSecret, ephemeralKey, customer, subscriptionId } =
-      await this.paymentsService.createSubscription(email, priceId);
+      await this.paymentsService.createSubscription(email, priceId, isTrial);
 
     return {
       clientSecret,
