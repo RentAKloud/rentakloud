@@ -4,7 +4,7 @@ import Stripe from "stripe";
 import { UsersService } from "./users.service";
 import { OnEvent } from "@nestjs/event-emitter";
 import { UserToProducts } from "@prisma/client";
-import { InstanceAddon } from "src/types/instances.dto";
+import { InstanceAddon, Plan } from "src/types/instances.dto";
 
 
 @Injectable()
@@ -58,55 +58,56 @@ export class PaymentsService {
     };
   }
 
-
   @OnEvent("instance.addons.updated")
-  async updateSubscription(id: string, addons: InstanceAddon[]) {
-    const addonConfig = {
-      ram: {
-        prices: [
-          { id: "price_1ObmU5HxlteLB3wOv5VkUEkr", interval: "month" },
-          { id: "price_1ObmU5HxlteLB3wOIP58m2Ul", interval: "year" }
-        ]
-      }
-    }
-
+  async updateSubscription(id: string, addons: InstanceAddon[], plans: Plan[]) {
     try {
-      const s = await this.stripe.subscriptions.retrieve(id)
-      const interval = s.items.data[0].price.recurring.interval
+      const sub = await this.stripe.subscriptions.retrieve(id)
+      const _selectedPlan = sub.items.data[0].price
+      const selectedPlan = plans.find(p => p.prices.find(pr => pr.priceId === _selectedPlan.id))
+      const addonsConfig = selectedPlan.addons
+      const interval = _selectedPlan.recurring.interval
 
-      const items = addons.filter(a => a.id in addonConfig).map(a => {
-        const i: any = {}
-        const alreadyAdded = s.items.data.find(si => !!addonConfig[a.id].prices.find(p => p.id === si.price.id))
+      const items = addons
+        .filter(a => addonsConfig.map(c => c.id).includes(a.id))
+        .map(addon => {
+          const item: any = {}
+          const addonConfig = addonsConfig.find(a => a.id === addon.id)
+          const alreadyAdded = sub.items.data.find(si => !!addonConfig.prices.find(p => p.priceId === si.price.id))
 
-        // if price_id exists, use si_id to update quantity
-        if (alreadyAdded) {
-          i.id = alreadyAdded.id
-        } else {
-          i.price = addonConfig[a.id].prices.find(p => p.interval === interval).id
-        }
+          // skip if no change in quantity
+          // or if it doesnt exist and quantity is 0
+          if (
+            alreadyAdded && addon.quantity === alreadyAdded.quantity ||
+            !alreadyAdded && addon.quantity === 0
+          ) {
+            return undefined
+          }
 
-        // set deleted to true to remove
-        if (a.quantity === 0) {
-          i.deleted = true
-        } else {
-          i.quantity = a.quantity
-        }
+          // if price_id exists, use si_id to update quantity
+          if (alreadyAdded) {
+            item.id = alreadyAdded.id
+          } else {
+            item.price = addonConfig.prices.find(p => p.interval === interval).priceId
+          }
 
-        // skip if no change in quantity
-        if (alreadyAdded && i.quantity === alreadyAdded.quantity) {
-          return undefined
-        }
+          // set deleted to true to remove
+          if (addon.quantity === 0) {
+            item.deleted = true
+          } else {
+            item.quantity = addon.quantity
+          }
 
-        return i
-      }).filter(i => !!i)
+          return item
+        })
+        .filter(i => !!i)
 
       if (items.length > 0) {
-        this.stripe.subscriptions.update(id, {
+        await this.stripe.subscriptions.update(id, {
           items
         })
       }
     } catch (err) {
-      console.error(err)
+      console.error(err.message)
     }
   }
 

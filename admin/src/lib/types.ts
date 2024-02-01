@@ -29,6 +29,7 @@ export type ProductPrice = {
   planName?: string;
   prices?: PlanPrice[]
   features?: string[]
+  addons?: Addon[]
 }
 
 export type PlanPrice = {
@@ -43,6 +44,12 @@ export type PlanPrice = {
 export enum ProductType {
   Physical = 'Physical',
   OnlineService = 'OnlineService'
+}
+
+export type Addon = {
+  id: string
+  description: string
+  prices: PlanPrice[]
 }
 
 export class Category {

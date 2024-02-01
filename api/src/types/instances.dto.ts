@@ -4,3 +4,18 @@ export type InstanceAddon = {
   id: InstanceAddonKey
   quantity: number
 }
+
+type PlanPrice = {
+  amount: number
+  priceId: string
+  interval: string
+}
+
+export type Plan = {
+  planName: string
+  prices: PlanPrice[]
+  addons: {
+    id: InstanceAddonKey
+    prices: PlanPrice[]
+  }[]
+}

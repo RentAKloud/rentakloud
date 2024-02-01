@@ -1,10 +1,17 @@
 <script lang="ts">
   import type { ProductPrice } from "$lib/types";
-  import { Button, Input, Label, Select } from "flowbite-svelte";
+  import {
+    Button,
+    Input,
+    Label,
+    Modal,
+    Select,
+  } from "flowbite-svelte";
   import {
     ArrowDownOutline,
     ArrowUpOutline,
     CopySolid,
+    EditOutline,
     PlusSolid,
     TrashBinSolid,
   } from "flowbite-svelte-icons";
@@ -21,6 +28,9 @@
     x[j] = temp;
     return x;
   }
+
+  let editFeatures: boolean = false;
+  let editAddons: boolean = false;
 </script>
 
 <div class="flex gap-4 mb-4">
@@ -118,7 +128,84 @@
     {#if isOnlineService}
       <div>
         <div class="flex gap-4 items-center mb-2">
+          <Label>Add-ons</Label>
+          <EditOutline
+            class="dark:text-white"
+            on:click={() => (editAddons = true)}
+          />
+        </div>
+
+        <Modal bind:open={editAddons}>
+          <Button
+            pill
+            class="!p-2"
+            size="sm"
+            on:click={() => {
+              if (price.addons) {
+                price.addons = [
+                  ...price.addons,
+                  { id: "", description: "", prices: [] },
+                ];
+              } else {
+                price.addons = [{ id: "", description: "", prices: [] }];
+              }
+            }}
+          >
+            New Add-on &nbsp;
+            <PlusSolid class="dark:text-white" />
+          </Button>
+          {#each price.addons || [] as addon, j}
+            <div class="flex gap-4 mb-2 items-center">
+              <Input type="text" placeholder="ID" bind:value={addon.id} />
+            </div>
+
+            <Button
+              pill
+              class="!p-2"
+              size="sm"
+              on:click={() => {
+                if (addon.prices) {
+                  addon.prices = [
+                    ...addon.prices,
+                    { priceId: "", interval: "month", currency: "USD" },
+                  ];
+                } else {
+                  addon.prices = [
+                    { priceId: "", interval: "month", currency: "USD" },
+                  ];
+                }
+              }}
+            >
+              New Price &nbsp;
+              <PlusSolid class="dark:text-white" />
+            </Button>
+
+            {#each addon.prices as addonPrice}
+              <div class="flex gap-4 mb-2">
+                <Input placeholder="Price ID" bind:value={addonPrice.priceId} />
+                <Select
+                  items={[
+                    { value: "month", name: "Monthly" },
+                    { value: "year", name: "Yearly" },
+                  ]}
+                  bind:value={addonPrice.interval}
+                />
+              </div>
+            {/each}
+          {/each}
+        </Modal>
+      </div>
+
+      <div>
+        <div class="flex gap-4 items-center mb-2">
           <Label>Features</Label>
+          <EditOutline
+            class="dark:text-white"
+            on:click={() => (editFeatures = true)}
+          />
+        </div>
+
+        <Modal bind:open={editFeatures}>
           <Button
             pill
             class="!p-2"
@@ -131,46 +218,46 @@
               }
             }}
           >
+            <span>Add New</span>&nbsp;
             <PlusSolid class="dark:text-white" />
           </Button>
-        </div>
-
-        {#each price.features || [] as feature, j}
-          <div class="flex gap-4 mb-2 items-center">
-            <div class="flex flex-col gap-1">
+          {#each price.features || [] as feature, j}
+            <div class="flex gap-4 mb-2 items-center">
+              <div class="flex flex-col gap-1">
+                <Button
+                  size="xs"
+                  outline
+                  on:click={() => {
+                    if (j > 0)
+                      price.features = swap(price.features || [], j, j - 1);
+                  }}
+                >
+                  <ArrowUpOutline size="xs" />
+                </Button>
+                <Button
+                  size="xs"
+                  outline
+                  on:click={() => {
+                    if (j < (price.features || []).length)
+                      price.features = swap(price.features || [], j, j + 1);
+                  }}
+                >
+                  <ArrowDownOutline size="xs" />
+                </Button>
+              </div>
+              <Input placeholder="Feature" bind:value={feature} />
               <Button
-                size="xs"
                 outline
-                on:click={() => {
-                  if (j > 0)
-                    price.features = swap(price.features || [], j, j - 1);
-                }}
+                on:click={() =>
+                  (price.features = (price.features || []).filter(
+                    (p, y) => y !== j,
+                  ))}
               >
-                <ArrowUpOutline size="xs" />
-              </Button>
-              <Button
-                size="xs"
-                outline
-                on:click={() => {
-                  if (j < (price.features || []).length)
-                    price.features = swap(price.features || [], j, j + 1);
-                }}
-              >
-                <ArrowDownOutline size="xs" />
+                <TrashBinSolid />
               </Button>
             </div>
-            <Input placeholder="Feature" bind:value={feature} />
-            <Button
-              outline
-              on:click={() =>
-                (price.features = (price.features || []).filter(
-                  (p, y) => y !== j,
-                ))}
-            >
-              <TrashBinSolid />
-            </Button>
-          </div>
-        {/each}
+          {/each}
+        </Modal>
       </div>
     {/if}
   </div>

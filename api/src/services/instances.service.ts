@@ -52,7 +52,7 @@ export class InstancesService {
     });
 
     if (data.addons) {
-      this.ee.emit("instance.addons.updated", rv.subscriptionId, data.addons)
+      this.ee.emit("instance.addons.updated", rv.subscriptionId, data.addons, rv.product.prices)
     }
 
     return rv
