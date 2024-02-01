@@ -17,7 +17,9 @@ function addToCart(item: Product, qty: number = 1, priceId?: string, isTrial?: b
   }
 
   if (pi >= 0) {
-    cart.items[pi].quantity += qty
+    if (!isTrial) {
+      cart.items[pi].quantity += qty
+    }
   } else {
     const cartItem: CartItem = { productId: item.id, quantity: qty }
     if (priceId)
@@ -53,7 +55,7 @@ function getCartTotal() {
   return cart.items
     .map(i => {
       const p = getProductPrice(getProductById(i.productId)!, i.priceId)
-      const planPrice = i.isTrial ? 0 : getPlanPrice(p, i.priceId!)!.amount
+      const planPrice = i.isTrial ? 0 : getPlanPrice(p, i.priceId!)?.amount || 0
       return (p.saleAmount || p.amount || planPrice) * i.quantity
     })
     .reduce((x, y) => x + y, 0)
