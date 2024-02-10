@@ -1,7 +1,8 @@
-import { Body, Controller, Get, Post, Request, UseGuards } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, Post, Request, UseGuards } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { JwtService } from '@nestjs/jwt';
 import { ApiBody, ApiTags } from '@nestjs/swagger';
+import validate from 'deep-email-validator';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 import { LocalAuthGuard } from 'src/guards/local-auth.guard';
 import { AuthService } from 'src/services/auth.service';
@@ -29,7 +30,15 @@ export class AuthController {
   }
 
   @Post('register')
-  register(@Body() data: RegisterReq) {
+  async register(@Body() data: RegisterReq) {
+    const rv = await validate({
+      email: data.email,
+      validateSMTP: false, // cause SMTP mail box check is unreliable (few servers allow it), and this lib doesnt even check ports other than 25
+    })
+    if (!rv.valid) {
+      throw new BadRequestException([`Invalid email: ${rv.validators[rv.reason].reason}`])
+    }
+
     return this.authService.register(data);
   }
 
@@ -86,10 +95,10 @@ export class AuthController {
       const user = await this.usersService.user({
         email
       })
-  
+
       const payload: JwtPayload = { email: user.email, sub: user.id, expiresAt: nextDay() }
       const jwt = this.jwtService.sign(payload)
-  
+
       this.ee.emit('user.reset-password', user, jwt)
 
       return true
