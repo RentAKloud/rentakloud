@@ -26,7 +26,7 @@
     "@solidjs/router": "^0.7.0",
     "@stripe/stripe-js": "^1.52.1",
     "@tailwindcss/typography": "^0.5.10",
-    "daisyui": "^3.2.1",
+    "daisyui": "^4.6.1",
     "solid-js": "^1.6.10",
     "solid-stripe": "^0.2.4"
   }

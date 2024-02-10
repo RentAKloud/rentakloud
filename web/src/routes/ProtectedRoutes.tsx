@@ -5,7 +5,7 @@ const Checkout = lazy(() => import('~/pages/Checkout/Checkout'));
 
 import InstanceDashboard from '~/pages/InstanceDashboard/InstanceDashboard';
 import Overview from '~/pages/InstanceDashboard/Overview';
-import VNC from "~/pages/InstanceDashboard/VNC";
+const VNC = lazy(() => import("~/pages/InstanceDashboard/VNC"));
 import SSH from '~/pages/InstanceDashboard/SSH';
 import SiteAndSSL from '~/pages/InstanceDashboard/SiteAndSSL';
 import Database from '~/pages/InstanceDashboard/Database';
