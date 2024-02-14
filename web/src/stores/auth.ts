@@ -1,7 +1,7 @@
 import { createStore } from "solid-js/store"
-import AuthApi from "../api/auth";
-import { ls_keys } from "../config/constants";
-import { User } from "../types/user";
+import AuthApi from "~/api/auth";
+import { ls_keys } from "~/config/constants";
+import { User } from "~/types/user";
 
 const initialState = {
   access_token: localStorage.getItem(ls_keys.ACCESS_TOKEN),

@@ -3,6 +3,7 @@ import { Component, createSignal, onMount } from "solid-js";
 import AuthApi from "~/api/auth";
 import Hero from "~/components/Hero/Hero";
 import DefaultLayout from "~/layouts/DefaultLayout";
+import { getUserProfile } from "~/stores/auth";
 
 const ConfirmEmail: Component = () => {
   const [params] = useSearchParams()
@@ -18,6 +19,7 @@ const ConfirmEmail: Component = () => {
 
       if (!error && result === 'true') {
         setConfirmed(true)
+        getUserProfile() // refresh user data to remove the unconfirmed email notice
         setTimeout(() => {
           navigate("/dashboard")
         }, 3000)
