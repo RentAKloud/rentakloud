@@ -1,6 +1,6 @@
 import { Accessor, Resource, Setter } from "solid-js";
 import { Part } from "solid-js/store";
-import { CartItem, Product, ProductPrice } from "./product";
+import { CartItem, Product, ProductPrice, ProductType } from "./product";
 import { Stripe } from "@stripe/stripe-js";
 import { User } from "./user";
 import { SelectOption } from "./ui";
@@ -43,14 +43,7 @@ export type Order = {
   shippingZip: string;
   shippingCountry: string;
 
-  items: {
-    product: {
-      id: number
-      name: string
-      prices: ProductPrice[]
-    }
-    quantity: number
-  }[];
+  items: OrderItem[];
   coupons: CouponCode[];
   shipping: ShippingMethod & { amount: string }
   taxes: (Omit<Tax, 'amount'> & { amount: string })[]
@@ -60,7 +53,18 @@ export type Order = {
   createdAt: string;
   updatedAt: string;
 
-  amount?: number; // only in create response
+  amount: number; // does not includes subscriptions total in create response
+}
+
+export type OrderItem = {
+  priceId?: string
+  product: {
+    id: number
+    name: string
+    prices: ProductPrice[]
+    productType: ProductType
+  }
+  quantity: number
 }
 
 export type CouponCode = {

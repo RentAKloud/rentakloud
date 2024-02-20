@@ -4,6 +4,8 @@ import { OnEvent } from '@nestjs/event-emitter';
 import { Order, OrderStatus, User } from '@prisma/client';
 import { UsersService } from './users.service';
 import { ConfigService } from '@nestjs/config';
+import { OrderItem } from 'src/types/order';
+import { OrdersService } from './orders.service';
 
 @Injectable()
 export class MailService {
@@ -11,6 +13,7 @@ export class MailService {
     private mailerService: MailerService,
     private readonly config: ConfigService,
     private readonly usersService: UsersService,
+    private readonly ordersService: OrdersService
   ) { }
 
   async _sendUserConfirmation(user: User, token: string) {
@@ -55,15 +58,25 @@ export class MailService {
     })
   }
 
+  generateOrderInfo(order: Order) {
+    const items = order.items as OrderItem[]
+    let currency = items[0].product.prices[0].currency || items[0].product.prices[0].prices[0].currency
+
+    return {
+      subTotal: this.ordersService.calculateSubtotal(items),
+      taxesTotal: (order.taxes as any[]).reduce((curr, next) => curr + +next.amount, 0).toFixed(2),
+      currency
+    }
+  }
+
   @OnEvent('order.created')
   async sendOrderReceivedNotification(order: Order) {
     const user = await this.usersService.user({ id: order.userId })
-    const subTotal = order.items.reduce<number>((curr, next: any) => {
-      const amount = next.product.prices[0].saleAmount || next.product.prices[0].amount
-      return curr + amount * next.quantity
-    }, 0)
-    const taxesTotal = (order.taxes as any[]).reduce((curr, next) => curr + +next.amount, 0).toFixed(2)
-    const currency = (order.items[0] as any).product.prices[0].currency
+    const {
+      subTotal,
+      taxesTotal,
+      currency
+    } = this.generateOrderInfo(order)
 
     await this.mailerService.sendMail({
       to: user.email,
@@ -88,12 +101,11 @@ export class MailService {
     }
 
     const user = await this.usersService.user({ id: order.userId })
-    const subTotal = order.items.reduce<number>((sum, next: any) => {
-      const amount = next.product.prices[0].saleAmount || next.product.prices[0].amount
-      return sum + amount * next.quantity
-    }, 0)
-    const taxesTotal = (order.taxes as any[]).reduce((curr, next) => curr + next.amount, 0)
-    const currency = (order.items[0] as any).product.prices[0].currency
+    const {
+      subTotal,
+      taxesTotal,
+      currency
+    } = this.generateOrderInfo(order)
     const commonContext = {
       name: user.firstName + " " + user.lastName,
       order,

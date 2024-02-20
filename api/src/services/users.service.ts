@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
-import { Prisma, Profile, User } from "@prisma/client";
+import { Address, Order, Prisma, Profile, User } from "@prisma/client";
 import { PrismaService } from "./prisma.service";
+import { OnEvent } from "@nestjs/event-emitter";
 
 @Injectable()
 export class UsersService {
@@ -84,5 +85,40 @@ export class UsersService {
     return this.prisma.user.delete({
       where,
     });
+  }
+
+  @OnEvent('order.created')
+  async updateAddressBook(order: Order) {
+    const billingAddress: Address = {
+      firstName: order.billingFirstName,
+      lastName: order.billingLastName,
+      address: order.billingAddress,
+      address2: order.billingAddress2,
+      city: order.billingCity,
+      state: order.billingState,
+      zip: order.billingZip,
+      country: order.billingCountry,
+      email: order.billingEmail,
+      // phone: order.billingPhone,
+      profileUserId: order.userId,
+      id: null,
+    }
+    const shippingAddress: Address = {
+      firstName: order.shippingFirstName,
+      lastName: order.shippingLastName,
+      address: order.shippingAddress,
+      address2: order.shippingAddress2,
+      city: order.shippingCity,
+      state: order.shippingState,
+      zip: order.shippingZip,
+      country: order.shippingCountry,
+      email: null,
+      profileUserId: order.userId,
+      id: null,
+    }
+
+    this.prisma.address.create({
+      data: billingAddress
+    })
   }
 }

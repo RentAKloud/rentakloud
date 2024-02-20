@@ -145,7 +145,7 @@ export const CheckoutProvider: Component<{ children: JSXElement }> = (props) => 
     const { city, state, zip, country } = shippingSameAsBilling() ? orderStore.billingAddress : orderStore.shippingAddress
 
     if (city || state || zip || country) {
-      const { result, error } = await OrdersApi.estimateTaxes({ city, state, country, zip }, getCartTotal())
+      const { result, error } = await OrdersApi.estimateTaxes({ city, state, country, zip }, cart.items)
       if (!error) {
         setOrderStore({
           taxes: result!
@@ -183,13 +183,12 @@ export const CheckoutProvider: Component<{ children: JSXElement }> = (props) => 
     try {
       setInTransit(true)
 
-      const physicalItems = cart.items.filter(i => getProductById(i.productId)?.productType === ProductType.Physical)
       // Sometimes order will get created but payment can be failed, so we add !order() check to not
       // create order again
-      if (!order() && physicalItems.length > 0) {
+      if (!order() && cart.items.length > 0) {
         const orderResp = await OrdersApi.create({
           ...orderStore,
-          items: physicalItems, // TODO should only need to send IDs here
+          items: cart.items,
           shippingSameAsBilling: shippingSameAsBilling()
         })
         if (!orderResp.error) {
@@ -201,7 +200,7 @@ export const CheckoutProvider: Component<{ children: JSXElement }> = (props) => 
       }
 
       if (getCartTotal() <= ONLINE_ORDER_AMOUNT_LIMIT) {
-        await _paymentsFlow(physicalItems.length > 0)
+        await _paymentsFlow()
       } else {
         checkoutSuccessful()
       }
@@ -212,8 +211,8 @@ export const CheckoutProvider: Component<{ children: JSXElement }> = (props) => 
     }
   }
 
-  async function _paymentsFlow(chargeOrder: boolean) {
-    if (chargeOrder || isContinuingOrder()) {
+  async function _paymentsFlow() {
+    if (order()!.amount! > 0 || isContinuingOrder()) {
       // orderResp.amount excludes amount for subscriptions
       const resp2 = await PaymentsApi.createPaymentIntent(user!.email, order()!.amount!)
       if (!resp2.error) {

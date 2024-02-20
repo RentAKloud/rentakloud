@@ -1,8 +1,8 @@
 import { Component, For, Show } from "solid-js";
-import { getPlanPrice, getProductPrice } from "~/stores/products";
 import { useCheckoutContext } from "./context";
 import { formatPrice, getOrderSubTotal, getTotalDiscounts } from "~/utils";
 import CrossIcon from "~/components/icons/Cross";
+import { orderItemDisplayData } from "../Orders/_Order_Details";
 
 export const OrderDetails: Component = () => {
   const { step, order } = useCheckoutContext()
@@ -28,18 +28,14 @@ export const OrderDetails: Component = () => {
         <For each={order()!.items} fallback={"Your cart is empty."}>
           {
             (item) => {
+              const { interval, formattedPrice } = orderItemDisplayData(item)
               const product = () => item.product
-              const price = () => getProductPrice(product(), product().prices[0].prices![0].priceId)
-              //@ts-ignore orders dont contain subscriptions yet
-              const planPrice = () => getPlanPrice(price(), item.priceId!)
-              const interval = () => planPrice()!.priceId ? ` - ${price().planName} ${planPrice()!.interval}ly` : ""
-              const formattedPrice = () => formatPrice(price().saleAmount || price().amount)
 
               return (
                 <div class="flex justify-between">
-                  <div>{product().name} <Show when={interval()}><span innerHTML={interval()} /></Show></div>
+                  <div>{product().name} <Show when={interval}><span innerHTML={interval} /></Show></div>
                   <div>
-                    <span>{formattedPrice()}</span>
+                    <span>{formattedPrice}</span>
                     <span> <CrossIcon class="inline w-5" /> {item.quantity}</span>
                   </div>
                 </div>

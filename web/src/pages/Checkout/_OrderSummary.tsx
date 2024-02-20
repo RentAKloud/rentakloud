@@ -1,7 +1,7 @@
-import { Component, For, Show } from "solid-js";
+import { Component, Show } from "solid-js";
 import { formatPrice, getOrderSubTotal, getTotalDiscounts } from "~/utils";
 import { useCheckoutContext } from "./context";
-import { getPlanPrice, getProductPrice } from "~/stores/products";
+import OrderDetails from "../Orders/_Order_Details";
 
 export const OrderSummary: Component = () => {
   const { order } = useCheckoutContext()
@@ -24,41 +24,7 @@ export const OrderSummary: Component = () => {
     <div class="w-full md:w-1/2">
       <h3 class="font-bold mb-2">Order Summary</h3>
       <Show when={order()}>
-        <table class="table mb-2">
-          <thead>
-            <tr>
-              <th>Sr.</th>
-              <th>Product</th>
-              <th>Unit Price</th>
-              <th>Quantity</th>
-              <th>Total</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            <For each={order()!.items} fallback={"This order seems empty."}>
-              {(item, i) => {
-                const product = item.product
-                const price = () => getProductPrice(product)
-                //@ts-ignore orders dont contain subscriptions yet
-                const planPrice = () => getPlanPrice(price(), item.priceId!)
-                const interval = () => planPrice() ? ` - ${price().planName} ${planPrice()!.interval}ly` : ""
-                const formattedPrice = () => formatPrice(price().saleAmount || price().amount)
-                const formattedTotal = () => formatPrice((price().saleAmount || price().amount) * item.quantity)
-
-                return (
-                  <tr>
-                    <td>{i() + 1}</td>
-                    <td>{product.name} <Show when={interval()}><span innerHTML={interval()} /></Show></td>
-                    <td>{formattedPrice()}</td>
-                    <td>{item.quantity}</td>
-                    <td>{formattedTotal()}</td>
-                  </tr>
-                )
-              }}
-            </For>
-          </tbody>
-        </table>
+        <OrderDetails order={order()!} />
 
         <div class="flex justify-end gap-4">
           <div class="flex flex-col ">

@@ -11,6 +11,8 @@ import { CouponsService } from '../services/coupons.service';
 import { ShippingZonesService } from '../services/shipping-zones.service';
 import { ShippingMethodsService } from '../services/shipping-methods.service';
 import { OrderItem, CartItem } from 'src/types/order';
+import { Plan, PlanPrice } from 'src/types/instances.dto';
+import { Price } from 'src/types/product.dto';
 
 @ApiTags('Orders')
 @Controller('orders')
@@ -81,7 +83,9 @@ export class OrdersController {
       }
     })
     // TODO validate coupons
-    data.coupons = {
+
+    const order: Prisma.OrderCreateInput = data
+    order.coupons = {
       create: coupons.map(c => ({
         couponCodeId: c.id,
         title: c.title,
@@ -93,7 +97,6 @@ export class OrdersController {
       }))
     }
 
-    // TODO we should also just select the specific price
     const products = await this.productsService.products({
       where: {
         id: {
@@ -101,36 +104,53 @@ export class OrdersController {
         },
       },
     })
-    const productsSelectedFields = products.map(p => ({
-      id: p.id, name: p.name, prices: p.prices, productType: p.productType
+    const productsSelectedFields = products.map((p, i) => ({
+      id: p.id, name: p.name,
+      // just select the specific price
+      prices: p.productType === ProductType.OnlineService ?
+        p.prices.filter((plan: Plan) => plan.prices.find(pr => pr.priceId === items[i].priceId)) :
+        p.prices.filter((pr: any) => pr.currency === 'USD'),
+      productType: p.productType
     }))
 
-    data.user = { connect: { id: req.user.userId } }
-    data.items = items
-      .filter((_, i) => products[i].productType === ProductType.Physical)
+    order.user = { connect: { id: req.user.userId } }
+    order.items = items
+      // .filter((_, i) => products[i].productType === ProductType.Physical)
       .map((item, i) => {
-        const d: any = {
+        const d: OrderItem = {
           quantity: item.quantity,
+          //@ts-ignore
           product: productsSelectedFields[i],
         }
 
         if (item.isTrial) {
           d.isTrial = item.isTrial
         }
+        if (item.priceId) {
+          d.priceId = item.priceId
+        }
+
         return d
       })
 
-    // TODO stock validation
+    // stock validation
+    const outOfStock = items
+      .filter(i => products.find(p => p.id === i.productId).productType === ProductType.Physical)
+      .find(i => i.quantity > products.find(p => p.id === i.productId).stock)
+    if (outOfStock) {
+      return new BadRequestException(`${outOfStock.productId} is out of stock`)
+    }
 
     // Calculate order total amount. This amount is used for confirmCardPayment at frontend.
     // excludes amount for subscriptions
-    const subTotal = new Prisma.Decimal(data.items.reduce<number>((sum: number, curr: OrderItem) => {
-      if (curr.product.productType === ProductType.OnlineService) {
-        return sum
-      }
-      const amount = curr.product.prices[0].saleAmount || curr.product.prices[0].amount
-      return sum + amount * curr.quantity
-    }, 0))
+    let subscriptionsTotal = order.items
+      .filter((i: OrderItem) => !!i.priceId)
+      .reduce<number>((sum, curr: OrderItem) => sum + (curr.isTrial ? 0 : curr.product.prices[0].prices.find((pr: PlanPrice) => pr.priceId === curr.priceId).amount), 0)
+    const subTotal = new Prisma.Decimal(
+      this.ordersService.calculateSubtotal(order.items as OrderItem[])
+    )
+
+    // Calculate discounts based on coupons
     const discounts = coupons.reduce((sum, curr) => {
       const apply = (value: number) => curr.type === CouponType.Percentage ?
         value * curr.percentageDiscount / 100 :
@@ -138,12 +158,14 @@ export class OrdersController {
 
       const applicableProducts = curr.products.map(p => p.id)
       if (applicableProducts.length > 0) {
-        return data.items.reduce<number>(
-          (psum, pcurr: OrderItem) =>
+        return (order.items as OrderItem[])
+          .filter(i => i.product.productType === ProductType.Physical)
+          .reduce((psum, pcurr: OrderItem) =>
             applicableProducts.includes(pcurr.product.id) ?
               apply(pcurr.product.prices[0].amount * pcurr.quantity) :
               psum
-          , 0) + sum
+            , 0)
+          + sum
       }
 
       return apply(subTotal.toNumber()) + sum
@@ -152,7 +174,7 @@ export class OrdersController {
     // Shipping costs
     const sm = await this.shippingMethodsService.shippingMethod({ id: shippingMethodId })
     const shippingTotal = this.evalShippingCost(sm.cost, products)
-    data.shipping = {
+    order.shipping = {
       ...sm,
       amount: shippingTotal.toFixed(2)
     }
@@ -160,27 +182,27 @@ export class OrdersController {
     // Get tax rates and calculate taxes
     const rates = await this.taxRatesService.taxRates({
       where: {
-        countryCode: data.shippingCountry,
+        countryCode: order.shippingCountry,
         // zip,
-        stateCode: data.shippingState
+        stateCode: order.shippingState
       }
     })
-    data.taxes = rates.map(r => ({
+    order.taxes = rates.map(r => ({
       title: r.name,
-      amount: (r.rate.toNumber() * subTotal.toNumber()).toFixed(2),
+      amount: (r.rate.toNumber() * (subTotal.toNumber() - subscriptionsTotal)).toFixed(2),
       rate: r.rate.toNumber()
     }))
     const taxesTotal = rates.reduce((sum, curr) => {
-      return sum + subTotal.toNumber() * curr.rate.toNumber()
+      return sum + (subTotal.toNumber() - subscriptionsTotal) * curr.rate.toNumber()
     }, 0)
 
     const amountTotal = subTotal.toNumber() + shippingTotal + taxesTotal - discounts
-    data.amount = new Prisma.Decimal(amountTotal.toFixed(2))
+    order.amount = new Prisma.Decimal(amountTotal.toFixed(2))
 
-    const order = await this.ordersService.createOrder(data)
+    const _order = await this.ordersService.createOrder(order)
+    _order.amount = new Prisma.Decimal(_order.amount.toNumber() - subscriptionsTotal)
 
-    // TODO save address for reuse in user profile (maybe in users.service)
-    return order
+    return _order
   }
 
   @UseGuards(JwtAuthGuard)
@@ -196,7 +218,20 @@ export class OrdersController {
   @Post('/estimate-taxes')
   async estimateTaxes(@Body() body) {
     const { country, zip, state } = body.address
-    const amount = body.amount
+    const items: CartItem[] = body.items
+    const products = await this.productsService.products({
+      where: {
+        id: { in: items.map(i => i.productId) },
+        productType: ProductType.Physical
+      },
+    })
+    const amount = items.reduce((sum, curr) => {
+      const product = products.find(p => p.id === curr.productId)
+      if (!product) {
+        return sum
+      }
+      return sum + (product.prices[0] as Price).amount * curr.quantity
+    }, 0)
 
     const rates = await this.taxRatesService.taxRates({
       where: {

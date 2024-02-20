@@ -1,9 +1,9 @@
 import { PipeTransform, Injectable, ArgumentMetadata } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
-import { CreateOrderReq } from 'src/types/order';
+import { CartItem, CreateOrderReq } from 'src/types/order';
 
-export type ParsedCreateOrderReq = Prisma.OrderCreateInput & {
-  items: any[]
+export type ParsedCreateOrderReq = Omit<Prisma.OrderCreateInput, 'items'> & {
+  items: CartItem[]
 }
 
 @Injectable()

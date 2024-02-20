@@ -5,6 +5,7 @@ import { MailService } from '../services/mail.service';
 import { join } from 'path';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UsersModule } from './users.module';
+import { OrdersModule } from './orders.module';
 
 @Global()
 @Module({
@@ -46,6 +47,7 @@ import { UsersModule } from './users.module';
     }),
 
     UsersModule,
+    OrdersModule,
   ],
   providers: [MailService],
   exports: [MailService],

@@ -30,12 +30,14 @@
         align="left">
         <span class="woocommerce-Price-amount amount">
           <span class="woocommerce-Price-currencySymbol">
-            {{ product.prices.0.currency }}
+            {{ ../currency }}
           </span>
           {{#if product.prices.0.saleAmount }}
           {{ product.prices.0.saleAmount }}
-          {{else}}
+          {{else if product.prices.0.amount }}
           {{ product.prices.0.amount }}
+          {{else}} {{!-- should be a subscription in this case --}}
+          {{ product.prices.0.prices.0.amount }}
           {{/if}}
         </span>
       </td>
@@ -66,11 +68,11 @@
         style="color: #636363; border: 1px solid #e5e5e5; vertical-align: middle; padding: 12px; text-align: left;"
         align="left">
         {{#if order.shipping.name }}
-          {{ order.shipping.name }}
-          <span class="woocommerce-Price-currencySymbol">
-            {{ currency }}
-          </span>
-          {{ order.shipping.amount }}
+        {{ order.shipping.name }}
+        <span class="woocommerce-Price-currencySymbol">
+          {{ currency }}
+        </span>
+        {{ order.shipping.amount }}
         {{/if}}
       </td>
     </tr>

@@ -20,7 +20,6 @@ docker compose --env-file ../api/.env up -d
 Next you'll need to create the required databases. It can be done using the Adminer Web UI available at localhost:9000, or you can CLI into the docker container and do it there. The required database names are:
 
 - rentakloud
-- glitchtip
 
 Next run the migrations (see Database section for commands), and optionally seed the db.
 

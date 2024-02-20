@@ -5,8 +5,9 @@ export type InstanceAddon = {
   quantity: number
 }
 
-type PlanPrice = {
+export type PlanPrice = {
   amount: number
+  currency: string
   priceId: string
   interval: string
 }

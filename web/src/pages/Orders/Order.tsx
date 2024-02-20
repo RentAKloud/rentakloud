@@ -5,6 +5,8 @@ import Loader from "~/components/Loader";
 import { DateTime } from "~/components/DateTime";
 import { formatPrice, getOrderSubTotal, getTotalDiscounts } from "~/utils";
 import { OrderStatus } from "~/types/order";
+import { getPlanPrice } from "~/stores/products";
+import OrderDetails from "./_Order_Details";
 
 const Order: Component = () => {
   const params = useParams<{ id: string }>()
@@ -83,41 +85,9 @@ const Order: Component = () => {
           </div>
         </div>
 
-        <table class="table mb-14">
-          <thead>
-            <tr>
-              <th>Sr.</th>
-              <th>Product</th>
-              <th>Unit Price</th>
-              <th>Quantity</th>
-              <th>Total</th>
-            </tr>
-          </thead>
+        <OrderDetails order={order()!} />
 
-          <tbody>
-            <For each={order()!.items} fallback={"This order seems empty."}>
-              {
-                (item, i) => {
-                  const product = item.product
-                  const price = () => product.prices[0]
-                  const interval = () => price().priceId ? ` &cross; ${price().planName} ${price().interval}ly` : ""
-                  const formattedPrice = () => formatPrice(price().saleAmount || price().amount)
-                  const formattedTotal = () => formatPrice((price().saleAmount || price().amount) * item.quantity)
-
-                  return (
-                    <tr>
-                      <td>{i() + 1}</td>
-                      <td>{product.name} <Show when={interval()}><span innerHTML={interval()} /></Show></td>
-                      <td>{formattedPrice()}</td>
-                      <td>{item.quantity}</td>
-                      <td>{formattedTotal()}</td>
-                    </tr>
-                  )
-                }
-              }
-            </For>
-          </tbody>
-        </table>
+        <div class="mb-16" />
 
         <div class="flex justify-between gap-6">
           <div>

@@ -1,7 +1,9 @@
 import { Injectable } from "@nestjs/common";
-import { CouponCodeToOrder, Order, Prisma } from "@prisma/client";
+import { CouponCodeToOrder, Order, Prisma, ProductType } from "@prisma/client";
 import { PrismaService } from "./prisma.service";
 import { EventEmitter2 } from "@nestjs/event-emitter";
+import { OrderItem } from "src/types/order";
+import { PlanPrice } from "src/types/instances.dto";
 
 @Injectable()
 export class OrdersService {
@@ -81,5 +83,17 @@ export class OrdersService {
     return this.prisma.order.delete({
       where,
     });
+  }
+
+  calculateSubtotal(items: OrderItem[]) {
+    return items.reduce<number>((sum, curr: OrderItem) => {
+      let amount = curr.product.prices[0].saleAmount || curr.product.prices[0].amount
+
+      if (curr.product.productType === ProductType.OnlineService) {
+        amount = curr.isTrial ? 0 : curr.product.prices[0].prices.find((pr: PlanPrice) => pr.priceId === curr.priceId).amount
+      }
+
+      return sum + amount * curr.quantity
+    }, 0)
   }
 }

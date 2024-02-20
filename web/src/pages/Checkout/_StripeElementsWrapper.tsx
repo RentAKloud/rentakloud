@@ -1,4 +1,4 @@
-import { createEffect } from "solid-js"
+import { createEffect, createSignal } from "solid-js"
 import { Card, useStripeElements } from "solid-stripe"
 import { useCheckoutContext } from "./context"
 import { NotificationService } from "~/services/NotificationService"
@@ -11,11 +11,13 @@ export const StripeElementsWrapper = () => {
     setSubscriptionsPaid, setIsCardInfoComplete
   } = useCheckoutContext()
   const elements = useStripeElements()
+  const [confirming, setConfirming] = createSignal(false)
 
   createEffect(async () => {
     if (!clientSecret()) return
 
     try {
+      setConfirming(true)
       const result = await stripe()!.confirmCardPayment(clientSecret()!, {
         payment_method: {
           card: elements().getElement(Card)!,
@@ -34,12 +36,14 @@ export const StripeElementsWrapper = () => {
       console.log(err)
     } finally {
       setInTransit(false)
+      setConfirming(false)
     }
   })
 
   createEffect(() => {
 
     if (subClientSecrets() === undefined || subClientSecrets()!.length === 0) return
+    if (confirming()) return
 
     try {
       const results: PaymentIntentResult[] = [];

@@ -30,7 +30,7 @@ export const Congrats: Component = () => {
       </div>
 
       <p class="mb-6 max-w-xl">
-        Your order has been placed successfully! You'll receive an email soon with the your order details.
+        Your order has been placed successfully! You'll receive an email soon with the order details.
         We will also email you once your order has been shipped.
       </p>
 

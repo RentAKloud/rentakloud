@@ -1,4 +1,5 @@
 import { CouponCode, CouponType, Order } from "./types/order"
+import { ProductType } from "./types/product"
 
 export function formatPrice(amount: number, currency = 'usd') {
   const f = new Intl.NumberFormat('en-US', {
@@ -19,8 +20,8 @@ export function truncate(text: string, limit: number): string {
 
 export function getOrderSubTotal(order: Order) {
   return order.items.reduce((sum, curr) => {
-    const price = curr.product.prices[0]
-    return sum + +(price.saleAmount || price.amount)
+    const price = curr.product.productType === ProductType.Physical ? curr.product.prices[0] : curr.product.prices[0].prices![0]
+    return sum + +(price.saleAmount || price.amount) * curr.quantity
   }, 0)
 }
 
