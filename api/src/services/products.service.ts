@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { Order, OrderStatus, Prisma, Product, UserProductStatus } from "@prisma/client";
+import { Order, OrderStatus, Prisma, Product } from "@prisma/client";
 import { PrismaService } from "./prisma.service";
 import { EventEmitter2, OnEvent } from "@nestjs/event-emitter";
 

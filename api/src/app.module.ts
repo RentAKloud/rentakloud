@@ -18,6 +18,7 @@ import { CouponsModule } from './modules/coupons.module';
 import { UsersModule } from './modules/users.module';
 import { OptionsModule } from './modules/options.module';
 import { StatsModule } from './modules/stats.module';
+import { InstancesModule } from './modules/instances.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { StatsModule } from './modules/stats.module';
 
     AuthModule,
     ProductsModule,
+    InstancesModule,
     CategoriesModule,
     PaymentsModule,
     OrdersModule,

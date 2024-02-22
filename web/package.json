@@ -20,6 +20,7 @@
     "vite-tsconfig-paths": "^4.2.0"
   },
   "dependencies": {
+    "@dotlottie/player-component": "^2.7.10",
     "@kobalte/core": "^0.9.8",
     "@modular-forms/solid": "^0.19.1",
     "@sentry/browser": "^7.57.0",

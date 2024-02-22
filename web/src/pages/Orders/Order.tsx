@@ -5,7 +5,6 @@ import Loader from "~/components/Loader";
 import { DateTime } from "~/components/DateTime";
 import { formatPrice, getOrderSubTotal, getTotalDiscounts } from "~/utils";
 import { OrderStatus } from "~/types/order";
-import { getPlanPrice } from "~/stores/products";
 import OrderDetails from "./_Order_Details";
 
 const Order: Component = () => {

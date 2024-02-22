@@ -1,10 +1,24 @@
-import { Component, Show, onMount } from "solid-js"
+import { Component, Match, Show, Switch, createEffect, createResource, onMount } from "solid-js"
 //@ts-ignore
 import RFB from "./novnc/core/rfb.js"
 import { useInstanceContext } from "./context"
+import InstancesApi from "~/api/instances.js"
+import Loader from "~/components/Loader.jsx"
 
 const VNC: Component<{}> = () => {
   const { instance } = useInstanceContext()
+  const [initialized, { refetch }] = createResource(async () => {
+    if (!instance.latest) return null
+    const { result, error } = await InstancesApi.initVNCTunnel('vm2002')
+    if (error) throw error
+    return result
+  })
+
+  createEffect(() => {
+    if (instance.latest) {
+      refetch()
+    }
+  })
 
   onMount(() => {
     let rfb: RFB;
@@ -76,10 +90,10 @@ const VNC: Component<{}> = () => {
 
     // Read parameters specified in the URL query string
     // By default, use the host and port of server that served this file
-    const host = readQueryVariable('host', window.location.hostname);
-    let port = readQueryVariable('port', 6001);
+    const host = readQueryVariable('host', 'rentakloud.com');
+    const port = readQueryVariable('port', 443);
     const password = readQueryVariable('password', '');
-    const path = readQueryVariable('path', '');
+    const path = readQueryVariable('path', 'vm2003');
 
     // | | |         | | |
     // | | | Connect | | |
@@ -92,7 +106,7 @@ const VNC: Component<{}> = () => {
     if (window.location.protocol === "https:") {
       url = 'wss';
     } else {
-      url = 'ws';
+      url = 'wss';
     }
     url += '://' + host;
     if (port) {
@@ -128,11 +142,23 @@ const VNC: Component<{}> = () => {
         </svg>
       </button>
 
-      <Show
-        when={instance.latest?.status === "Active"}
-        fallback={<div>Oh snap! Looks like the VM is not running.</div>}>
-        <div id="screen" />
-      </Show>
+      <Switch>
+        <Match when={instance.loading || initialized.loading}>
+          <Loader />
+        </Match>
+
+        <Match when={instance.latest?.status !== "Active"}>
+          <div>Oh snap! Looks like the VM is not running.</div>
+        </Match>
+
+        <Match when={initialized.latest === "true"}>
+          <div id="screen" />
+        </Match>
+
+        <Match when={initialized.latest === "false"}>
+          <div>Could not establish a secure tunnel to VM. Try again later or contact support@rentakloud.com</div>
+        </Match>
+      </Switch>
     </>
   )
 }

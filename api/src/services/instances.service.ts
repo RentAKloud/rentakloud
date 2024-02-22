@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { Prisma, UserProductStatus } from "@prisma/client";
 import { PrismaService } from "./prisma.service";
 import { EventEmitter2 } from "@nestjs/event-emitter";
+import { spawn } from "child_process";
 
 @Injectable()
 export class InstancesService {
@@ -64,5 +65,34 @@ export class InstancesService {
     this.ee.emit("user_product.deleted", result)
 
     return result
+  }
+
+  initIPSecTunnel(vmId: string) {
+    return new Promise((res, rej) => {
+      const child = spawn(`ipsec down ${vmId}; ipsec up ${vmId}`, {
+        shell: true,
+      })
+
+      child.on('exit', (code, signal) => {
+        // child.stdout.on('data', (chunk) => {
+        //   res(chunk.toString())
+        // })
+        const output: string = child.stdout.read()?.toString()
+        if (code === 0 && output && output.includes("established successfully")) {
+          res(true)
+        } else {
+          res(false)
+        }
+      })
+
+      // child.on('message', (msg) => {
+      //   console.log(msg)
+      //   res(msg)
+      // })
+
+      child.on('error', (err) => {
+        rej(err)
+      })
+    })
   }
 }

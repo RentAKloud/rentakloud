@@ -10,24 +10,25 @@ class ProductsApi {
     return await HttpService.get(`/products/${id}`)
   }
 
+  // TODO remove from here to instances
   static async instances(): ApiResponse<Instance[]> {
-    return await HttpService.get("/products/me")
+    return await HttpService.get("/instances")
   }
 
   static async instance(id: string): ApiResponse<Instance> {
-    return await HttpService.get(`/products/me/${id}`)
+    return await HttpService.get(`/instances/${id}`)
   }
 
   static async createActiveProducts(subscriptions: SubscriptionData[]) {
-    return await HttpService.post("/products/me", { subscriptions })
+    return await HttpService.post("/instances", { subscriptions })
   }
 
   static async updateInstance(id:string, instance: Partial<Instance>) {
-    return await HttpService.patch(`/products/me/${id}`, instance)
+    return await HttpService.patch(`/instances/${id}`, instance)
   }
 
   static async deleteInstance(id: string) {
-    return await HttpService.delete(`/products/me/${id}`)
+    return await HttpService.delete(`/instances/${id}`)
   }
 }
 

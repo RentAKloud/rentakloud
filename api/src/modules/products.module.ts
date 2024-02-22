@@ -3,12 +3,11 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 import { ProductsController } from '../controllers/products.controller';
 import { ProductsService } from '../services/products.service';
 import { PrismaModule } from './prisma.module';
-import { InstancesService } from '../services/instances.service';
 
 @Module({
   imports: [PrismaModule, EventEmitterModule],
   controllers: [ProductsController],
-  providers: [ProductsService, InstancesService],
+  providers: [ProductsService],
   exports: [ProductsService]
 })
 export class ProductsModule { }

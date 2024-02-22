@@ -9,6 +9,7 @@ import { company } from "~/config/constants";
 import { LayoutProps } from "~/types/ui";
 import { authStore, logout } from "~/stores/auth";
 import NoticeEmailConfirmation from "~/components/NoticeEmailConfirmation";
+import Crash from "~/pages/error/Crash";
 
 const DefaultLayout: Component<LayoutProps> = (props) => {
   createEffect(() => {
@@ -36,8 +37,8 @@ const DefaultLayout: Component<LayoutProps> = (props) => {
         {/* <!-- Page content here --> */}
 
         <main class="bg-base-200">
-          <ErrorBoundary fallback={"Something went wrong"}>
-          {props.children}
+          <ErrorBoundary fallback={<Crash withoutLayout />}>
+            {props.children}
           </ErrorBoundary>
         </main>
 
