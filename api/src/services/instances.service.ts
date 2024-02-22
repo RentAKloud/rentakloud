@@ -69,7 +69,7 @@ export class InstancesService {
 
   initIPSecTunnel(vmId: string) {
     return new Promise((res, rej) => {
-      const child = spawn(`ipsec down ${vmId}; ipsec up ${vmId}`, {
+      const child = spawn(`/sbin/ipsec down ${vmId}; /sbin/ipsec up ${vmId}"`, {
         shell: true,
       })
 

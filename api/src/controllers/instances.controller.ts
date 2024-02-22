@@ -24,11 +24,10 @@ export class InstancesController {
     return this.instancesService.createUserProducts(subscriptions, req.user.userId)
   }
 
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Post('/setup-vnc-tunnel')
   setupVNCTunnel(@Body() body) {
     const { vmId } = body
-    for (let i = 0; i < 1e9; i++) { }
     return this.instancesService.initIPSecTunnel(vmId)
   }
 
