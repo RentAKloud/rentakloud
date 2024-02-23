@@ -1,6 +1,6 @@
-import { Body, Controller, Get, Param, ParseIntPipe, Patch, Post, Request, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, Query, Request, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { Notification } from '@prisma/client';
+import { Notification, Prisma } from '@prisma/client';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 import { NotificationService } from 'src/services/notifications.service';
 
@@ -13,9 +13,18 @@ export class NotificationsController {
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  orders(@Request() req) {
+  orders(
+    @Request() req,
+    @Query() { status }
+  ) {
+    const filters: Prisma.NotificationWhereInput = {
+      userId: req.user.userId,
+    }
+
+    if (status) filters.status = status
+
     return this.notificationsService.notifications({
-      where: { userId: req.user.userId },
+      where: filters,
       orderBy: { createdAt: 'desc' }
     })
   }

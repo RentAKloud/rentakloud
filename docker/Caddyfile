@@ -3,9 +3,31 @@
 }
 
 rentakloud.com {
-  root * /srv/web/
-  try_files {path} /index.html
-  file_server
+  handle /vm20* {
+    reverse_proxy /vm2001 192.168.10.193:7001
+    reverse_proxy /vm2002 192.168.10.193:7002
+    reverse_proxy /vm2003 192.168.10.193:7003
+    reverse_proxy /vm2004 192.168.10.193:7004
+    reverse_proxy /vm2005 192.168.10.193:7005
+    reverse_proxy /vm2006 192.168.10.193:7006
+    reverse_proxy /vm2007 192.168.10.193:7007
+    reverse_proxy /vm2008 192.168.10.193:7008
+    reverse_proxy /vm2009 192.168.10.193:7009
+    reverse_proxy /vm2010 192.168.10.193:7010
+  }
+
+  handle /novnc {
+    root * /srv/novnc/
+    file_server {
+      index vnc.html
+    }
+  }
+
+  handle {
+    root * /srv/web/
+    try_files {path} /index.html
+    file_server
+  }
 }
 
 www.rentakloud.com {

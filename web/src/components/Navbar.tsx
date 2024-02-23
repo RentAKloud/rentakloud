@@ -1,16 +1,17 @@
 import { Component, For, Match, Show, Switch } from "solid-js";
 import { Link } from "@solidjs/router";
 import { company } from "~/config/constants";
-import { authStore } from "~/stores/auth";
-import { productsMenu } from "~/config/data";
-import { cart } from "~/stores/cart";
 import MenuIcon from "./icons/Menu";
 import BellIcon from "./icons/Bell";
 import { DateTime } from "./DateTime";
-import { NotificationStatus } from "~/types/notification";
 import EyeIcon from "./icons/Eye";
 import ProfileDropdown from "./ProfileDropdown";
-import { notifications } from "~/stores/global";
+import { productsMenu } from "~/config/data";
+import { cart } from "~/stores/cart";
+import { authStore } from "~/stores/auth";
+import { notifications, refetch as refetchNotifications } from "~/stores/global";
+import NotificationsApi from "~/api/notifications";
+import { NotificationStatus } from "~/types/notification";
 
 const Navbar: Component<{}> = () => {
   const loggedIn = () => !!authStore.user
@@ -134,7 +135,7 @@ const Notifications: Component = () => {
         <Show when={notifications.error}>
           Something went wrong.
         </Show>
-        <Show when={!notifications.loading && notifications.latest!.length === 0}>
+        <Show when={notifications.latest && notifications.latest.length === 0}>
           No notifications yet.
         </Show>
 
@@ -149,7 +150,10 @@ const Notifications: Component = () => {
                       "font-bold": notification.status === NotificationStatus.Created
                     }}
                   >{notification.title}</h4>
-                  <button title="Mark as Read">
+                  <button class="hover:text-accent" title="Mark as read" onclick={async () => {
+                    await NotificationsApi.updateStatus(notification.id, NotificationStatus.Read)
+                    setTimeout(refetchNotifications, 1000)
+                  }}>
                     <EyeIcon />
                   </button>
                 </div>

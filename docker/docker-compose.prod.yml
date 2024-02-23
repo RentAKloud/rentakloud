@@ -10,6 +10,7 @@ services:
       - ./Caddyfile:/etc/caddy/Caddyfile
       - /www/web:/srv/web # Serving static files
       - /www/admin:/srv/admin
+      - /www/novnc:/srv/novnc
       - caddy_data:/data
       - caddy_config:/config
 
