@@ -8,8 +8,8 @@ import Loader from "~/components/Loader.jsx"
 const VNC: Component<{}> = () => {
   const { instance } = useInstanceContext()
   const [initialized, { refetch }] = createResource(async () => {
-    if (!instance.latest) return null
-    const { result, error } = await InstancesApi.initVNCTunnel('vm2002')
+    if (!instance.latest?.vncPath) return null
+    const { result, error } = await InstancesApi.initVNCTunnel(instance.latest!.vncPath)
     if (error) throw error
     return result
   })
@@ -94,7 +94,7 @@ const VNC: Component<{}> = () => {
       const host = readQueryVariable('host', 'rentakloud.com');
       const port = readQueryVariable('port', 443);
       const password = readQueryVariable('password', '');
-      const path = readQueryVariable('path', 'vm2002');
+      const path = readQueryVariable('path', instance.latest!.vncPath!);
 
       // | | |         | | |
       // | | | Connect | | |
@@ -138,29 +138,36 @@ const VNC: Component<{}> = () => {
 
   return (
     <>
-      <h2 class="text-4xl font-bold mb-5">Stream</h2>
-      <p>Your VM's GUI output will be streamed here using our optimized VNC technology.</p>
-      <button class="btn" onclick={() => document.getElementById("screen")?.requestFullscreen()}>
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9m5.25 11.25h-4.5m4.5 0v-4.5m0 4.5L15 15" />
-        </svg>
-      </button>
+      <section class="mb-4">
+        <h2 class="text-4xl font-bold mb-5">Stream</h2>
+        <p class="mb-2">Your VM's GUI output will be streamed here using our optimized VNC technology.</p>
+
+        <button class="btn" title="Fullscreen" onclick={() => document.getElementById("screen")?.requestFullscreen()}>
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9m5.25 11.25h-4.5m4.5 0v-4.5m0 4.5L15 15" />
+          </svg>
+        </button>
+      </section>
 
       <Switch>
         <Match when={instance.loading || initialized.loading}>
           <Loader />
         </Match>
 
-        <Match when={instance.latest?.status !== "Active"}>
+        <Match when={instance.latest!.status !== "Active"}>
           <div>Oh snap! Looks like the VM is not running.</div>
         </Match>
 
-        <Match when={initialized.latest === "true"}>
-          <div id="screen" />
+        <Match when={!instance.latest!.vncPath}>
+          Looks like the VM is not configured properly.
         </Match>
 
         <Match when={initialized.latest === "false"}>
           <div>Could not establish a secure tunnel to VM. Try again later or contact support@rentakloud.com</div>
+        </Match>
+
+        <Match when={initialized.latest === "true"}>
+          <div id="screen" />
         </Match>
       </Switch>
     </>

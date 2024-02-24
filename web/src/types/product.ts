@@ -53,6 +53,7 @@ export type Instance = {
   product: Product;
   addons: InstanceAddon[]
   createdAt: string;
+  vncPath?: string;
   status: "Pending" | "Active" | "Inactive";
 }
 

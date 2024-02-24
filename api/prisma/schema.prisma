@@ -138,6 +138,9 @@ model UserToProducts {
   //
   title          String            @default("")
   addons         Json              @default("[]")
+  meta           Json              @default("{}")
+  // stuff from servers
+  vncPath        String            @default("")
   //
   createdAt      DateTime          @default(now())
   updatedAt      DateTime          @default(now())
