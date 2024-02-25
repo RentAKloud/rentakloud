@@ -4,6 +4,7 @@ import RFB from "./novnc/core/rfb.js"
 import { useInstanceContext } from "./context"
 import InstancesApi from "~/api/instances.js"
 import Loader from "~/components/Loader.jsx"
+import { authStore } from "~/stores/auth.js"
 
 const VNC: Component<{}> = () => {
   const { instance } = useInstanceContext()
@@ -94,7 +95,7 @@ const VNC: Component<{}> = () => {
       const host = readQueryVariable('host', 'rentakloud.com');
       const port = readQueryVariable('port', 443);
       const password = readQueryVariable('password', '');
-      const path = readQueryVariable('path', instance.latest!.vncPath!);
+      const path = readQueryVariable('path', instance.latest!.vncPath! + `?token=${authStore.access_token}`);
 
       // | | |         | | |
       // | | | Connect | | |
