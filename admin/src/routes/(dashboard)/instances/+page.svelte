@@ -1,6 +1,6 @@
 <script lang="ts">
   import { Http } from "$lib/http";
-  import type { Category } from "$lib/types";
+  import type { Instance } from "$lib/types";
   import {
     TableBody,
     TableBodyCell,
@@ -11,18 +11,27 @@
     TableSearch,
     Button,
   } from "flowbite-svelte";
+  import { TrashBinSolid } from "flowbite-svelte-icons";
   import { onMount } from "svelte";
 
   let searchTerm = "";
-  let items: Category[] = [];
+  let items: Instance[] = [];
   $: filteredItems = items.filter(
     (item) => item.title.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1,
   );
 
   async function loadData() {
-    const { result } = await Http.get<Category[]>("/categories");
+    const { result } = await Http.get<Instance[]>("/instances");
     if (result) {
       items = result;
+    }
+  }
+
+  async function deleteInstance(id: string) {
+    const { result } = await Http.delete(`/instances/${id}`);
+
+    if (result) {
+      loadData();
     }
   }
 
@@ -32,19 +41,19 @@
 </script>
 
 <svelte:head>
-  <title>Categories</title>
+  <title>Instances</title>
 </svelte:head>
 
 <section class="p-5">
   <h1 class="text-2xl font-semibold text-left text-gray-900 dark:text-white">
-    Categories
+    Instances
   </h1>
   <p class="mt-1 text-sm font-normal text-gray-500 dark:text-gray-400">
-    Manage product categories from here.
+    Manage VM instances from here.
   </p>
 
   <div class="mt-4">
-    <Button href="/categories/new">New</Button>
+    <Button href="/instances/new">New</Button>
   </div>
 </section>
 
@@ -54,9 +63,9 @@
       <Checkbox />
     </TableHeadCell>
     <TableHeadCell>ID</TableHeadCell>
-    <TableHeadCell>Title</TableHeadCell>
-    <TableHeadCell>Slug</TableHeadCell>
-    <TableHeadCell>Product Count</TableHeadCell>
+    <TableHeadCell>Display name</TableHeadCell>
+    <TableHeadCell>Status</TableHeadCell>
+    <TableHeadCell>VNC Path</TableHeadCell>
     <TableHeadCell>
       <span class="sr-only">Edit</span>
     </TableHeadCell>
@@ -69,14 +78,21 @@
         </TableBodyCell>
         <TableBodyCell>{item.id}</TableBodyCell>
         <TableBodyCell>{item.title}</TableBodyCell>
-        <TableBodyCell>{item.slug}</TableBodyCell>
-        <TableBodyCell>-</TableBodyCell>
-        <TableBodyCell>
+        <TableBodyCell>{item.status}</TableBodyCell>
+        <TableBodyCell>{item.vncPath}</TableBodyCell>
+        <TableBodyCell tdClass="flex gap-4 items-center py-4">
           <a
-            href={`/categories/${item.id}`}
+            href={`/instances/${item.id}`}
             class="font-medium text-primary-600 hover:underline dark:text-primary-500"
             >Edit</a
           >
+          <Button
+            size="xs"
+            outline
+            on:click={() => item.id && deleteInstance(item.id)}
+          >
+            <TrashBinSolid />
+          </Button>
         </TableBodyCell>
       </TableBodyRow>
     {/each}

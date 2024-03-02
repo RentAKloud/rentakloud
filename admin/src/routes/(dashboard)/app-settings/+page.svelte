@@ -1,19 +1,26 @@
 <script lang="ts">
   import { Http } from "$lib/http";
+  import type { Option } from "$lib/types";
   import { Toggle } from "flowbite-svelte";
   import { onMount } from "svelte";
 
-  let data;
+  let options: any;
   async function loadData() {
-    const { result } = await Http.get<{ key: string; value: string }>("/options");
+    const { result } = await Http.get<Option[]>("/options");
     if (result) {
-      data = result;
+      result.forEach((o) => {
+        options[o.key] = o.value;
+      });
     }
   }
 
   onMount(() => {
     loadData();
   });
+
+  function submit() {
+    const _options = Object.keys(options).map((k) => ({ [k]: options[k] }));
+  }
 </script>
 
 <svelte:head>
@@ -30,5 +37,8 @@
 </section>
 
 <section>
-  <Toggle>Stripe Test Mode</Toggle>
+  <Toggle class="mb-4" bind:value={options.isStripeTestMode}
+    >Stripe Test Mode</Toggle
+  >
+  <Toggle bind:value={options[""]}>Disable Checkout</Toggle>
 </section>

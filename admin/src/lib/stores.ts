@@ -1,6 +1,5 @@
 import { writable } from "svelte/store";
 
-
 type User = {
   email: string
   firstName: string
@@ -27,3 +26,12 @@ export const auth = writable<AuthState>({
     return !!this.token
   }
 })
+
+export function logout() {
+  auth.update((a) => {
+    a.user = undefined;
+    a.token = undefined;
+    localStorage.removeItem("access_token");
+    return a;
+  });
+}

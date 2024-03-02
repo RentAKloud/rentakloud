@@ -14,26 +14,22 @@
     FooterLink,
   } from "flowbite-svelte";
   import "../app.css";
-  import { UserType, auth } from "$lib/stores";
+  import { UserType, auth, logout } from "$lib/stores";
   import { Http } from "$lib/http";
-  import { onDestroy } from "svelte";
 
-  const unsub = auth.subscribe(async (a) => {
-    if (a.isLoggedIn() && !a.user) {
-      const { result } = await Http.get("/auth/me");
-      auth.update((aa) => {
-        aa.user = result;
-        return aa;
-      });
+  async function getUser() {
+    const { result } = await Http.get("/auth/me");
+    if (result) {
+      $auth.user = result;
     }
-  });
+    return result;
+  }
 
-  function logout() {
-    auth.update((a) => {
-      a.user = undefined;
-      a.token = undefined;
-      localStorage.removeItem("access_token");
-      return a;
+  $: if ($auth.isLoggedIn() && !$auth.user) {
+    getUser().then((user) => {
+      if (!user) {
+        logout();
+      }
     });
   }
 
@@ -43,8 +39,6 @@
       logout();
     }
   }
-
-  onDestroy(unsub);
 </script>
 
 <svelte:head>

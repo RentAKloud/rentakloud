@@ -1,7 +1,7 @@
 <script lang="ts">
   import { page } from "$app/stores";
   import { Http } from "$lib/http";
-  import { OrderStatus, type Order } from "$lib/types";
+  import { OrderStatus, type Order, type CouponCode } from "$lib/types";
   import {
     formatDateForDB,
     getOrderSubTotal,
@@ -17,8 +17,6 @@
     Select,
     Table,
     TableBody,
-    TableBodyCell,
-    TableBodyRow,
     TableHead,
     TableHeadCell,
   } from "flowbite-svelte";
@@ -26,6 +24,7 @@
   import { onMount } from "svelte";
   import BillingInfo from "./BillingInfo.svelte";
   import ShippingInfo from "./ShippingInfo.svelte";
+  import OrderItem from "./OrderItem.svelte";
 
   let order: Order;
   const id = $page.params.id;
@@ -42,9 +41,10 @@
     loadData();
   });
 
+  type UpdateOrder = Omit<Order, "coupons"> & { coupons?: CouponCode[] }
   async function update() {
     errors = {};
-    const data: Order = order;
+    const data: UpdateOrder = order;
 
     if (data.coupons) {
       delete data.coupons;
@@ -77,12 +77,23 @@
     order.createdAt = new Date(createdAt).toISOString().split(".")[0];
   }
 
-  const subTotal = () => (order ? getOrderSubTotal(order) : 0);
+  const subTotal = () => (order ? getOrderSubTotal(order!) : 0);
   const discounts = () =>
-    order ? getTotalDiscounts(order.coupons!, subTotal()) : 0;
+    order
+      ? getTotalDiscounts(
+          order.coupons!,
+          subTotal(),
+          order.items.map((i) => ({
+            id: i.product.id,
+            price: i.product.prices[0].amount,
+            qty: i.quantity,
+          })),
+        )
+      : 0;
+  const shipping = () => (order ? +order.shipping.amount : 0);
   const taxes = () =>
-    order ? order.taxes!.reduce((curr, next) => curr + next.amount, 0) : 0;
-  const finalTotal = () => subTotal() + taxes() - discounts();
+    order ? order.taxes!.reduce((curr, next) => curr + +next.amount, 0) : 0;
+  const finalTotal = () => subTotal() + shipping() + taxes() - discounts();
 </script>
 
 <svelte:head>
@@ -148,27 +159,7 @@
 
         <TableBody>
           {#each order.items as item, i}
-            {@const product = item.product}
-            {@const _price = product.prices[0]}
-            {@const interval = () =>
-              _price.priceId
-                ? ` &cross; ${_price.planName} ${_price.interval}ly`
-                : ""}
-            {@const formattedPrice = () =>
-              price(_price.saleAmount || _price.amount)}
-            {@const formattedTotal = () =>
-              price((_price.saleAmount || _price.amount) * item.quantity)}
-
-            <TableBodyRow>
-              <TableBodyCell>{i + 1}</TableBodyCell>
-              <TableBodyCell
-                >{product.name}
-                {#if interval()}<span>{interval()}</span>{/if}</TableBodyCell
-              >
-              <TableBodyCell>{formattedPrice()}</TableBodyCell>
-              <TableBodyCell>{item.quantity}</TableBodyCell>
-              <TableBodyCell>{formattedTotal()}</TableBodyCell>
-            </TableBodyRow>
+            <OrderItem {item} {i} />
           {/each}
         </TableBody>
       </Table>
@@ -188,7 +179,7 @@
         </div>
         <div class="flex justify-between">
           <strong>Shipping</strong>
-          <span>{price(0)}</span>
+          <span>{price(shipping())}</span>
         </div>
 
         <div class="flex justify-between mt-5">

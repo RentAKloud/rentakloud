@@ -2,7 +2,7 @@ import type { OutputData } from "@editorjs/editorjs"
 
 export class Product {
   constructor(
-    public id?: number,
+    public id: number = -1,
     public name: string = "",
     public slug: string = "",
     public shortDescription: string = "",
@@ -37,7 +37,7 @@ export type PlanPrice = {
   interval: "month" | "year";
   intervalCount?: string;
   currency: string;
-  amount?: number;
+  amount: number;
   saleAmount?: number;
 }
 
@@ -54,9 +54,9 @@ export type Addon = {
 
 export class Category {
   constructor(
-    public id: number,
-    public title: string,
-    public slug: string
+    public id: number = -1,
+    public title: string = "",
+    public slug: string = ""
   ) { }
 }
 
@@ -110,21 +110,40 @@ export class Order {
     public shippingZip: string,
     public shippingCountry: string,
 
-    public items: any[],
+    public items: OrderItem[],
     public status: OrderStatus,
     public notes: string,
 
     public createdAt: string | Date | null,
     public updatedAt: string,
 
-    public coupons?: CouponCode[],
-    public taxes?: any[],
-    public amount?: number,
+    public coupons: CouponCode[],
+    public shipping: ShippingMethod & { amount: string },
+    public taxes: any[],
+    public amount: number,
   ) { }
 
   static searchStr(order: Order) {
     return order.billingFirstName + " " + order.billingLastName + " " + order.billingEmail
   }
+}
+
+export type ShippingMethod = {
+  id: number
+  name: string
+  description: string
+  cost: number
+}
+
+export type OrderItem = {
+  priceId?: string
+  product: {
+    id: number
+    name: string
+    prices: ProductPrice[]
+    productType: ProductType
+  }
+  quantity: number
 }
 
 export type CouponCode = {
@@ -178,6 +197,25 @@ export enum OrderStatus {
   Completed = 'Completed',
   OnHold = 'OnHold',
   Cancelled = 'Cancelled',
+}
+
+export type Option = { key: string; value: string }
+
+export type Instance = {
+  id: string;
+  title: string
+  product: Product;
+  addons: InstanceAddon[]
+  createdAt: string;
+  vncPath?: string;
+  status: "Pending" | "Active" | "Inactive";
+}
+
+export type InstanceAddonKey = "cpu" | "ram" | "hdd" | "ssd"
+
+export type InstanceAddon = {
+  id: InstanceAddonKey
+  quantity: number
 }
 
 // TODO put this in proper place

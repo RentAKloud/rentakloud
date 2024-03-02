@@ -52,18 +52,18 @@
           <SidebarDropdownItem label="Categories" href="/categories" />
           <SidebarDropdownItem label="Coupons" href="/coupons" />
         </SidebarDropdownWrapper>
-        <SidebarItem label="Configs" {spanClass}>
+        <SidebarItem label="Instances" {spanClass} href="/instances">
           <svelte:fragment slot="icon">
             <GridSolid
               class="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
             />
           </svelte:fragment>
           <svelte:fragment slot="subtext">
-            <span
+            <!-- <span
               class="inline-flex justify-center items-center px-2 ml-3 text-sm font-medium text-gray-800 bg-gray-200 rounded-full dark:bg-gray-700 dark:text-gray-300"
             >
               Pro
-            </span>
+            </span> -->
           </svelte:fragment>
         </SidebarItem>
         <SidebarItem label="Inbox" {spanClass}>
