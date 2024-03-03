@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { Prisma, Option } from "@prisma/client";
 import { PrismaService } from "./prisma.service";
+import { JsonValue } from "@prisma/client/runtime/library";
 
 @Injectable()
 export class OptionsService {
@@ -18,12 +19,13 @@ export class OptionsService {
 
   async option(
     optionWhereUniqueInput: Prisma.OptionWhereUniqueInput,
-  ): Promise<Option | null> {
+  ): Promise<JsonValue | null> {
     const option = await this.prisma.option.findUnique({
       where: optionWhereUniqueInput,
+      select: { value: true }
     });
 
-    return option
+    return option.value
   }
 
   async options(params: {

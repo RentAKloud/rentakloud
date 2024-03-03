@@ -1,16 +1,14 @@
 <script lang="ts">
   import { Http } from "$lib/http";
   import type { Option } from "$lib/types";
-  import { Toggle } from "flowbite-svelte";
+  import { Toggle, Button } from "flowbite-svelte";
   import { onMount } from "svelte";
 
   let options: any;
   async function loadData() {
-    const { result } = await Http.get<Option[]>("/options");
+    const { result } = await Http.get<Option[]>("/options/app-settings");
     if (result) {
-      result.forEach((o) => {
-        options[o.key] = o.value;
-      });
+      options = result;
     }
   }
 
@@ -18,8 +16,9 @@
     loadData();
   });
 
-  function submit() {
-    const _options = Object.keys(options).map((k) => ({ [k]: options[k] }));
+  async function submit() {
+    const { result } = await Http.patch("/options/app-settings", options);
+    console.log(result);
   }
 </script>
 
@@ -36,9 +35,17 @@
   </p>
 </section>
 
-<section>
-  <Toggle class="mb-4" bind:value={options.isStripeTestMode}
-    >Stripe Test Mode</Toggle
-  >
-  <Toggle bind:value={options[""]}>Disable Checkout</Toggle>
-</section>
+{#if options}
+  <form on:submit={submit}>
+    <section class="mb-4">
+      <Toggle class="mb-4" bind:checked={options.isStripeTestMode}
+        >Stripe Test Mode</Toggle
+      >
+      <Toggle bind:checked={options.disableCheckout}>Disable Checkout</Toggle>
+    </section>
+
+    <Button type="submit">Save</Button>
+  </form>
+{:else}
+  <p class="text-gray-500 dark:text-gray-400">No options available right now</p>
+{/if}

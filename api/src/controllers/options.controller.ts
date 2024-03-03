@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Request, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Request, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 import { OptionsService } from '../services/options.service';
@@ -28,6 +28,15 @@ export class OptionsController {
   ) {
     const currUser = req.user.userId
     return this.optionsService.createOption(data)
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch('/:key')
+  updateOption(@Param('key') key: string, @Body() data) {
+    return this.optionsService.updateOption({
+      where: { key },
+      data: { value: data }
+    })
   }
 
   @UseGuards(JwtAuthGuard)
