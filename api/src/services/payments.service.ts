@@ -5,6 +5,7 @@ import { UsersService } from "./users.service";
 import { OnEvent } from "@nestjs/event-emitter";
 import { UserToProducts } from "@prisma/client";
 import { InstanceAddon, Plan } from "src/types/instances.dto";
+import { OptionsService } from "./options.service";
 
 
 @Injectable()
@@ -15,10 +16,15 @@ export class PaymentsService {
     private configService: ConfigService,
     private userService: UsersService,
   ) {
-    const stripeKey = this.configService.get('STRIPE_SECRET_KEY');
-    if (!this.stripe) {
-      this.stripe = new Stripe(stripeKey, { apiVersion: '2022-11-15' });
-    }
+    this.loadStripe()
+  }
+
+  @OnEvent('app-settings.changed')
+  loadStripe() {
+    const stripeKey = this.configService.get(
+      OptionsService.appSettings?.isStripeTestMode ? 'STRIPE_SECRET_KEY_TEST' : 'STRIPE_SECRET_KEY_LIVE'
+    );
+    this.stripe = new Stripe(stripeKey, { apiVersion: '2022-11-15' });
   }
 
   async createSubscription(email: string, priceId: string, isTrial?: boolean) {

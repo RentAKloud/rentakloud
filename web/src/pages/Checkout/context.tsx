@@ -14,6 +14,7 @@ import { CartItem, ProductType } from "~/types/product";
 import { ONLINE_ORDER_AMOUNT_LIMIT } from "~/config/constants";
 import { CountryCode, StateCode } from "~/types/common";
 import { HttpService } from "~/services/HttpService";
+import { appSettings } from "~/stores/global";
 
 const CheckoutContext = createContext<CheckoutContextProps>(defaultCheckout)
 
@@ -76,7 +77,10 @@ export const CheckoutProvider: Component<{ children: JSXElement }> = (props) => 
       setStep('address')
     }
 
-    const result = await loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY)
+    const result = await loadStripe(
+      appSettings.latest?.isStripeTestMode ?
+        import.meta.env.VITE_STRIPE_PUBLIC_KEY_TEST : import.meta.env.VITE_STRIPE_PUBLIC_KEY_LIVE
+    )
     setStripe(result)
   })
 

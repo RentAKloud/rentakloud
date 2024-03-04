@@ -9,7 +9,7 @@ import ProfileDropdown from "./ProfileDropdown";
 import { productsMenu } from "~/config/data";
 import { cart } from "~/stores/cart";
 import { authStore } from "~/stores/auth";
-import { notifications, refetch as refetchNotifications } from "~/stores/global";
+import { notifications, refetchNotifications } from "~/stores/global";
 import NotificationsApi from "~/api/notifications";
 import { NotificationStatus } from "~/types/notification";
 

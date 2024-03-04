@@ -71,6 +71,13 @@ async function main() {
       name: "Sales Tax"
     }
   })
+
+  await prisma.option.create({
+    data: {
+      key: 'app-settings',
+      value: { isStripeTestMode: true, disableCheckout: false }
+    }
+  })
 }
 
 main()

@@ -13,6 +13,7 @@ import { Coupons } from "./_Coupons";
 import { ShippingMethod } from "./steps/ShippingMethod";
 import Modal from "~/components/Modal";
 import { authStore } from "~/stores/auth";
+import { appSettings } from "~/stores/global";
 
 const _Checkout: Component = () => {
   const {
@@ -126,6 +127,22 @@ const _Checkout: Component = () => {
         actions={
           <>
             <button class="btn btn-sm" onclick={() => history.back()}>Go Back</button>
+            <button class="btn btn-sm btn-info" onclick={() => location.reload()}>Reload</button>
+          </>
+        }
+        hideCloseBtn
+      />
+
+      <Modal
+        isOpen={appSettings.latest?.disableCheckout}
+        title="Checkout Is Disabled Temporarily"
+        description={
+          <>
+            <p class="mb-2">Please check back later, or contact <a href="mailto:support@rentakloud.com">support@rentakloud.com</a></p>
+          </>
+        }
+        actions={
+          <>
             <button class="btn btn-sm btn-info" onclick={() => location.reload()}>Reload</button>
           </>
         }

@@ -14,7 +14,7 @@ export class OptionsController {
     return this.optionsService.options({})
   }
 
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   @Get('/:key')
   option(@Param('key') key: string) {
     return this.optionsService.option({ key })

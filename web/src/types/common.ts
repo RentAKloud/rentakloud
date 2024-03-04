@@ -5,3 +5,8 @@ export type Paginated<T> = {
 
 export type CountryCode = { name: string, code: string }
 export type StateCode = CountryCode
+
+export type AppSettings = {
+  isStripeTestMode: boolean
+  disableCheckout: boolean
+}

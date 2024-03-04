@@ -13,6 +13,7 @@ import { ShippingMethodsService } from '../services/shipping-methods.service';
 import { OrderItem, CartItem } from 'src/types/order';
 import { Plan, PlanPrice } from 'src/types/instances.dto';
 import { Price } from 'src/types/product.dto';
+import { OptionsService } from '../services/options.service';
 
 @ApiTags('Orders')
 @Controller('orders')
@@ -68,6 +69,9 @@ export class OrdersController {
     const { items } = data
     const shippingMethodId = req.body.shippingMethod.id
 
+    if (OptionsService.appSettings.disableCheckout) {
+      return new BadRequestException("Checkout is temporarily disabled")
+    }
     // check for duplicate coupons
     if (couponIds.length > 0 && couponIds.length != Array.from(new Set(couponIds)).length) {
       return new BadRequestException("A coupon code can be used only once per order")
