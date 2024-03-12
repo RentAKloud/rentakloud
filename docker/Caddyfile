@@ -1,60 +1,57 @@
 {
-  email mustaghees@rentakloud.com
+	email mustaghees@rentakloud.com
 }
 
 rentakloud.com {
-  handle /vm20* {
-    reverse_proxy /vm2001 192.168.10.193:7001
-    reverse_proxy /vm2002 192.168.10.193:7002
-    reverse_proxy /vm2003 192.168.10.193:7003
-    reverse_proxy /vm2004 192.168.10.193:7004
-    reverse_proxy /vm2005 192.168.10.193:7005
-    reverse_proxy /vm2006 192.168.10.193:7006
-    reverse_proxy /vm2007 192.168.10.193:7007
-    reverse_proxy /vm2008 192.168.10.193:7008
-    reverse_proxy /vm2009 192.168.10.193:7009
-    reverse_proxy /vm2010 192.168.10.193:7010
-  }
+	@vms path_regexp vm ^/vm20([0-9]{2})$
 
-  handle /novnc {
-    root * /srv/novnc/
-    file_server {
-      index vnc.html
-    }
-  }
+	handle @vms {
+		forward_auth api.rentakloud.com {
+			uri /auth/me?{query}
+		}
 
-  handle {
-    root * /srv/web/
-    try_files {path} /index.html
-    file_server
-  }
+		reverse_proxy /vm20{re.vm.1} 192.168.10.193:70{re.vm.1}
+	}
+
+	handle_path /novnc* {
+		root * /srv/novnc/
+		file_server browse
+	}
+
+	handle {
+		root * /srv/web/
+		encode gzip
+		try_files {path} /index.html
+		file_server
+	}
 }
 
 www.rentakloud.com {
-  redir https://rentakloud.com{uri}
+	redir https://rentakloud.com{uri}
 }
 
 admin.rentakloud.com {
-  root * /srv/admin/
-  try_files {path} /index.html
-  file_server
+	root * /srv/admin/
+	try_files {path} /index.html
+	file_server
 }
 
 # Since we run Caddy from Docker using `network_mode: host`,
 # we can use localhost here
 
 api.rentakloud.com {
-  reverse_proxy localhost:3000
+	encode gzip
+	reverse_proxy localhost:3000
 }
 
 gt.rentakloud.com {
-  reverse_proxy localhost:8000
+	reverse_proxy localhost:8000
 }
 
 monitor.rentakloud.com {
-  reverse_proxy localhost:9091
+	reverse_proxy localhost:9091
 }
 
 status.rentakloud.com {
-  reverse_proxy localhost:9100
+	reverse_proxy localhost:9100
 }
