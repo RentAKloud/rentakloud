@@ -100,27 +100,57 @@ const LandingInitial: Component = () => {
 
         <div class="grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-3 place-items-center">
           <PricingCard
-            planName="Basic Plan" ppm={5} showYearly={showYearly}
-            points={[
-              "2.8 GHz 8-core CPU", "20 GB Cloud storage",
-              "Integration help", "SSH Access", "24×7 phone & email support"
-            ]}
+            index={0}
+            plan={{
+              planName: "Basic Plan",
+              prices: [{
+                currency: "USD",
+                amount: 5,
+                priceId: "",
+                interval: "month"
+              }],
+              features: [
+                "2.8 GHz 8-core CPU", "20 GB Cloud storage",
+                "Integration help", "SSH Access", "24×7 phone & email support"
+              ]
+            }}
+            showYearly={showYearly}
             config="basic"
           />
           <PricingCard
-            planName="Standard Plan" ppm={15} showYearly={showYearly}
-            points={[
-              "3.4 GHz 8-core CPU", "50 GB Cloud storage",
-              "Integration help", "SSH Access", "24×7 phone & email support"
-            ]}
+            index={1}
+            plan={{
+              planName: "Standard Plan",
+              prices: [{
+                currency: "USD",
+                amount: 15,
+                priceId: "",
+                interval: "month"
+              }],
+              features: [
+                "3.4 GHz 8-core CPU", "50 GB Cloud storage",
+                "Integration help", "SSH Access", "24×7 phone & email support"
+              ]
+            }}
+            showYearly={showYearly}
             config="standard"
           />
           <PricingCard
-            planName="Enterprise" ppm={50} showYearly={showYearly}
-            points={[
-              "4 GHz 16-core CPU", "200 GB Cloud storage",
-              "Integration help", "SSH Access", "24×7 phone & email support"
-            ]}
+            index={1}
+            plan={{
+              planName: "Enterprise",
+              prices: [{
+                currency: "USD",
+                amount: 50,
+                priceId: "",
+                interval: "month"
+              }],
+              features: [
+                "4 GHz 16-core CPU", "200 GB Cloud storage",
+                "Integration help", "SSH Access", "24×7 phone & email support"
+              ]
+            }}
+            showYearly={showYearly}
             config="enterprise"
           />
         </div>

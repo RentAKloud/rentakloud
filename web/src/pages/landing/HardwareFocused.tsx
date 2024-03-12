@@ -1,10 +1,10 @@
 import { Component, For, Match, Switch } from "solid-js";
 import { Link } from "@solidjs/router";
 import Card from "~/components/Card/Card";
-import Testimonial from "~/components/Card/Testimonial";
 import { home } from "~/config/data";
 import { truncate } from "~/utils";
 import HeroWithBg from "~/components/Hero/HeroWithBg";
+import CardSkeleton from "~/components/Card/CardSkeleton";
 
 const LandingHardwareFocused: Component = () => {
 
@@ -40,7 +40,7 @@ const LandingHardwareFocused: Component = () => {
               (product) =>
                 <Switch>
                   <Match when={product === undefined}>
-                    <Card title="Loading..." />
+                    <CardSkeleton class="w-96" rowClass="h-8" rows={4} />
                   </Match>
 
                   <Match when={!!product}>
@@ -91,8 +91,8 @@ const LandingHardwareFocused: Component = () => {
         <div class="flex flex-col justify-center flex-1 p-10">
           <h2 class="text-4xl font-bold mb-5">What Makes Us Different?</h2>
           <p class="text-lg mb-10">We are committed to providing additional features and functionality compared to our competitors.
-          We like to stay at the forefront of technology and put a lot of emphasis on research and development of our products and servers to benefit our customers.
-          Our experienced team is committed to our continuous improvement process to offer solutions to problems others don't provide.</p>
+            We like to stay at the forefront of technology and put a lot of emphasis on research and development of our products and servers to benefit our customers.
+            Our experienced team is committed to our continuous improvement process to offer solutions to problems others don't provide.</p>
         </div>
       </section>
     </>

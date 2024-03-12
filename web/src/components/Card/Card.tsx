@@ -1,5 +1,5 @@
 import { Component, Show } from "solid-js";
-import { Card as _Card } from "../../types/ui";
+import { Card as _Card } from "~/types/ui";
 
 const Card: Component<_Card> = (props) => {
   const { title, description, img, actions, center = false } = props
