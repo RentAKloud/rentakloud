@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query, Request, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Request, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { UserToProducts } from '@prisma/client';
 import { JwtAuthGuard } from '../guards/jwt-auth.guard';
@@ -14,14 +14,14 @@ export class InstancesController {
   @UseGuards(JwtAuthGuard)
   @Get('')
   myInstances(@Request() req) {
-    return this.instancesService.userProducts(req.user.userId)
+    return this.instancesService.instances(req.user.userId)
   }
 
   @UseGuards(JwtAuthGuard)
   @Post('')
   createInstances(@Request() req) {
     const { subscriptions } = req.body
-    return this.instancesService.createUserProducts(subscriptions, req.user.userId)
+    return this.instancesService.createInstances(subscriptions, req.user.userId)
   }
 
   @UseGuards(JwtAuthGuard)
@@ -37,23 +37,22 @@ export class InstancesController {
     @Param('id') id: string,
     @Request() req
   ) {
-    return this.instancesService.userProduct(id, req.user.userId)
+    return this.instancesService.instance(id, req.user.userId)
   }
 
   @Patch('/:id')
-  updateInstance(@Param('id') id: string, @Body() reqBody: UserToProducts) {
-    return this.instancesService.updateUserProduct({
+  updateInstance(@Param('id') id: string, @Body() data: UserToProducts) {
+    return this.instancesService.updateInstance({
       where: {
         id
-      }, data: {
-        ...reqBody
-      }
+      },
+      data
     })
   }
 
   @UseGuards(JwtAuthGuard)
   @Delete('/:id')
   deleteInstance(@Param('id') id: string) {
-    return this.instancesService.deleteUserProduct(id)
+    return this.instancesService.deleteInstance(id)
   }
 }

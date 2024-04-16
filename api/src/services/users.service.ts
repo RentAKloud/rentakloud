@@ -89,7 +89,7 @@ export class UsersService {
 
   @OnEvent('order.created')
   async updateAddressBook(order: Order) {
-    const billingAddress: Address = {
+    const billingAddress: Prisma.AddressCreateInput = {
       firstName: order.billingFirstName,
       lastName: order.billingLastName,
       address: order.billingAddress,
@@ -100,10 +100,9 @@ export class UsersService {
       country: order.billingCountry,
       email: order.billingEmail,
       // phone: order.billingPhone,
-      profileUserId: order.userId,
-      id: null,
+      profile: { connect: { userId: order.userId } },
     }
-    const shippingAddress: Address = {
+    const shippingAddress: Prisma.AddressCreateInput = {
       firstName: order.shippingFirstName,
       lastName: order.shippingLastName,
       address: order.shippingAddress,
@@ -113,12 +112,20 @@ export class UsersService {
       zip: order.shippingZip,
       country: order.shippingCountry,
       email: null,
-      profileUserId: order.userId,
-      id: null,
+      profile: { connect: { userId: order.userId } },
     }
 
-    this.prisma.address.create({
-      data: billingAddress
-    })
+    // NOTE: For some reason, we have to use await here otherwise
+    // queries dont get executed. and errors block the process, so try catch
+    // Error is deliberately thrown in case of duplicate address (or when shipping & billing are same)
+    try {
+      await this.prisma.address.create({
+        data: billingAddress
+      })
+      await this.prisma.address.create({
+        data: shippingAddress
+      })
+    } catch (err) {
+    }
   }
 }

@@ -1,6 +1,6 @@
 import { BadRequestException, Body, Controller, Get, Param, ParseIntPipe, Post, Put, Request, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { CouponType, Order, Prisma, Product, ProductType, UserType } from '@prisma/client';
+import { CouponType, Order, Prisma, Product, ProductType, ShippingMethod, UserType } from '@prisma/client';
 import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 import { ParseOrderPipe, ParsedCreateOrderReq } from '../pipes/parse-order';
 import { OrdersService } from '../services/orders.service';
@@ -67,7 +67,7 @@ export class OrdersController {
   ) {
     const couponIds = req.body.couponCodes.map(cc => cc.id)
     const { items } = data
-    const shippingMethodId = req.body.shippingMethod.id
+    const shippingMethodId: number = req.body.shippingMethod?.id
 
     if (OptionsService.appSettings.disableCheckout) {
       return new BadRequestException("Checkout is temporarily disabled")
@@ -176,8 +176,11 @@ export class OrdersController {
     }, 0.0)
 
     // Shipping costs
-    const sm = await this.shippingMethodsService.shippingMethod({ id: shippingMethodId })
-    const shippingTotal = this.evalShippingCost(sm.cost, products)
+    let sm: ShippingMethod
+    if (shippingMethodId) {
+      sm = await this.shippingMethodsService.shippingMethod({ id: shippingMethodId })
+    }
+    const shippingTotal = sm ? this.evalShippingCost(sm.cost, products) : 0
     order.shipping = {
       ...sm,
       amount: shippingTotal.toFixed(2)

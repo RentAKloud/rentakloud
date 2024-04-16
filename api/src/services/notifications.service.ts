@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { Notification, NotificationStatus, Order, OrderStatus, Prisma, User } from "@prisma/client";
+import { Notification, NotificationStatus, Order, OrderStatus, Prisma, User, UserToProducts } from "@prisma/client";
 import { PrismaService } from "./prisma.service";
 import { OnEvent } from "@nestjs/event-emitter";
 
@@ -107,6 +107,16 @@ export class NotificationService {
       user: { connect: { id: order.userId } },
       title: notifications[order.status].title,
       body: notifications[order.status].body,
+      status: NotificationStatus.Created
+    })
+  }
+
+  @OnEvent('instance.created')
+  async instanceCreated(instance: UserToProducts) {
+    this.createNotification({
+      user: { connect: { id: instance.userId } },
+      title: `Your new instance ${instance.id} was created`,
+      body: `Your new instance will be ready to use shortly.`,
       status: NotificationStatus.Created
     })
   }
