@@ -53,7 +53,7 @@ model Profile {
 }
 
 model Address {
-  id            Int      @id @default(autoincrement())
+  id            Int     @id @default(autoincrement())
   profile       Profile @relation(fields: [profileUserId], references: [userId])
   profileUserId Int
   //
@@ -120,17 +120,15 @@ model Product {
 }
 
 // Instance configurations (also used as plans?)
-// model Config {
-//   id        Int              @id @default(autoincrement())
-//   name      String
-//   cpus      Int
-//   ram       Int // in GB
-//   ssd       Int
-//   hdd       Int
-//   // monthlyPrice Float
-//   // yearlyPrice  Float
-//   instances UserToProducts[]
-// }
+model Config {
+  id        Int              @id @default(autoincrement())
+  name      String
+  cpus      Int
+  ram       Float // in GB
+  ssd       Float
+  hdd       Float
+  instances UserToProducts[]
+}
 
 model UserToProducts {
   id             String            @id @default(uuid())
@@ -139,8 +137,8 @@ model UserToProducts {
   userId         Int
   product        Product           @relation(fields: [productId], references: [id])
   productId      Int
-  // config         Config?           @relation(fields: [configId], references: [id])
-  // configId       Int?
+  config         Config            @relation(fields: [configId], references: [id])
+  configId       Int
   //
   status         UserProductStatus @default(Inactive)
   subscriptionId String            @unique // stripe
@@ -150,8 +148,8 @@ model UserToProducts {
   meta           Json              @default("{}")
   // stuff from servers
   vncPath        String            @default("")
-  // privateIp      String            @default("")
-  // publicIp       String            @default("")
+  privateIp      String            @default("")
+  publicIp       String            @default("")
   //
   createdAt      DateTime          @default(now())
   updatedAt      DateTime          @default(now())

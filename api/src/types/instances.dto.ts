@@ -5,6 +5,13 @@ export type InstanceAddon = {
   quantity: number
 }
 
+export type CreateInstance = {
+  subscriptionId: string
+  priceId: string
+  productId: number
+  configId: number
+}
+
 export type PlanPrice = {
   amount: number
   currency: string
@@ -14,6 +21,7 @@ export type PlanPrice = {
 
 export type Plan = {
   planName: string
+  configId: number
   prices: PlanPrice[]
   addons: {
     id: InstanceAddonKey

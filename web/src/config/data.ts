@@ -61,6 +61,15 @@ export const productsMenu = () => [
       { title: "RAK Router", slug: "rak-router-1" }
     ]
   },
+  {
+    title: "Cloud Services",
+    slug: "?category=cloud-services",
+    submenu: products.latest
+      .filter(p => p.categories
+        .map(c => c.slug)
+        .includes("cloud-services"))
+      .map(p => ({ title: p.name, slug: p.slug }))
+  },
 ]
 
 export const home = () => ({

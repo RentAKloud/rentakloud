@@ -1,10 +1,9 @@
 import { Injectable } from "@nestjs/common";
-import { Prisma, UserProductStatus, UserToProducts } from "@prisma/client";
+import { Config, Prisma, UserProductStatus, UserToProducts } from "@prisma/client";
 import { PrismaService } from "./prisma.service";
-import { EventEmitter2, OnEvent } from "@nestjs/event-emitter";
+import { EventEmitter2 } from "@nestjs/event-emitter";
 import { spawn } from "child_process";
-
-type CreateInstance = { subscriptionId: string, priceId: string, productId: number }
+import { CreateInstance } from "src/types/instances.dto";
 
 @Injectable()
 export class InstancesService {
@@ -35,15 +34,17 @@ export class InstancesService {
             userId: userId,
             productId: i.productId,
             subscriptionId: i.subscriptionId,
+            configId: i.configId,
             status: UserProductStatus.Pending,
-          }
+          },
+          include: { config: true }
         })
       )
     )
 
     _instances.forEach((instance) => {
       this.ee.emit('instance.created', instance)
-      this.putJson(instance)
+      this.initProvisioning(instance)
     })
   }
 
@@ -106,26 +107,52 @@ export class InstancesService {
     })
   }
 
-  putJson(instance: UserToProducts) {
+  initProvisioning(instance: UserToProducts & {config: Config}) {
     return new Promise((res, rej) => {
-      const json = JSON.stringify({ id: instance.id, title: instance.title })
+      const d = {
+        id: instance.id, title: instance.title,
+        cpus: instance.config.cpus,
+        ram: instance.config.ram,
+        ssd: instance.config.ssd,
+        hdd: instance.config.hdd,
+      }
+      const json = JSON.stringify(d)
       const remote = "rkadmin@rentakloud.com"
 
       // Assuming our SSH id is added to the target server, so we are not prompted for password
-      const child = spawn(`echo '${json}' | ssh ${remote} 'cat > /tmp/db.json'`, {
+      // const child = spawn(`echo '${json}' | ssh ${remote} 'cat > /tmp/db.json'`, {
+      //   shell: true
+      // })
+
+      // Step 1: Save VM info in db.json
+      const vmType = 'win10pro'
+      const child = spawn(`ssh ${remote} '/home/scripts/crvminfo.sh 13005 7001 ${d.cpus} ${d.ram} ${d.hdd} ${vmType}'`, {
         shell: true
       })
+
+      /** Step 2: Use infra.json to figure out which rak/server to provision to */
+      const vmHost = 'rakserver03'
+      const hostIp = '192.168.10.193'
+      const slot = 6
+
+      // Step 3: Call distvms.sh
+      // const distVmChild = spawn(`ssh ${remote} '/home/scripts/distvms.sh 13005 ${vmHost} ${hostIp} ${slot}'`, {
+      //   shell: true
+      // })
 
       child.on('exit', (code, signal) => {
         const output: string = child.stdout.read()?.toString()
         if (code === 0) {
           res(true)
+          console.log("done")
         } else {
           res(false)
+          console.log(code, "something wrong", output)
         }
       })
 
       child.on('error', (err) => {
+        console.log(err)
         rej(err)
       })
     })
