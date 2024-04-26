@@ -24,7 +24,7 @@ export type HeroWithBgProps = {
   bgFixed?: boolean
 }
 
-export type Card = {
+export type CardProps = {
   title: string,
   description?: string | JSXElement,
   children?: JSXElement,
@@ -32,6 +32,8 @@ export type Card = {
   actions?: JSXElement,
   center?: boolean,
   class?: string
+  actionsAlign?: "center" | "left" | "right"
+  hasGradientShadow?: boolean
 }
 
 export type SearchProps = {

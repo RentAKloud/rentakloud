@@ -73,8 +73,12 @@ export const productsMenu = () => [
 ]
 
 export const home = () => ({
-  featuredHardware: [
+  featuredServices: [
     products.latest.find(p => p.slug === 'rak-daas'),
+    products.latest.find(p => p.slug === 'vps'),
+    products.latest.find(p => p.slug === 'shared-hosting'),
+  ],
+  featuredHardware: [
     products.latest.find(p => p.slug === 'rak-desktop'),
     products.latest.find(p => p.slug === 'rak-kvm'),
     products.latest.find(p => p.slug === 'rk-server-1'),

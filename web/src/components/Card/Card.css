@@ -1,0 +1,25 @@
+.gradient-shadow {
+  position: relative;
+  transform-style: preserve-3d;
+  overflow: unset !important;
+}
+
+.gradient-shadow::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  transform: translate3d(0, 0, -1px);
+  pointer-events: none;
+  transition: filter 0.3s ease;
+  background-clip: content-box !important;
+  padding: 1px;
+}
+
+.gradient-shadow::before {
+  background: linear-gradient(123deg, #008559 0%, #0073e5 50%, #6842ff 100%);
+}
+
+.gradient-shadow:hover::before {
+  filter: blur(15px);
+}

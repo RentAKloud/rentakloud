@@ -14,11 +14,11 @@ export function getProductPrice(product: Partial<Product>, priceId?: string): Pr
   if (priceId) {
     return product.prices?.find(p => p.prices!.find(px => px.priceId === priceId))!
   }
-  
+
   return product.prices![0]
 }
 
-export function getPlanPrice(plan: ProductPrice, priceId: string): PlanPrice|undefined {
+export function getPlanPrice(plan: ProductPrice, priceId: string): PlanPrice | undefined {
   return plan.prices?.find(p => p.priceId === priceId)
 }
 
