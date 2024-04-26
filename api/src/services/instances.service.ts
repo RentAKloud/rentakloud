@@ -107,7 +107,9 @@ export class InstancesService {
     })
   }
 
-  initProvisioning(instance: UserToProducts & {config: Config}) {
+  initProvisioning(instance: UserToProducts & {config: Config},
+    vmId?: number, custId?: number // for testing only (these are supposed to be system generated)
+  ) {
     return new Promise((res, rej) => {
       const d = {
         id: instance.id, title: instance.title,
@@ -126,7 +128,7 @@ export class InstancesService {
 
       // Step 1: Save VM info in db.json
       const vmType = 'win10pro'
-      const child = spawn(`ssh ${remote} '/home/scripts/crvminfo.sh 13005 7001 ${d.cpus} ${d.ram} ${d.hdd} ${vmType}'`, {
+      const child = spawn(`ssh ${remote} '/home/scripts/crvminfo.sh ${vmId} ${custId} ${d.cpus} ${d.ram} ${d.ssd} ${vmType}'`, {
         shell: true
       })
 
@@ -136,7 +138,12 @@ export class InstancesService {
       const slot = 6
 
       // Step 3: Call distvms.sh
-      // const distVmChild = spawn(`ssh ${remote} '/home/scripts/distvms.sh 13005 ${vmHost} ${hostIp} ${slot}'`, {
+      const distVmChild = spawn(`ssh ${remote} '/home/scripts/distvms.sh ${vmId} ${vmHost} ${hostIp} ${slot}'`, {
+        shell: true
+      })
+
+      // Step 4: Call depvm-on-all.sh
+      // const distVmChild = spawn(`ssh ${remote} '/home/scripts/depvm-on-all.sh ${vmId}'`, {
       //   shell: true
       // })
 

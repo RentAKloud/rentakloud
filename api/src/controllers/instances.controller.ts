@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Request, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, Request, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { UserToProducts } from '@prisma/client';
 import { JwtAuthGuard } from '../guards/jwt-auth.guard';
@@ -13,6 +13,28 @@ export class InstancesController {
     private readonly instancesService: InstancesService,
     private readonly productsService: ProductsService
   ) { }
+
+  @Get('test-provision')
+  test(
+    @Query('vmId') vmId,
+    @Query('custId') custId,
+    @Query('cpus') cpus,
+    @Query('ram') ram,
+    @Query('ssd') ssd,
+    @Query('hdd') hdd,
+  ) {
+    //@ts-ignore
+    return this.instancesService.initProvisioning(
+      {
+        // @ts-ignore
+        config: {
+          cpus, ram, ssd, hdd
+        },
+      },
+      vmId,
+      custId
+    )
+  }
 
   @UseGuards(JwtAuthGuard)
   @Get('')

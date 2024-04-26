@@ -42,6 +42,9 @@ export class ProductsController {
       reqBody.description = parser.parse(reqBody.descriptionEditor).join("")
     }
 
+    // TODO: can make CreateProduct a class and filter by properties
+    delete reqBody.id;
+
     return this.productsService.createProduct({
       ...reqBody,
       categories: {
