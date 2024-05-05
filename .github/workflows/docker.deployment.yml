@@ -47,7 +47,10 @@ jobs:
             cd $DOCKER_DEPLOY_DIR
             docker compose --env-file ../api/.env -f docker-compose.yml -f docker-compose.prod.yml up -d
             caddy_container_id=$(docker ps | grep caddy | awk '{print $1;}')
-            docker container restart $caddy_container_id
+            if [ ! -z $caddy_container_id ]
+            then
+              docker container restart $caddy_container_id
+            fi
 
     # steps:
     #   - uses: actions/checkout@v3

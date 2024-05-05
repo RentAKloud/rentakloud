@@ -39,51 +39,51 @@ services:
     environment:
       - ADMINER_DESIGN=hydra
 
-  redis:
-    image: redis
-    restart: unless-stopped
+  # redis:
+  #   image: redis
+  #   restart: unless-stopped
 
   # Error tracking service (Sentry compatible)
-  glitchtip-web:
-    image: glitchtip/glitchtip
-    depends_on: *glitchtip-depends_on
-    ports:
-      - 8000:8000
-    environment: *glitchtip-environment
-    restart: unless-stopped
-    volumes:
-      - glitchtip-uploads:/code/uploads
-  glitchtip-worker:
-    image: glitchtip/glitchtip
-    command: ./bin/run-celery-with-beat.sh
-    depends_on: *glitchtip-depends_on
-    environment: *glitchtip-environment
-    restart: unless-stopped
-    volumes:
-      - glitchtip-uploads:/code/uploads
-  glitchtip-migrate:
-    image: glitchtip/glitchtip
-    depends_on: *glitchtip-depends_on
-    command: "./manage.py migrate"
-    environment: *glitchtip-environment
+  # glitchtip-web:
+  #   image: glitchtip/glitchtip
+  #   depends_on: *glitchtip-depends_on
+  #   ports:
+  #     - 8000:8000
+  #   environment: *glitchtip-environment
+  #   restart: unless-stopped
+  #   volumes:
+  #     - glitchtip-uploads:/code/uploads
+  # glitchtip-worker:
+  #   image: glitchtip/glitchtip
+  #   command: ./bin/run-celery-with-beat.sh
+  #   depends_on: *glitchtip-depends_on
+  #   environment: *glitchtip-environment
+  #   restart: unless-stopped
+  #   volumes:
+  #     - glitchtip-uploads:/code/uploads
+  # glitchtip-migrate:
+  #   image: glitchtip/glitchtip
+  #   depends_on: *glitchtip-depends_on
+  #   command: "./manage.py migrate"
+  #   environment: *glitchtip-environment
 
   # Monitoring Metrics/Performance
-  prometheus:
-    image: bitnami/prometheus
-    ports:
-      - 9090:9090
-    volumes:
-      - prometheus-data:/opt/bitnami/prometheus/data
-      - ./prometheus.yml:/opt/bitnami/prometheus/conf/prometheus.yml
-    extra_hosts:
-      - host.docker.internal:host-gateway
+  # prometheus:
+  #   image: bitnami/prometheus
+  #   ports:
+  #     - 9090:9090
+  #   volumes:
+  #     - prometheus-data:/opt/bitnami/prometheus/data
+  #     - ./prometheus.yml:/opt/bitnami/prometheus/conf/prometheus.yml
+  #   extra_hosts:
+  #     - host.docker.internal:host-gateway
 
-  grafana:
-    image: grafana/grafana
-    ports:
-      - 9091:3000
-    volumes:
-      - grafana-data:/var/lib/grafana
+  # grafana:
+  #   image: grafana/grafana
+  #   ports:
+  #     - 9091:3000
+  #   volumes:
+  #     - grafana-data:/var/lib/grafana
 
   # Monitoring Uptime & Public Status Pages
   uptime-kuma:
@@ -98,7 +98,7 @@ services:
 
 volumes:
   pg-data:
-  glitchtip-uploads:
-  prometheus-data:
-  grafana-data:
+  # glitchtip-uploads:
+  # prometheus-data:
+  # grafana-data:
   uptime-kuma:
