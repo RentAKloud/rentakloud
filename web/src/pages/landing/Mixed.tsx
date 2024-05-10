@@ -109,6 +109,24 @@ const LandingMixed: Component = () => {
         </div>
       </section>
 
+      <section class="bg-base-200 flex flex-col-reverse md:flex-row-reverse md:py-10">
+        <div class="flex flex-col justify-center flex-1 p-10">
+          <h2 class="text-4xl font-bold mb-4">Want To Be Our Partners?</h2>
+          <p class="text-lg mb-4">Investing in cloud can go a long way. The global cloud computing market size was valued
+            at over $500 billion in 2023. And it is expected to reach ~$2 trillion USD by 2030.</p>
+          <p class="text-lg mb-4">Businesses are already looking for alternatives to big giants like AWS, Azure, GCP.
+            Join our hands to build the cloud platform for future.</p>
+          <div class="flex gap-4">
+            <a target="_blank" href="https://onedrive.live.com/?authkey=%21AjXbyqDY5PyC3Y8&cid=269151FCA3FBB26A&id=269151FCA3FBB26A%21164&parId=269151FCA3FBB26A%21162&o=OneUp" class="btn btn-info">Learn More</a>
+            <a href="/support" class="btn btn-outline btn-primary">Contact Us</a>
+          </div>
+        </div>
+
+        <div class="flex-1">
+          <img class="h-[500px] w-full object-contain" src="https://images.pexels.com/photos/1181354/pexels-photo-1181354.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" />
+        </div>
+      </section>
+
       <HeroWithBg
         title=""
         subtitle={`In a landscape saturated with options, RentAKloud stands out as the provider

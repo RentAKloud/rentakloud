@@ -1,7 +1,7 @@
 import { Component } from "solid-js";
 import { useSearchParams } from "@solidjs/router";
 import SearchIcon from "../icons/Search";
-import { SearchProps } from "../../types/ui";
+import { SearchProps } from "~/types/ui";
 
 const Search: Component<SearchProps> = (props) => {
   const [params, setParams] = useSearchParams()

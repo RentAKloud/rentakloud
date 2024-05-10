@@ -13,6 +13,7 @@ import Support from '~/pages/Support';
 const About = lazy(() => import('~/pages/About'));
 import GithubCallback from '~/pages/OAuth/GithubCallback';
 import Cart from '~/pages/Cart';
+const Careers = lazy(() => import('~/pages/Careers'));
 const PaymentMethods = lazy(() => import('~/pages/Legal/PaymentMethods'));
 const LegalHome = lazy(() => import('~/pages/Legal/LegalHome'));
 const PrivacyPolicy = lazy(() => import('~/pages/Legal/PrivacyPolicy'));
@@ -37,6 +38,7 @@ const PublicRoutes: Component = () => {
       </Route>
       <Route path="/services" component={Services} />
       <Route path="/support" component={Support} />
+      <Route path="/careers" component={Careers} />
       <Route path="/cart" component={Cart} />
 
       <Route path="/legal">
