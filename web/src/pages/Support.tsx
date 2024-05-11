@@ -1,6 +1,6 @@
 import { Component } from "solid-js";
 import DefaultLayout from "../layouts/DefaultLayout";
-import { createForm } from "@modular-forms/solid";
+import { createForm, email, required } from "@modular-forms/solid";
 import TextInput from "~/components/Inputs/TextInput";
 import { NotificationService } from "~/services/NotificationService";
 import Card from "~/components/Card/Card";
@@ -10,18 +10,20 @@ import MailIcon from "~/components/icons/Mail";
 import FacebookIcon from "~/components/icons/logos/Facebook";
 import TwitterIcon from "~/components/icons/logos/Twitter";
 import YoutubeIcon from "~/components/icons/logos/Youtube";
+import PublicApi from "~/api/public";
 
 type ContactForm = {
   email: string
   name: string
   subject: string
-  body: string
+  message: string
 }
 
 const Support: Component<{}> = () => {
   async function submitHandler(values: ContactForm) {
     try {
-      // await login(values.email, values.name)
+      await PublicApi.contactForm(values)
+      // console.log("sending", values)
     } catch (err: any) {
       if (err.message === "Unauthorized") {
         NotificationService.error("Invalid email or password")
@@ -31,7 +33,9 @@ const Support: Component<{}> = () => {
     }
   }
 
-  const [contactForm, { Form, Field }] = createForm<ContactForm>()
+  const [contactForm, { Form, Field }] = createForm<ContactForm>({
+    validateOn: 'input'
+  })
 
   return (
     <DefaultLayout>
@@ -79,7 +83,13 @@ const Support: Component<{}> = () => {
 
         <Card title="Contact Us" hasGradientShadow class="w-1/2">
           <Form onSubmit={submitHandler} class="flex flex-col gap-2">
-            <Field name="email">
+            <Field
+              name="email"
+              validate={[
+                required('Please enter your email.'),
+                email('Please enter a valid email address.'),
+              ]}
+            >
               {(field, props) => (
                 <TextInput
                   {...props}
@@ -94,7 +104,12 @@ const Support: Component<{}> = () => {
               )}
             </Field>
 
-            <Field name="name">
+            <Field
+              name="name"
+              validate={[
+                required('Please enter your name.'),
+              ]}
+            >
               {(field, props) => (
                 <TextInput
                   {...props}
@@ -109,7 +124,12 @@ const Support: Component<{}> = () => {
               )}
             </Field>
 
-            <Field name="subject">
+            <Field
+            name="subject"
+            validate={[
+              required('Please enter a subject.'),
+            ]}
+            >
               {(field, props) => (
                 <TextInput
                   {...props}
@@ -124,7 +144,12 @@ const Support: Component<{}> = () => {
               )}
             </Field>
 
-            <Field name="body">
+            <Field
+              name="message"
+              validate={[
+                required('A message is required.'),
+              ]}
+            >
               {(field, props) => (
                 <Textarea
                   {...props}

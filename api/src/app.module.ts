@@ -19,6 +19,7 @@ import { UsersModule } from './modules/users.module';
 import { OptionsModule } from './modules/options.module';
 import { StatsModule } from './modules/stats.module';
 import { InstancesModule } from './modules/instances.module';
+import { PublicController } from './controllers/public.controller';
 
 @Module({
   imports: [
@@ -43,7 +44,7 @@ import { InstancesModule } from './modules/instances.module';
     OptionsModule,
     StatsModule
   ],
-  controllers: [AppController],
+  controllers: [AppController, PublicController],
   providers: [AppService],
 })
 export class AppModule {}

@@ -141,4 +141,15 @@ export class MailService {
       to: user.email,
     });
   }
+
+  async contactForm(email: string, name: string, subject: string, message: string) {
+    await this.mailerService.sendMail({
+      to: "info@rentakloud.com",
+      subject,
+      html: `
+        <h3>From: ${email}</h3>
+        <p>${message}</p>
+      `
+    });
+  }
 }
