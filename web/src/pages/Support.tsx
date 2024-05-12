@@ -6,11 +6,11 @@ import { NotificationService } from "~/services/NotificationService";
 import Card from "~/components/Card/Card";
 import Textarea from "~/components/Inputs/Textarea";
 import HeroWithBg from "~/components/Hero/HeroWithBg";
-import MailIcon from "~/components/icons/Mail";
 import FacebookIcon from "~/components/icons/logos/Facebook";
 import TwitterIcon from "~/components/icons/logos/Twitter";
 import YoutubeIcon from "~/components/icons/logos/Youtube";
 import PublicApi from "~/api/public";
+import { Icon } from "~/components/icons";
 
 type ContactForm = {
   email: string
@@ -54,7 +54,7 @@ const Support: Component<{}> = () => {
 
           <div class="flex flex-col gap-4">
             <div class="flex gap-4 items-center">
-              <MailIcon />
+              <Icon.Mail />
               <a href="mailto:info@rentakloud.com" class="font-bold text-2xl">info@rentakloud.com</a>
             </div>
 

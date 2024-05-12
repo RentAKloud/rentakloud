@@ -1,10 +1,7 @@
 import { Component, For, Match, Show, Switch } from "solid-js";
 import { Link } from "@solidjs/router";
 import { company } from "~/config/constants";
-import MenuIcon from "./icons/Menu";
-import BellIcon from "./icons/Bell";
 import { DateTime } from "./DateTime";
-import EyeIcon from "./icons/Eye";
 import ProfileDropdown from "./ProfileDropdown";
 import { productsMenu } from "~/config/data";
 import { cart } from "~/stores/cart";
@@ -12,6 +9,7 @@ import { authStore } from "~/stores/auth";
 import { notifications, refetchNotifications } from "~/stores/global";
 import NotificationsApi from "~/api/notifications";
 import { NotificationStatus } from "~/types/notification";
+import { Icon } from "./icons";
 
 const Navbar: Component<{}> = () => {
   const loggedIn = () => !!authStore.user
@@ -22,7 +20,7 @@ const Navbar: Component<{}> = () => {
       <div class="navbar-start">
         <div class="flex-none lg:hidden">
           <label for="my-drawer-3" class="btn btn-square btn-ghost">
-            <MenuIcon />
+            <Icon.Menu />
           </label>
         </div>
         <div class="flex-1 px-2 mx-2">
@@ -123,7 +121,7 @@ const Notifications: Component = () => {
       <button class="btn btn-ghost btn-circle">
         {/* TODO indicator if unread notifications */}
         <div class="indicator">
-          <BellIcon class="h-5 w-5" />
+          <Icon.Bell class="h-5 w-5" />
           <span class="badge badge-xs badge-primary indicator-item"></span>
         </div>
       </button>
@@ -154,7 +152,7 @@ const Notifications: Component = () => {
                     await NotificationsApi.updateStatus(notification.id, NotificationStatus.Read)
                     setTimeout(refetchNotifications, 1000)
                   }}>
-                    <EyeIcon />
+                    <Icon.Eye />
                   </button>
                 </div>
                 <DateTime value={notification.createdAt} ago />

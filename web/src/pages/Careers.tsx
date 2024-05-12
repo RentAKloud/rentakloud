@@ -6,7 +6,7 @@ import { NotificationService } from "~/services/NotificationService";
 import Card from "~/components/Card/Card";
 import Textarea from "~/components/Inputs/Textarea";
 import HeroWithBg from "~/components/Hero/HeroWithBg";
-import MailIcon from "~/components/icons/Mail";
+import { Icon } from "~/components/icons";
 
 type ContactForm = {
   email: string
@@ -47,7 +47,7 @@ const Careers: Component<{}> = () => {
           <p class="mb-6">Or just send us your resume, who knows what fate has in store for you :)</p>
 
           <div class="flex gap-4 items-center">
-            <MailIcon />
+            <Icon.Mail />
             <a href="mailto:info@rentakloud.com" class="font-bold text-2xl">careers@rentakloud.com</a>
           </div>
         </div>
