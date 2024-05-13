@@ -62,12 +62,12 @@ export const productsMenu = () => [
     ]
   },
   {
-    title: "Cloud Services",
-    slug: "?category=cloud-services",
+    title: "Cloud Products",
+    slug: "?category=cloud-products",
     submenu: products.latest
       .filter(p => p.categories
         .map(c => c.slug)
-        .includes("cloud-services"))
+        .includes("cloud-products"))
       .map(p => ({ title: p.name, slug: p.slug }))
   },
 ]
@@ -82,7 +82,7 @@ export const home = () => ({
     products.latest.find(p => p.slug === 'rak-desktop'),
     products.latest.find(p => p.slug === 'rak-kvm'),
     products.latest.find(p => p.slug === 'rk-server-1'),
-    products.latest.find(p => p.slug === 'rak-router-1'),
+    // products.latest.find(p => p.slug === 'rak-router-1'),
   ],
   featuredProducts: [
     {

@@ -33,7 +33,7 @@ const LandingMixed: Component = () => {
 
       <section class="p-10 bg-base-200">
         <div class="mb-10">
-          <h2 class="text-4xl text-center font-bold mb-5">Explore Our Solutions</h2>
+          <h2 class="text-4xl text-center font-bold mb-5">Explore Our Cloud Products</h2>
           {/* <p class="text-center">Cutting-edge, high performance hardware. Intense computation with efficient energy usage.</p> */}
         </div>
         <div class="flex flex-wrap gap-10 justify-center items-stretch">
@@ -51,7 +51,7 @@ const LandingMixed: Component = () => {
                       description={truncate(product!.shortDescription || '', 120)}
                       // img={{ uri: product!.images && product!.images[0] && product!.images![0].src || '', alt: `${product!.name} logo` }}
                       actions={
-                        <Link href={`/our-products/${product!.slug}`} class="btn">Learn More</Link>
+                        <Link href={`/our-products/${product!.slug}`} class="btn btn-primary">Learn More</Link>
                       }
                       class="w-96"
                       actionsAlign="left"
@@ -67,7 +67,7 @@ const LandingMixed: Component = () => {
       <section class="p-10 bg-base-200">
         <div class="mb-10">
           <h2 class="text-4xl text-center font-bold mb-5">Our Products</h2>
-          {/* <p class="text-center">Cutting-edge, high performance hardware. Intense computation with efficient energy usage.</p> */}
+          <p class="text-center">For businesses with on-premises requirements. Cutting-edge, high performance hardware.</p>
         </div>
 
         <div class="flex flex-wrap gap-10 justify-center items-stretch">
@@ -117,7 +117,7 @@ const LandingMixed: Component = () => {
           <p class="text-lg mb-4">Businesses are already looking for alternatives to big giants like AWS, Azure, GCP.
             Join our hands to build the cloud platform for future.</p>
           <div class="flex gap-4">
-            <a target="_blank" href="https://onedrive.live.com/?authkey=%21AjXbyqDY5PyC3Y8&cid=269151FCA3FBB26A&id=269151FCA3FBB26A%21164&parId=269151FCA3FBB26A%21162&o=OneUp" class="btn btn-info">Learn More</a>
+            <a target="_blank" href="https://cdn.rentakloud.com/rak-franchise-flyer.pdf" class="btn btn-primary">Learn More</a>
             <a href="/support" class="btn btn-outline btn-primary">Contact Us</a>
           </div>
         </div>

@@ -44,6 +44,12 @@ api.rentakloud.com {
 	reverse_proxy localhost:3000
 }
 
+cdn.rentakloud.com {
+	root * /srv/cdn/
+	try_files {path} /index.html
+	file_server
+}
+
 gt.rentakloud.com {
 	reverse_proxy localhost:8000
 }
