@@ -17,25 +17,26 @@ async function main() {
   await prisma.category.createMany({
     data: [
       { title: "Hardware", slug: "hardware" },
-      { title: "Databases", slug: "databases" },
-      { title: "CMS", slug: "cms" },
-      { title: "Message Queueing", slug: "message-queueing" },
-      { title: "ERP", slug: "erp" },
-      { title: "CRM", slug: "crm" },
-      { title: "Runtimes", slug: "runtimes" },
-      { title: "Ecommerce", slug: "ecommerce" },
-      { title: "EMR", slug: "emr" },
-      { title: "Servers", slug: "servers" },
-      { title: "Routers", slug: "routers" },
+      { title: "Servers", slug: "servers", parentId: 1 },
+      { title: "Routers", slug: "routers", parentId: 1 },
+      { title: "Cloud Products", slug: "cloud-products" },
+      { title: "Databases", slug: "databases", parentId: 4 },
+      { title: "CMS", slug: "cms", parentId: 4 },
+      { title: "Message Queueing", slug: "message-queueing", parentId: 4 },
+      { title: "ERP", slug: "erp", parentId: 4 },
+      { title: "CRM", slug: "crm", parentId: 4 },
+      { title: "Runtimes", slug: "runtimes", parentId: 4 },
+      { title: "Ecommerce", slug: "ecommerce", parentId: 4 },
+      { title: "EMR", slug: "emr", parentId: 4 },
     ]
   })
 
   // products
-  products.forEach(async (product) => {
-    await prisma.product.create({
-      data: product
-    })
-  })
+  // products.forEach(async (product) => {
+  //   await prisma.product.create({
+  //     data: product
+  //   })
+  // })
 
   await prisma.shippingZone.createMany({
     data: [

@@ -3,7 +3,7 @@ import { ConfigService } from "@nestjs/config";
 import Stripe from "stripe";
 import { UsersService } from "./users.service";
 import { OnEvent } from "@nestjs/event-emitter";
-import { UserToProducts } from "@prisma/client";
+import { Instance, Subscription } from "@prisma/client";
 import { InstanceAddon, Plan } from "src/types/instances.dto";
 import { OptionsService } from "./options.service";
 
@@ -118,10 +118,10 @@ export class PaymentsService {
   }
 
   @OnEvent("user_product.deleted")
-  async cancelSubscription(userProduct: UserToProducts) {
+  async cancelSubscription(instance: Instance & { subscription: Subscription }) {
     // TODO refund logic?
     try {
-      return await this.stripe.subscriptions.cancel(userProduct.subscriptionId)
+      return await this.stripe.subscriptions.cancel(instance.subscription.externalId)
     } catch (err) {
       console.log(err.message)
       // TODO Send a notification? about an ActiveProduct getting deleted but failed

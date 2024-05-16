@@ -58,7 +58,7 @@ export const productsMenu = () => [
     submenu: [
       { title: "RAK KVM", slug: "rak-kvm" },
       { title: "RAK R5950X", slug: "rk-server-1" },
-      { title: "RAK Router", slug: "rak-router-1" }
+      { title: "RAK Desktop", slug: "rak-desktop" }
     ]
   },
   {

@@ -20,6 +20,7 @@ import { OptionsModule } from './modules/options.module';
 import { StatsModule } from './modules/stats.module';
 import { InstancesModule } from './modules/instances.module';
 import { PublicController } from './controllers/public.controller';
+import { SubscriptionsModule } from './modules/subscriptions.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { PublicController } from './controllers/public.controller';
     InstancesModule,
     CategoriesModule,
     PaymentsModule,
+    SubscriptionsModule,
     OrdersModule,
     CouponsModule,
     DiskImagesModule,

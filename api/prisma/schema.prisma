@@ -11,22 +11,23 @@ datasource db {
 }
 
 model User {
-  id              Int              @id @default(autoincrement())
-  email           String           @unique
+  id              Int            @id @default(autoincrement())
+  email           String         @unique
   firstName       String
   lastName        String?
   password        String
   phoneNumber     String?
   emailVerifiedAt DateTime?
   //
-  type            UserType         @default(User)
+  type            UserType       @default(User)
   //
-  createdAt       DateTime         @default(now())
-  updatedAt       DateTime         @default(now())
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @default(now())
   //
   profile         Profile?
   orders          Order[]
-  products        UserToProducts[] // active/subscribed products
+  instances       Instance[] // active/subscribed products
+  subscriptions   Subscription[]
   diskImages      DiskImage[]
   notifications   Notification[]
 }
@@ -93,74 +94,112 @@ enum NotificationStatus {
 }
 
 model Product {
-  id                Int              @id @default(autoincrement())
+  id                Int            @id @default(autoincrement())
   name              String
-  slug              String           @unique
+  slug              String         @unique
   shortDescription  String?
   description       String?
   descriptionEditor Json?
   contentAfterPrice String?
-  productType       ProductType      @default(OnlineService)
+  productType       ProductType    @default(OnlineService)
   prices            Json[] // in case of OnlineService prices act as plans and further contain prices
-  stock             Int              @default(1)
-  images            Json             @default("[]")
-  stripeId          String?          @unique
-  weight            Decimal?         @db.Decimal(12, 6) // kg only plz
+  stock             Int            @default(1)
+  images            Json           @default("[]")
+  stripeId          String?        @unique
+  weight            Decimal?       @db.Decimal(12, 6) // kg only plz
   //
   categories        Category[]
-  users             UserToProducts[] // subscribed users
+  subscriptions     Subscription[] // subscribed users
   //
-  createdAt         DateTime         @default(now())
-  updatedAt         DateTime         @default(now())
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @default(now())
   //
   taxRates          TaxRate[]
   couponCodes       CouponCode[]
   //
-  meta              Json?            @default("{}") // used for stuff such as UI content etc
+  meta              Json?          @default("{}") // used for stuff such as UI content etc
 }
 
 // Instance configurations (also used as plans?)
 model Config {
-  id        Int              @id @default(autoincrement())
+  id        Int        @id @default(autoincrement())
   name      String
   cpus      Int
   ram       Float // in GB
   ssd       Float
   hdd       Float
-  instances UserToProducts[]
+  instances Instance[]
 }
 
-model UserToProducts {
-  id             String            @id @default(uuid())
+model Instance {
+  id             String         @id @default(uuid())
   //
-  user           User              @relation(fields: [userId], references: [id])
+  user           User           @relation(fields: [userId], references: [id])
   userId         Int
-  product        Product           @relation(fields: [productId], references: [id])
-  productId      Int
-  config         Config            @relation(fields: [configId], references: [id])
+  config         Config         @relation(fields: [configId], references: [id])
   configId       Int
   //
-  status         UserProductStatus @default(Inactive)
-  subscriptionId String            @unique // stripe
+  status         InstanceStatus @default(Inactive)
+  subscription   Subscription   @relation(fields: [subscriptionId], references: [id])
+  subscriptionId String         @unique
   //
-  title          String            @default("")
-  addons         Json              @default("[]")
-  meta           Json              @default("{}")
+  title          String         @default("")
+  addons         Json           @default("[]")
+  meta           Json           @default("{}")
   // stuff from servers
-  vncPath        String            @default("")
-  privateIp      String            @default("")
-  publicIp       String            @default("")
+  vncPath        String         @default("")
+  privateIp      String         @default("")
+  publicIp       String         @default("")
   //
-  createdAt      DateTime          @default(now())
-  updatedAt      DateTime          @default(now())
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @default(now())
+}
 
-  @@index([userId, productId])
+model Subscription {
+  id                 String             @id @default(uuid())
+  //
+  user               User               @relation(fields: [userId], references: [id])
+  userId             Int
+  product            Product            @relation(fields: [productId], references: [id])
+  productId          Int
+  planId             Int // A product can have multiple plans
+  priceId            String // A plan can have multiple prices
+  externalId         String? // Stripe subscription ID
+  status             SubscriptionStatus
+  //
+  currentPeriodStart DateTime
+  currentPeriodEnd   DateTime
+  trialStart         DateTime?
+  trialEnd           DateTime?
+  cancelledAt        DateTime?
+  endedAt            DateTime?
+  //
+  instance           Instance?
+  //
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @default(now())
+}
+
+enum SubscriptionStatus {
+  Incomplete
+  IncompleteExpired
+  Trialing
+  Active
+  PastDue
+  Canceled
+  Unpaid
+  Paused
 }
 
 model Category {
-  id       Int       @id @default(autoincrement())
+  id       Int        @id @default(autoincrement())
   title    String
   slug     String
+  //
+  parent   Category?  @relation("children", fields: [parentId], references: [id])
+  parentId Int?
+  children Category[] @relation("children")
+  //
   products Product[]
   taxRates TaxRate[]
 }
@@ -291,7 +330,7 @@ enum CouponType {
   Percentage
 }
 
-enum UserProductStatus {
+enum InstanceStatus {
   Pending
   Active
   Inactive

@@ -97,10 +97,6 @@ export const CheckoutProvider: Component<{ children: JSXElement }> = (props) => 
   // TODO if possible this order status should not be updated from frontend
   // but from stripe webhooks. Dont have access to webhooks right now
   createEffect(() => {
-    if (paymentSuccess()) {
-      OrdersApi.updateStatus(order()!.id, OrderStatus.Paid)
-    }
-
     if (hasPhysical() && hasServices()) {
       if (paymentSuccess() && subscriptionsPaid()) {
         checkoutSuccessful()
@@ -235,21 +231,22 @@ export const CheckoutProvider: Component<{ children: JSXElement }> = (props) => 
     // TODO should be one bulk request
     if (subscriptionItems.length > 0) {
       const subResponsePromises = subscriptionItems.map(i => {
-        return PaymentsApi.createSubscription(user!.email, i.priceId!, !!i.isTrial)
+        return PaymentsApi.createSubscription(user!.email, i.productId, i.priceId!, !!i.isTrial)
       })
       const subResponses = await Promise.all(subResponsePromises)
       const subData = subResponses.map((x, i) => ({
         subscriptionId: x.result!.subscriptionId,
         productId: subscriptionItems[i].productId,
-        priceId: subscriptionItems[i].priceId!
+        priceId: subscriptionItems[i].priceId!,
       }))
-      await ProductsApi.createActiveProducts(subData)
+      await ProductsApi.createInstances(subData)
       const secrets = subResponses.map(x => x.result!.clientSecret)
       setSubClientSecrets(secrets)
     }
   }
 
   function checkoutSuccessful() {
+    OrdersApi.updateStatus(order()!.id, OrderStatus.Paid)
     resetCart()
     setStep('congrats')
   }

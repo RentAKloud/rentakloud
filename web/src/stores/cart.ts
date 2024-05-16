@@ -22,8 +22,10 @@ function addToCart(item: Product, qty: number = 1, priceId?: string, isTrial?: b
     }
   } else {
     const cartItem: CartItem = { productId: item.id, quantity: qty }
-    if (priceId)
+    if (priceId) {
       cartItem.priceId = priceId
+      cartItem.configId = item.prices!.find(plans => plans.prices?.find(price => price.priceId === priceId))!.configId
+    }
     if (isTrial)
       cartItem.isTrial = isTrial
 

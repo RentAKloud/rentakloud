@@ -1,10 +1,10 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Query, Request, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { UserToProducts } from '@prisma/client';
 import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 import { InstancesService } from '../services/instances.service';
 import { CreateInstance, Plan } from 'src/types/instances.dto';
 import { ProductsService } from 'src/services/products.service';
+import { Instance } from '@prisma/client';
 
 @ApiTags('Instances')
 @Controller('instances')
@@ -45,7 +45,7 @@ export class InstancesController {
   @UseGuards(JwtAuthGuard)
   @Post('')
   async createInstances(@Request() req) {
-    const instanceData: CreateInstance[] = req.body.subscriptions
+    const instanceData: CreateInstance[] = req.body.instances
     const products = await this.productsService.products({
       where: {
         id: { in: instanceData.map(i => i.productId) }
@@ -78,7 +78,7 @@ export class InstancesController {
   }
 
   @Patch('/:id')
-  updateInstance(@Param('id') id: string, @Body() data: UserToProducts) {
+  updateInstance(@Param('id') id: string, @Body() data: Instance) {
     return this.instancesService.updateInstance({
       where: {
         id

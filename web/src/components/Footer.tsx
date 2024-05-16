@@ -19,7 +19,7 @@ const Footer: Component = () => {
           <span class="footer-title">Products</span>
           <Link href="/our-products/rak-kvm" class="link link-hover">RAK KVM</Link>
           <Link href="/our-products/rk-server-1" class="link link-hover">RAK R5950X</Link>
-          <Link href="/our-products/rak-desktop" class="link link-hover">RAk Desktop</Link>
+          <Link href="/our-products/rak-desktop" class="link link-hover">RAK Desktop</Link>
         </div>
         <div>
           <span class="footer-title">Company</span>

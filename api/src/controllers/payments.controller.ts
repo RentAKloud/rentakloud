@@ -17,6 +17,7 @@ export class PaymentsController {
     return (await this.paymentsService.invoices(customer.id)).data
   }
 
+  // NOTE Not called directly anymore. See subscriptions.controller
   @Post('create-subscription')
   async createSubscription(@Request() request) {
     // TODO check if user has already used a trial

@@ -25,6 +25,7 @@ export type ProductPrice = {
   planName?: string;
   prices?: PlanPrice[]
   features?: string[]
+  configId: number
 }
 
 export type PlanPrice = {
@@ -50,7 +51,9 @@ export type ProductCategory = {
 export type Instance = {
   id: string;
   title: string
-  product: Product;
+  subscription: {
+    product: Product;
+  }
   addons: InstanceAddon[]
   createdAt: string;
   vncPath?: string;
@@ -74,9 +77,10 @@ export type CartItem = {
   quantity: number;
   priceId?: string;
   isTrial?: boolean
+  configId?: number
 }
 
-export type SubscriptionData = {
+export type CreateInstanceReq = {
   subscriptionId: string
   productId: number
   priceId: string

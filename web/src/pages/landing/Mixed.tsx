@@ -66,7 +66,7 @@ const LandingMixed: Component = () => {
 
       <section class="p-10 bg-base-200">
         <div class="mb-10">
-          <h2 class="text-4xl text-center font-bold mb-5">Our Products</h2>
+          <h2 class="text-4xl text-center font-bold mb-5">Our Hardware Products</h2>
           <p class="text-center">For businesses with on-premises requirements. Cutting-edge, high performance hardware.</p>
         </div>
 

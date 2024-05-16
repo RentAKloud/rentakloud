@@ -126,7 +126,7 @@ const _Checkout: Component = () => {
         }
         actions={
           <>
-            <button class="btn btn-sm" onclick={() => history.back()}>Go Back</button>
+            <button class="btn btn-sm" onclick={() => location.assign("/")}>Go to Home</button>
             <button class="btn btn-sm btn-info" onclick={() => location.reload()}>Reload</button>
           </>
         }

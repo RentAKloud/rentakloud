@@ -3,7 +3,7 @@ import { cart, getCartTotal } from "~/stores/cart";
 import { getPlanPrice, getProductById, getProductPrice, products } from "~/stores/products";
 import { useCheckoutContext } from "./context";
 import { formatPrice, getTotalDiscounts } from "~/utils";
-import CrossIcon from "~/components/icons/Cross";
+import { Icon } from "~/components/icons";
 
 export const CartSummary: Component<{ showAddresses?: boolean }> = (props) => {
   const { orderStore, shippingSameAsBilling, hasPhysical } = useCheckoutContext()
@@ -70,7 +70,7 @@ export const CartSummary: Component<{ showAddresses?: boolean }> = (props) => {
                   <div>{product().name} <Show when={interval()}><span innerHTML={interval()} /></Show> {item.isTrial && " (Trial)"}</div>
                   <div>
                     <span>{formattedPrice()}</span>
-                    <span> <CrossIcon class="inline w-5" /> {item.quantity}</span>
+                    <span> <Icon.Cross class="inline w-5" /> {item.quantity}</span>
                   </div>
                 </div>
               )

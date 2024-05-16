@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { Config, Prisma, UserProductStatus, UserToProducts } from "@prisma/client";
+import { Config, Prisma, InstanceStatus, Instance } from "@prisma/client";
 import { PrismaService } from "./prisma.service";
 import { EventEmitter2 } from "@nestjs/event-emitter";
 import { spawn } from "child_process";
@@ -13,29 +13,30 @@ export class InstancesService {
   ) { }
 
   async instances(userId: number) {
-    return this.prisma.userToProducts.findMany({
+    return this.prisma.instance.findMany({
       where: { userId },
-      include: { product: true }
+      include: {
+        subscription: { include: { product: { select: { name: true } } } }
+      }
     })
   }
 
   async instance(id: string, userId: number) {
-    return this.prisma.userToProducts.findUnique({
+    return this.prisma.instance.findUnique({
       where: { id, userId },
-      include: { product: true }
+      // include: { product: true }
     })
   }
 
   async createInstances(instances: CreateInstance[], userId: number) {
     const _instances = await this.prisma.$transaction(
       instances.map((i) =>
-        this.prisma.userToProducts.create({
+        this.prisma.instance.create({
           data: {
-            userId: userId,
-            productId: i.productId,
-            subscriptionId: i.subscriptionId,
-            configId: i.configId,
-            status: UserProductStatus.Pending,
+            user: { connect: { id: userId } },
+            subscription: { connect: { id: i.subscriptionId } },
+            config: { connect: { id: i.configId } },
+            status: InstanceStatus.Pending,
           },
           include: { config: true }
         })
@@ -49,29 +50,33 @@ export class InstancesService {
   }
 
   async updateInstance(params: {
-    where: Prisma.UserToProductsWhereUniqueInput;
-    data: Prisma.UserToProductsUpdateInput;
+    where: Prisma.InstanceWhereUniqueInput;
+    data: Prisma.InstanceUpdateInput;
   }) {
     const { where, data } = params;
     data.updatedAt = new Date()
 
-    const rv = await this.prisma.userToProducts.update({
+    const rv = await this.prisma.instance.update({
       data,
       where,
       include: {
-        product: true
+        subscription: {
+          include: {
+            product: true
+          }
+        }
       },
     });
 
     if (data.addons) {
-      this.ee.emit("instance.addons.updated", rv.subscriptionId, data.addons, rv.product.prices)
+      this.ee.emit("instance.addons.updated", rv.subscriptionId, data.addons, rv.subscription.product.prices)
     }
 
     return rv
   }
 
   async deleteInstance(id: string) {
-    const result = await this.prisma.userToProducts.delete({ where: { id } })
+    const result = await this.prisma.instance.delete({ where: { id } })
 
     this.ee.emit("user_product.deleted", result)
 
@@ -107,7 +112,7 @@ export class InstancesService {
     })
   }
 
-  initProvisioning(instance: UserToProducts & {config: Config},
+  initProvisioning(instance: Instance & { config: Config },
     vmId?: number, custId?: number // for testing only (these are supposed to be system generated)
   ) {
     return new Promise((res, rej) => {
@@ -135,7 +140,7 @@ export class InstancesService {
       /** Step 2: Use infra.json to figure out which rak/server to provision to */
       const vmHost = 'rakserver03'
       const hostIp = '192.168.10.193'
-      const slot = 6
+      const slot = 6 // an index used for ports
 
       // Step 3: Call distvms.sh
       const distVmChild = spawn(`ssh ${remote} '/home/scripts/distvms.sh ${vmId} ${vmHost} ${hostIp} ${slot}'`, {

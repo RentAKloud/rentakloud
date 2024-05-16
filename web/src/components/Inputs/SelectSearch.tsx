@@ -1,7 +1,7 @@
 import { Combobox, createFilter } from "@kobalte/core"
 import { Component, JSX, Show, createEffect, createSignal, onMount, splitProps } from "solid-js"
 import CheckIcon from "../icons/Check";
-import ChevronUpDownIcon from "../icons/ChevronUpDown";
+import { Icon } from "../icons";
 
 type Option = {
   label: string
@@ -98,7 +98,7 @@ const SelectSearch: Component<SelectSearchProps> = (props) => {
           <Combobox.HiddenSelect {...selectProps} />
           <Combobox.Trigger class="absolute top-3 right-5">
             <Combobox.Icon class="combobox__icon">
-              <ChevronUpDownIcon />
+              <Icon.ChevronUpDown />
             </Combobox.Icon>
           </Combobox.Trigger>
         </Combobox.Control>

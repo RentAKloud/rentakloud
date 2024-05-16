@@ -6,7 +6,7 @@ const Overview: Component<{}> = () => {
 
   return (
     <>
-      <h2 class="text-4xl font-bold mb-2">{instance.latest?.title || instance.latest?.product?.name || "Overview"}</h2>
+      <h2 class="text-4xl font-bold mb-2">{instance.latest?.title || instance.latest?.subscription.product.name || "Overview"}</h2>
 
       <section class="">
         <p>512 MB RAM, 1 vCPU, 20 GB SSD</p>

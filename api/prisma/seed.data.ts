@@ -421,10 +421,9 @@ export const products: Prisma.XOR<Prisma.ProductCreateInput, Prisma.ProductUnche
     productType: ProductType.OnlineService,
     images: []
   },
-
   {
-    name: "OpenERM",
-    slug: "open-erm",
+    name: "OpenEMR",
+    slug: "open-emr",
     shortDescription: "Electronic health records and medical practice management solution",
     description: `OpenEMR is the most popular open source electronic health records and medical practice management solution. 
     OpenEMR's goal is a superior alternative to its proprietary counterparts with passionate volunteers and contributors. 

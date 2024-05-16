@@ -36,7 +36,7 @@ export const BillingAndShipping: Component<Step> = (props) => {
 
   const BillingAddressFields = () => (
     <>
-      <div class="flex flex-col md:flex-row md:gap-5">
+      <div class="flex flex-col lg:flex-row md:gap-5">
         <Field name="billingAddress.firstName" validate={[required("First name is required")]}>
           {(field, props) => (
             <TextInput
@@ -90,7 +90,7 @@ export const BillingAndShipping: Component<Step> = (props) => {
 
       <TextInput label="Address 2 (optional)" value={orderStore.billingAddress.address2} onChange={(e) => updateBilling("address2", e.currentTarget.value)} />
 
-      <div class="flex flex-col md:flex-row md:gap-5 justify-center">
+      <div class="flex flex-col lg:flex-row md:gap-5 justify-center">
         <SelectSearch
           name="country"
           label="Country"

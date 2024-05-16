@@ -7,6 +7,7 @@ import ListIcon from "~/components/icons/List";
 import GridIcon from "~/components/icons/Grid";
 import CLIIcon from "~/components/icons/CLI";
 import DesktopIcon from "~/components/icons/Desktop";
+import WindowsIcon from "~/components/icons/logos/Windows";
 
 const Instances: Component = () => {
   const [instances, { refetch }] = createResource(async () => {
@@ -54,7 +55,7 @@ const Instances: Component = () => {
                 {
                   (instance) => (
                     <Card
-                      title={instance.title || instance.product.name}
+                      title={instance.title || instance.subscription.product.name}
                       description={
                         <div class="flex flex-col gap-3">
                           <span classList={{
@@ -62,9 +63,10 @@ const Instances: Component = () => {
                             "text-error": instance.status === "Inactive",
                             "text-success": instance.status === "Active"
                           }}>{instance.status}</span>
-                          <p>Instance ID: {instance.id}</p>
-                          {/* <p>{activeProduct.product.shortDescription}</p> */}
-                          <span>Started At: <DateTime value={instance.createdAt} /></span>
+                          {/* <p>Instance ID: {instance.id}</p> */}
+                          {/* <p>{instance.product.shortDescription}</p> */}
+                          {/* <span>Started At: <DateTime value={instance.createdAt} /></span> */}
+                          <WindowsIcon />
                         </div>
                       }
                       actions={<div class="flex gap-5 items-center justify-start flex-wrap">
@@ -100,7 +102,7 @@ const Instances: Component = () => {
                 <tbody>
                   <For each={instances.latest}>
                     {
-                      (activeProduct) => (
+                      (instance) => (
                         <tr>
                           <th>
                             <label>
@@ -111,28 +113,28 @@ const Instances: Component = () => {
                             <div class="flex items-center space-x-3">
                               <div class="avatar">
                                 <div class="mask mask-squircle w-12 h-12">
-                                  <img src={activeProduct.product.images[0]?.src} alt={activeProduct.product.images[0]?.alt} />
+                                  <img src={instance.subscription.product.images[0]?.src} alt={instance.subscription.product.images[0]?.alt} />
                                 </div>
                               </div>
                               <div>
-                                <div class="font-bold">{activeProduct.product.name}</div>
+                                <div class="font-bold">{instance.subscription.product.name}</div>
                                 <div class="text-sm opacity-50">us-east-1</div>
                               </div>
                             </div>
                           </td>
                           <td>
-                            {activeProduct.id}
+                            {instance.id}
                             <br />
                             <span class="badge badge-ghost badge-sm">{"204.27.57.219"}</span>
                           </td>
                           <td classList={{
-                            "text-error": activeProduct.status === "Inactive",
-                            "text-success": activeProduct.status === "Active"
-                          }}>{activeProduct.status}</td>
-                          <td><DateTime value={activeProduct.createdAt} /></td>
+                            "text-error": instance.status === "Inactive",
+                            "text-success": instance.status === "Active"
+                          }}>{instance.status}</td>
+                          <td><DateTime value={instance.createdAt} /></td>
                           <td><a href="http://204.27.57.219:4200/" target="_blank" class="btn btn-ghost"><CLIIcon /></a></td>
                           <th>
-                            <Link href={`/products/${activeProduct.id}`} class="btn btn-ghost btn-xs">details</Link>
+                            <Link href={`/products/${instance.id}`} class="btn btn-ghost btn-xs">details</Link>
                           </th>
                         </tr>
                       )

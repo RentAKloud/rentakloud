@@ -47,7 +47,7 @@ const Cart: Component = () => {
                     const price = () => getProductPrice(product(), item.priceId)
                     const planPrice = () => getPlanPrice(price(), item.priceId!)
                     const total = () => item.isTrial ? 0 : (price().saleAmount || price().amount || planPrice()!.amount) * item.quantity
-                    const interval = () => planPrice() ? ` &cross; ${price().planName} ${planPrice()!.interval}ly` : ""
+                    const interval = () => planPrice() ? ` - ${price().planName} ${planPrice()!.interval}ly` : ""
 
                     return (
                       <tr class="hover">

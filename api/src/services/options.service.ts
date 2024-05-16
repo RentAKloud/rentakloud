@@ -41,6 +41,10 @@ export class OptionsService {
       select: { value: true }
     });
 
+    if (!option) {
+      return null
+    }
+
     return option.value
   }
 

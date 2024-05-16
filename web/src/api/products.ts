@@ -1,5 +1,5 @@
 import { ApiResponse, HttpService } from "~/services/HttpService";
-import { Instance, Product, SubscriptionData } from "~/types/product";
+import { Instance, Product, CreateInstanceReq } from "~/types/product";
 
 class ProductsApi {
   static async all(): ApiResponse<Product[]> {
@@ -19,8 +19,8 @@ class ProductsApi {
     return await HttpService.get(`/instances/${id}`)
   }
 
-  static async createActiveProducts(subscriptions: SubscriptionData[]) {
-    return await HttpService.post("/instances", { subscriptions })
+  static async createInstances(instances: CreateInstanceReq[]) {
+    return await HttpService.post("/instances", { instances })
   }
 
   static async updateInstance(id:string, instance: Partial<Instance>) {
