@@ -91,6 +91,25 @@ export class MailService {
         createdAt: order.createdAt.toDateString().replace(/^\S+\s/, '') // replace first non-space chars along with white-space
       },
     });
+
+    const dev = this.config.get('NODE_ENV') === 'development'
+    const adminUrl = dev ? 'http://localhost:5137' : 'https://admin.rentakloud.com';
+    await this.mailerService.sendMail({
+      to: 'orders@rentakloud.com',
+      subject: 'Order Received',
+      template: './admin_order_received',
+      context: {
+        customerId: user.id,
+        customerEmail: user.email,
+        customerName: user.firstName + " " + user.lastName,
+        order,
+        subTotal,
+        taxesTotal,
+        currency,
+        createdAt: order.createdAt.toDateString().replace(/^\S+\s/, ''), // replace first non-space chars along with white-space
+        adminUrl
+      },
+    })
   }
 
   @OnEvent('order.status.changed')

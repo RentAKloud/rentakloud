@@ -32,11 +32,11 @@ async function main() {
   })
 
   // products
-  // products.forEach(async (product) => {
-  //   await prisma.product.create({
-  //     data: product
-  //   })
-  // })
+  products.forEach(async (product) => {
+    await prisma.product.create({
+      data: product
+    })
+  })
 
   await prisma.shippingZone.createMany({
     data: [

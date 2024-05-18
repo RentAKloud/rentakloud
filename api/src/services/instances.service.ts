@@ -4,12 +4,14 @@ import { PrismaService } from "./prisma.service";
 import { EventEmitter2 } from "@nestjs/event-emitter";
 import { spawn } from "child_process";
 import { CreateInstance } from "src/types/instances.dto";
+import { ConfigService } from "@nestjs/config";
 
 @Injectable()
 export class InstancesService {
   constructor(
     private prisma: PrismaService,
-    private ee: EventEmitter2
+    private ee: EventEmitter2,
+    private readonly config: ConfigService,
   ) { }
 
   async instances(userId: number) {
@@ -24,7 +26,12 @@ export class InstancesService {
   async instance(id: string, userId: number) {
     return this.prisma.instance.findUnique({
       where: { id, userId },
-      // include: { product: true }
+      include: {
+        subscription: { include: {
+          product: {
+          select: { name: true }
+        } } }
+      }
     })
   }
 
@@ -124,7 +131,8 @@ export class InstancesService {
         hdd: instance.config.hdd,
       }
       const json = JSON.stringify(d)
-      const remote = "rkadmin@rentakloud.com"
+      // const env = this.config.get('NODE_ENV')
+      const remote = `rkadmin@rentakloud.com`
 
       // Assuming our SSH id is added to the target server, so we are not prompted for password
       // const child = spawn(`echo '${json}' | ssh ${remote} 'cat > /tmp/db.json'`, {
@@ -164,6 +172,22 @@ export class InstancesService {
       })
 
       child.on('error', (err) => {
+        console.log(err)
+        rej(err)
+      })
+
+      distVmChild.on('exit', (code, signal) => {
+        const output: string = child.stdout.read()?.toString()
+        if (code === 0) {
+          res(true)
+          console.log("done", output)
+        } else {
+          res(false)
+          console.log(code, "something wrong", output)
+        }
+      })
+
+      distVmChild.on('error', (err) => {
         console.log(err)
         rej(err)
       })
