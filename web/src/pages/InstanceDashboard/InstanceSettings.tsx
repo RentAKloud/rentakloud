@@ -4,7 +4,7 @@ import ProductsApi from "~/api/products";
 import Modal from "~/components/Modal";
 import { NotificationService } from "~/services/NotificationService";
 import { useInstanceContext } from "./context";
-import { InstanceAddonKey } from "~/types/product";
+import { InstanceAddonKey } from "~/types/instance";
 
 const InstanceSettings: Component = () => {
   const { id } = useParams()

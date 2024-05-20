@@ -18,6 +18,7 @@ export class InstancesController {
   test(
     @Query('vmId') vmId,
     @Query('custId') custId,
+    @Query('slotId') slotId,
     @Query('cpus') cpus,
     @Query('ram') ram,
     @Query('ssd') ssd,
@@ -32,7 +33,8 @@ export class InstancesController {
         },
       },
       vmId,
-      custId
+      custId,
+      slotId
     )
   }
 

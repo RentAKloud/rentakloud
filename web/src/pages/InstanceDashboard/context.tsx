@@ -2,7 +2,7 @@ import { Component, JSXElement, Resource, createContext, createResource, useCont
 import { useParams, useSearchParams } from "@solidjs/router";
 import { authStore } from "~/stores/auth";
 import ProductsApi from "~/api/products";
-import { Instance } from "~/types/product";
+import { Instance } from "~/types/instance";
 
 type InstanceContextProps = {
   instance: Resource<Instance|undefined>

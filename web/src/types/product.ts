@@ -1,3 +1,4 @@
+
 export type Product = {
   id: number;
   name: string;
@@ -48,25 +49,6 @@ export type ProductCategory = {
   slug: string;
 }
 
-export type Instance = {
-  id: string;
-  title: string
-  subscription: {
-    product: Product;
-  }
-  addons: InstanceAddon[]
-  createdAt: string;
-  vncPath?: string;
-  status: "Pending" | "Active" | "Inactive";
-}
-
-export type InstanceAddonKey = "cpu" | "ram" | "hdd" | "ssd"
-
-export type InstanceAddon = {
-  id: InstanceAddonKey
-  quantity: number
-}
-
 export const productCategories: ProductCategory[] = ["Hardware", "Databases", "ERP", "CRM", "CMS", "Ecommerce", "Message Queueing"].map(c => ({
   slug: c.toLowerCase().replaceAll(' ', '-'),
   title: c,
@@ -80,8 +62,3 @@ export type CartItem = {
   configId?: number
 }
 
-export type CreateInstanceReq = {
-  subscriptionId: string
-  productId: number
-  priceId: string
-}

@@ -9,7 +9,7 @@ const Overview: Component<{}> = () => {
       <h2 class="text-4xl font-bold mb-2">{instance.latest?.title || instance.latest?.subscription.product.name || "Overview"}</h2>
 
       <section class="">
-        <p>512 MB RAM, 1 vCPU, 20 GB SSD</p>
+        <p>{instance.latest?.config.ram} GB RAM, {instance.latest?.config.cpus} vCPU, {instance.latest?.config.ssd} GB SSD</p>
         <p>Windows 10</p>
         <p>Houston, Zone A (us-east-1)</p>
         <p>Status: <strong class="text-success">Running</strong></p>

@@ -3,12 +3,14 @@ import { authStore } from "~/stores/auth"
 
 export type ApiResponse<T> = Promise<{
   result: T | null
-  error: {
-    statusCode: string
-    message: string
-    error?: string
-  } | null
+  error: ApiResponseError
 }>
+
+export type ApiResponseError = {
+  statusCode: string
+  message: string
+  error?: string
+} | null
 
 export class HttpService {
   static async get<T>(endpoint: string, queryParams?: URLSearchParams): ApiResponse<T> {

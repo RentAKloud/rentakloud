@@ -5,12 +5,14 @@ import Mail from "./Mail";
 import Menu from "./Menu";
 import Cross from "./Cross";
 import ChevronUpDown from "./ChevronUpDown";
+import Fullscreen from "./Fullscreen";
 
 export const Icon = {
   Bell,
   ChevronUpDown,
   Cross,
   Eye,
+  Fullscreen,
   Mail,
   Menu,
   UserCircle,

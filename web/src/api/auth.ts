@@ -6,7 +6,7 @@ class AuthApi {
   static async register(
     email: string, password: string, firstName: string, lastName: string
   ): ApiResponse<RegisterResponse> {
-    return await HttpService.post<RegisterResponse>("/auth/register", {
+    return await HttpService.post("/auth/register", {
       email,
       password,
       firstName,
@@ -14,12 +14,11 @@ class AuthApi {
     })
   }
 
-  static async login(email: string, password: string): Promise<string> {
-    const resp = await HttpService.post<LoginResponse>("/auth/login", {
+  static async login(email: string, password: string): ApiResponse<LoginResponse> {
+    return await HttpService.post("/auth/login", {
       email,
       password,
     })
-    return resp.result!.access_token
   }
 
   static async getCurrentUser(): Promise<User> {

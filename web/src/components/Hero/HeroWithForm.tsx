@@ -5,6 +5,7 @@ type HeroWithFormProps = {
   title: string
   subtitle: string
   inTransit?: boolean
+  formClass?: string
 }
 
 const HeroWithForm: Component<HeroWithFormProps> = (props) => {
@@ -16,7 +17,7 @@ const HeroWithForm: Component<HeroWithFormProps> = (props) => {
           <p class="py-6">{props.subtitle}</p>
         </div>
 
-        <div class="card flex-shrink-0 w-full max-w-sm shadow-2xl bg-base-100">
+        <div class={`card flex-shrink-0 w-full max-w-sm shadow-2xl bg-base-100 ${props.formClass}`}>
           <div class="card-body" classList={{ "animate-pulse": props.inTransit }}>
             {props.children}
           </div>

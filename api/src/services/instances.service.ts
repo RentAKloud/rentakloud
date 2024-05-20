@@ -18,7 +18,13 @@ export class InstancesService {
     return this.prisma.instance.findMany({
       where: { userId },
       include: {
-        subscription: { include: { product: { select: { name: true } } } }
+        subscription: {
+          include: {
+            product: {
+              select: { name: true, images: true }
+            }
+          }
+        },
       }
     })
   }
@@ -27,10 +33,14 @@ export class InstancesService {
     return this.prisma.instance.findUnique({
       where: { id, userId },
       include: {
-        subscription: { include: {
-          product: {
-          select: { name: true }
-        } } }
+        subscription: {
+          include: {
+            product: {
+              select: { name: true, images: true }
+            }
+          }
+        },
+        config: true
       }
     })
   }
@@ -120,8 +130,10 @@ export class InstancesService {
   }
 
   initProvisioning(instance: Instance & { config: Config },
-    vmId?: number, custId?: number // for testing only (these are supposed to be system generated)
+    vmId?: number, custId?: number, slotId?: number // for testing only (these are supposed to be system generated)
   ) {
+    const isDev = this.config.get('NODE_ENV') === 'development'
+
     return new Promise((res, rej) => {
       const d = {
         id: instance.id, title: instance.title,
@@ -141,30 +153,48 @@ export class InstancesService {
 
       // Step 1: Save VM info in db.json
       const vmType = 'win10pro'
-      const child = spawn(`ssh ${remote} '/home/scripts/crvminfo.sh ${vmId} ${custId} ${d.cpus} ${d.ram} ${d.ssd} ${vmType}'`, {
+      const cmd = `/home/scripts/crvminfo.sh ${vmId} ${custId} ${d.cpus} ${d.ram} ${d.ssd} ${vmType}`
+      const child = spawn(isDev ? `ssh ${remote} '${cmd}'` : cmd, {
         shell: true
       })
-
-      /** Step 2: Use infra.json to figure out which rak/server to provision to */
-      const vmHost = 'rakserver03'
-      const hostIp = '192.168.10.193'
-      const slot = 6 // an index used for ports
-
-      // Step 3: Call distvms.sh
-      const distVmChild = spawn(`ssh ${remote} '/home/scripts/distvms.sh ${vmId} ${vmHost} ${hostIp} ${slot}'`, {
-        shell: true
-      })
-
-      // Step 4: Call depvm-on-all.sh
-      // const distVmChild = spawn(`ssh ${remote} '/home/scripts/depvm-on-all.sh ${vmId}'`, {
-      //   shell: true
-      // })
 
       child.on('exit', (code, signal) => {
         const output: string = child.stdout.read()?.toString()
         if (code === 0) {
           res(true)
           console.log("done")
+
+          /** Step 2: Use infra.json to figure out which rak/server to provision to */
+          const vmHost = 'rakserver03'
+          const hostIp = '192.168.10.193'
+          const slot = slotId // an index used for ports
+
+          // Step 3: Call distvms.sh
+          const cmd = `/home/scripts/distvms.sh ${vmId} ${vmHost} ${hostIp} ${slot}`
+          const distVmChild = spawn(isDev ? `ssh ${remote} '${cmd}'` : cmd, {
+            shell: true
+          })
+
+          // Step 4: Call depvm-on-all.sh
+          // const distVmChild = spawn(`ssh ${remote} '/home/scripts/depvm-on-all.sh ${vmId}'`, {
+          //   shell: true
+          // })
+
+          distVmChild.on('exit', (code, signal) => {
+            const output: string = child.stdout.read()?.toString()
+            if (code === 0) {
+              res(true)
+              console.log("done", output)
+            } else {
+              res(false)
+              console.log(code, "something wrong", output)
+            }
+          })
+
+          distVmChild.on('error', (err) => {
+            console.log(err)
+            rej(err)
+          })
         } else {
           res(false)
           console.log(code, "something wrong", output)
@@ -172,22 +202,6 @@ export class InstancesService {
       })
 
       child.on('error', (err) => {
-        console.log(err)
-        rej(err)
-      })
-
-      distVmChild.on('exit', (code, signal) => {
-        const output: string = child.stdout.read()?.toString()
-        if (code === 0) {
-          res(true)
-          console.log("done", output)
-        } else {
-          res(false)
-          console.log(code, "something wrong", output)
-        }
-      })
-
-      distVmChild.on('error', (err) => {
         console.log(err)
         rej(err)
       })

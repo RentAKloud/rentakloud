@@ -96,3 +96,11 @@ To reflect your latest changes in schema in the code, you need to update the pri
 ```
 npx prisma generate
 ```
+
+### Manual Imports/Exports
+
+In case you import some data manually using a dump file, you'll also need to set AUTOINCREMENT counter/sequence for some tables such as `User` or `Product`. To do so:
+
+```sql
+SELECT setval(pg_get_serial_sequence('"table_name"','id'), coalesce(max("id"), 1), max("id") IS NOT null) FROM "table_name"
+```

@@ -1,5 +1,6 @@
 import { ApiResponse, HttpService } from "~/services/HttpService";
-import { Instance, CreateInstanceReq } from "~/types/product";
+import { CreateInstanceReq } from "~/types/instance";
+import { Instance } from "~/types/instance";
 
 class InstancesApi {
   static async all(): ApiResponse<Instance[]> {

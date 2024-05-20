@@ -1,6 +1,7 @@
 import { createStore } from "solid-js/store"
 import AuthApi from "~/api/auth";
 import { ls_keys } from "~/config/constants";
+import { ApiResponseError } from "~/services/HttpService";
 import { User } from "~/types/user";
 
 const initialState = {
@@ -13,10 +14,15 @@ const [authStore, setAuthStore] = createStore<{
   user: User | null;
 }>(initialState)
 
-async function login(email: string, password: string) {
+async function login(email: string, password: string): Promise<ApiResponseError> {
   const resp = await AuthApi.login(email, password)
-  setAuthStore({ access_token: resp })
-  localStorage.setItem(ls_keys.ACCESS_TOKEN, resp)
+  if (resp.result) {
+    setAuthStore({ access_token: resp.result.access_token })
+    localStorage.setItem(ls_keys.ACCESS_TOKEN, resp.result.access_token)
+    return null
+  }
+
+  return resp.error
 }
 
 function logout() {
