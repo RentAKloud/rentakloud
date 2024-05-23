@@ -119,10 +119,11 @@ const Notifications: Component = () => {
   return (
     <>
       <button class="btn btn-ghost btn-circle">
-        {/* TODO indicator if unread notifications */}
         <div class="indicator">
           <Icon.Bell class="h-5 w-5" />
-          <span class="badge badge-xs badge-primary indicator-item"></span>
+          <Show when={notifications.latest && notifications.latest.length > 0}>
+            <span class="badge badge-xs badge-primary indicator-item"></span>
+          </Show>
         </div>
       </button>
 

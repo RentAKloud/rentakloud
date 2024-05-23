@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { Config, Prisma, InstanceStatus, Instance } from "@prisma/client";
+import { Config, Prisma, InstanceStatus, Instance, User } from "@prisma/client";
 import { PrismaService } from "./prisma.service";
 import { EventEmitter2 } from "@nestjs/event-emitter";
 import { spawn } from "child_process";
@@ -55,7 +55,10 @@ export class InstancesService {
             config: { connect: { id: i.configId } },
             status: InstanceStatus.Pending,
           },
-          include: { config: true }
+          include: {
+            config: true,
+            user: true
+          }
         })
       )
     )
@@ -129,14 +132,14 @@ export class InstancesService {
     })
   }
 
-  initProvisioning(instance: Instance & { config: Config },
-    vmId?: number, custId?: number, slotId?: number // for testing only (these are supposed to be system generated)
+  initProvisioning(instance: Instance & { config: Config, user: User },
+    _vmId?: number, custId?: number, slotId?: number // for testing only (these are supposed to be system generated)
   ) {
     const isDev = this.config.get('NODE_ENV') === 'development'
 
     return new Promise((res, rej) => {
       const d = {
-        id: instance.id, title: instance.title,
+        id: instance.vmId, title: instance.title,
         cpus: instance.config.cpus,
         ram: instance.config.ram,
         ssd: instance.config.ssd,
@@ -153,7 +156,9 @@ export class InstancesService {
 
       // Step 1: Save VM info in db.json
       const vmType = 'win10pro'
-      const cmd = `/home/scripts/crvminfo.sh ${vmId} ${custId} ${d.cpus} ${d.ram} ${d.ssd} ${vmType}`
+      const customerId = custId || instance.user.id + 5000
+      const vmId = _vmId || d.id
+      const cmd = `/home/scripts/crvminfo.sh ${vmId} ${customerId} ${d.cpus} ${d.ram} ${d.ssd} ${vmType}`
       const child = spawn(isDev ? `ssh ${remote} '${cmd}'` : cmd, {
         shell: true
       })
@@ -162,7 +167,6 @@ export class InstancesService {
         const output: string = child.stdout.read()?.toString()
         if (code === 0) {
           res(true)
-          console.log("done")
 
           /** Step 2: Use infra.json to figure out which rak/server to provision to */
           const vmHost = 'rakserver03'

@@ -4,7 +4,14 @@ import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 import { InstancesService } from '../services/instances.service';
 import { CreateInstance, Plan } from 'src/types/instances.dto';
 import { ProductsService } from 'src/services/products.service';
-import { Instance } from '@prisma/client';
+import { Instance, InstanceStatus } from '@prisma/client';
+
+type InstanceCallback = {
+  status: InstanceStatus
+  vncPath: string
+  publicIp: string
+  privateIp: string
+}
 
 @ApiTags('Instances')
 @Controller('instances')
@@ -93,5 +100,17 @@ export class InstancesController {
   @Delete('/:id')
   deleteInstance(@Param('id') id: string) {
     return this.instancesService.deleteInstance(id)
+  }
+
+  // TODO secure using a custom guard
+  // validate body - should only include stuff in type
+  @Post('/callback/:vmId')
+  callback(@Param('vmId') vmId: number, @Body() data: InstanceCallback) {
+    return this.instancesService.updateInstance({
+      where: {
+        vmId
+      },
+      data
+    })
   }
 }

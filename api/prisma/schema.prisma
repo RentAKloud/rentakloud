@@ -146,6 +146,8 @@ model Instance {
   title          String         @default("")
   addons         Json           @default("[]")
   meta           Json           @default("{}")
+  //
+  vmId           Int            @unique @default(autoincrement())
   // stuff from servers
   vncPath        String         @default("")
   privateIp      String         @default("")
