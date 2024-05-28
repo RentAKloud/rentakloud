@@ -155,10 +155,11 @@ export class InstancesService {
       // })
 
       // Step 1: Save VM info in db.json
-      const vmType = 'win10pro'
+      const K = 1024
+      const vmType = 'w10pro'
       const customerId = custId || instance.user.id + 5000
       const vmId = _vmId || d.id
-      const cmd = `/home/scripts/crvminfo.sh ${vmId} ${customerId} ${d.cpus} ${d.ram} ${d.ssd} ${vmType}`
+      const cmd = `/home/scripts/crvminfo.sh ${vmId} ${customerId} ${d.cpus} ${d.ram * K} ${d.ssd * K} ${vmType}`
       const child = spawn(isDev ? `ssh ${remote} '${cmd}'` : cmd, {
         shell: true
       })
@@ -172,6 +173,8 @@ export class InstancesService {
           const vmHost = 'rakserver03'
           const hostIp = '192.168.10.193'
           const slot = slotId // an index used for ports
+
+          // TODO call getavailslot.sh
 
           // Step 3: Call distvms.sh
           const cmd = `/home/scripts/distvms.sh ${vmId} ${vmHost} ${hostIp} ${slot}`
