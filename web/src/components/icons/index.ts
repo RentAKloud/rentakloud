@@ -6,14 +6,18 @@ import Menu from "./Menu";
 import Cross from "./Cross";
 import ChevronUpDown from "./ChevronUpDown";
 import Fullscreen from "./Fullscreen";
+import External from "./External";
+import PictureInPicture from "./PictureInPicture";
 
 export const Icon = {
   Bell,
   ChevronUpDown,
   Cross,
   Eye,
+  External,
   Fullscreen,
   Mail,
   Menu,
+  PictureInPicture,
   UserCircle,
 }
