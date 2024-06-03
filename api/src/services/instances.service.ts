@@ -181,43 +181,63 @@ export class InstancesService {
       child.on('exit', (code, signal) => {
         const output: string = child.stdout.read()?.toString()
         if (code === 0) {
-          res(true)
+          console.info("1. crvinfo.sh done")
 
-          /** Step 2: Use infra.json to figure out which rak/server to provision to */
-          const vmHost = 'rakserver03'
-          const hostIp = '192.168.10.193'
-          const slot = slotId // an index used for ports
-
-          // TODO call getavailslot.sh
-
-          // Step 3: Call distvms.sh
-          const cmd = `/home/scripts/distvms.sh ${vmId} ${vmHost} ${hostIp} ${slot}`
-          const distVmChild = spawn(isDev ? `ssh ${remote} '${cmd}'` : cmd, {
+          /** Step 2: Get provision target server and slot **/
+          const cmd = `/home/scripts/getavailslot.sh`
+          const child = spawn(isDev ? `ssh ${remote} '${cmd}'` : cmd, {
             shell: true
           })
 
-          // Step 4: Call depvm-on-all.sh
-          // const distVmChild = spawn(`ssh ${remote} '/home/scripts/depvm-on-all.sh ${vmId}'`, {
-          //   shell: true
-          // })
-
-          distVmChild.on('exit', (code, signal) => {
+          child.on('exit', (code, signal) => {
             const output: string = child.stdout.read()?.toString()
             if (code === 0) {
-              res(true)
-              console.log("done", output)
+              console.info("2. getavailslot.sh done")
+
+              // slot is just an index used for ports
+              const [vmHost, hostIp, slot = slotId] = output.split("\n")
+
+              this.updateInstance({
+                where: { id: instance.id, vmId },
+                data: {
+                  hostName: vmHost,
+                  hostIp,
+                  wsPort: 7000 + +slot
+                }
+              })
+
+              // Step 3: Call distvms.sh
+              const cmd = `/home/scripts/distvms.sh ${vmId} ${vmHost} ${hostIp} ${slot}`
+              const distVmChild = spawn(isDev ? `ssh ${remote} '${cmd}'` : cmd, {
+                shell: true
+              })
+
+              // Step 4: Call depvm-on-all.sh
+              // const distVmChild = spawn(`ssh ${remote} '/home/scripts/depvm-on-all.sh ${vmId}'`, {
+              //   shell: true
+              // })
+
+              distVmChild.on('exit', (code, signal) => {
+                const output: string = child.stdout.read()?.toString()
+                if (code === 0) {
+                  console.log("3. distvms done", output)
+                  res(true)
+                } else {
+                  res(false)
+                  console.log(code, "something wrong", output)
+                }
+              })
+
+              distVmChild.on('error', (err) => {
+                console.log(err)
+                rej(err)
+              })
             } else {
-              res(false)
-              console.log(code, "something wrong", output)
+              rej("getavailslot failed")
             }
           })
-
-          distVmChild.on('error', (err) => {
-            console.log(err)
-            rej(err)
-          })
         } else {
-          res(false)
+          rej("crvminfo failed")
           console.log(code, "something wrong", output)
         }
       })
