@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query, Request, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Patch, Post, Query, Redirect, Request, Response, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 import { InstancesService } from '../services/instances.service';
@@ -45,10 +45,26 @@ export class InstancesController {
     )
   }
 
+  @Get('vm[0-9]+')
+  @Redirect()
+  async proxy(
+    @Request() req,
+    @Response() res
+  ) {
+    const vmId = +/[0-9]+/.exec(req.path)[0]
+    const instance = await this.instancesService.instance({ vmId })
+    if (!instance) {
+      throw new HttpException(`Instance ${vmId} not found`, HttpStatus.NOT_FOUND)
+    }
+    return { url: `/vm${vmId}-${instance.hostIp}-${instance.wsPort}` }
+  }
+
   @UseGuards(JwtAuthGuard)
   @Get('')
   myInstances(@Request() req) {
-    return this.instancesService.instances(req.user.userId)
+    return this.instancesService.instances({
+      where: { userId: req.user.userId }
+    })
   }
 
   @UseGuards(JwtAuthGuard)
@@ -83,7 +99,7 @@ export class InstancesController {
     @Param('id') id: string,
     @Request() req
   ) {
-    return this.instancesService.instance(id, req.user.userId)
+    return this.instancesService.instance({ id, userId: req.user.userId })
   }
 
   @Patch('/:id')

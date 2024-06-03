@@ -153,6 +153,10 @@ model Instance {
   privateIp      String         @default("")
   publicIp       String         @default("")
   //
+  hostName       String         @default("")
+  hostIp         String         @default("")
+  wsPort         Int            @default(-1)
+  //
   createdAt      DateTime       @default(now())
   updatedAt      DateTime       @default(now())
 }
@@ -333,7 +337,7 @@ enum CouponType {
 }
 
 enum InstanceStatus {
-  Pending
+  Pending // subscription active but not provisioned yet
   Active
   Inactive
 }

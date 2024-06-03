@@ -3,14 +3,25 @@
 }
 
 rentakloud.com {
-	@vms path_regexp vm ^/vm20([0-9]{2})$
+	@vms path_regexp vm ^/vm([0-9]+)$
+	@fqVm path_regexp vm ^/vm([0-9]+)-((25[0-5]|(2[0-4]|1\d|[1-9]|)\d\.?\b){4})-([0-9]+)$
 
 	handle @vms {
 		forward_auth api.rentakloud.com {
 			uri /auth/me?{query}
 		}
 
-		reverse_proxy /vm20{re.vm.1} 192.168.10.193:70{re.vm.1}
+		rewrite * /instances/vm{re.vm.1}
+		reverse_proxy localhost:3000 {
+			@redir header Location *
+				handle_response @redir {
+					rewrite * {rp.header.Location}
+					handle @fqVm {
+						# {2} is IP address, {3} & {4} last part of IP, {5} websocket port
+						reverse_proxy {re.vm.2}:{re.vm.5}
+					}
+				}
+			}
 	}
 
 	handle_path /novnc* {

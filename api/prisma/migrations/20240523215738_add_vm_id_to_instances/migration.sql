@@ -7,7 +7,7 @@
 -- AlterTable
 ALTER TABLE "Instance" ADD COLUMN     "vmId" SERIAL NOT NULL;
 
-ALTER SEQUENCE "Instance_vmId_seq" RESTART WITH 3000;
+SELECT setval(pg_get_serial_sequence('"Instance"','vmId'), 3000, false) FROM "Instance";
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Instance_vmId_key" ON "Instance"("vmId");

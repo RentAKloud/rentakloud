@@ -14,14 +14,28 @@ export class InstancesService {
     private readonly config: ConfigService,
   ) { }
 
-  async instances(userId: number) {
+  async instances(params: {
+    skip?: number;
+    take?: number;
+    cursor?: Prisma.InstanceWhereUniqueInput;
+    where?: Prisma.InstanceWhereInput;
+    orderBy?: Prisma.InstanceOrderByWithRelationInput;
+  }) {
+    const { skip, take, cursor, where, orderBy } = params;
     return this.prisma.instance.findMany({
-      where: { userId },
+      skip,
+      take,
+      cursor,
+      where,
+      orderBy,
       include: {
         subscription: {
           include: {
             product: {
-              select: { name: true, images: true }
+              select: {
+                name: true,
+                images: true
+              }
             }
           }
         },
@@ -29,9 +43,9 @@ export class InstancesService {
     })
   }
 
-  async instance(id: string, userId: number) {
+  async instance(where: Prisma.InstanceWhereUniqueInput) {
     return this.prisma.instance.findUnique({
-      where: { id, userId },
+      where,
       include: {
         subscription: {
           include: {

@@ -3,3 +3,5 @@ dist/
 .DS_Store
 .env.local
 .env.production
+
+web/public/novnc
