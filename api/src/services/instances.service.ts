@@ -202,7 +202,8 @@ export class InstancesService {
                 data: {
                   hostName: vmHost,
                   hostIp,
-                  wsPort: 7000 + +slot
+                  wsPort: 7000 + +slot,
+                  vncPath: `/vm${vmId}`
                 }
               })
 
