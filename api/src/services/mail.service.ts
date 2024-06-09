@@ -6,6 +6,10 @@ import { UsersService } from './users.service';
 import { ConfigService } from '@nestjs/config';
 import { OrderItem } from 'src/types/order';
 import { OrdersService } from './orders.service';
+import { Queue } from 'bull';
+import { InjectQueue } from '@nestjs/bull';
+import { MailJob } from 'src/queue-consumers/mail.consumer';
+import { delay } from 'src/utils';
 
 @Injectable()
 export class MailService {
@@ -13,14 +17,15 @@ export class MailService {
     private mailerService: MailerService,
     private readonly config: ConfigService,
     private readonly usersService: UsersService,
-    private readonly ordersService: OrdersService
+    private readonly ordersService: OrdersService,
+    @InjectQueue('mail') private mailQueue: Queue<MailJob>
   ) { }
 
   async _sendUserConfirmation(user: User, token: string) {
     const dev = this.config.get('NODE_ENV') === 'development'
     const url = `${dev ? 'http://localhost:3001' : 'https://rentakloud.com'}/confirm-email?token=${token}`;
 
-    await this.mailerService.sendMail({
+    this.mailQueue.add({
       to: user.email,
       // from: '"Support Team" <support@example.com>', // override default from
       subject: 'Welcome to RentAKloud! Confirm your Email',
@@ -29,7 +34,7 @@ export class MailService {
         name: user.firstName + " " + user.lastName,
         url,
       },
-    });
+    })
   }
 
   @OnEvent('user.created')
@@ -47,7 +52,7 @@ export class MailService {
     const dev = this.config.get('NODE_ENV') === 'development'
     const url = `${dev ? 'http://localhost:3001' : 'https://rentakloud.com'}/forgot-password?token=${token}`
 
-    await this.mailerService.sendMail({
+    await this.mailQueue.add({
       to: user.email,
       subject: "Reset Your RentAKloud Password",
       template: './user_reset_password',
@@ -78,7 +83,7 @@ export class MailService {
       currency
     } = this.generateOrderInfo(order)
 
-    await this.mailerService.sendMail({
+    const p1 = this.mailQueue.add({
       to: user.email,
       subject: 'Order Received',
       template: './order_received',
@@ -94,7 +99,7 @@ export class MailService {
 
     const dev = this.config.get('NODE_ENV') === 'development'
     const adminUrl = dev ? 'http://localhost:5137' : 'https://admin.rentakloud.com';
-    await this.mailerService.sendMail({
+    const p2 = this.mailQueue.add({
       to: 'orders@rentakloud.com',
       subject: 'Order Received',
       template: './admin_order_received',
@@ -110,6 +115,8 @@ export class MailService {
         adminUrl
       },
     })
+
+    await Promise.all([p1, p2])
   }
 
   @OnEvent('order.status.changed')
@@ -155,20 +162,20 @@ export class MailService {
       },
     }
 
-    await this.mailerService.sendMail({
+    await this.mailQueue.add({
       ...contents[order.status],
       to: user.email,
     });
   }
 
   async contactForm(email: string, name: string, subject: string, message: string) {
-    await this.mailerService.sendMail({
+    await this.mailQueue.add({
       to: "info@rentakloud.com",
-      subject,
+      subject: `Contact form submission "${subject}"`,
       html: `
-        <h3>From: ${email}</h3>
-        <p>${message}</p>
-      `
+            <h3>From: ${name} <${email}></h3>
+            <p>${message}</p>
+          `
     });
   }
 }

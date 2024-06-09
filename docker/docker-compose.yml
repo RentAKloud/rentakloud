@@ -1,24 +1,6 @@
 version: '3.8'
 name: rentakloud-runtime
 
-x-environment:
-  &glitchtip-environment
-  DATABASE_URL: ${GLITCHTIP_DB_URL}
-  SECRET_KEY: ${GLITCHTIP_SECRET} # best to run openssl rand -hex 32
-  PORT: 8000
-  EMAIL_URL: smtp://${SMTP_USER}:${SMTP_PASS}@${SMTP_HOST}:${SMTP_PORT} # https://glitchtip.com/documentation/install#configuration
-  GLITCHTIP_DOMAIN: ${GLITCHTIP_DOMAIN} # Change this to your domain
-  DEFAULT_FROM_EMAIL: alerts@rentakloud.com # Change this to your email
-  CELERY_WORKER_CONCURRENCY: 2 # Set to 2 to prevent excessive memory usage. Change it or remove to set it to the number of cpu cores.
-  # optional
-  ENABLE_USER_REGISTRATION: false
-  # STRIPE_TEST_PUBLIC_KEY: 
-  # STRIPE_TEST_SECRET_KEY: 
-x-depends_on:
-  &glitchtip-depends_on
-  - db
-  - redis
-
 services:
   db:
     image: postgres
@@ -39,51 +21,12 @@ services:
     environment:
       - ADMINER_DESIGN=hydra
 
-  # redis:
-  #   image: redis
-  #   restart: unless-stopped
-
-  # Error tracking service (Sentry compatible)
-  # glitchtip-web:
-  #   image: glitchtip/glitchtip
-  #   depends_on: *glitchtip-depends_on
-  #   ports:
-  #     - 8000:8000
-  #   environment: *glitchtip-environment
-  #   restart: unless-stopped
-  #   volumes:
-  #     - glitchtip-uploads:/code/uploads
-  # glitchtip-worker:
-  #   image: glitchtip/glitchtip
-  #   command: ./bin/run-celery-with-beat.sh
-  #   depends_on: *glitchtip-depends_on
-  #   environment: *glitchtip-environment
-  #   restart: unless-stopped
-  #   volumes:
-  #     - glitchtip-uploads:/code/uploads
-  # glitchtip-migrate:
-  #   image: glitchtip/glitchtip
-  #   depends_on: *glitchtip-depends_on
-  #   command: "./manage.py migrate"
-  #   environment: *glitchtip-environment
-
-  # Monitoring Metrics/Performance
-  # prometheus:
-  #   image: bitnami/prometheus
-  #   ports:
-  #     - 9090:9090
-  #   volumes:
-  #     - prometheus-data:/opt/bitnami/prometheus/data
-  #     - ./prometheus.yml:/opt/bitnami/prometheus/conf/prometheus.yml
-  #   extra_hosts:
-  #     - host.docker.internal:host-gateway
-
-  # grafana:
-  #   image: grafana/grafana
-  #   ports:
-  #     - 9091:3000
-  #   volumes:
-  #     - grafana-data:/var/lib/grafana
+  # opensource alternative for redis
+  valkey:
+    image: valkey/valkey
+    restart: unless-stopped
+    ports:
+      - 6379:6379
 
   # Monitoring Uptime & Public Status Pages
   uptime-kuma:
@@ -98,7 +41,4 @@ services:
 
 volumes:
   pg-data:
-  # glitchtip-uploads:
-  # prometheus-data:
-  # grafana-data:
   uptime-kuma:

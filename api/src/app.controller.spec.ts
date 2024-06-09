@@ -7,6 +7,9 @@ import { AppService } from './app.service';
 import { MailModule } from './modules/mail.module';
 import { UsersModule } from './modules/users.module';
 import { OrdersModule } from './modules/orders.module';
+import { BullBoardModule } from '@bull-board/nestjs';
+import { ExpressAdapter } from '@bull-board/express';
+import { BullModule } from '@nestjs/bull';
 
 describe('AppController', () => {
   let app: TestingModule;
@@ -21,7 +24,11 @@ describe('AppController', () => {
         UsersModule,
         OrdersModule,
         EventEmitterModule.forRoot(),
-        JwtModule
+        JwtModule,
+        BullBoardModule.forRoot({
+          route: '',
+          adapter: ExpressAdapter
+        }),
       ],
       controllers: [AppController],
       providers: [AppService],
@@ -34,4 +41,8 @@ describe('AppController', () => {
       expect(appController.getHello()).toBe('Hello World!');
     });
   });
+
+  afterAll(() => {
+    app.close() // otherwise tests don't exit since adding the first `BullModule.registerQueue` in mail.module
+  })
 });

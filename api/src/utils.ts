@@ -7,3 +7,5 @@ export function nextDay() {
 export function daysAgo(days: number) {
   return new Date(+new Date() - days * DAY)
 }
+
+export const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))

@@ -6,6 +6,10 @@ import { join } from 'path';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UsersModule } from './users.module';
 import { OrdersModule } from './orders.module';
+import { BullModule } from '@nestjs/bull';
+import { MailConsumer } from '../queue-consumers/mail.consumer';
+import { BullBoardModule } from '@bull-board/nestjs';
+import { BullAdapter } from '@bull-board/api/bullAdapter';
 
 @Global()
 @Module({
@@ -48,8 +52,15 @@ import { OrdersModule } from './orders.module';
 
     UsersModule,
     OrdersModule,
+    BullModule.registerQueue({
+      name: 'mail',
+    }),
+    BullBoardModule.forFeature({
+      name: 'mail',
+      adapter: BullAdapter, //or use BullAdapter if you're using bull instead of bullMQ
+    }),
   ],
-  providers: [MailService],
+  providers: [MailService, MailConsumer],
   exports: [MailService],
 })
 export class MailModule { }

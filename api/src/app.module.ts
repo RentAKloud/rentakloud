@@ -21,6 +21,9 @@ import { StatsModule } from './modules/stats.module';
 import { InstancesModule } from './modules/instances.module';
 import { PublicController } from './controllers/public.controller';
 import { SubscriptionsModule } from './modules/subscriptions.module';
+import { BullModule } from '@nestjs/bull';
+import { BullBoardModule } from '@bull-board/nestjs';
+import { ExpressAdapter } from '@bull-board/express';
 
 @Module({
   imports: [
@@ -31,6 +34,21 @@ import { SubscriptionsModule } from './modules/subscriptions.module';
     EventEmitterModule.forRoot(),
     MailModule,
     PrometheusModule.register(),
+    BullModule.forRoot({
+      // we use valkey instead of redis
+      // redis: {
+      //   host: 'localhost',
+      //   port: 6379,
+      // },
+      defaultJobOptions:{
+        attempts: 5,
+        backoff: 1 * 60 * 1000 // retry after X ms
+      }
+    }),
+    BullBoardModule.forRoot({
+      route: '/queues',
+      adapter: ExpressAdapter
+    }),
 
     AuthModule,
     ProductsModule,
@@ -49,4 +67,4 @@ import { SubscriptionsModule } from './modules/subscriptions.module';
   controllers: [AppController, PublicController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }
