@@ -7,7 +7,6 @@ import { Address, CheckoutContextProps, CheckoutSteps, CouponCode, Order, OrderS
 import { authStore } from "~/stores/auth";
 import OrdersApi from "~/api/orders";
 import PaymentsApi from "~/api/payments";
-import ProductsApi from "~/api/products";
 import { cart, getCartTotal, resetCart } from "~/stores/cart";
 import { getProductById } from "~/stores/products";
 import { CartItem, ProductType } from "~/types/product";
@@ -15,6 +14,7 @@ import { ONLINE_ORDER_AMOUNT_LIMIT } from "~/config/constants";
 import { CountryCode, StateCode } from "~/types/common";
 import { HttpService } from "~/services/HttpService";
 import { appSettings } from "~/stores/global";
+import InstancesApi from "~/api/instances";
 
 const CheckoutContext = createContext<CheckoutContextProps>(defaultCheckout)
 
@@ -239,7 +239,7 @@ export const CheckoutProvider: Component<{ children: JSXElement }> = (props) => 
         productId: subscriptionItems[i].productId,
         priceId: subscriptionItems[i].priceId!,
       }))
-      await ProductsApi.createInstances(subData)
+      await InstancesApi.createMany(subData)
       const secrets = subResponses.map(x => x.result!.clientSecret)
       setSubClientSecrets(secrets)
     }

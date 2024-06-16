@@ -46,7 +46,7 @@ const ProtectedRoutes: Component = () => {
 
   return (
     <Route path="" component={Protected}>
-      <Route path="/products/:id" component={InstanceDashboard}>
+      <Route path="/instances/:id" component={InstanceDashboard}>
         <Route path={["/", "/overview"]} component={Overview} />
         <Route path="/stream" component={VNC} />
         <Route path="/site-ssl" component={SiteAndSSL} />

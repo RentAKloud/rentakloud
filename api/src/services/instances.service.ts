@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { BadRequestException, Injectable } from "@nestjs/common";
 import { Config, Prisma, InstanceStatus, Instance, User } from "@prisma/client";
 import { PrismaService } from "./prisma.service";
 import { EventEmitter2 } from "@nestjs/event-emitter";
@@ -146,34 +146,80 @@ export class InstancesService {
     })
   }
 
-  initProvisioning(instance: Instance & { config: Config, user: User },
+  async initProvisioning(instance: Instance & { config: Config, user: User },
     _vmId?: number, custId?: number, slotId?: number // for testing only (these are supposed to be system generated)
   ) {
-    const isDev = this.config.get('NODE_ENV') === 'development'
 
-    return new Promise((res, rej) => {
-      const d = {
-        id: instance.vmId, title: instance.title,
-        cpus: instance.config.cpus,
-        ram: instance.config.ram,
-        ssd: instance.config.ssd,
-        hdd: instance.config.hdd,
+    const d = {
+      id: instance.vmId, title: instance.title,
+      cpus: instance.config.cpus,
+      ram: instance.config.ram,
+      ssd: instance.config.ssd,
+      hdd: instance.config.hdd,
+    }
+
+    // Step 1: Save VM info in db.json
+    const K = 1024
+    const vmType = 'w10pro'
+    const customerId = custId || instance.user.id + 5000
+    const vmId = _vmId || d.id
+
+    const cmd1 = `/home/scripts/crvminfo.sh ${vmId} ${customerId} ${d.cpus} ${d.ram * K} ${d.ssd * K} ${vmType}`
+    const { status, output } = await this._script(cmd1)
+
+    if (status) {
+      console.info("1. crvminfo.sh done")
+    } else {
+      console.log("1. crvminfo failed", output)
+      return
+    }
+
+    /** Step 2: Get provision target server and slot **/
+    const cmd2 = `/home/scripts/getavailslot.sh`
+    const { status: status2, output: output2 } = await this._script(cmd2)
+
+    if (status2) {
+      console.info("2. getavailslot.sh done")
+    } else {
+      console.error("2. getavailslot failed")
+      return
+    }
+
+    // slot is just an index used for ports
+    const [vmHost, hostIp, slot = slotId] = output2.split("\n")
+
+    this.updateInstance({
+      where: { id: instance.id, vmId },
+      data: {
+        hostName: vmHost,
+        hostIp,
+        wsPort: 7000 + +slot,
+        vncPath: `/vm${vmId}`
       }
-      const json = JSON.stringify(d)
-      // const env = this.config.get('NODE_ENV')
-      const remote = `rkadmin@rentakloud.com`
+    })
 
-      // Assuming our SSH id is added to the target server, so we are not prompted for password
-      // const child = spawn(`echo '${json}' | ssh ${remote} 'cat > /tmp/db.json'`, {
-      //   shell: true
-      // })
+    // Step 3: Call distvms.sh
+    const cmd = `/home/scripts/distvms.sh ${vmId} ${vmHost} ${hostIp} ${slot}`
+    const { status: status3, output: output3 } = await this._script(cmd)
 
-      // Step 1: Save VM info in db.json
-      const K = 1024
-      const vmType = 'w10pro'
-      const customerId = custId || instance.user.id + 5000
-      const vmId = _vmId || d.id
-      const cmd = `/home/scripts/crvminfo.sh ${vmId} ${customerId} ${d.cpus} ${d.ram * K} ${d.ssd * K} ${vmType}`
+    if (status3) {
+      console.log("3. distvms done", output3)
+    } else {
+      console.log("3. distvms failed", output3)
+      return
+    }
+  }
+
+  _script(cmd: string): Promise<{
+    status: boolean
+    output: string
+    error?: string
+  }> {
+    const isDev = this.config.get('NODE_ENV') === 'development'
+    // Assuming our SSH id is added to the target server, so we are not prompted for password
+    const remote = `rkadmin@rentakloud.com`
+
+    return new Promise((resolve, reject) => {
       const child = spawn(isDev ? `ssh ${remote} '${cmd}'` : cmd, {
         shell: true
       })
@@ -181,72 +227,42 @@ export class InstancesService {
       child.on('exit', (code, signal) => {
         const output: string = child.stdout.read()?.toString()
         if (code === 0) {
-          console.info("1. crvinfo.sh done")
-
-          /** Step 2: Get provision target server and slot **/
-          const cmd = `/home/scripts/getavailslot.sh`
-          const child = spawn(isDev ? `ssh ${remote} '${cmd}'` : cmd, {
-            shell: true
-          })
-
-          child.on('exit', (code, signal) => {
-            const output: string = child.stdout.read()?.toString()
-            if (code === 0) {
-              console.info("2. getavailslot.sh done")
-
-              // slot is just an index used for ports
-              const [vmHost, hostIp, slot = slotId] = output.split("\n")
-
-              this.updateInstance({
-                where: { id: instance.id, vmId },
-                data: {
-                  hostName: vmHost,
-                  hostIp,
-                  wsPort: 7000 + +slot,
-                  vncPath: `/vm${vmId}`
-                }
-              })
-
-              // Step 3: Call distvms.sh
-              const cmd = `/home/scripts/distvms.sh ${vmId} ${vmHost} ${hostIp} ${slot}`
-              const distVmChild = spawn(isDev ? `ssh ${remote} '${cmd}'` : cmd, {
-                shell: true
-              })
-
-              // Step 4: Call depvm-on-all.sh
-              // const distVmChild = spawn(`ssh ${remote} '/home/scripts/depvm-on-all.sh ${vmId}'`, {
-              //   shell: true
-              // })
-
-              distVmChild.on('exit', (code, signal) => {
-                const output: string = child.stdout.read()?.toString()
-                if (code === 0) {
-                  console.log("3. distvms done", output)
-                  res(true)
-                } else {
-                  res(false)
-                  console.log(code, "something wrong", output)
-                }
-              })
-
-              distVmChild.on('error', (err) => {
-                console.log(err)
-                rej(err)
-              })
-            } else {
-              rej("getavailslot failed")
-            }
-          })
+          resolve({ status: true, output })
         } else {
-          rej("crvminfo failed")
-          console.log(code, "something wrong", output)
+          resolve({ status: false, output, error: "Non-zero exit code" })
         }
       })
 
       child.on('error', (err) => {
-        console.log(err)
-        rej(err)
+        console.error(err)
+        reject(err)
       })
     })
+  }
+
+  async action(id: string, action: "start" | "stop" | "restart") {
+    const { vmId } = (await this.instances({
+      where: {
+        OR: [
+          { id },
+          { vmId: +id || undefined }
+        ]
+      }
+    }))[0]
+
+    const actions = {
+      "start": `/home/scripts/start-vm-onhost.sh ${vmId}`,
+      "stop": `/home/scripts/powerdown-vm-onhost.sh ${vmId}`,
+      "restart": `/home/scripts/restart.sh ${vmId}`,
+    }
+
+    const { status, output, error } = await this._script(actions[action])
+
+    if (!status) {
+      console.error(output, error)
+      throw new BadRequestException(error)
+    }
+
+    return { status }
   }
 }

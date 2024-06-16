@@ -87,13 +87,6 @@ export class InstancesController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Post('/setup-vnc-tunnel')
-  setupVNCTunnel(@Body() body) {
-    const { vmId } = body
-    return this.instancesService.initIPSecTunnel(vmId)
-  }
-
-  @UseGuards(JwtAuthGuard)
   @Get('/:id')
   myInstance(
     @Param('id') id: string,
@@ -116,6 +109,24 @@ export class InstancesController {
   @Delete('/:id')
   deleteInstance(@Param('id') id: string) {
     return this.instancesService.deleteInstance(id)
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('/setup-vnc-tunnel')
+  setupVNCTunnel(@Body() body) {
+    const { vmId } = body
+    return this.instancesService.initIPSecTunnel(vmId)
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('/:id/action')
+  action(
+    @Param('id') id: string,
+    @Body() body
+  ) {
+    const { action, params } = body
+
+    return this.instancesService.action(id, action)
   }
 
   // TODO secure using a custom guard

@@ -12,18 +12,18 @@ const _InstanceDashboard: Component<{}> = () => {
         <div class="py-20">
           <ul class="menu bg-base-100 w-56">
             <Link href="/dashboard/instances">&larr; Back</Link>
-            <li><Link href={`/products/${id}/overview`}>Overview</Link></li>
-            <li><Link href={`/products/${id}/stream`}>Stream</Link></li>
-            {/* <li><Link href={`/products/${id}/site-ssl`}>Site & SSL</Link></li> */}
-            {/* <li><Link href={`/products/${id}/database`}>Database/phpMyAdmin</Link></li> */}
-            {/* <li><Link href={`/products/${id}/file-manager`}>File Manager</Link></li> */}
-            {/* <li><Link href={`/products/${id}/ssh`}>Shell/SSH</Link></li> */}
-            {/* <li><Link href={`/products/${id}/ftps`}>FTPS</Link></li> */}
-            {/* <li><Link href={`/products/${id}/metrics`}>Metrics</Link></li> */}
-            {/* <li><Link href={`/products/${id}/snapshots`}>Snapshots</Link></li> */}
-            {/* <li><Link href={`/products/${id}/events`}>Events</Link></li> */}
-            <li><Link href={`/products/${id}/settings`}>Settings</Link></li>
-            <li><Link href={`/products/${id}/guidance-help`}>Guidance</Link></li>
+            <li><Link href={`/instances/${id}/overview`}>Overview</Link></li>
+            <li><Link href={`/instances/${id}/stream`}>Stream</Link></li>
+            {/* <li><Link href={`/instances/${id}/site-ssl`}>Site & SSL</Link></li> */}
+            {/* <li><Link href={`/instances/${id}/database`}>Database/phpMyAdmin</Link></li> */}
+            {/* <li><Link href={`/instances/${id}/file-manager`}>File Manager</Link></li> */}
+            {/* <li><Link href={`/instances/${id}/ssh`}>Shell/SSH</Link></li> */}
+            {/* <li><Link href={`/instances/${id}/ftps`}>FTPS</Link></li> */}
+            {/* <li><Link href={`/instances/${id}/metrics`}>Metrics</Link></li> */}
+            {/* <li><Link href={`/instances/${id}/snapshots`}>Snapshots</Link></li> */}
+            {/* <li><Link href={`/instances/${id}/events`}>Events</Link></li> */}
+            <li><Link href={`/instances/${id}/settings`}>Settings</Link></li>
+            <li><Link href={`/instances/${id}/guidance-help`}>Guidance</Link></li>
           </ul>
         </div>
 

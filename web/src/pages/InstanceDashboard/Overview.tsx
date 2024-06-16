@@ -1,8 +1,40 @@
-import { Component } from "solid-js"
+import { Component, Show, createSignal } from "solid-js"
 import { useInstanceContext } from "./context"
+import InstancesApi from "~/api/instances"
+import { NotificationService } from "~/services/NotificationService"
+import { InstanceAction } from "~/types/instance"
 
 const Overview: Component<{}> = () => {
   const { instance } = useInstanceContext()!
+  const [inTransit, setInTransit] = createSignal(false)
+
+  async function stop() {
+    action("stop", "Stopping VM...")
+  }
+
+  async function start() {
+    action("start", "Starting VM...")
+  }
+
+  async function restart() {
+    action("restart", "Restarting VM...")
+  }
+
+  async function action(action: InstanceAction, successMessage: string) {
+    setInTransit(true)
+
+    const { result, error } = await InstancesApi.action(instance.latest!.id, action, {})
+    if (error) {
+      NotificationService.error(error.message)
+    } else if (result) {
+      if (result.status)
+        NotificationService.success(successMessage)
+      else
+        NotificationService.error(`Could not ${action} the VM right now`)
+    }
+
+    setInTransit(false)
+  }
 
   return (
     <>
@@ -12,7 +44,15 @@ const Overview: Component<{}> = () => {
         <p>{instance.latest?.config.ram} GB RAM, {instance.latest?.config.cpus} vCPU, {instance.latest?.config.ssd} GB SSD</p>
         <p>Windows 10</p>
         <p>Houston, Zone A (us-east-1)</p>
-        <p>Status: <strong class="text-success">Running</strong></p>
+        <p>Status: <strong classList={{
+          "text-success": instance.latest?.status === "Active",
+          "text-error": instance.latest?.status === "Inactive",
+          "text-warning": instance.latest?.status === "Pending"
+        }}>
+          <Show when={instance.latest?.status === "Active"} fallback="Stopped">
+            Running
+          </Show>
+        </strong></p>
       </section>
 
       <div class="divider divider-secondary" />
@@ -20,9 +60,14 @@ const Overview: Component<{}> = () => {
       <section>
         <h2 class="text-xl font-bold mb-4">Actions</h2>
 
-        <button class="btn btn-primary mr-2">Stop</button>
-        <button class="btn btn-primary mb-2">Reboot</button>
-        
+        <Show
+          when={instance.latest?.status === "Active"}
+          fallback={<button class="btn btn-primary mr-2" onclick={start} disabled={inTransit()}>Start</button>}
+        >
+          <button class="btn btn-primary mr-2" onclick={stop} disabled={inTransit()}>Stop</button>
+        </Show>
+        <button class="btn btn-primary mb-2" onclick={restart} disabled={inTransit()}>Reboot</button>
+
       </section>
 
       <div class="divider divider-secondary" />

@@ -1,8 +1,8 @@
 import { Component, JSXElement, Resource, createContext, createResource, useContext } from "solid-js";
 import { useParams, useSearchParams } from "@solidjs/router";
 import { authStore } from "~/stores/auth";
-import ProductsApi from "~/api/products";
 import { Instance } from "~/types/instance";
+import InstancesApi from "~/api/instances";
 
 type InstanceContextProps = {
   instance: Resource<Instance|undefined>
@@ -25,7 +25,7 @@ export const InstanceProvider: Component<{ children: JSXElement }> = (props) => 
   const { id } = useParams()
 
   const [instance] = createResource(async () => {
-    const { result, error } = await ProductsApi.instance(id)
+    const { result, error } = await InstancesApi.one(id)
     if (result) {
       return result
     }

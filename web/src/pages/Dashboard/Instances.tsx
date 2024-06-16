@@ -1,17 +1,17 @@
 import { Component, For, Show, createResource, createSignal } from "solid-js";
 import { Link } from "@solidjs/router";
-import ProductsApi from "~/api/products";
 import Card from "~/components/Card/Card";
 import { DateTime } from "~/components/DateTime";
 import ListIcon from "~/components/icons/List";
 import GridIcon from "~/components/icons/Grid";
 import CLIIcon from "~/components/icons/CLI";
 import DesktopIcon from "~/components/icons/Desktop";
-import WindowsIcon from "~/components/icons/logos/Windows";
+import InstancesApi from "~/api/instances";
+import { Icon } from "~/components/icons";
 
 const Instances: Component = () => {
   const [instances, { refetch }] = createResource(async () => {
-    const { result, error } = await ProductsApi.instances()
+    const { result, error } = await InstancesApi.all()
     if (error) throw error
     return result
   })
@@ -57,23 +57,41 @@ const Instances: Component = () => {
                     <Card
                       title={instance.title || instance.subscription.product.name}
                       description={
-                        <div class="flex flex-col gap-3">
-                          <span classList={{
-                            "text-warning": instance.status === "Pending",
-                            "text-error": instance.status === "Inactive",
-                            "text-success": instance.status === "Active"
-                          }}>{instance.status}</span>
-                          {/* <p>Instance ID: {instance.id}</p> */}
-                          {/* <p>{instance.product.shortDescription}</p> */}
-                          {/* <span>Started At: <DateTime value={instance.createdAt} /></span> */}
-                          <WindowsIcon />
-                        </div>
+                        <>
+                          <div class="flex flex-col gap-3">
+                            <div class="flex gap-2">
+                              <Icon.Windows />
+                              <span classList={{
+                                "text-warning": instance.status === "Pending",
+                                "text-error": instance.status === "Inactive",
+                                "text-success": instance.status === "Active"
+                              }}>{instance.status}</span>
+                            </div>
+                            {/* <p>Instance ID: {instance.id}</p> */}
+                            {/* <p>{instance.product.shortDescription}</p> */}
+                            {/* <span>Started At: <DateTime value={instance.createdAt} /></span> */}
+                          </div>
+                          <div class="dropdown dropdown-end absolute top-2 right-2">
+                            <label tabindex="0" class="btn btn-ghost btn-circle">
+                              <Icon.EllipsesVertical />
+                            </label>
+
+                            <ul tabindex="0" class="dropdown-content menu menu-compact mt-3 p-2 z-10 shadow bg-base-200 rounded-box w-52">
+                              <li>
+                                <Link href={`/instances/${instance.id}`}>Details</Link>
+                              </li>
+                              <li><a>Start</a></li>
+                              <li><a>Reboot</a></li>
+                            </ul>
+                          </div>
+                        </>
                       }
                       actions={<div class="flex gap-5 items-center justify-start flex-wrap">
-                        <Link href={`/products/${instance.id}`}>Details</Link>
                         <a href="http://204.27.57.219:4200/" target="_blank" class="btn"><CLIIcon /> SSH</a>
-                        <Link href={`/products/${instance.id}/stream`} class="btn"><DesktopIcon /> VNC</Link>
-                      </div>} />
+                        <Link href={`/instances/${instance.id}/stream`} class="btn"><DesktopIcon /> VNC</Link>
+                      </div>}
+                      actionsAlign="left"
+                    />
                   )
                 }
               </For>

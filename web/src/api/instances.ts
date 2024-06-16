@@ -1,5 +1,5 @@
 import { ApiResponse, HttpService } from "~/services/HttpService";
-import { CreateInstanceReq } from "~/types/instance";
+import { CreateInstanceReq, InstanceAction } from "~/types/instance";
 import { Instance } from "~/types/instance";
 
 class InstancesApi {
@@ -15,7 +15,7 @@ class InstancesApi {
     return await HttpService.post("/instances", { subscriptions })
   }
 
-  static async update(id:string, instance: Partial<Instance>) {
+  static async update(id: string, instance: Partial<Instance>) {
     return await HttpService.patch(`/instances/${id}`, instance)
   }
 
@@ -25,6 +25,10 @@ class InstancesApi {
 
   static async initVNCTunnel(vmId: string) {
     return await HttpService.post('/instances/setup-vnc-tunnel', { vmId })
+  }
+
+  static async action(id: string, action: InstanceAction, params: any): ApiResponse<{ status: boolean }> {
+    return await HttpService.post(`/instances/${id}/action`, { action, params })
   }
 }
 

@@ -8,11 +8,14 @@ import ChevronUpDown from "./ChevronUpDown";
 import Fullscreen from "./Fullscreen";
 import External from "./External";
 import PictureInPicture from "./PictureInPicture";
+import EllipsesVertical from "./EllipsesVertical";
+import Windows from "./logos/Windows";
 
 export const Icon = {
   Bell,
   ChevronUpDown,
   Cross,
+  EllipsesVertical,
   Eye,
   External,
   Fullscreen,
@@ -20,4 +23,5 @@ export const Icon = {
   Menu,
   PictureInPicture,
   UserCircle,
+  Windows
 }

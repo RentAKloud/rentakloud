@@ -1,10 +1,10 @@
 import { useParams } from "@solidjs/router";
 import { Component, createSignal } from "solid-js";
-import ProductsApi from "~/api/products";
 import Modal from "~/components/Modal";
 import { NotificationService } from "~/services/NotificationService";
 import { useInstanceContext } from "./context";
 import { InstanceAddonKey } from "~/types/instance";
+import InstancesApi from "~/api/instances";
 
 const InstanceSettings: Component = () => {
   const { id } = useParams()
@@ -13,7 +13,7 @@ const InstanceSettings: Component = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = createSignal<boolean>(false)
   async function deleteActiveProduct(id: string) {
     try {
-      await ProductsApi.deleteInstance(id)
+      await InstancesApi.delete(id)
       setIsDeleteModalOpen(false)
     } catch (err) {
       NotificationService.error("Could not delete. Please try again or contact support.")
@@ -28,7 +28,7 @@ const InstanceSettings: Component = () => {
     } else[
       addons.push({ id, quantity })
     ]
-    ProductsApi.updateInstance(instance.latest?.id!, { addons })
+    InstancesApi.update(instance.latest?.id!, { addons })
   }
 
   return (
@@ -44,7 +44,7 @@ const InstanceSettings: Component = () => {
             type="text" placeholder="eg. My Office Workspace" class="input input-bordered input-primary"
             value={instance.latest?.title}
             oninput={(e) => {
-              ProductsApi.updateInstance(instance.latest?.id!, { title: e.currentTarget.value })
+              InstancesApi.update(instance.latest?.id!, { title: e.currentTarget.value })
             }}
           />
         </div>

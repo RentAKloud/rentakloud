@@ -24,7 +24,7 @@ const Card: Component<CardProps> = (props) => {
         </Show>
 
         <Show when={typeof description === "object"}>
-          <p>{description}</p>
+          <div>{description}</div>
         </Show>
 
         {props.children}

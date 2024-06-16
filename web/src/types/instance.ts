@@ -35,3 +35,4 @@ export type CreateInstanceReq = {
   priceId: string;
 };
 
+export type InstanceAction = "start" | "stop" | "restart"
