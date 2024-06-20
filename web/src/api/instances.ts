@@ -11,8 +11,8 @@ class InstancesApi {
     return await HttpService.get(`/instances/${id}`)
   }
 
-  static async createMany(subscriptions: CreateInstanceReq[]) {
-    return await HttpService.post("/instances", { subscriptions })
+  static async createMany(instances: CreateInstanceReq[]) {
+    return await HttpService.post("/instances", { instances })
   }
 
   static async update(id: string, instance: Partial<Instance>) {
