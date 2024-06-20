@@ -24,6 +24,7 @@ import { SubscriptionsModule } from './modules/subscriptions.module';
 import { BullModule } from '@nestjs/bull';
 import { BullBoardModule } from '@bull-board/nestjs';
 import { ExpressAdapter } from '@bull-board/express';
+import { ConfigsModule } from './modules/configs.module';
 
 @Module({
   imports: [
@@ -54,6 +55,7 @@ import { ExpressAdapter } from '@bull-board/express';
     ProductsModule,
     InstancesModule,
     CategoriesModule,
+    ConfigsModule,
     PaymentsModule,
     SubscriptionsModule,
     OrdersModule,

@@ -152,7 +152,7 @@ const Instances: Component = () => {
                           <td><DateTime value={instance.createdAt} /></td>
                           <td><a href="http://204.27.57.219:4200/" target="_blank" class="btn btn-ghost"><CLIIcon /></a></td>
                           <th>
-                            <Link href={`/products/${instance.id}`} class="btn btn-ghost btn-xs">details</Link>
+                            <Link href={`/instances/${instance.id}`} class="btn btn-ghost btn-xs">details</Link>
                           </th>
                         </tr>
                       )
