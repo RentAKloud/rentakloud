@@ -1,4 +1,3 @@
-import { MailerService } from '@nestjs-modules/mailer';
 import { Injectable } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import { Order, OrderStatus, User } from '@prisma/client';
@@ -9,12 +8,10 @@ import { OrdersService } from './orders.service';
 import { Queue } from 'bull';
 import { InjectQueue } from '@nestjs/bull';
 import { MailJob } from 'src/queue-consumers/mail.consumer';
-import { delay } from 'src/utils';
 
 @Injectable()
 export class MailService {
   constructor(
-    private mailerService: MailerService,
     private readonly config: ConfigService,
     private readonly usersService: UsersService,
     private readonly ordersService: OrdersService,

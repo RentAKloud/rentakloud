@@ -1,17 +1,23 @@
-import { BadRequestException, Injectable } from "@nestjs/common";
+import { BadRequestException, Injectable, Logger } from "@nestjs/common";
 import { Config, Prisma, InstanceStatus, Instance, User } from "@prisma/client";
 import { PrismaService } from "./prisma.service";
 import { EventEmitter2 } from "@nestjs/event-emitter";
 import { spawn } from "child_process";
 import { CreateInstance } from "src/types/instances.dto";
 import { ConfigService } from "@nestjs/config";
+import { ProvisioningJob } from "src/queue-consumers/provisioning.consumer";
+import { Queue } from "bull";
+import { InjectQueue } from "@nestjs/bull";
 
 @Injectable()
 export class InstancesService {
+  private readonly logger = new Logger(InstancesService.name);
+
   constructor(
     private prisma: PrismaService,
     private ee: EventEmitter2,
     private readonly config: ConfigService,
+    @InjectQueue('provisioning') private provisioningQueue: Queue<ProvisioningJob>
   ) { }
 
   async instances(params: {
@@ -79,7 +85,7 @@ export class InstancesService {
 
     _instances.forEach((instance) => {
       this.ee.emit('instance.created', instance)
-      this.initProvisioning(instance)
+      this.provisioningQueue.add(instance)
     })
   }
 
@@ -117,37 +123,19 @@ export class InstancesService {
     return result
   }
 
-  initIPSecTunnel(vmId: string) {
-    return new Promise((res, rej) => {
-      const child = spawn(`/sbin/ipsec down ${vmId}; /sbin/ipsec up ${vmId}`, {
-        shell: true,
-      })
+  async initIPSecTunnel(vmId: string) {
+    const cmd = `/sbin/ipsec down ${vmId}; /sbin/ipsec up ${vmId}`
+    const { status, output } = await this._script(cmd)
 
-      child.on('exit', (code, signal) => {
-        // child.stdout.on('data', (chunk) => {
-        //   res(chunk.toString())
-        // })
-        const output: string = child.stdout.read()?.toString()
-        if (code === 0 && output && output.includes("established successfully")) {
-          res(true)
-        } else {
-          res(false)
-        }
-      })
-
-      // child.on('message', (msg) => {
-      //   console.log(msg)
-      //   res(msg)
-      // })
-
-      child.on('error', (err) => {
-        rej(err)
-      })
-    })
+    if (status && output && output.includes("established successfully")) {
+      return true
+    } else {
+      return false
+    }
   }
 
   async initProvisioning(instance: Instance & { config: Config, user: User },
-    _vmId?: number, custId?: number, slotId?: number // for testing only (these are supposed to be system generated)
+    // _vmId?: number, custId?: number, slotId?: number // for testing only (these are supposed to be system generated)
   ) {
 
     const d = {
@@ -161,16 +149,16 @@ export class InstancesService {
     // Step 1: Save VM info in db.json
     const K = 1024
     const vmType = 'w10pro'
-    const customerId = custId || instance.user.id + 5000
-    const vmId = _vmId || d.id
+    const customerId = instance.user.id + 5000
+    const vmId = d.id
 
     const cmd1 = `/home/scripts/crvminfo.sh ${vmId} ${customerId} ${d.cpus} ${d.ram * K} ${d.ssd * K} ${vmType}`
     const { status, output } = await this._script(cmd1)
 
     if (status) {
-      console.info("1. crvminfo.sh done")
+      this.logger.debug("1. crvminfo.sh done")
     } else {
-      console.log("1. crvminfo failed", output)
+      this.logger.error("1. crvminfo failed", output)
       return
     }
 
@@ -179,14 +167,14 @@ export class InstancesService {
     const { status: status2, output: output2 } = await this._script(cmd2)
 
     if (status2) {
-      console.info("2. getavailslot.sh done")
+      this.logger.debug("2. getavailslot.sh done")
     } else {
-      console.error("2. getavailslot failed")
+      this.logger.error("2. getavailslot failed")
       return
     }
 
     // slot is just an index used for ports
-    const [vmHost, hostIp, slot = slotId] = output2.split("\n")
+    const [vmHost, hostIp, slot] = output2.split("\n")
 
     this.updateInstance({
       where: { id: instance.id, vmId },
@@ -203,9 +191,9 @@ export class InstancesService {
     const { status: status3, output: output3 } = await this._script(cmd)
 
     if (status3) {
-      console.log("3. distvms done", output3)
+      this.logger.debug("3. distvms done", output3)
     } else {
-      console.log("3. distvms failed", output3)
+      this.logger.error("3. distvms failed", output3)
       return
     }
   }
@@ -234,7 +222,7 @@ export class InstancesService {
       })
 
       child.on('error', (err) => {
-        console.error(err)
+        this.logger.error(err)
         reject(err)
       })
     })

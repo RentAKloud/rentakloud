@@ -21,29 +21,29 @@ export class InstancesController {
     private readonly productsService: ProductsService
   ) { }
 
-  @Get('test-provision')
-  test(
-    @Query('vmId') vmId,
-    @Query('custId') custId,
-    @Query('slotId') slotId,
-    @Query('cpus') cpus,
-    @Query('ram') ram,
-    @Query('ssd') ssd,
-    @Query('hdd') hdd,
-  ) {
-    //@ts-ignore
-    return this.instancesService.initProvisioning(
-      {
-        // @ts-ignore
-        config: {
-          cpus, ram, ssd, hdd
-        },
-      },
-      vmId,
-      custId,
-      slotId
-    )
-  }
+  // @Get('test-provision')
+  // test(
+  //   @Query('vmId') vmId,
+  //   @Query('custId') custId,
+  //   @Query('slotId') slotId,
+  //   @Query('cpus') cpus,
+  //   @Query('ram') ram,
+  //   @Query('ssd') ssd,
+  //   @Query('hdd') hdd,
+  // ) {
+  //   //@ts-ignore
+  //   return this.instancesService.initProvisioning(
+  //     {
+  //       // @ts-ignore
+  //       config: {
+  //         cpus, ram, ssd, hdd
+  //       },
+  //     },
+  //     vmId,
+  //     custId,
+  //     slotId
+  //   )
+  // }
 
   @Get('vm[0-9]+')
   @Redirect()

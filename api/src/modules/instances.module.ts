@@ -4,9 +4,21 @@ import { PrismaModule } from './prisma.module';
 import { InstancesService } from '../services/instances.service';
 import { InstancesController } from 'src/controllers/instances.controller';
 import { ProductsModule } from './products.module';
+import { BullModule } from '@nestjs/bull';
+import { BullBoardModule } from '@bull-board/nestjs';
+import { BullAdapter } from '@bull-board/api/bullAdapter';
 
 @Module({
-  imports: [PrismaModule, EventEmitterModule, ProductsModule],
+  imports: [
+    PrismaModule, EventEmitterModule, ProductsModule,
+    BullModule.registerQueue({
+      name: 'provisioning',
+    }),
+    BullBoardModule.forFeature({
+      name: 'provisioning',
+      adapter: BullAdapter,
+    }),
+  ],
   controllers: [InstancesController],
   providers: [InstancesService],
   exports: [InstancesService]
