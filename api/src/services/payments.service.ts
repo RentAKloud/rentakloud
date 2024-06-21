@@ -24,7 +24,7 @@ export class PaymentsService {
     const stripeKey = this.configService.get(
       OptionsService.appSettings?.isStripeTestMode ? 'STRIPE_SECRET_KEY_TEST' : 'STRIPE_SECRET_KEY_LIVE'
     );
-    this.stripe = new Stripe(stripeKey, { apiVersion: '2022-11-15' });
+    this.stripe = new Stripe(stripeKey, { apiVersion: '2024-04-10' });
   }
 
   async createSubscription(email: string, priceId: string, isTrial?: boolean) {
