@@ -18,6 +18,13 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+
+      - uses: pnpm/action-setup@v4
+        name: Install pnpm
+        with:
+          version: latest
+          run_install: false
+
       - name: Use NodeJS 20
         uses: actions/setup-node@v3
         with:
@@ -36,6 +43,13 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+
+      - uses: pnpm/action-setup@v4
+        name: Install pnpm
+        with:
+          version: latest
+          run_install: false
+
       - name: Use NodeJS 20
         uses: actions/setup-node@v3
         with:
