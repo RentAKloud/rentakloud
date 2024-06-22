@@ -9,7 +9,6 @@ import { UsersModule } from './modules/users.module';
 import { OrdersModule } from './modules/orders.module';
 import { BullBoardModule } from '@bull-board/nestjs';
 import { ExpressAdapter } from '@bull-board/express';
-import { BullModule } from '@nestjs/bull';
 
 describe('AppController', () => {
   let app: TestingModule;

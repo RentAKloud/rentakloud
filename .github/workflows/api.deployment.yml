@@ -22,10 +22,10 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '20.x'
-          cache: 'yarn'
-          cache-dependency-path: api/yarn.lock
-      - run: yarn install
-      - run: yarn test
+          cache: 'pnpm'
+          cache-dependency-path: api/pnpm-lock.yaml
+      - run: pnpm install
+      - run: pnpm test
 
   build:
     runs-on: ubuntu-latest
@@ -40,16 +40,16 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '20.x'
-          cache: 'yarn'
-          cache-dependency-path: api/yarn.lock
+          cache: 'pnpm'
+          cache-dependency-path: api/pnpm-lock.yaml
 
       - name: 'Create env file'
         run: |
           echo "${{ vars.API_ENV_PRODUCTION }}" > .env
 
-      - run: yarn install
-      - run: yarn build
-      - run: zip build.zip -r dist/ prisma/ package.json yarn.lock .env
+      - run: pnpm install
+      - run: pnpm build
+      - run: zip build.zip -r dist/ prisma/ package.json pnpm-lock.yaml .env
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
@@ -109,11 +109,11 @@ jobs:
             cd $API_DEPLOY_DIR
             unzip -o build.zip
             rm build.zip
-            yarn install
+            pnpm install
             npx prisma migrate deploy
             npx prisma generate
             if [ "$(pm2 id main)" = "[]" ]; then
-              yarn start:prod
+              pnpm start:prod
             else
               pm2 reload main
             fi
