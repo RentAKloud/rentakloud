@@ -7,6 +7,7 @@ import { ProductsModule } from './products.module';
 import { BullModule } from '@nestjs/bull';
 import { BullBoardModule } from '@bull-board/nestjs';
 import { BullAdapter } from '@bull-board/api/bullAdapter';
+import { ProvisioningConsumer } from 'src/queue-consumers/provisioning.consumer';
 
 @Module({
   imports: [
@@ -20,7 +21,7 @@ import { BullAdapter } from '@bull-board/api/bullAdapter';
     }),
   ],
   controllers: [InstancesController],
-  providers: [InstancesService],
+  providers: [InstancesService, ProvisioningConsumer],
   exports: [InstancesService]
 })
 export class InstancesModule { }
