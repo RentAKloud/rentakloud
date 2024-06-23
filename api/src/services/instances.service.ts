@@ -235,7 +235,7 @@ export class InstancesService {
     const actions = {
       "start": `/home/scripts/start-vm-onhost.sh ${vmId}`,
       "stop": `/home/scripts/powerdown-vm-onhost.sh ${vmId}`,
-      "restart": `/home/scripts/restart.sh ${vmId}`,
+      "restart": `/home/scripts/reboot-vm-onhost.sh ${vmId}`,
     }
 
     const { status, output, error } = await this._script(actions[action])
