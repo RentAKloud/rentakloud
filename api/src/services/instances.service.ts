@@ -3,7 +3,7 @@ import { Config, Prisma, InstanceStatus, Instance, User } from "@prisma/client";
 import { PrismaService } from "./prisma.service";
 import { EventEmitter2 } from "@nestjs/event-emitter";
 import { spawn } from "child_process";
-import { CreateInstance } from "src/types/instances.dto";
+import { CreateInstance, InstancesFindManyQuery } from "src/types/instances.dto";
 import { ConfigService } from "@nestjs/config";
 import { ProvisioningJob } from "src/queue-consumers/provisioning.consumer";
 import { Queue } from "bull";
@@ -20,13 +20,7 @@ export class InstancesService {
     @InjectQueue('provisioning') private provisioningQueue: Queue<ProvisioningJob>
   ) { }
 
-  async instances(params: {
-    skip?: number;
-    take?: number;
-    cursor?: Prisma.InstanceWhereUniqueInput;
-    where?: Prisma.InstanceWhereInput;
-    orderBy?: Prisma.InstanceOrderByWithRelationInput;
-  }) {
+  async instances(params: InstancesFindManyQuery) {
     const { skip, take, cursor, where, orderBy } = params;
     return this.prisma.instance.findMany({
       skip,

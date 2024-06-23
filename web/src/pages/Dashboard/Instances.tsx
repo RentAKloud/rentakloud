@@ -1,5 +1,5 @@
-import { Component, For, Show, createResource, createSignal } from "solid-js";
-import { Link } from "@solidjs/router";
+import { Component, For, Match, Show, Switch, createEffect, createResource, createSignal } from "solid-js";
+import { Link, useSearchParams } from "@solidjs/router";
 import Card from "~/components/Card/Card";
 import { DateTime } from "~/components/DateTime";
 import ListIcon from "~/components/icons/List";
@@ -8,10 +8,30 @@ import CLIIcon from "~/components/icons/CLI";
 import DesktopIcon from "~/components/icons/Desktop";
 import InstancesApi from "~/api/instances";
 import { Icon } from "~/components/icons";
+import { Instance } from "~/types/instance";
+import Search from "~/components/Inputs/Search";
+import Loader from "~/components/Loader";
 
 const Instances: Component = () => {
+  const q = new URLSearchParams([
+    ['sort-by', 'createdAt'],
+  ])
+  const [params, setParams] = useSearchParams()
+  const searchQuery = () => params.q || ''
+
+  createEffect(() => {
+    // if search query has changed, we also want to reset to first page
+    if (q.get('q') !== searchQuery()) {
+      q.set('q', searchQuery())
+    }
+
+    q.set('sort-by', params['sort-by'])
+
+    refetch()
+  })
+
   const [instances, { refetch }] = createResource(async () => {
-    const { result, error } = await InstancesApi.all()
+    const { result, error } = await InstancesApi.all(q)
     if (error) throw error
     return result
   })
@@ -27,157 +47,188 @@ const Instances: Component = () => {
       </section>
 
       <section>
-        <Show when={instances.latest?.length === 0}>
-          <p>Nothing to see here.</p>
-        </Show>
+        <Switch>
+          <Match when={!instances.latest && instances.loading}>
+            <Loader />
+          </Match>
 
-        <Show when={!instances.loading && instances.latest!.length > 0}>
+          <Match when={instances.error}>
+            Something went wrong
+          </Match>
 
-          {/* View mode */}
-          <div class="text-right">
-            <ul class="menu menu-horizontal bg-base-100 rounded-box mb-6">
-              <li>
-                <a class="tooltip" classList={{ active: activeView() === "grid" }} data-tip="Grid view" onclick={() => setActiveView("grid")}>
-                  <GridIcon />
-                </a>
-              </li>
-              <li>
-                <a class="tooltip" classList={{ active: activeView() === "list" }} data-tip="List view" onclick={() => setActiveView("list")}>
-                  <ListIcon />
-                </a>
-              </li>
-            </ul>
-          </div>
+          <Match when={instances.latest && instances.latest.length === 0 && searchQuery() === ""}>
+            <p>Nothing to see here.</p>
+          </Match>
 
-          <Show when={activeView() === "grid"}>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-              <For each={instances.latest}>
-                {
-                  (instance) => (
-                    <Card
-                      title={instance.title || instance.subscription.product.name}
-                      description={
-                        <>
-                          <div class="flex flex-col gap-3">
-                            <div class="flex gap-2">
-                              <Icon.Windows />
-                              <span classList={{
-                                "text-warning": instance.status === "Pending",
-                                "text-error": instance.status === "Inactive",
-                                "text-success": instance.status === "Active"
-                              }}>{instance.status}</span>
-                            </div>
-                            {/* <p>Instance ID: {instance.id}</p> */}
-                            {/* <p>{instance.product.shortDescription}</p> */}
-                            {/* <span>Started At: <DateTime value={instance.createdAt} /></span> */}
-                          </div>
-                          <div class="dropdown dropdown-end absolute top-2 right-2">
-                            <label tabindex="0" class="btn btn-ghost btn-circle">
-                              <Icon.EllipsesVertical />
-                            </label>
+          <Match when={instances.latest && instances.latest.length > 0 || searchQuery() !== ""}>
+            <div class="flex gap-4 justify-between">
+              <Search />
 
-                            <ul tabindex="0" class="dropdown-content menu menu-compact mt-3 p-2 z-10 shadow bg-base-200 rounded-box w-52">
-                              <li>
-                                <Link href={`/instances/${instance.id}`}>Details</Link>
-                              </li>
-                              <li><a>Start</a></li>
-                              <li><a>Reboot</a></li>
-                            </ul>
-                          </div>
-                        </>
-                      }
-                      actions={<div class="flex gap-5 items-center justify-start flex-wrap">
-                        <a href="http://204.27.57.219:4200/" target="_blank" class="btn"><CLIIcon /> SSH</a>
-                        <Link href={`/instances/${instance.id}/stream`} class="btn"><DesktopIcon /> VNC</Link>
-                      </div>}
-                      actionsAlign="left"
-                    />
-                  )
-                }
-              </For>
+              <select class="select select-bordered w-full max-w-xs" onchange={(e) => setParams({ 'sort-by': e.currentTarget.value })}>
+                <option disabled selected>Sort By</option>
+                <option value="createdAt">Created At</option>
+                <option value="title">Name</option>
+              </select>
+
+              {/* View mode */}
+              <div class="text-right">
+                <ul class="menu menu-horizontal bg-base-100 rounded-box mb-6">
+                  <li>
+                    <a class="tooltip" classList={{ active: activeView() === "grid" }} data-tip="Grid view" onclick={() => setActiveView("grid")}>
+                      <GridIcon />
+                    </a>
+                  </li>
+                  <li>
+                    <a class="tooltip" classList={{ active: activeView() === "list" }} data-tip="List view" onclick={() => setActiveView("list")}>
+                      <ListIcon />
+                    </a>
+                  </li>
+                </ul>
+              </div>
             </div>
-          </Show>
 
-          <Show when={activeView() === "list"}>
-            <div class="overflow-x-auto">
-              <table class="table">
-                {/* <!-- head --> */}
-                <thead>
-                  <tr>
-                    <th>
-                      <label>
-                        <input type="checkbox" class="checkbox" />
-                      </label>
-                    </th>
-                    <th>Name</th>
-                    <th>ID</th>
-                    <th>Status</th>
-                    <th>Subscription Started</th>
-                    <th></th>
-                    <th></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <For each={instances.latest}>
-                    {
-                      (instance) => (
-                        <tr>
-                          <th>
-                            <label>
-                              <input type="checkbox" class="checkbox" />
-                            </label>
-                          </th>
-                          <td>
-                            <div class="flex items-center space-x-3">
-                              <div class="avatar">
-                                <div class="mask mask-squircle w-12 h-12">
-                                  <img src={instance.subscription.product.images[0]?.src} alt={instance.subscription.product.images[0]?.alt} />
-                                </div>
-                              </div>
-                              <div>
-                                <div class="font-bold">{instance.subscription.product.name}</div>
-                                <div class="text-sm opacity-50">us-east-1</div>
-                              </div>
-                            </div>
-                          </td>
-                          <td>
-                            {instance.id}
-                            <br />
-                            <span class="badge badge-ghost badge-sm">{"204.27.57.219"}</span>
-                          </td>
-                          <td classList={{
-                            "text-error": instance.status === "Inactive",
-                            "text-success": instance.status === "Active"
-                          }}>{instance.status}</td>
-                          <td><DateTime value={instance.createdAt} /></td>
-                          <td><a href="http://204.27.57.219:4200/" target="_blank" class="btn btn-ghost"><CLIIcon /></a></td>
-                          <th>
-                            <Link href={`/instances/${instance.id}`} class="btn btn-ghost btn-xs">details</Link>
-                          </th>
-                        </tr>
-                      )
-                    }
-                  </For>
-                </tbody>
-                {/* <!-- foot --> */}
-                <tfoot>
-                  <tr>
-                    <th></th>
-                    <th>Name</th>
-                    <th>ID</th>
-                    <th>Status</th>
-                    <th>Subscription Started</th>
-                    <th></th>
-                    <th></th>
-                  </tr>
-                </tfoot>
+            <Show when={activeView() === "grid"}>
+              <GridView instances={instances.latest!} />
+            </Show>
 
-              </table>
-            </div>
-          </Show>
-        </Show>
+            <Show when={activeView() === "list"}>
+              <ListView instances={instances.latest!} />
+            </Show>
+          </Match>
+        </Switch>
       </section>
     </>
+  )
+}
+
+const GridView: Component<{ instances: Instance[] }> = (props) => {
+  return (
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+      <For each={props.instances} fallback={"Looks like search returned nothing"}>
+        {
+          (instance) => (
+            <Card
+              title={instance.title || instance.subscription.product.name}
+              description={
+                <>
+                  <div class="flex flex-col gap-3">
+                    <div class="flex gap-2">
+                      <Icon.Windows />
+                      <span classList={{
+                        "text-warning": instance.status === "Pending",
+                        "text-error": instance.status === "Inactive",
+                        "text-success": instance.status === "Active"
+                      }}>{instance.status}</span>
+                    </div>
+                    {/* <p>Instance ID: {instance.id}</p> */}
+                    {/* <p>{instance.product.shortDescription}</p> */}
+                    {/* <span>Started At: <DateTime value={instance.createdAt} /></span> */}
+                  </div>
+                  <div class="dropdown dropdown-end absolute top-2 right-2">
+                    <label tabindex="0" class="btn btn-ghost btn-circle">
+                      <Icon.EllipsesVertical />
+                    </label>
+
+                    <ul tabindex="0" class="dropdown-content menu menu-compact mt-3 p-2 z-10 shadow bg-base-200 rounded-box w-52">
+                      <li>
+                        <Link href={`/instances/${instance.id}`}>Details</Link>
+                      </li>
+                      <li><a>Start</a></li>
+                      <li><a>Reboot</a></li>
+                    </ul>
+                  </div>
+                </>
+              }
+              actions={<div class="flex gap-5 items-center justify-start flex-wrap">
+                <a href="http://204.27.57.219:4200/" target="_blank" class="btn"><CLIIcon /> SSH</a>
+                <Link href={`/instances/${instance.id}/stream`} class="btn"><DesktopIcon /> VNC</Link>
+              </div>}
+              actionsAlign="left"
+            />
+          )
+        }
+      </For>
+    </div>
+  )
+}
+
+const ListView: Component<{ instances: Instance[] }> = (props) => {
+  return (
+    <div class="overflow-x-auto">
+      <table class="table">
+        {/* <!-- head --> */}
+        <thead>
+          <tr>
+            <th>
+              <label>
+                <input type="checkbox" class="checkbox" />
+              </label>
+            </th>
+            <th>Name</th>
+            <th>ID</th>
+            <th>Status</th>
+            <th>Subscription Started</th>
+            <th></th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <For each={props.instances} fallback={"Looks like search returned nothing"}>
+            {
+              (instance) => (
+                <tr>
+                  <th>
+                    <label>
+                      <input type="checkbox" class="checkbox" />
+                    </label>
+                  </th>
+                  <td>
+                    <div class="flex items-center space-x-3">
+                      <div class="avatar">
+                        <div class="mask mask-squircle w-12 h-12">
+                          <img src={instance.subscription.product.images[0]?.src} alt={instance.subscription.product.images[0]?.alt} />
+                        </div>
+                      </div>
+                      <div>
+                        <div class="font-bold">{instance.subscription.product.name}</div>
+                        <div class="text-sm opacity-50">us-east-1</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    {instance.id}
+                    <br />
+                    <span class="badge badge-ghost badge-sm">{"204.27.57.219"}</span>
+                  </td>
+                  <td classList={{
+                    "text-error": instance.status === "Inactive",
+                    "text-success": instance.status === "Active"
+                  }}>{instance.status}</td>
+                  <td><DateTime value={instance.createdAt} /></td>
+                  <td><a href="http://204.27.57.219:4200/" target="_blank" class="btn btn-ghost"><CLIIcon /></a></td>
+                  <th>
+                    <Link href={`/instances/${instance.id}`} class="btn btn-ghost btn-xs">details</Link>
+                  </th>
+                </tr>
+              )
+            }
+          </For>
+        </tbody>
+        {/* <!-- foot --> */}
+        <tfoot>
+          <tr>
+            <th></th>
+            <th>Name</th>
+            <th>ID</th>
+            <th>Status</th>
+            <th>Subscription Started</th>
+            <th></th>
+            <th></th>
+          </tr>
+        </tfoot>
+
+      </table>
+    </div>
   )
 }
 

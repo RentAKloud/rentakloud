@@ -2,9 +2,9 @@ import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Patch,
 import { ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 import { InstancesService } from '../services/instances.service';
-import { CreateInstance, Plan } from 'src/types/instances.dto';
+import { CreateInstance, InstancesFindManyQuery, InstancesQuery, Plan } from 'src/types/instances.dto';
 import { ProductsService } from 'src/services/products.service';
-import { Instance, InstanceStatus } from '@prisma/client';
+import { Instance, InstanceStatus, Prisma } from '@prisma/client';
 
 type InstanceCallback = {
   status: InstanceStatus
@@ -61,10 +61,32 @@ export class InstancesController {
 
   @UseGuards(JwtAuthGuard)
   @Get('')
-  myInstances(@Request() req) {
-    return this.instancesService.instances({
-      where: { userId: req.user.userId }
-    })
+  myInstances(
+    @Request() req,
+    @Query() { sortBy, page, pageSize, q }: InstancesQuery
+  ) {
+    const filters: Prisma.InstanceWhereInput = {
+      userId: req.user.userId
+    }
+
+    if (q) {
+      filters.AND = {
+        ...filters.AND,
+        OR: [
+          { title: { contains: q, mode: 'insensitive' } },
+        ]
+      }
+    }
+  
+    const query: InstancesFindManyQuery = {
+      where: filters
+    }
+
+    if (sortBy) {
+      query.orderBy = {[sortBy]: "asc"}
+    }
+
+    return this.instancesService.instances(query)
   }
 
   @UseGuards(JwtAuthGuard)

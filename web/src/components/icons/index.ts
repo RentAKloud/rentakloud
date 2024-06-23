@@ -10,6 +10,7 @@ import External from "./External";
 import PictureInPicture from "./PictureInPicture";
 import EllipsesVertical from "./EllipsesVertical";
 import Windows from "./logos/Windows";
+import Search from "./Search";
 
 export const Icon = {
   Bell,
@@ -22,6 +23,7 @@ export const Icon = {
   Mail,
   Menu,
   PictureInPicture,
+  Search,
   UserCircle,
   Windows
 }

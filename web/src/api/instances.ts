@@ -3,8 +3,8 @@ import { CreateInstanceReq, InstanceAction } from "~/types/instance";
 import { Instance } from "~/types/instance";
 
 class InstancesApi {
-  static async all(): ApiResponse<Instance[]> {
-    return await HttpService.get("/instances")
+  static async all(query?: URLSearchParams): ApiResponse<Instance[]> {
+    return await HttpService.get("/instances", query)
   }
 
   static async one(id: string): ApiResponse<Instance> {
