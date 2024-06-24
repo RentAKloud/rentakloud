@@ -18,6 +18,10 @@ export function truncate(text: string, limit: number): string {
   return text.length <= limit ? text : text.slice(0, limit) + '...'
 }
 
+export function capitalize(str: string) {
+  return str[0].toUpperCase() + str.slice(1);
+}
+
 export function getOrderSubTotal(order: Order) {
   return order.items.reduce((sum, curr) => {
     const price = curr.product.productType === ProductType.Physical ? curr.product.prices[0] : curr.product.prices[0].prices![0]

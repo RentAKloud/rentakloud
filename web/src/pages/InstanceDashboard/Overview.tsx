@@ -1,40 +1,11 @@
-import { Component, Show, createSignal } from "solid-js"
+import { Component, Show } from "solid-js"
 import { useInstanceContext } from "./context"
-import InstancesApi from "~/api/instances"
-import { NotificationService } from "~/services/NotificationService"
-import { InstanceAction } from "~/types/instance"
 
 const Overview: Component<{}> = () => {
-  const { instance } = useInstanceContext()!
-  const [inTransit, setInTransit] = createSignal(false)
-
-  async function stop() {
-    action("stop", "Stopping VM...")
-  }
-
-  async function start() {
-    action("start", "Starting VM...")
-  }
-
-  async function restart() {
-    action("restart", "Restarting VM...")
-  }
-
-  async function action(action: InstanceAction, successMessage: string) {
-    setInTransit(true)
-
-    const { result, error } = await InstancesApi.action(instance.latest!.id, action, {})
-    if (error) {
-      NotificationService.error(error.message)
-    } else if (result) {
-      if (result.status)
-        NotificationService.success(successMessage)
-      else
-        NotificationService.error(`Could not ${action} the VM right now`)
-    }
-
-    setInTransit(false)
-  }
+  const {
+    instance, inTransit,
+    start, stop, restart
+  } = useInstanceContext()!
 
   return (
     <>

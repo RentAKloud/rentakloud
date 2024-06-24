@@ -11,6 +11,7 @@ import { Icon } from "~/components/icons";
 import { Instance } from "~/types/instance";
 import Search from "~/components/Inputs/Search";
 import Loader from "~/components/Loader";
+import { action } from "../InstanceDashboard/context";
 
 const Instances: Component = () => {
   const q = new URLSearchParams([
@@ -88,7 +89,7 @@ const Instances: Component = () => {
             </div>
 
             <Show when={activeView() === "grid"}>
-              <GridView instances={instances.latest!} />
+              <GridView instances={instances.latest!} refetch={refetch} />
             </Show>
 
             <Show when={activeView() === "list"}>
@@ -101,7 +102,7 @@ const Instances: Component = () => {
   )
 }
 
-const GridView: Component<{ instances: Instance[] }> = (props) => {
+const GridView: Component<{ instances: Instance[], refetch: Function }> = (props) => {
   return (
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
       <For each={props.instances} fallback={"Looks like search returned nothing"}>
@@ -133,8 +134,15 @@ const GridView: Component<{ instances: Instance[] }> = (props) => {
                       <li>
                         <Link href={`/instances/${instance.id}`}>Details</Link>
                       </li>
-                      <li><a>Start</a></li>
-                      <li><a>Reboot</a></li>
+                      <li>
+                        <Show
+                          when={instance.status === "Inactive"}
+                          fallback={<a onclick={() => action(instance.id, "stop", "Stopped VM", props.refetch)}>Stop</a>}
+                        >
+                          <a onclick={() => action(instance.id, "start", "Started VM", props.refetch)}>Start</a>
+                        </Show>
+                      </li>
+                      <li><a onclick={() => action(instance.id, "restart", "Restarted VM", props.refetch)}>Reboot</a></li>
                     </ul>
                   </div>
                 </>
