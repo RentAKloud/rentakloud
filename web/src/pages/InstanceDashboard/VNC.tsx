@@ -1,4 +1,4 @@
-import { Component, Match, Switch, createEffect, createResource } from "solid-js"
+import { Component, Match, Switch, createEffect, createResource, createSignal } from "solid-js"
 //@ts-ignore
 // import RFB from "./novnc/core/rfb.js" // TODO Can we load this though a URL?
 import { useInstanceContext } from "./context"
@@ -140,7 +140,8 @@ const VNC: Component<{}> = () => {
   // })
 
   const base = import.meta.env.DEV ? "http://localhost:3001/novnc" : "https://rentakloud.com/novnc"
-  const url = `${base}/vnc_lite.html?host=rentakloud.com&port=443&path=`
+  const [scale] = createSignal(true)
+  const url = `${base}/vnc_lite.html?host=rentakloud.com&port=443&scale=${scale()}&path=`
   const path = () => encodeURIComponent(`${instance.latest!.vncPath!}?token=${authStore.access_token}`)
 
   function picInPicMode() {
