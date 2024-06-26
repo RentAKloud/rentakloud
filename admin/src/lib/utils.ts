@@ -1,4 +1,4 @@
-import { CouponType, type CouponCode, type Order, Product, type ProductPrice, type PlanPrice, ProductType } from "./types"
+import { CouponType, type CouponCode, type Order, Product, type ProductPrice, type PlanPrice, ProductType } from "./types/common"
 
 export function price(amount: number, currency = 'usd') {
   const f = new Intl.NumberFormat('en-US', {

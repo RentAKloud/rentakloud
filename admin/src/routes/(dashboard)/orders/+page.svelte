@@ -1,6 +1,6 @@
 <script lang="ts">
   import { Http } from "$lib/http";
-  import { Order, OrderStatus } from "$lib/types";
+  import { Order, OrderStatus } from "$lib/types/common";
   import {
     TableBody,
     TableBodyCell,

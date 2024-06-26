@@ -16,6 +16,7 @@ export type Instance = {
 
 export type InstanceConfig = {
   id: number
+  name: string
   ram: number
   cpus: number
   ssd: number

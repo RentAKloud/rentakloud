@@ -1,7 +1,7 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
   import { Http } from "$lib/http";
-  import { Category } from "$lib/types";
+  import { Category } from "$lib/types/common";
   import Form from "../_form.svelte";
 
   let category = new Category();

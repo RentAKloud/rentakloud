@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { Order } from "$lib/types";
+  import type { Order } from "$lib/types/common";
   import { Input, Label } from "flowbite-svelte";
 
   export let order: Order;

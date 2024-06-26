@@ -1,5 +1,10 @@
 <script lang="ts">
-  import { Category, Product, ProductType } from "$lib/types";
+  import {
+    Category,
+    type Paginated,
+    Product,
+    ProductType,
+  } from "$lib/types/common";
   import {
     Button,
     Helper,
@@ -9,6 +14,7 @@
     MultiSelect,
     Radio,
     Textarea,
+    type SelectOptionType,
   } from "flowbite-svelte";
   import { PlusSolid, TrashBinSolid } from "flowbite-svelte-icons";
   import type EditorJS from "@editorjs/editorjs";
@@ -17,6 +23,7 @@
   import { Http } from "$lib/http";
   import Price from "./_price.svelte";
   import Meta from "./_meta.svelte";
+  import type { Config } from "$lib/types/instances";
 
   export let product: Product;
   export let onSubmit: (data: Product) => Promise<void>;
@@ -24,6 +31,9 @@
   let categories: { value: number; name: string }[] = [];
   let selectedCategories: number[];
   let descriptionEditor: EditorJS;
+
+  let configs: Config[];
+  let configOptions: SelectOptionType[];
 
   onMount(async () => {
     const fetchCategories = Http.get<Category[]>(`/categories`);
@@ -34,6 +44,13 @@
     selectedCategories = product.categories
       ? product.categories.map((c) => c.id)
       : [];
+
+    const fetchConfigs = Http.get<Paginated<Config>>(`/configs?page-size=100`);
+    configs = (await fetchConfigs).result!.data;
+    configOptions = configs.map((c) => ({
+      name: `${c.name} / ${c.cpus} / ${c.ram} / ${c.ssd}`,
+      value: c.id,
+    }));
   });
 
   async function validateFormatAndSubmit() {
@@ -126,7 +143,15 @@
               {
                 currency: "USD",
                 amount: 0,
-                prices: [{ interval: "month", priceId: "", currency: "USD" }],
+                prices: [
+                  {
+                    interval: "month",
+                    priceId: "",
+                    currency: "USD",
+                    amount: 0,
+                  },
+                ],
+                configId: 0,
               },
             ])}
         >
@@ -135,7 +160,13 @@
       </div>
 
       {#each product.prices as price, i}
-        <Price bind:prices={product.prices} {price} {i} {isOnlineService} />
+        <Price
+          bind:prices={product.prices}
+          {price}
+          {i}
+          {isOnlineService}
+          {configOptions}
+        />
       {/each}
     </div>
 

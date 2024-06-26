@@ -1,7 +1,7 @@
 <script lang="ts">
   import { page } from "$app/stores";
   import { Http } from "$lib/http";
-  import type { CouponCode, CreateCouponCode } from "$lib/types";
+  import type { CouponCode, CreateCouponCode } from "$lib/types/common";
 
   import { onMount } from "svelte";
   import Form from "../_form.svelte";

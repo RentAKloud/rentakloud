@@ -1,9 +1,9 @@
 <script lang="ts">
   import { page } from "$app/stores";
   import { Http } from "$lib/http";
-  import type { Instance } from "$lib/types";
   import { onMount } from "svelte";
   import Form from "../_form.svelte";
+  import type { Instance } from "$lib/types/instances";
 
   let instance: Instance;
   const id = $page.params.id;

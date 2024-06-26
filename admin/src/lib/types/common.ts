@@ -28,8 +28,9 @@ export type ProductPrice = {
   // for subscriptions
   planName?: string;
   prices?: PlanPrice[]
-  features?: string[]
+  features?: PlanFeature[]
   addons?: Addon[]
+  configId: number
 }
 
 export type PlanPrice = {
@@ -39,6 +40,12 @@ export type PlanPrice = {
   currency: string;
   amount: number;
   saleAmount?: number;
+}
+
+type PlanFeature = {
+  text: string
+  html: string
+  description?: string
 }
 
 export enum ProductType {
@@ -201,31 +208,9 @@ export enum OrderStatus {
 
 export type Option = { key: string; value: string }
 
-export type Instance = {
-  id: string;
-  title: string
-  product: Product;
-  addons: InstanceAddon[]
-  config: Config
-  createdAt: string;
-  vncPath?: string;
-  status: "Pending" | "Active" | "Inactive";
-}
-
-export type Config = {
-  id: number
-  name: string
-  cpus: number
-  ram: number // GBs
-  ssd: number
-  hdd: number
-}
-
-export type InstanceAddonKey = "cpu" | "ram" | "hdd" | "ssd"
-
-export type InstanceAddon = {
-  id: InstanceAddonKey
-  quantity: number
+export type Paginated<T> = {
+  data: T[],
+  total: number
 }
 
 // TODO put this in proper place

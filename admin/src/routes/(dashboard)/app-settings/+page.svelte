@@ -1,6 +1,6 @@
 <script lang="ts">
   import { Http } from "$lib/http";
-  import type { Option } from "$lib/types";
+  import type { Option } from "$lib/types/common";
   import { Toggle, Button } from "flowbite-svelte";
   import { onMount } from "svelte";
 

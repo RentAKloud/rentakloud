@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { Instance } from "$lib/types";
+  import type { Instance } from "$lib/types/instances";
   import { Button, Input, Label, Select } from "flowbite-svelte";
 
   export let instance: Instance;

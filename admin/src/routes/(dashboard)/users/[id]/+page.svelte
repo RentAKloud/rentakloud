@@ -1,8 +1,7 @@
 <script lang="ts">
   import { page } from "$app/stores";
   import { Http } from "$lib/http";
-  import type { User } from "$lib/types";
-  import { formatDateForDB } from "$lib/utils";
+  import type { User } from "$lib/types/common";
   import { Input, Label } from "flowbite-svelte";
 
   import { onMount } from "svelte";

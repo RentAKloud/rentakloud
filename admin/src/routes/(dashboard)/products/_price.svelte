@@ -1,12 +1,6 @@
 <script lang="ts">
-  import type { ProductPrice } from "$lib/types";
-  import {
-    Button,
-    Input,
-    Label,
-    Modal,
-    Select,
-  } from "flowbite-svelte";
+  import type { ProductPrice } from "$lib/types/common";
+  import { Button, Input, Label, Modal, Select, type SelectOptionType } from "flowbite-svelte";
   import {
     ArrowDownOutline,
     ArrowUpOutline,
@@ -31,6 +25,8 @@
 
   let editFeatures: boolean = false;
   let editAddons: boolean = false;
+
+  export let configOptions: SelectOptionType[];
 </script>
 
 <div class="flex gap-4 mb-4">
@@ -53,6 +49,8 @@
   <div class="flex flex-col gap-4 mb-4 flex-1">
     {#if isOnlineService}
       <Input placeholder="Plan name" bind:value={price.planName} />
+
+      <Select items={configOptions} bind:value={price.configId} placeholder="Select a configuration" />
 
       <div class="flex gap-4 items-center">
         <h3 class="dark:text-white">Prices</h3>
@@ -141,14 +139,10 @@
             class="!p-2"
             size="sm"
             on:click={() => {
-              if (price.addons) {
-                price.addons = [
-                  ...price.addons,
-                  { id: "", description: "", prices: [] },
-                ];
-              } else {
-                price.addons = [{ id: "", description: "", prices: [] }];
-              }
+              price.addons = [
+                ...(price.addons || []),
+                { id: "", description: "", prices: [] },
+              ];
             }}
           >
             New Add-on &nbsp;
@@ -164,16 +158,15 @@
               class="!p-2"
               size="sm"
               on:click={() => {
-                if (addon.prices) {
-                  addon.prices = [
-                    ...addon.prices,
-                    { priceId: "", interval: "month", currency: "USD" },
-                  ];
-                } else {
-                  addon.prices = [
-                    { priceId: "", interval: "month", currency: "USD" },
-                  ];
-                }
+                addon.prices = [
+                  ...(addon.prices || []),
+                  {
+                    priceId: "",
+                    interval: "month",
+                    currency: "USD",
+                    amount: 0,
+                  },
+                ];
               }}
             >
               New Price &nbsp;
@@ -211,11 +204,10 @@
             class="!p-2"
             size="sm"
             on:click={() => {
-              if (price.features) {
-                price.features = [...price.features, ""];
-              } else {
-                price.features = [""];
-              }
+              price.features = [
+                ...(price.features || []),
+                { text: "", html: "" },
+              ];
             }}
           >
             <span>Add New</span>&nbsp;
@@ -245,7 +237,16 @@
                   <ArrowDownOutline size="xs" />
                 </Button>
               </div>
-              <Input placeholder="Feature" bind:value={feature} />
+
+              <div class="flex flex-col gap-2 w-full">
+                <Label>Feature #{j + 1}</Label>
+                <Input placeholder="HTML" bind:value={feature.html} />
+                <Input placeholder="Text" bind:value={feature.text} />
+                <Input
+                  placeholder="Description"
+                  bind:value={feature.description}
+                />
+              </div>
               <Button
                 outline
                 on:click={() =>

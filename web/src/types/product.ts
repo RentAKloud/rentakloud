@@ -25,8 +25,14 @@ export type ProductPrice = {
   // for subscriptions
   planName?: string;
   prices?: PlanPrice[]
-  features?: string[]
+  features?: PlanFeature[]
   configId: number
+}
+
+export type PlanFeature = {
+  text: string
+  html: string
+  description?: string
 }
 
 export type PlanPrice = {

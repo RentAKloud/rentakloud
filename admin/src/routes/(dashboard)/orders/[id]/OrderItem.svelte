@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { OrderItem } from "$lib/types";
+  import type { OrderItem } from "$lib/types/common";
   import { getPlanPrice, getProductPrice, price } from "$lib/utils";
   import { TableBodyCell, TableBodyRow } from "flowbite-svelte";
   export let item: OrderItem;

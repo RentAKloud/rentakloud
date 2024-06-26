@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { Product } from "$lib/types";
+  import type { Product } from "$lib/types/common";
   import { Input, Label } from "flowbite-svelte";
 
   export let product: Product;

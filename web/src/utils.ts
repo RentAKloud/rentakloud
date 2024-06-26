@@ -10,18 +10,6 @@ export function formatPrice(amount: number, currency = 'usd') {
   return `${f.format(amount)} ${currency.toUpperCase()}`
 }
 
-export function pluralize(qty: number, word: string, plural = word + 's') {
-  return [1, -1].includes(Number(qty)) ? word : plural
-}
-
-export function truncate(text: string, limit: number): string {
-  return text.length <= limit ? text : text.slice(0, limit) + '...'
-}
-
-export function capitalize(str: string) {
-  return str[0].toUpperCase() + str.slice(1);
-}
-
 export function getOrderSubTotal(order: Order) {
   return order.items.reduce((sum, curr) => {
     const price = curr.product.productType === ProductType.Physical ? curr.product.prices[0] : curr.product.prices[0].prices![0]
@@ -51,3 +39,30 @@ export function getTotalDiscounts(couponCodes: CouponCode[], total: number, prod
 }
 
 export const complexPasswordRegEx = /^(?:(?=.*[a-z])(?:(?=.*[A-Z])(?=.*[\d\W])|(?=.*\W)(?=.*\d))|(?=.*\W)(?=.*[A-Z])(?=.*\d)).{8,}$/
+
+/** Date and time */
+
+const DAY = 24 * 60 * 60 * 1000
+
+export function daysAgo(days: number) {
+  return new Date(+new Date() - days * DAY)
+}
+
+export function dateToDaysAgo(date: Date) {
+  const diff = +new Date() - +date
+  return Math.round(diff / DAY)
+}
+
+/** Strings */
+
+export function pluralize(qty: number, word: string, plural = word + 's') {
+  return [1, -1].includes(Number(qty)) ? word : plural
+}
+
+export function truncate(text: string, limit: number): string {
+  return text.length <= limit ? text : text.slice(0, limit) + '...'
+}
+
+export function capitalize(str: string) {
+  return str[0].toUpperCase() + str.slice(1);
+}

@@ -195,7 +195,7 @@ const VNC: Component<{}> = () => {
           {/* <div id="screen" /> */}
 
 
-          <iframe id="screen" src={url + path()} height="720" width="100%"></iframe>
+          <iframe id="screen" src={url + path()} width="100%" style="aspect-ratio: 16 / 9;"></iframe>
 
           <video id="pip-target" controls autoplay style="display: none;"></video>
         </Match>

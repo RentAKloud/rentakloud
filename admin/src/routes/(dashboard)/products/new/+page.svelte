@@ -1,7 +1,7 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
   import { Http } from "$lib/http";
-  import { Product } from "$lib/types";
+  import { Product } from "$lib/types/common";
   import Form from "../_form.svelte";
 
   let product: Product = new Product();

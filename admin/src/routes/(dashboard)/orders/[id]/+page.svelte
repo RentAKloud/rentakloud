@@ -1,7 +1,7 @@
 <script lang="ts">
   import { page } from "$app/stores";
   import { Http } from "$lib/http";
-  import { OrderStatus, type Order, type CouponCode } from "$lib/types";
+  import { OrderStatus, type Order, type CouponCode } from "$lib/types/common";
   import {
     formatDateForDB,
     getOrderSubTotal,

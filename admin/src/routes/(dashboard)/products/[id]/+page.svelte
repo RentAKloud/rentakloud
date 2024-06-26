@@ -1,7 +1,7 @@
 <script lang="ts">
   import { page } from "$app/stores";
   import { Http } from "$lib/http";
-  import type { Category, Product } from "$lib/types";
+  import type { Product } from "$lib/types/common";
 
   import { onMount } from "svelte";
 

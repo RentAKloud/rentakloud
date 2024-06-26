@@ -1,6 +1,6 @@
 <script lang="ts">
   import { Http } from "$lib/http";
-  import type { Product } from "$lib/types";
+  import type { Product } from "$lib/types/common";
   import { price } from "$lib/utils";
   import {
     TableBody,

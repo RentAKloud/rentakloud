@@ -25,7 +25,7 @@ export type HeroWithBgProps = {
 }
 
 export type CardProps = {
-  title: string,
+  title: string | JSXElement,
   description?: string | JSXElement,
   children?: JSXElement,
   img?: { uri: string, alt: string },

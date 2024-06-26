@@ -38,7 +38,7 @@ export class ProductsController {
 
     if (reqBody.descriptionEditor) {
       //@ts-ignore
-      const parser = edjsHTML()
+      const parser = edjsHTML.default()
       reqBody.description = parser.parse(reqBody.descriptionEditor).join("")
     }
 
@@ -63,7 +63,7 @@ export class ProductsController {
 
     if (reqBody.descriptionEditor) {
       //@ts-ignore
-      const parser = edjsHTML()
+      const parser = edjsHTML.default()
       reqBody.description = parser.parse(reqBody.descriptionEditor).join("")
     }
 

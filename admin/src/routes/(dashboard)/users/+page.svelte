@@ -1,6 +1,6 @@
 <script lang="ts">
   import { Http } from "$lib/http";
-  import { User } from "$lib/types";
+  import { User } from "$lib/types/common";
   import {
     TableBody,
     TableBodyCell,

@@ -1,6 +1,6 @@
 <script lang="ts">
   import { Http } from "$lib/http";
-  import type { Config, Instance } from "$lib/types";
+    import type { Config } from "$lib/types/instances";
   import {
     TableBody,
     TableBodyCell,

@@ -1,6 +1,6 @@
 <script lang="ts">
   import { Http } from "$lib/http";
-  import { CouponType, type CouponCode } from "$lib/types";
+  import { CouponType, type CouponCode } from "$lib/types/common";
   import {
     TableBody,
     TableBodyCell,

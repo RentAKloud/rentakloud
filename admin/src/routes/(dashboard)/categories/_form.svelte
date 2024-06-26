@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { Category } from "$lib/types";
+  import type { Category } from "$lib/types/common";
   import { Button, Input, Label } from "flowbite-svelte";
 
   export let category: Category;

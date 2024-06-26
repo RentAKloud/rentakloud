@@ -1,6 +1,6 @@
 <script lang="ts">
   import { Http } from "$lib/http";
-  import type { Category } from "$lib/types";
+  import type { Category } from "$lib/types/common";
   import {
     TableBody,
     TableBodyCell,

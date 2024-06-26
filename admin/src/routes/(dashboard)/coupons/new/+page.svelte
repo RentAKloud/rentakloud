@@ -1,6 +1,6 @@
 <script lang="ts">
   import { Http } from "$lib/http";
-  import { defaultCouponCode, type CouponCode, type CreateCouponCode } from "$lib/types";
+  import { defaultCouponCode, type CouponCode, type CreateCouponCode } from "$lib/types/common";
   import { onMount } from "svelte";
 
   import Form from "../_form.svelte";

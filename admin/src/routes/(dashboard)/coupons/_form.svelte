@@ -1,6 +1,6 @@
 <script lang="ts">
   import { Http } from "$lib/http";
-  import { CouponType, type CouponCode, Product, ProductType, type CreateCouponCode } from "$lib/types";
+  import { CouponType, type CouponCode, Product, ProductType, type CreateCouponCode } from "$lib/types/common";
   import { formatDateForDB } from "$lib/utils";
   import {
     Button,
