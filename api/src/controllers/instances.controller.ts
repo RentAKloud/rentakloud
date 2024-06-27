@@ -2,16 +2,9 @@ import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Patch,
 import { ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 import { InstancesService } from '../services/instances.service';
-import { CreateInstance, InstancesFindManyQuery, InstancesQuery, Plan } from 'src/types/instances.dto';
+import { CreateInstance, InstanceCallback, InstancesFindManyQuery, InstancesQuery, Plan } from 'src/types/instances.dto';
 import { ProductsService } from 'src/services/products.service';
-import { Instance, InstanceStatus, Prisma } from '@prisma/client';
-
-type InstanceCallback = {
-  status: InstanceStatus
-  vncPath: string
-  publicIp: string
-  privateIp: string
-}
+import { Instance, Prisma } from '@prisma/client';
 
 @ApiTags('Instances')
 @Controller('instances')
@@ -20,30 +13,6 @@ export class InstancesController {
     private readonly instancesService: InstancesService,
     private readonly productsService: ProductsService
   ) { }
-
-  // @Get('test-provision')
-  // test(
-  //   @Query('vmId') vmId,
-  //   @Query('custId') custId,
-  //   @Query('slotId') slotId,
-  //   @Query('cpus') cpus,
-  //   @Query('ram') ram,
-  //   @Query('ssd') ssd,
-  //   @Query('hdd') hdd,
-  // ) {
-  //   //@ts-ignore
-  //   return this.instancesService.initProvisioning(
-  //     {
-  //       // @ts-ignore
-  //       config: {
-  //         cpus, ram, ssd, hdd
-  //       },
-  //     },
-  //     vmId,
-  //     custId,
-  //     slotId
-  //   )
-  // }
 
   @Get('vm[0-9]+')
   @Redirect()

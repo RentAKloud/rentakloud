@@ -117,7 +117,7 @@ export class PaymentsService {
     }
   }
 
-  @OnEvent("user_product.deleted")
+  @OnEvent("instance.deleted")
   async cancelSubscription(instance: Instance & { subscription: Subscription }) {
     // TODO refund logic?
     try {

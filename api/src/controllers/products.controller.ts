@@ -3,7 +3,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { Product } from '@prisma/client';
 import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 import { ProductsService } from '../services/products.service';
-import * as edjsHTML from "editorjs-html";
+import edjsHTML from "editorjs-html";
 
 type CreateProduct = Product & { categories: number[] }
 type UpdateProduct = CreateProduct & { oldCategories: number[] }
@@ -37,8 +37,7 @@ export class ProductsController {
     const { categories } = reqBody
 
     if (reqBody.descriptionEditor) {
-      //@ts-ignore
-      const parser = edjsHTML.default()
+      const parser = edjsHTML()
       reqBody.description = parser.parse(reqBody.descriptionEditor).join("")
     }
 
@@ -62,8 +61,7 @@ export class ProductsController {
     delete reqBody['oldCategories']
 
     if (reqBody.descriptionEditor) {
-      //@ts-ignore
-      const parser = edjsHTML.default()
+      const parser = edjsHTML()
       reqBody.description = parser.parse(reqBody.descriptionEditor).join("")
     }
 

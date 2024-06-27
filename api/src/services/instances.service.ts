@@ -110,9 +110,12 @@ export class InstancesService {
   }
 
   async deleteInstance(id: string) {
-    const result = await this.prisma.instance.delete({ where: { id } })
+    const result = await this.prisma.instance.delete({
+      where: { id },
+      include: { subscription: true }
+    })
 
-    this.ee.emit("user_product.deleted", result)
+    this.ee.emit("instance.deleted", result)
 
     return result
   }

@@ -1,6 +1,6 @@
-import { Prisma } from "@prisma/client"
+import { InstanceStatus, Prisma } from "@prisma/client"
 import { Expose, Transform } from "class-transformer"
-import { IsNotIn, IsOptional } from "class-validator"
+import { IsOptional } from "class-validator"
 
 export type InstanceAddonKey = "cpu" | "ram" | "hdd" | "ssd"
 
@@ -31,6 +31,13 @@ export type Plan = {
     id: InstanceAddonKey
     prices: PlanPrice[]
   }[]
+}
+
+export type InstanceCallback = {
+  status: InstanceStatus
+  vncPath: string
+  publicIp: string
+  privateIp: string
 }
 
 export class InstancesQuery {
