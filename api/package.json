@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "description": "RentAKloud backend",
   "scripts": {
-    "build": "nest build",
+    "build": "nest build -b swc",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start -b swc",
     "start:dev": "nest start -b swc --type-check --watch",
