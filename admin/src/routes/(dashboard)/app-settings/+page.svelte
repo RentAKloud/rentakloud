@@ -1,12 +1,19 @@
 <script lang="ts">
   import { Http } from "$lib/http";
-  import type { Option } from "$lib/types/common";
-  import { Toggle, Button } from "flowbite-svelte";
+  import { Toggle, Button, Input, Label } from "flowbite-svelte";
   import { onMount } from "svelte";
 
-  let options: any;
+  type AppSettings = {
+    isStripeTestMode: boolean
+    disableCheckout: boolean
+    limits: {
+      "rak-daas": number
+    }
+  }
+
+  let options: AppSettings;
   async function loadData() {
-    const { result } = await Http.get<Option[]>("/options/app-settings");
+    const { result } = await Http.get<AppSettings>("/options/app-settings");
     if (result) {
       options = result;
     }
@@ -37,11 +44,16 @@
 
 {#if options}
   <form on:submit={submit}>
-    <section class="mb-4">
+    <section class="mb-10">
       <Toggle class="mb-4" bind:checked={options.isStripeTestMode}
         >Stripe Test Mode</Toggle
       >
       <Toggle bind:checked={options.disableCheckout}>Disable Checkout</Toggle>
+    </section>
+
+    <section class="mb-10 w-1/3">
+      <Label class="mb-2">Max RAK DaaS Instances</Label>
+      <Input type="number" bind:value={options.limits["rak-daas"]} />
     </section>
 
     <Button type="submit">Save</Button>

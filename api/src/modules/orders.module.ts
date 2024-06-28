@@ -8,11 +8,23 @@ import { UsersModule } from './users.module';
 import { CouponsModule } from './coupons.module';
 import { ShippingZonesService } from '../services/shipping-zones.service';
 import { ShippingMethodsService } from '../services/shipping-methods.service';
+import { InstancesModule } from './instances.module';
 
 @Module({
-  imports: [PrismaModule, ProductsModule, UsersModule, CouponsModule],
+  imports: [
+    PrismaModule,
+    ProductsModule,
+    UsersModule,
+    CouponsModule,
+    InstancesModule
+  ],
   controllers: [OrdersController],
-  providers: [OrdersService, TaxRatesService, ShippingZonesService, ShippingMethodsService],
+  providers: [
+    OrdersService,
+    TaxRatesService,
+    ShippingZonesService,
+    ShippingMethodsService,
+  ],
   exports: [OrdersService]
 })
 export class OrdersModule { }

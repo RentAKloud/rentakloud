@@ -25,7 +25,7 @@ export class OrdersController {
     private readonly usersService: UsersService,
     private readonly couponsService: CouponsService,
     private readonly shippingZonesService: ShippingZonesService,
-    private readonly shippingMethodsService: ShippingMethodsService
+    private readonly shippingMethodsService: ShippingMethodsService,
   ) { }
 
   @UseGuards(JwtAuthGuard)
@@ -108,6 +108,13 @@ export class OrdersController {
         },
       },
     })
+
+    // check for resource limits
+    const err = await this.ordersService.checkResourceLimits(products, req.user.userId)
+    if (err) {
+      return new BadRequestException(err)
+    }
+
     const productsSelectedFields = products.map((p, i) => ({
       id: p.id, name: p.name,
       // just select the specific price

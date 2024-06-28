@@ -1,15 +1,18 @@
 import { Injectable } from "@nestjs/common";
-import { CouponCodeToOrder, Order, Prisma, ProductType } from "@prisma/client";
+import { CouponCodeToOrder, Order, Prisma, Product, ProductType } from "@prisma/client";
 import { PrismaService } from "./prisma.service";
 import { EventEmitter2 } from "@nestjs/event-emitter";
 import { OrderItem } from "src/types/order";
 import { PlanPrice } from "src/types/instances.dto";
+import { OptionsService } from "./options.service";
+import { InstancesService } from "./instances.service";
 
 @Injectable()
 export class OrdersService {
   constructor(
     private prisma: PrismaService,
     private ee: EventEmitter2,
+    private instancesService: InstancesService
   ) { }
 
   async order(
@@ -83,6 +86,29 @@ export class OrdersService {
     return this.prisma.order.delete({
       where,
     });
+  }
+
+  async checkResourceLimits(products: Product[], userId: number) {
+    if (products.find(i => i.slug === "rak-daas")) {
+      const count = await this.instancesService.count({
+        where: {
+          userId: userId,
+          subscription: {
+            product: {
+              slug: "rak-daas"
+            }
+          }
+        }
+      })
+
+      if (
+        (count + products.filter(p => p.slug === "rak-daas").length)
+        >
+        OptionsService.appSettings.limits['rak-daas']
+      ) {
+        return "RAK DaaS resource limit reached"
+      }
+    }
   }
 
   calculateSubtotal(items: OrderItem[]) {

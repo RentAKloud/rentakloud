@@ -120,6 +120,10 @@ export class InstancesService {
     return result
   }
 
+  async count(params: InstancesFindManyQuery) {
+    return this.prisma.instance.count(params)
+  }
+
   async initIPSecTunnel(vmId: string) {
     const cmd = `/sbin/ipsec down ${vmId}; /sbin/ipsec up ${vmId}`
     const { status, output } = await this._script(cmd)

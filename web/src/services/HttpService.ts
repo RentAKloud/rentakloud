@@ -72,7 +72,7 @@ async function wrapper(endpoint: string, options?: RequestInit) {
       toReturn = await resp.text()
     }
 
-    if (toReturn.statusCode) {
+    if (toReturn.statusCode || (toReturn.status < 200 || toReturn.status > 299)) {
       return { result: null, error: toReturn }
     } else if (toReturn.response?.statusCode) {
       return { result: null, error: toReturn.response }

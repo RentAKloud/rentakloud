@@ -33,7 +33,7 @@ import { BullAdapter } from '@bull-board/api/bullAdapter';
         },
         // preview: true, // opens up the SENT email in browser
         template: {
-          dir: join(__dirname, '../../templates'),
+          dir: join(__dirname, '../templates'),
           adapter: new HandlebarsAdapter(),
           options: {
             strict: true,
@@ -41,7 +41,7 @@ import { BullAdapter } from '@bull-board/api/bullAdapter';
         },
         options: {
           partials: {
-            dir: join(__dirname, '../../templates/partials'),
+            dir: join(__dirname, '../templates/partials'),
             options: {
               strict: true,
             },

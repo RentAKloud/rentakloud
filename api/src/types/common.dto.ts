@@ -6,4 +6,7 @@ export type Paginated<T> = {
 export type AppSettings = {
   isStripeTestMode: boolean
   disableCheckout: boolean
+  limits: {
+    "rak-daas": number
+  }
 }
