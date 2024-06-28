@@ -2,8 +2,8 @@ import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Patch,
 import { ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 import { InstancesService } from '../services/instances.service';
-import { CreateInstance, InstanceCallback, InstancesFindManyQuery, InstancesQuery, Plan } from 'src/types/instances.dto';
-import { ProductsService } from 'src/services/products.service';
+import { CreateInstance, InstanceCallback, InstancesFindManyQuery, InstancesQuery, Plan } from '../types/instances.dto';
+import { ProductsService } from '../services/products.service';
 import { Instance, Prisma } from '@prisma/client';
 
 @ApiTags('Instances')
