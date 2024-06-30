@@ -13,7 +13,7 @@ const Card: Component<CardProps> = (props) => {
       }}
     >
       <Show when={img}>
-        <figure class="p-5 h-60"><img src={img!.uri} alt={img!.alt} style={{ height: "100%", "object-fit": "contain" }} /></figure>
+        <figure class="p-5 h-60"><img src={img!.uri} alt={img!.alt} style={{ height: "100%", "object-fit": "contain" }} loading="lazy" /></figure>
       </Show>
 
       <div class={`card-body ${center && "text-center items-center"}`}>

@@ -19,7 +19,7 @@ services:
     ports:
       - 9000:8080
     environment:
-      - ADMINER_DESIGN=hydra
+      - ADMINER_DESIGN=cyberpunk
 
   # opensource alternative for redis
   valkey:

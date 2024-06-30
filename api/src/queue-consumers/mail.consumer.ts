@@ -1,5 +1,6 @@
 import { MailerService } from '@nestjs-modules/mailer';
 import { OnQueueError, OnQueueFailed, Process, Processor } from '@nestjs/bull';
+import { Logger } from '@nestjs/common';
 import { Job } from 'bull';
 
 export type MailJob = {
@@ -13,6 +14,8 @@ export type MailJob = {
 
 @Processor('mail')
 export class MailConsumer {
+  private readonly logger = new Logger(MailConsumer.name)
+
   constructor(
     private mailerService: MailerService
   ) { }
@@ -27,11 +30,11 @@ export class MailConsumer {
 
   @OnQueueError()
   onError(error: Error) {
-    console.log(error)
+    this.logger.error(error.message)
   }
 
   @OnQueueFailed()
   jobFailed(job: Job, err: Error) {
-    console.log(job.id, "failed", err)
+    this.logger.error(`Job Failed ID=${job.id}`, err.message)
   }
 }

@@ -1,12 +1,13 @@
 import { OnQueueError, OnQueueFailed, Process, Processor } from '@nestjs/bull';
 import { Logger } from '@nestjs/common';
-import { Config, Instance, User } from '@prisma/client';
+import { Config, Instance, Product, Subscription, User } from '@prisma/client';
 import { Job } from 'bull';
 import { InstancesService } from '../services/instances.service';
 
 export type ProvisioningJob = Instance & {
   config: Config
   user: User
+  subscription: Subscription & { product: { slug: string } }
 }
 
 @Processor('provisioning')

@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable, Logger } from "@nestjs/common";
-import { Config, Prisma, InstanceStatus, Instance, User } from "@prisma/client";
+import { Config, Prisma, InstanceStatus, Instance, User, Subscription, Product } from "@prisma/client";
 import { PrismaService } from "./prisma.service";
 import { EventEmitter2 } from "@nestjs/event-emitter";
 import { spawn } from "child_process";
@@ -71,7 +71,14 @@ export class InstancesService {
           },
           include: {
             config: true,
-            user: true
+            user: true,
+            subscription: {
+              include: {
+                product: {
+                  select: { slug: true }
+                }
+              }
+            }
           }
         })
       )
@@ -135,9 +142,9 @@ export class InstancesService {
     }
   }
 
-  async initProvisioning(instance: Instance & { config: Config, user: User },
-    // _vmId?: number, custId?: number, slotId?: number // for testing only (these are supposed to be system generated)
-  ) {
+  async initProvisioning(instance: Instance & {
+    config: Config, user: User, subscription: Subscription & { product: { slug: string } }
+  }) {
 
     const d = {
       id: instance.vmId, title: instance.title,
@@ -149,7 +156,7 @@ export class InstancesService {
 
     // Step 1: Save VM info in db.json
     const K = 1024
-    const vmType = 'w10pro'
+    const vmType = instance.subscription.product.slug === "rak-daas" ? 'w10pro' : 'deb12'
     const customerId = instance.user.id + 5000
     const vmId = d.id
 

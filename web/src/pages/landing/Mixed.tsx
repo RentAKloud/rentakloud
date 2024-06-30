@@ -105,7 +105,7 @@ const LandingMixed: Component = () => {
         </div>
 
         <div class="flex-1">
-          <img class="h-[500px] w-full object-contain" src="https://i.imgur.com/jn025GT.jpg" />
+          <img class="h-[500px] w-full object-contain" src="https://cdn.rentakloud.com/images/rak-rack.jpeg" />
         </div>
       </section>
 
@@ -123,7 +123,7 @@ const LandingMixed: Component = () => {
         </div>
 
         <div class="flex-1">
-          <img class="h-[500px] w-full object-contain" src="https://images.pexels.com/photos/1181354/pexels-photo-1181354.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" />
+          <img class="h-[500px] w-full object-contain" src="https://images.pexels.com/photos/1181354/pexels-photo-1181354.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" loading="lazy" />
         </div>
       </section>
 
@@ -139,7 +139,7 @@ const LandingMixed: Component = () => {
 
       <section class="bg-base-200 flex flex-col md:flex-row py-10">
         <div class="flex-1">
-          <img class="h-[500px] w-full object-contain" src="https://i.imgur.com/HcQN4CT.jpg" />
+          <img class="h-[500px] w-full object-contain" src="https://cdn.rentakloud.com/images/rak-server-inside.jpeg" loading="lazy" />
         </div>
 
         <div class="flex flex-col justify-center flex-1 p-10">
