@@ -1,6 +1,6 @@
 <script lang="ts">
   import { Http } from "$lib/http";
-    import type { Instance } from "$lib/types/instances";
+  import type { Instance } from "$lib/types/instances";
   import {
     TableBody,
     TableBodyCell,
@@ -64,6 +64,7 @@
     </TableHeadCell>
     <TableHeadCell>ID</TableHeadCell>
     <TableHeadCell>Display name</TableHeadCell>
+    <TableHeadCell>Config</TableHeadCell>
     <TableHeadCell>Status</TableHeadCell>
     <TableHeadCell>VNC Path</TableHeadCell>
     <TableHeadCell>
@@ -76,8 +77,9 @@
         <TableBodyCell class="!p-4">
           <Checkbox />
         </TableBodyCell>
-        <TableBodyCell>{item.id}</TableBodyCell>
+        <TableBodyCell>{item.id} (vm{item.vmId})</TableBodyCell>
         <TableBodyCell>{item.title}</TableBodyCell>
+        <TableBodyCell><a href="/configs/{item.configId}">{item.configId}</a></TableBodyCell>
         <TableBodyCell>{item.status}</TableBodyCell>
         <TableBodyCell>{item.vncPath}</TableBodyCell>
         <TableBodyCell tdClass="flex gap-4 items-center py-4">

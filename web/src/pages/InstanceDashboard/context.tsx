@@ -12,6 +12,7 @@ type InstanceContextProps = {
   start: () => void
   stop: () => void
   restart: () => void
+  startSSH: () => Promise<boolean>
 }
 
 const defaultInstance: InstanceContextProps = {
@@ -20,7 +21,8 @@ const defaultInstance: InstanceContextProps = {
   inTransit: () => false,
   start: () => { },
   stop: () => { },
-  restart: () => { }
+  restart: () => { },
+  startSSH: async () => false
 }
 
 const InstanceContext = createContext<InstanceContextProps>(defaultInstance)
@@ -55,10 +57,15 @@ export const InstanceProvider: Component<{ children: JSXElement }> = (props) => 
     _action("restart", "Restarted VM")
   }
 
+  async function startSSH() {
+    return _action("start-ssh", "")
+  }
+
   async function _action(_action: InstanceAction, successMessage: string) {
     setInTransit(true)
-    await action(instance.latest!.id, _action, successMessage, refetch)
+    const rv = await action(instance.latest!.id, _action, successMessage, refetch)
     setInTransit(false)
+    return rv
   }
 
   return (
@@ -67,7 +74,8 @@ export const InstanceProvider: Component<{ children: JSXElement }> = (props) => 
       inTransit,
       start,
       stop,
-      restart
+      restart,
+      startSSH,
     }}>
       {props.children}
     </InstanceContext.Provider>
@@ -82,11 +90,14 @@ export async function action(id: string, action: InstanceAction, successMessage:
   if (error) {
     NotificationService.error(error.message)
   } else if (result) {
-    if (result.status) {
-      NotificationService.success(successMessage)
+    if (result.success) {
+      successMessage && NotificationService.success(successMessage)
       cb && cb()
+      return true
     }
     else
       NotificationService.error(`Could not ${action} the VM right now`)
   }
+
+  return false
 }

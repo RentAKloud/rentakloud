@@ -11,7 +11,13 @@ export type Instance = {
   addons: InstanceAddon[];
   createdAt: string;
   vncPath?: string;
+  vmId: number
   status: "Pending" | "Active" | "Inactive";
+  hostIp: string
+  privateIp: string
+  publicIp: string
+  hostName: string
+  wsPort: number
 };
 
 export type InstanceConfig = {
@@ -36,4 +42,4 @@ export type CreateInstanceReq = {
   priceId: string;
 };
 
-export type InstanceAction = "start" | "stop" | "restart"
+export type InstanceAction = "start" | "stop" | "restart" | "start-ssh"

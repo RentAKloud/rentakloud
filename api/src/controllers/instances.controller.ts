@@ -4,14 +4,16 @@ import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 import { InstancesService } from '../services/instances.service';
 import { CreateInstance, InstanceCallback, InstancesFindManyQuery, InstancesQuery, Plan } from '../types/instances.dto';
 import { ProductsService } from '../services/products.service';
-import { Instance, Prisma } from '@prisma/client';
+import { Instance, Prisma, UserType } from '@prisma/client';
+import { UsersService } from '../services/users.service';
 
 @ApiTags('Instances')
 @Controller('instances')
 export class InstancesController {
   constructor(
     private readonly instancesService: InstancesService,
-    private readonly productsService: ProductsService
+    private readonly productsService: ProductsService,
+    private readonly usersService: UsersService,
   ) { }
 
   @Get('vm[0-9]+')
@@ -30,12 +32,15 @@ export class InstancesController {
 
   @UseGuards(JwtAuthGuard)
   @Get('')
-  myInstances(
+  async myInstances(
     @Request() req,
     @Query() { sortBy, page, pageSize, q }: InstancesQuery
   ) {
-    const filters: Prisma.InstanceWhereInput = {
-      userId: req.user.userId
+    const user = await this.usersService.user({ id: req.user.userId })
+
+    const filters: Prisma.InstanceWhereInput = {}
+    if (user.type === UserType.User) {
+      filters.userId = user.id
     }
 
     if (q) {
@@ -46,13 +51,13 @@ export class InstancesController {
         ]
       }
     }
-  
+
     const query: InstancesFindManyQuery = {
       where: filters
     }
 
     if (sortBy) {
-      query.orderBy = {[sortBy]: "asc"}
+      query.orderBy = { [sortBy]: "asc" }
     }
 
     return this.instancesService.instances(query)

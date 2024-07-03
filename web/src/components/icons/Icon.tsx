@@ -4,7 +4,7 @@ import { Icon as _Icon } from "~/types/ui";
 const Icon: Component<_Icon> = (props) => {
   return (
     <svg
-      xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+      xmlns="http://www.w3.org/2000/svg" fill="none" viewBox={props.viewBox || "0 0 24 24"} stroke-width="1.5"
       // stroke="currentColor"
       class={props.class}
       classList={{

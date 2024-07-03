@@ -33,6 +33,8 @@ export class InstancesService {
           include: {
             product: {
               select: {
+                id: true,
+                slug: true,
                 name: true,
                 images: true
               }
@@ -236,7 +238,7 @@ export class InstancesService {
     })
   }
 
-  async action(id: string, action: "start" | "stop" | "restart") {
+  async action(id: string, action: "start" | "stop" | "restart" | "start-ssh") {
     const { vmId } = (await this.instances({
       where: {
         OR: [
@@ -250,15 +252,16 @@ export class InstancesService {
       "start": `/home/scripts/start-vm-onhost.sh ${vmId}`,
       "stop": `/home/scripts/powerdown-vm-onhost.sh ${vmId}`,
       "restart": `/home/scripts/reboot-vm-onhost.sh ${vmId}`,
+      "start-ssh": `/home/scripts/start-web-ssh.sh ${vmId}`,
     }
 
     const { status, output, error } = await this._script(actions[action])
 
     if (!status) {
-      console.error(output, error)
+      this.logger.error(output, error)
       throw new BadRequestException(error)
     }
 
-    return { status }
+    return { success: status }
   }
 }

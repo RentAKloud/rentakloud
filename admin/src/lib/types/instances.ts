@@ -6,8 +6,10 @@ export type Instance = {
   product: Product;
   addons: InstanceAddon[]
   config: Config
+  configId: number
   createdAt: string;
   vncPath?: string;
+  vmId: number
   status: "Pending" | "Active" | "Inactive";
 }
 

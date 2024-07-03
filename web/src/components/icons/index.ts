@@ -11,6 +11,7 @@ import PictureInPicture from "./PictureInPicture";
 import EllipsesVertical from "./EllipsesVertical";
 import Windows from "./logos/Windows";
 import Search from "./Search";
+import Linux from "./logos/Linux";
 
 export const Icon = {
   Bell,
@@ -20,6 +21,7 @@ export const Icon = {
   Eye,
   External,
   Fullscreen,
+  Linux,
   Mail,
   Menu,
   PictureInPicture,

@@ -8,10 +8,12 @@ import { BullModule } from '@nestjs/bull';
 import { BullBoardModule } from '@bull-board/nestjs';
 import { BullAdapter } from '@bull-board/api/bullAdapter';
 import { ProvisioningConsumer } from '../queue-consumers/provisioning.consumer';
+import { UsersModule } from './users.module';
 
 @Module({
   imports: [
     PrismaModule, EventEmitterModule, ProductsModule,
+    UsersModule,
     BullModule.registerQueue({
       name: 'provisioning',
     }),

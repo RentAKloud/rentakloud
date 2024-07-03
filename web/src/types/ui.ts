@@ -8,6 +8,7 @@ export type LayoutProps = {
 export type Icon = {
   class?: string;
   children?: JSXElement;
+  viewBox?: string
 }
 
 export type HeroWithBgProps = {

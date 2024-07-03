@@ -17,7 +17,7 @@ const _InstanceDashboard: Component<{}> = () => {
             {/* <li><Link href={`/instances/${id}/site-ssl`}>Site & SSL</Link></li> */}
             {/* <li><Link href={`/instances/${id}/database`}>Database/phpMyAdmin</Link></li> */}
             {/* <li><Link href={`/instances/${id}/file-manager`}>File Manager</Link></li> */}
-            {/* <li><Link href={`/instances/${id}/ssh`}>Shell/SSH</Link></li> */}
+            <li><Link href={`/instances/${id}/ssh`}>Shell/SSH</Link></li>
             {/* <li><Link href={`/instances/${id}/ftps`}>FTPS</Link></li> */}
             {/* <li><Link href={`/instances/${id}/metrics`}>Metrics</Link></li> */}
             {/* <li><Link href={`/instances/${id}/snapshots`}>Snapshots</Link></li> */}

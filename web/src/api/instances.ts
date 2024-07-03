@@ -27,7 +27,7 @@ class InstancesApi {
     return await HttpService.post('/instances/setup-vnc-tunnel', { vmId })
   }
 
-  static async action(id: string, action: InstanceAction, params: any): ApiResponse<{ status: boolean }> {
+  static async action(id: string, action: InstanceAction, params: any): ApiResponse<{ success: boolean }> {
     return await HttpService.post(`/instances/${id}/action`, { action, params })
   }
 }

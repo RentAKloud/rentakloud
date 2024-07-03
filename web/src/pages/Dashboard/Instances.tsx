@@ -12,7 +12,7 @@ import { Instance } from "~/types/instance";
 import Search from "~/components/Inputs/Search";
 import Loader from "~/components/Loader";
 import { action } from "../InstanceDashboard/context";
-import { dateToDaysAgo, daysAgo } from "~/utils";
+import { dateToDaysAgo } from "~/utils";
 
 const Instances: Component = () => {
   const q = new URLSearchParams([
@@ -110,6 +110,7 @@ const GridView: Component<{ instances: Instance[], refetch: Function }> = (props
         {
           (instance) => {
             const isNew = true || dateToDaysAgo(new Date(instance.createdAt)) <= 2
+            const os = instance.subscription.product.slug === "rak-daas" ? "windows" : "linux"
             return (
               <Card
                 title={
@@ -123,7 +124,9 @@ const GridView: Component<{ instances: Instance[], refetch: Function }> = (props
                   </>
                 }
                 actions={<div class="flex gap-5 items-center justify-start flex-wrap">
-                  {/* <a href="http://204.27.57.219:4200/" target="_blank" class="btn"><CLIIcon /> SSH</a> */}
+                  <Show when={os === "linux" || true}>
+                    <a href={`/instances/${instance.id}/ssh`} class="btn"><CLIIcon /> SSH</a>
+                  </Show>
                   <Link href={`/instances/${instance.id}/stream`} class="btn"><DesktopIcon /> VNC</Link>
                 </div>}
                 actionsAlign="left"
@@ -131,7 +134,12 @@ const GridView: Component<{ instances: Instance[], refetch: Function }> = (props
               >
                 <div class="flex flex-col gap-3">
                   <div class="flex gap-2">
-                    <Icon.Windows />
+                    <Show
+                      when={os === "windows"}
+                      fallback={<Icon.Linux />}
+                    >
+                      <Icon.Windows />
+                    </Show>
                     <span classList={{
                       "text-warning": instance.status === "Pending",
                       "text-error": instance.status === "Inactive",
@@ -217,14 +225,14 @@ const ListView: Component<{ instances: Instance[] }> = (props) => {
                   <td>
                     {instance.id}
                     <br />
-                    <span class="badge badge-ghost badge-sm">{"204.27.57.219"}</span>
+                    <span class="badge badge-ghost badge-sm">{instance.publicIp}</span>
                   </td>
                   <td classList={{
                     "text-error": instance.status === "Inactive",
                     "text-success": instance.status === "Active"
                   }}>{instance.status}</td>
                   <td><DateTime value={instance.createdAt} /></td>
-                  <td><a href="http://204.27.57.219:4200/" target="_blank" class="btn btn-ghost"><CLIIcon /></a></td>
+                  <td><a href={`/instances/${instance.id}/ssh`} class="btn btn-ghost"><CLIIcon /></a></td>
                   <th>
                     <Link href={`/instances/${instance.id}`} class="btn btn-ghost btn-xs">details</Link>
                   </th>
