@@ -4,17 +4,17 @@ import { Icon } from "~/components/icons"
 import { useInstanceContext } from "./context"
 
 const SSH: Component<{}> = () => {
-  const { instance, startSSH } = useInstanceContext()
-  const [sshStatus, setSSHStatus] = createSignal<"ready"|"loading"|"fail"|"success">("ready")
+  const { instance, startSSH, inTransit } = useInstanceContext()
+  const [sshStatus, setSSHStatus] = createSignal<"ready" | "fail" | "success">("ready")
   const port = () => instance.latest?.vmId ? instance.latest.vmId - 3000 + 2200 : -1
   const url = () => port() ? `https://rentakloud.com:${port()}` : ""
 
   createEffect(async () => {
-    if (instance.latest?.vmId && sshStatus() === "ready") {
-      setSSHStatus("loading")
+    if (instance.latest?.vmId && instance.latest.status === "Active" && sshStatus() === "ready") {
       const rv = await startSSH()
       if (rv) {
         setSSHStatus("success")
+        return
       }
       setSSHStatus("fail")
     }
@@ -52,7 +52,9 @@ const SSH: Component<{}> = () => {
 
       <Switch>
         <Match when={instance.loading}>
-          <Loader />
+          <div class="text-center">
+            <Loader />
+          </div>
         </Match>
 
         <Match when={instance.latest!.status !== "Active"}>
@@ -63,8 +65,11 @@ const SSH: Component<{}> = () => {
           Looks like the VM is not configured properly.
         </Match>
 
-        <Match when={sshStatus() === "loading"}>
-          Connecting to our secure SSH server...
+        <Match when={inTransit()}>
+          <div class="text-center">
+            <div>Connecting to our secure SSH server.</div>
+            <span class="loading loading-dots loading-md"></span>
+          </div>
         </Match>
 
         <Match when={instance.latest! && sshStatus() === "success"}>
