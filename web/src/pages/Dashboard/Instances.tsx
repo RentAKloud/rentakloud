@@ -109,7 +109,7 @@ const GridView: Component<{ instances: Instance[], refetch: Function }> = (props
       <For each={props.instances} fallback={"Looks like search returned nothing"}>
         {
           (instance) => {
-            const isNew = true || dateToDaysAgo(new Date(instance.createdAt)) <= 2
+            const isNew = dateToDaysAgo(new Date(instance.createdAt)) <= 2
             const os = instance.subscription.product.slug === "rak-daas" ? "windows" : "linux"
             return (
               <Card
@@ -124,7 +124,7 @@ const GridView: Component<{ instances: Instance[], refetch: Function }> = (props
                   </>
                 }
                 actions={<div class="flex gap-5 items-center justify-start flex-wrap">
-                  <Show when={os === "linux" || true}>
+                  <Show when={os === "linux"}>
                     <a href={`/instances/${instance.id}/ssh`} class="btn"><CLIIcon /> SSH</a>
                   </Show>
                   <Link href={`/instances/${instance.id}/stream`} class="btn"><DesktopIcon /> VNC</Link>
@@ -136,7 +136,7 @@ const GridView: Component<{ instances: Instance[], refetch: Function }> = (props
                   <div class="flex gap-2">
                     <Show
                       when={os === "windows"}
-                      fallback={<Icon.Linux />}
+                      fallback={<Icon.Linux class="w-7 h-7" />}
                     >
                       <Icon.Windows />
                     </Show>
@@ -202,42 +202,51 @@ const ListView: Component<{ instances: Instance[] }> = (props) => {
         <tbody>
           <For each={props.instances} fallback={"Looks like search returned nothing"}>
             {
-              (instance) => (
-                <tr>
-                  <th>
-                    <label>
-                      <input type="checkbox" class="checkbox" />
-                    </label>
-                  </th>
-                  <td>
-                    <div class="flex items-center space-x-3">
-                      <div class="avatar">
-                        <div class="mask mask-squircle w-12 h-12">
-                          <img src={instance.subscription.product.images[0]?.src} alt={instance.subscription.product.images[0]?.alt} />
+              (instance) => {
+                const os = instance.subscription.product.slug === "rak-daas" ? "windows" : "linux"
+
+                return (
+                  <tr>
+                    <th>
+                      <label>
+                        <input type="checkbox" class="checkbox" />
+                      </label>
+                    </th>
+                    <td>
+                      <div class="flex items-center space-x-3">
+                        <div class="avatar">
+                          <div class="mask mask-squircle w-12 h-12">
+                            <img src={instance.subscription.product.images[0]?.src} alt={instance.subscription.product.images[0]?.alt} />
+                          </div>
+                        </div>
+                        <div>
+                          <div class="font-bold">{instance.title || instance.subscription.product.name}</div>
+                          <div class="text-sm opacity-50">us-east-1</div>
                         </div>
                       </div>
-                      <div>
-                        <div class="font-bold">{instance.subscription.product.name}</div>
-                        <div class="text-sm opacity-50">us-east-1</div>
-                      </div>
-                    </div>
-                  </td>
-                  <td>
-                    {instance.id}
-                    <br />
-                    <span class="badge badge-ghost badge-sm">{instance.publicIp}</span>
-                  </td>
-                  <td classList={{
-                    "text-error": instance.status === "Inactive",
-                    "text-success": instance.status === "Active"
-                  }}>{instance.status}</td>
-                  <td><DateTime value={instance.createdAt} /></td>
-                  <td><a href={`/instances/${instance.id}/ssh`} class="btn btn-ghost"><CLIIcon /></a></td>
-                  <th>
-                    <Link href={`/instances/${instance.id}`} class="btn btn-ghost btn-xs">details</Link>
-                  </th>
-                </tr>
-              )
+                    </td>
+                    <td>
+                      {instance.id}
+                      <br />
+                      <span class="badge badge-ghost badge-sm">{instance.publicIp}</span>
+                    </td>
+                    <td classList={{
+                      "text-error": instance.status === "Inactive",
+                      "text-success": instance.status === "Active"
+                    }}>{instance.status}</td>
+                    <td><DateTime value={instance.createdAt} /></td>
+                    <td>
+                      <Show when={os === "linux"}>
+                        <Link href={`/instances/${instance.id}/ssh`} class="btn btn-ghost" title="SSH/Shell"><CLIIcon /></Link>
+                      </Show>
+                      <Link href={`/instances/${instance.id}/stream`} class="btn btn-ghost" title="VNC/Stream"><DesktopIcon /></Link>
+                    </td>
+                    <th>
+                      <Link href={`/instances/${instance.id}`} class="btn btn-ghost btn-xs">details</Link>
+                    </th>
+                  </tr>
+                )
+              }
             }
           </For>
         </tbody>
