@@ -1,9 +1,28 @@
-import { Component, JSXElement, createContext, createEffect, createResource, createSignal, onMount, useContext } from "solid-js";
+import {
+  Component,
+  JSXElement,
+  createContext,
+  createEffect,
+  createResource,
+  createSignal,
+  onMount,
+  useContext,
+} from "solid-js";
 import { Part, createStore } from "solid-js/store";
 import { Stripe, loadStripe } from "@stripe/stripe-js";
 import { useSearchParams } from "@solidjs/router";
 import { NotificationService } from "~/services/NotificationService";
-import { Address, CheckoutContextProps, CheckoutSteps, CouponCode, Order, OrderStatus, OrderStore, ShippingMethod, defaultCheckout } from "~/types/order";
+import {
+  Address,
+  CheckoutContextProps,
+  CheckoutSteps,
+  CouponCode,
+  Order,
+  OrderStatus,
+  OrderStore,
+  ShippingMethod,
+  defaultCheckout,
+} from "~/types/order";
 import { authStore } from "~/stores/auth";
 import OrdersApi from "~/api/orders";
 import PaymentsApi from "~/api/payments";
@@ -16,172 +35,201 @@ import { HttpService } from "~/services/HttpService";
 import { appSettings } from "~/stores/global";
 import InstancesApi from "~/api/instances";
 
-const CheckoutContext = createContext<CheckoutContextProps>(defaultCheckout)
+const CheckoutContext = createContext<CheckoutContextProps>(defaultCheckout);
 
 export const useCheckoutContext = () => {
-  return useContext(CheckoutContext)
-}
+  return useContext(CheckoutContext);
+};
 
-export const CheckoutProvider: Component<{ children: JSXElement }> = (props) => {
-  const { user } = authStore
-  const [params, setParams] = useSearchParams()
-  const step = () => params.step as CheckoutSteps
+export const CheckoutProvider: Component<{ children: JSXElement }> = (
+  props,
+) => {
+  const { user } = authStore;
+  const [params, setParams] = useSearchParams();
+  const step = () => params.step as CheckoutSteps;
   function setStep(step: CheckoutSteps) {
-    setParams({ step })
+    setParams({ step });
   }
-  const [inReview, setInReview] = createSignal(false)
-  const isContinuingOrder = () => !!params.order
-  const hasPhysical = () => cart.items.some(i => getProductById(i.productId)?.productType === ProductType.Physical)
-  const hasServices = () => cart.items.some(i => getProductById(i.productId)?.productType === ProductType.OnlineService)
+  const [inReview, setInReview] = createSignal(false);
+  const isContinuingOrder = () => !!params.order;
+  const hasPhysical = () =>
+    cart.items.some(
+      (i) => getProductById(i.productId)?.productType === ProductType.Physical,
+    );
+  const hasServices = () =>
+    cart.items.some(
+      (i) =>
+        getProductById(i.productId)?.productType === ProductType.OnlineService,
+    );
 
-  const [shippingSameAsBilling, setShippingSameAsBilling] = createSignal(true)
+  const [shippingSameAsBilling, setShippingSameAsBilling] = createSignal(true);
   const [orderStore, setOrderStore] = createStore<OrderStore>({
     ...defaultCheckout.orderStore,
     billingAddress: {
       ...defaultCheckout.orderStore.billingAddress,
-      firstName: user?.firstName || '',
-      lastName: user?.lastName || '',
-      email: user?.email || ''
-    }
-  })
-  const [availableShippingMethods, setAvailableShippingMethods] = createSignal<ShippingMethod[]>([])
-  const [formErrors, setFormErrors] = createSignal<string[]>([])
+      firstName: user?.firstName || "",
+      lastName: user?.lastName || "",
+      email: user?.email || "",
+    },
+  });
+  const [availableShippingMethods, setAvailableShippingMethods] = createSignal<
+    ShippingMethod[]
+  >([]);
+  const [formErrors, setFormErrors] = createSignal<string[]>([]);
 
-  const [stripe, setStripe] = createSignal<Stripe | null>(null)
-  const [clientSecret, setClientSecret] = createSignal<string>()
-  const [subClientSecrets, setSubClientSecrets] = createSignal<string[]>()
-  const [paymentSuccess, setPaymentSuccess] = createSignal<boolean>()
-  const [subscriptionsPaid, setSubscriptionsPaid] = createSignal<boolean>()
-  const [isCardInfoComplete, setIsCardInfoComplete] = createSignal<boolean>(false)
+  const [stripe, setStripe] = createSignal<Stripe | null>(null);
+  const [clientSecret, setClientSecret] = createSignal<string>();
+  const [subClientSecrets, setSubClientSecrets] = createSignal<string[]>();
+  const [paymentSuccess, setPaymentSuccess] = createSignal<boolean>();
+  const [subscriptionsPaid, setSubscriptionsPaid] = createSignal<boolean>();
+  const [isCardInfoComplete, setIsCardInfoComplete] =
+    createSignal<boolean>(false);
 
   const [countryOptions] = createResource(async () => {
-    const { result, error } = await HttpService.get<CountryCode[]>('/countries')
-    if (error) throw error
-    return result!.map(c => ({ label: c.name, value: c.code }))
-  })
-  const [stateOptionsBilling] = createResource(() => orderStore.billingAddress.country, async () => {
-    const { result, error } = await HttpService.get<StateCode[]>(`/states?country=${orderStore.billingAddress.country}`)
-    if (error) throw error
-    if (!result) return null
-    return result!.map(c => ({ label: c.name, value: c.code }))
-  })
-  const [stateOptionsShipping] = createResource(() => orderStore.shippingAddress.country, async () => {
-    const { result, error } = await HttpService.get<StateCode[]>(`/states?country=${orderStore.shippingAddress.country}`)
-    if (error) throw error
-    if (!result) return null
-    return result!.map(c => ({ label: c.name, value: c.code }))
-  })
+    const { result, error } =
+      await HttpService.get<CountryCode[]>("/countries");
+    if (error) throw error;
+    return result!.map((c) => ({ label: c.name, value: c.code }));
+  });
+  const [stateOptionsBilling] = createResource(
+    () => orderStore.billingAddress.country,
+    async () => {
+      const { result, error } = await HttpService.get<StateCode[]>(
+        `/states?country=${orderStore.billingAddress.country}`,
+      );
+      if (error) throw error;
+      if (!result) return null;
+      return result!.map((c) => ({ label: c.name, value: c.code }));
+    },
+  );
+  const [stateOptionsShipping] = createResource(
+    () => orderStore.shippingAddress.country,
+    async () => {
+      const { result, error } = await HttpService.get<StateCode[]>(
+        `/states?country=${orderStore.shippingAddress.country}`,
+      );
+      if (error) throw error;
+      if (!result) return null;
+      return result!.map((c) => ({ label: c.name, value: c.code }));
+    },
+  );
 
   onMount(async () => {
     if (!step()) {
-      setStep('address')
+      setStep("address");
     }
 
     const result = await loadStripe(
-      appSettings.latest?.isStripeTestMode ?
-        import.meta.env.VITE_STRIPE_PUBLIC_KEY_TEST : import.meta.env.VITE_STRIPE_PUBLIC_KEY_LIVE
-    )
-    setStripe(result)
-  })
+      appSettings.latest?.isStripeTestMode
+        ? import.meta.env.VITE_STRIPE_PUBLIC_KEY_TEST
+        : import.meta.env.VITE_STRIPE_PUBLIC_KEY_LIVE,
+    );
+    setStripe(result);
+  });
 
   createEffect(() => {
-    if (formErrors().find(e => e.includes("billingAddress")) !== undefined) {
-      setStep("address")
+    if (formErrors().find((e) => e.includes("billingAddress")) !== undefined) {
+      setStep("address");
     }
 
     if (isContinuingOrder() && order()) {
-      setStep(order()!.status === OrderStatus.Pending ? 'payment' : 'congrats')
+      setStep(order()!.status === OrderStatus.Pending ? "payment" : "congrats");
     }
-  })
+  });
 
   // TODO if possible this order status should not be updated from frontend
   // but from stripe webhooks. Dont have access to webhooks right now
   createEffect(() => {
     if (hasPhysical() && hasServices()) {
       if (paymentSuccess() && subscriptionsPaid()) {
-        checkoutSuccessful()
+        checkoutSuccessful();
       }
     } else if (hasPhysical() && paymentSuccess()) {
-      checkoutSuccessful()
+      checkoutSuccessful();
     } else if (hasServices() && subscriptionsPaid()) {
-      checkoutSuccessful()
+      checkoutSuccessful();
     } else if (isContinuingOrder() && paymentSuccess()) {
-      checkoutSuccessful()
+      checkoutSuccessful();
     }
-  })
+  });
 
   function updateBilling(key: Part<Address, keyof Address>, val: string) {
     setOrderStore({
       billingAddress: {
         ...orderStore.billingAddress,
-        [key as string]: val
-      }
-    })
+        [key as string]: val,
+      },
+    });
   }
 
   function updateShipping(key: Part<Address, keyof Address>, val: string) {
     setOrderStore({
       shippingAddress: {
         ...orderStore.shippingAddress,
-        [key as string]: val
-      }
-    })
+        [key as string]: val,
+      },
+    });
   }
 
   function updateShippingMethod(val: ShippingMethod) {
-    setOrderStore({ shippingMethod: val })
+    setOrderStore({ shippingMethod: val });
   }
 
   function updateNotes(val: string) {
-    setOrderStore("orderNotes", val)
+    setOrderStore("orderNotes", val);
   }
 
   function updateCoupons(val: CouponCode[]) {
-    setOrderStore("couponCodes", val)
+    setOrderStore("couponCodes", val);
   }
 
   createEffect(async () => {
     // shipping methods & taxes are based on shipping address
-    const { city, state, zip, country } = shippingSameAsBilling() ? orderStore.billingAddress : orderStore.shippingAddress
+    const { city, state, zip, country } = shippingSameAsBilling()
+      ? orderStore.billingAddress
+      : orderStore.shippingAddress;
 
     if (city || state || zip || country) {
-      const { result, error } = await OrdersApi.estimateTaxes({ city, state, country, zip }, cart.items)
+      const { result, error } = await OrdersApi.estimateTaxes(
+        { city, state, country, zip },
+        cart.items,
+      );
       if (!error) {
         setOrderStore({
-          taxes: result!
-        })
+          taxes: result!,
+        });
       }
     }
 
     if (city || state || country) {
       const { result, error } = await OrdersApi.getShippingMethods(
         { city, state, country, zip },
-        cart.items.map(i => i.productId)
-      )
+        cart.items.map((i) => i.productId),
+      );
       if (!error) {
-        setAvailableShippingMethods(result!)
-        updateShippingMethod(result![0])
+        setAvailableShippingMethods(result!);
+        updateShippingMethod(result![0]);
       }
     }
-  })
+  });
 
-  const [inTransit, setInTransit] = createSignal(false)
-  const [order, setOrder] = createSignal<Order>()
+  const [inTransit, setInTransit] = createSignal(false);
+  const [order, setOrder] = createSignal<Order>();
 
   if (isContinuingOrder()) {
     (async () => {
-      const { result, error } = await OrdersApi.one(+params.order)
+      const { result, error } = await OrdersApi.one(+params.order);
       if (error) {
-        console.error("Could not fetch existing order", error)
+        console.error("Could not fetch existing order", error);
       }
 
-      setOrder(result!)
-    })()
+      setOrder(result!);
+    })();
   }
 
   async function submit() {
     try {
-      setInTransit(true)
+      setInTransit(true);
 
       // Sometimes order will get created but payment can be failed, so we add !order() check to not
       // create order again
@@ -189,35 +237,38 @@ export const CheckoutProvider: Component<{ children: JSXElement }> = (props) => 
         const orderResp = await OrdersApi.create({
           ...orderStore,
           items: cart.items,
-          shippingSameAsBilling: shippingSameAsBilling()
-        })
+          shippingSameAsBilling: shippingSameAsBilling(),
+        });
         if (!orderResp.error) {
-          setOrder(orderResp.result!)
+          setOrder(orderResp.result!);
         } else {
-          setInTransit(false)
-          NotificationService.error(orderResp.error.message)
-          return
+          setInTransit(false);
+          NotificationService.error(orderResp.error.message);
+          return;
         }
       }
 
       if (getCartTotal() <= ONLINE_ORDER_AMOUNT_LIMIT) {
-        await _paymentsFlow()
+        await _paymentsFlow();
       } else {
-        checkoutSuccessful()
+        checkoutSuccessful();
       }
     } catch (err: any) {
-      NotificationService.error("Something went wrong")
-      setFormErrors(err.message.split(","))
-      setInTransit(false)
+      NotificationService.error("Something went wrong");
+      setFormErrors(err.message.split(","));
+      setInTransit(false);
     }
   }
 
   async function _paymentsFlow() {
     if (order()!.amount! > 0 || isContinuingOrder()) {
       // orderResp.amount excludes amount for subscriptions
-      const resp2 = await PaymentsApi.createPaymentIntent(user!.email, order()!.amount!)
+      const resp2 = await PaymentsApi.createPaymentIntent(
+        user!.email,
+        order()!.amount!,
+      );
       if (!resp2.error) {
-        setClientSecret(resp2.result!.clientSecret)
+        setClientSecret(resp2.result!.clientSecret);
       }
     }
 
@@ -225,69 +276,81 @@ export const CheckoutProvider: Component<{ children: JSXElement }> = (props) => 
     // subscription item so they can be cancelled/updated individually,
     // although stripe allows to include multiple items in one subscription
     const subscriptionItems: CartItem[] = cart.items
-      .filter(i => getProductById(i.productId)?.productType === ProductType.OnlineService)
+      .filter(
+        (i) =>
+          getProductById(i.productId)?.productType ===
+          ProductType.OnlineService,
+      )
       // consider the quantity too
-      .map(i => Array(i.quantity).fill(i))
-      .flat()
+      .map((i) => Array(i.quantity).fill(i))
+      .flat();
     // TODO should be one bulk request
     if (subscriptionItems.length > 0) {
-      const subResponsePromises = subscriptionItems.map(i => {
-        return PaymentsApi.createSubscription(user!.email, i.productId, i.priceId!, !!i.isTrial)
-      })
-      const subResponses = await Promise.all(subResponsePromises)
+      const subResponsePromises = subscriptionItems.map((i) => {
+        return PaymentsApi.createSubscription(
+          user!.email,
+          i.productId,
+          i.priceId!,
+          !!i.isTrial,
+        );
+      });
+      const subResponses = await Promise.all(subResponsePromises);
       const subData = subResponses.map((x, i) => ({
         subscriptionId: x.result!.subscriptionId,
         productId: subscriptionItems[i].productId,
+        planId: subscriptionItems[i].planId!,
         priceId: subscriptionItems[i].priceId!,
-      }))
-      await InstancesApi.createMany(subData)
-      const secrets = subResponses.map(x => x.result!.clientSecret)
-      setSubClientSecrets(secrets)
+      }));
+      await InstancesApi.createMany(subData);
+      const secrets = subResponses.map((x) => x.result!.clientSecret);
+      setSubClientSecrets(secrets);
     }
   }
 
   function checkoutSuccessful() {
-    OrdersApi.updateStatus(order()!.id, OrderStatus.Paid)
-    resetCart()
-    setStep('congrats')
+    OrdersApi.updateStatus(order()!.id, OrderStatus.Paid);
+    resetCart();
+    setStep("congrats");
   }
 
   return (
-    <CheckoutContext.Provider value={{
-      isContinuingOrder,
-      hasPhysical,
-      order,
-      inReview,
-      setInReview,
+    <CheckoutContext.Provider
+      value={{
+        isContinuingOrder,
+        hasPhysical,
+        order,
+        inReview,
+        setInReview,
 
-      step,
-      setStep,
-      shippingSameAsBilling,
-      setShippingSameAsBilling,
-      orderStore,
-      countryOptions,
-      stateOptionsBilling,
-      stateOptionsShipping,
-      availableShippingMethods,
-      updateBilling,
-      updateShipping,
-      updateShippingMethod,
-      updateNotes,
-      updateCoupons,
+        step,
+        setStep,
+        shippingSameAsBilling,
+        setShippingSameAsBilling,
+        orderStore,
+        countryOptions,
+        stateOptionsBilling,
+        stateOptionsShipping,
+        availableShippingMethods,
+        updateBilling,
+        updateShipping,
+        updateShippingMethod,
+        updateNotes,
+        updateCoupons,
 
-      stripe,
-      clientSecret,
-      subClientSecrets,
-      setPaymentSuccess,
-      setSubscriptionsPaid,
-      isCardInfoComplete,
-      setIsCardInfoComplete,
-      submit,
-      inTransit,
-      setInTransit,
-      formErrors,
-    }}>
+        stripe,
+        clientSecret,
+        subClientSecrets,
+        setPaymentSuccess,
+        setSubscriptionsPaid,
+        isCardInfoComplete,
+        setIsCardInfoComplete,
+        submit,
+        inTransit,
+        setInTransit,
+        formErrors,
+      }}
+    >
       {props.children}
     </CheckoutContext.Provider>
-  )
-}
+  );
+};

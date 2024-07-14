@@ -1,8 +1,20 @@
 import { Component, For, Show, createSignal } from "solid-js";
 import { Link } from "@solidjs/router";
 import DefaultLayout from "~/layouts/DefaultLayout";
-import { getCartTotal, cart, resetCart, incrQty, decrQty, removeFromCart } from "~/stores/cart";
-import { getPlanPrice, getProductById, getProductPrice, products } from "~/stores/products";
+import {
+  getCartTotal,
+  cart,
+  resetCart,
+  incrQty,
+  decrQty,
+  removeFromCart,
+} from "~/stores/cart";
+import {
+  getPlanPrice,
+  getProductById,
+  getProductPrice,
+  products,
+} from "~/stores/products";
 import Loader from "~/components/Loader";
 import { formatPrice } from "~/utils";
 import TrashIcon from "~/components/icons/Trash";
@@ -10,7 +22,7 @@ import Modal from "~/components/Modal";
 import { ProductType } from "~/types/product";
 
 const Cart: Component = () => {
-  const [isClearModalOpen, setIsClearModalOpen] = createSignal(false)
+  const [isClearModalOpen, setIsClearModalOpen] = createSignal(false);
 
   return (
     <DefaultLayout>
@@ -42,17 +54,28 @@ const Cart: Component = () => {
               <tbody>
                 <For each={cart.items}>
                   {(item, i) => {
-                    const product = () => getProductById(item.productId)!
+                    const product = () => getProductById(item.productId)!;
 
-                    const price = () => getProductPrice(product(), item.priceId)
-                    const planPrice = () => getPlanPrice(price(), item.priceId!)
-                    const total = () => item.isTrial ? 0 : (price().saleAmount || price().amount || planPrice()!.amount) * item.quantity
-                    const interval = () => planPrice() ? ` - ${price().planName} ${planPrice()!.interval}ly` : ""
+                    const priceOrPlan = () =>
+                      getProductPrice(product(), item.planId);
+                    const planPrice = () =>
+                      getPlanPrice(priceOrPlan(), item.priceId!);
+                    const total = () =>
+                      item.isTrial
+                        ? 0
+                        : (priceOrPlan().saleAmount ||
+                            priceOrPlan().amount ||
+                            planPrice()!.amount) * item.quantity;
+                    const interval = () =>
+                      planPrice()
+                        ? ` - ${priceOrPlan().planName} ${planPrice()!.interval}ly`
+                        : "";
 
                     return (
                       <tr class="hover">
                         <th>{i() + 1}</th>
-                        <td>{product().name}
+                        <td>
+                          {product().name}
                           <Show when={interval()}>
                             <span innerHTML={interval()}></span>
                           </Show>
@@ -62,7 +85,11 @@ const Cart: Component = () => {
                           <button
                             class="font-bold text-green-500 btn btn-ghost btn-circle"
                             onclick={() => incrQty(product())}
-                            disabled={item.isTrial || product().productType === ProductType.Physical && item.quantity >= product().stock}
+                            disabled={
+                              item.isTrial ||
+                              (product().productType === ProductType.Physical &&
+                                item.quantity >= product().stock)
+                            }
                           >
                             +
                           </button>
@@ -77,12 +104,15 @@ const Cart: Component = () => {
                         </td>
                         <td>{formatPrice(total())}</td>
                         <td>
-                          <button class="btn btn-ghost btn-circle text-red-500" onclick={() => removeFromCart(product())}>
+                          <button
+                            class="btn btn-ghost btn-circle text-red-500"
+                            onclick={() => removeFromCart(product())}
+                          >
                             <TrashIcon />
                           </button>
                         </td>
                       </tr>
-                    )
+                    );
                   }}
                 </For>
 
@@ -97,8 +127,15 @@ const Cart: Component = () => {
           </div>
 
           <div class="mt-10 flex gap-5 justify-center">
-            <button class="btn btn-error" onclick={() => setIsClearModalOpen(true)}>Clear Cart</button>
-            <Link href="/checkout" class="btn btn-primary">Checkout</Link>
+            <button
+              class="btn btn-error"
+              onclick={() => setIsClearModalOpen(true)}
+            >
+              Clear Cart
+            </button>
+            <Link href="/checkout" class="btn btn-primary">
+              Checkout
+            </Link>
           </div>
         </Show>
       </section>
@@ -110,12 +147,23 @@ const Cart: Component = () => {
         description={`Are you sure you want to clear your cart?`}
         actions={
           <>
-            <button class="btn" onclick={() => setIsClearModalOpen(false)}>Cancel</button>
-            <button class="btn btn-error" onclick={() => { resetCart(); setIsClearModalOpen(false); }}>Yes</button>
+            <button class="btn" onclick={() => setIsClearModalOpen(false)}>
+              Cancel
+            </button>
+            <button
+              class="btn btn-error"
+              onclick={() => {
+                resetCart();
+                setIsClearModalOpen(false);
+              }}
+            >
+              Yes
+            </button>
           </>
-        } />
+        }
+      />
     </DefaultLayout>
-  )
-}
+  );
+};
 
-export default Cart
+export default Cart;

@@ -1,4 +1,4 @@
-import type { OutputData } from "@editorjs/editorjs"
+import type { OutputData } from "@editorjs/editorjs";
 
 export class Product {
   constructor(
@@ -14,11 +14,11 @@ export class Product {
     public images: ProductImage[] = [],
     public stock: number = 1,
     public weight: number = 0,
-    public meta: any = {}
-  ) { }
+    public meta: any = {},
+  ) {}
 }
 
-type ProductImage = { alt: string, src: string, bg?: string }
+type ProductImage = { alt: string; src: string; bg?: string };
 
 export type ProductPrice = {
   currency: string;
@@ -26,12 +26,13 @@ export type ProductPrice = {
   saleAmount?: number;
 
   // for subscriptions
+  id?: number;
   planName?: string;
-  prices?: PlanPrice[]
-  features?: PlanFeature[]
-  addons?: Addon[]
-  configId: number
-}
+  prices?: PlanPrice[];
+  features?: PlanFeature[];
+  addons?: Addon[];
+  configId: number;
+};
 
 export type PlanPrice = {
   priceId: string;
@@ -40,31 +41,31 @@ export type PlanPrice = {
   currency: string;
   amount: number;
   saleAmount?: number;
-}
+};
 
 type PlanFeature = {
-  text: string
-  html: string
-  description?: string
-}
+  text: string;
+  html: string;
+  description?: string;
+};
 
 export enum ProductType {
-  Physical = 'Physical',
-  OnlineService = 'OnlineService'
+  Physical = "Physical",
+  OnlineService = "OnlineService",
 }
 
 export type Addon = {
-  id: string
-  description: string
-  prices: PlanPrice[]
-}
+  id: string;
+  description: string;
+  prices: PlanPrice[];
+};
 
 export class Category {
   constructor(
     public id: number = -1,
     public title: string = "",
-    public slug: string = ""
-  ) { }
+    public slug: string = "",
+  ) {}
 }
 
 export class User {
@@ -75,22 +76,22 @@ export class User {
     public email: string,
     public createdAt: string,
     public updatedAt: string,
-    public profile?: Profile
-  ) { }
+    public profile?: Profile,
+  ) {}
 
   static fullName(user: User) {
-    const { firstName, lastName } = user
+    const { firstName, lastName } = user;
     if (firstName && lastName) {
-      return `${firstName} ${lastName}`
+      return `${firstName} ${lastName}`;
     }
-    return firstName || lastName
+    return firstName || lastName;
   }
 }
 
 export type Profile = {
-  preferredTheme: string
-  stripeCustomerId: string
-}
+  preferredTheme: string;
+  stripeCustomerId: string;
+};
 
 export class Order {
   constructor(
@@ -128,30 +129,36 @@ export class Order {
     public shipping: ShippingMethod & { amount: string },
     public taxes: any[],
     public amount: number,
-  ) { }
+  ) {}
 
   static searchStr(order: Order) {
-    return order.billingFirstName + " " + order.billingLastName + " " + order.billingEmail
+    return (
+      order.billingFirstName +
+      " " +
+      order.billingLastName +
+      " " +
+      order.billingEmail
+    );
   }
 }
 
 export type ShippingMethod = {
-  id: number
-  name: string
-  description: string
-  cost: number
-}
+  id: number;
+  name: string;
+  description: string;
+  cost: number;
+};
 
 export type OrderItem = {
-  priceId?: string
+  priceId?: string;
   product: {
-    id: number
-    name: string
-    prices: ProductPrice[]
-    productType: ProductType
-  }
-  quantity: number
-}
+    id: number;
+    name: string;
+    prices: ProductPrice[];
+    productType: ProductType;
+  };
+  quantity: number;
+};
 
 export type CouponCode = {
   id?: number;
@@ -161,22 +168,22 @@ export type CouponCode = {
   type: CouponType;
   flatDiscount: string; // Type Decimal is returned as string from backend
   percentageDiscount: number;
-  active: boolean
-  isPrivate: boolean
-  maxUses?: number
+  active: boolean;
+  isPrivate: boolean;
+  maxUses?: number;
 
-  startsAt: string | Date | null
-  expiresAt: string | Date | null
+  startsAt: string | Date | null;
+  expiresAt: string | Date | null;
 
-  products: Product[] // limit usage to these products
+  products: Product[]; // limit usage to these products
 
-  createdAt?: string
-  updatedAt?: string
-}
+  createdAt?: string;
+  updatedAt?: string;
+};
 
 export enum CouponType {
-  Flat = 'Flat',
-  Percentage = 'Percentage'
+  Flat = "Flat",
+  Percentage = "Percentage",
 }
 
 export const defaultCouponCode: CouponCode = {
@@ -189,37 +196,39 @@ export const defaultCouponCode: CouponCode = {
   isPrivate: false,
   startsAt: null,
   expiresAt: null,
-  products: []
-}
+  products: [],
+};
 
-export type CreateCouponCode = Omit<CouponCode, 'products'> & {
-  products: number[]
-  oldProducts: number[]
-}
+export type CreateCouponCode = Omit<CouponCode, "products"> & {
+  products: number[];
+  oldProducts: number[];
+};
 
 export enum OrderStatus {
-  Pending = 'Pending',
-  Paid = 'Paid',
-  Shipped = 'Shipped',
-  Completed = 'Completed',
-  OnHold = 'OnHold',
-  Cancelled = 'Cancelled',
+  Pending = "Pending",
+  Paid = "Paid",
+  Shipped = "Shipped",
+  Completed = "Completed",
+  OnHold = "OnHold",
+  Cancelled = "Cancelled",
 }
 
-export type Option = { key: string; value: string }
+export type Option = { key: string; value: string };
 
 export type Paginated<T> = {
-  data: T[],
-  total: number
-}
+  data: T[];
+  total: number;
+};
 
 // TODO put this in proper place
 declare global {
   interface Date {
-    toLocaleISOString(): string
+    toLocaleISOString(): string;
   }
 }
 
 Date.prototype.toLocaleISOString = function (): string {
-  return new Date(this.getTime() - this.getTimezoneOffset() * 1000 * 60).toISOString().replace('Z', '');
+  return new Date(this.getTime() - this.getTimezoneOffset() * 1000 * 60)
+    .toISOString()
+    .replace("Z", "");
 };

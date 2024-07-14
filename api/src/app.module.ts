@@ -30,6 +30,7 @@ import { ConfigsModule } from './modules/configs.module';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+      // envFilePath: [process.env.NODE_ENV === 'test' ? '.env.test' : '.env'],
     }),
     PrismaModule,
     EventEmitterModule.forRoot(),
@@ -41,14 +42,14 @@ import { ConfigsModule } from './modules/configs.module';
       //   host: 'localhost',
       //   port: 6379,
       // },
-      defaultJobOptions:{
+      defaultJobOptions: {
         attempts: 5,
-        backoff: 1 * 60 * 1000 // retry after X ms
-      }
+        backoff: 1 * 60 * 1000, // retry after X ms
+      },
     }),
     BullBoardModule.forRoot({
       route: '/queues',
-      adapter: ExpressAdapter
+      adapter: ExpressAdapter,
     }),
 
     AuthModule,
@@ -64,9 +65,9 @@ import { ConfigsModule } from './modules/configs.module';
     NotificationsModule,
     UsersModule,
     OptionsModule,
-    StatsModule
+    StatsModule,
   ],
   controllers: [AppController, PublicController],
   providers: [AppService],
 })
-export class AppModule { }
+export class AppModule {}

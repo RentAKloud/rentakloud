@@ -105,7 +105,7 @@ const LandingMixed: Component = () => {
         </div>
 
         <div class="flex-1">
-          <img class="h-[500px] w-full object-contain" src="https://cdn.rentakloud.com/images/rak-rack.jpeg" />
+          <img class="h-[500px] w-full object-contain" src="https://cdn.rentakloud.com/images/rak-rack.webp" />
         </div>
       </section>
 
@@ -139,7 +139,7 @@ const LandingMixed: Component = () => {
 
       <section class="bg-base-200 flex flex-col md:flex-row py-10">
         <div class="flex-1">
-          <img class="h-[500px] w-full object-contain" src="https://cdn.rentakloud.com/images/rak-server-inside.jpeg" loading="lazy" />
+          <img class="h-[500px] w-full object-contain" src="https://cdn.rentakloud.com/images/rak-server-inside.webp" loading="lazy" />
         </div>
 
         <div class="flex flex-col justify-center flex-1 p-10">

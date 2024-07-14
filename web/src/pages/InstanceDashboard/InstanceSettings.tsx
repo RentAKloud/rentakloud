@@ -1,4 +1,4 @@
-import { useParams } from "@solidjs/router";
+import { useNavigate, useParams } from "@solidjs/router";
 import { Component, createSignal } from "solid-js";
 import Modal from "~/components/Modal";
 import { NotificationService } from "~/services/NotificationService";
@@ -7,28 +7,33 @@ import { InstanceAddonKey } from "~/types/instance";
 import InstancesApi from "~/api/instances";
 
 const InstanceSettings: Component = () => {
-  const { id } = useParams()
-  const { instance } = useInstanceContext()
+  const { id } = useParams();
+  const { instance } = useInstanceContext();
+  const navigate = useNavigate();
 
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = createSignal<boolean>(false)
+  const [isDeleteModalOpen, setIsDeleteModalOpen] =
+    createSignal<boolean>(false);
   async function deleteActiveProduct(id: string) {
     try {
-      await InstancesApi.delete(id)
-      setIsDeleteModalOpen(false)
+      const { error } = await InstancesApi.delete(id);
+      setIsDeleteModalOpen(false);
+      if (!error) {
+        navigate("/dashboard/instances");
+      }
     } catch (err) {
-      NotificationService.error("Could not delete. Please try again or contact support.")
+      NotificationService.error(
+        "Could not delete. Please try again or contact support.",
+      );
     }
   }
 
   async function updateAddon(id: InstanceAddonKey, quantity: number) {
-    const addons = instance.latest?.addons || []
-    const i = addons?.findIndex(a => a.id === id)
+    const addons = instance.latest?.addons || [];
+    const i = addons?.findIndex((a) => a.id === id);
     if (i >= 0) {
-      addons[i].quantity = quantity
-    } else[
-      addons.push({ id, quantity })
-    ]
-    InstancesApi.update(instance.latest?.id!, { addons })
+      addons[i].quantity = quantity;
+    } else [addons.push({ id, quantity })];
+    InstancesApi.update(instance.latest?.id!, { addons });
   }
 
   return (
@@ -41,10 +46,14 @@ const InstanceSettings: Component = () => {
             <span class="label-text">Title</span>
           </label>
           <input
-            type="text" placeholder="eg. My Office Workspace" class="input input-bordered input-primary"
+            type="text"
+            placeholder="eg. My Office Workspace"
+            class="input input-bordered input-primary"
             value={instance.latest?.title}
             oninput={(e) => {
-              InstancesApi.update(instance.latest?.id!, { title: e.currentTarget.value })
+              InstancesApi.update(instance.latest?.id!, {
+                title: e.currentTarget.value,
+              });
             }}
           />
         </div>
@@ -53,8 +62,9 @@ const InstanceSettings: Component = () => {
       <section class="mb-10">
         <h3 class="text-3xl font-bold mb-2">Add-ons</h3>
         <p class="mb-6">
-          Additional resources for your growing needs. Configure your instance as you like.
-          Charges for extra resources will be adjusted in your next invoice.
+          Additional resources for your growing needs. Configure your instance
+          as you like. Charges for extra resources will be adjusted in your next
+          invoice.
         </p>
 
         <div class="w-96">
@@ -64,9 +74,16 @@ const InstanceSettings: Component = () => {
             </div>
 
             <div class="form-control flex-1">
-              <input type="range" min="0" max="4"
-                value={instance.latest?.addons.find(i => i.id === "cpu")?.quantity || 0}
-                class="range range-accent" step="1"
+              <input
+                type="range"
+                min="0"
+                max="4"
+                value={
+                  instance.latest?.addons.find((i) => i.id === "cpu")
+                    ?.quantity || 0
+                }
+                class="range range-accent"
+                step="1"
                 onchange={(e) => updateAddon("cpu", +e.currentTarget.value)}
               />
               <div class="w-full flex justify-between text-xs px-2">
@@ -85,9 +102,16 @@ const InstanceSettings: Component = () => {
             </div>
 
             <div class="form-control flex-1">
-              <input type="range" min="0" max="4"
-                value={instance.latest?.addons.find(i => i.id === "ram")?.quantity || 0}
-                class="range range-info" step="1"
+              <input
+                type="range"
+                min="0"
+                max="4"
+                value={
+                  instance.latest?.addons.find((i) => i.id === "ram")
+                    ?.quantity || 0
+                }
+                class="range range-info"
+                step="1"
                 onchange={(e) => updateAddon("ram", +e.currentTarget.value)}
               />
               <div class="w-full flex justify-between text-xs px-2">
@@ -106,9 +130,16 @@ const InstanceSettings: Component = () => {
             </div>
 
             <div class="form-control flex-1">
-              <input type="range" min="0" max="4"
-                value={instance.latest?.addons.find(i => i.id === "ssd")?.quantity || 0}
-                class="range range-secondary" step="1"
+              <input
+                type="range"
+                min="0"
+                max="4"
+                value={
+                  instance.latest?.addons.find((i) => i.id === "ssd")
+                    ?.quantity || 0
+                }
+                class="range range-secondary"
+                step="1"
                 oninput={(e) => updateAddon("ssd", +e.currentTarget.value)}
               />
               <div class="w-full flex justify-between text-xs px-2">
@@ -127,9 +158,16 @@ const InstanceSettings: Component = () => {
             </div>
 
             <div class="form-control flex-1">
-              <input type="range" min="0" max="4"
-                value={instance.latest?.addons.find(i => i.id === "hdd")?.quantity || 0}
-                class="range range-secondary" step="1"
+              <input
+                type="range"
+                min="0"
+                max="4"
+                value={
+                  instance.latest?.addons.find((i) => i.id === "hdd")
+                    ?.quantity || 0
+                }
+                class="range range-secondary"
+                step="1"
                 oninput={(e) => updateAddon("hdd", +e.currentTarget.value)}
               />
               <div class="w-full flex justify-between text-xs px-2">
@@ -150,10 +188,18 @@ const InstanceSettings: Component = () => {
         <div class="flex gap-10 items-center">
           <div>
             <h4 class="font-bold">Delete?</h4>
-            <p>This will permanently delete this VM instance, cancel its associated subscription, and all associated data will be lost.</p>
+            <p>
+              This will permanently delete this VM instance, cancel its
+              associated subscription, and all associated data will be lost.
+            </p>
           </div>
 
-          <button class="btn btn-error" onclick={() => setIsDeleteModalOpen(true)}>Delete</button>
+          <button
+            class="btn btn-error"
+            onclick={() => setIsDeleteModalOpen(true)}
+          >
+            Delete
+          </button>
         </div>
       </section>
 
@@ -164,12 +210,20 @@ const InstanceSettings: Component = () => {
         description={`Are you sure you want to delete this?`}
         actions={
           <>
-            <button class="btn" onclick={() => setIsDeleteModalOpen(false)}>Cancel</button>
-            <button class="btn btn-error" onclick={() => deleteActiveProduct(id)}>Yes</button>
+            <button class="btn" onclick={() => setIsDeleteModalOpen(false)}>
+              Cancel
+            </button>
+            <button
+              class="btn btn-error"
+              onclick={() => deleteActiveProduct(id)}
+            >
+              Yes
+            </button>
           </>
-        } />
+        }
+      />
     </>
-  )
-}
+  );
+};
 
-export default InstanceSettings
+export default InstanceSettings;

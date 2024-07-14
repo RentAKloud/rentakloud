@@ -2,15 +2,21 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  const configService = app.get(ConfigService);
+
   app.enableCors({
     origin: [
-      "http://localhost:3001", "http://localhost:5173",
-      "https://rentakloud.com", "https://admin.rentakloud.com"
-    ]
-  })
+      'http://localhost:3001',
+      'http://localhost:5173',
+      'https://rentakloud.com',
+      'https://admin.rentakloud.com',
+    ],
+  });
+
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
 
   const swaggerConfig = new DocumentBuilder()
@@ -22,6 +28,7 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, swaggerConfig);
   SwaggerModule.setup('docs', app, document);
 
-  await app.listen(3000);
+  const PORT = configService.get('PORT');
+  await app.listen(PORT);
 }
 bootstrap();

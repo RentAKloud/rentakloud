@@ -1,21 +1,20 @@
-
 export type Product = {
   id: number;
   name: string;
   slug: string;
   shortDescription: string;
   description: string;
-  contentAfterPrice?: string
+  contentAfterPrice?: string;
   categories: ProductCategory[];
-  prices?: ProductPrice[]
-  stock: number
-  images: ProductImage[]
+  prices?: ProductPrice[];
+  stock: number;
+  images: ProductImage[];
   productType: ProductType;
-  weight: number
-  meta: any
-}
+  weight: number;
+  meta: any;
+};
 
-type ProductImage = { alt: string, src: string, bg?: string }
+type ProductImage = { alt: string; src: string; bg?: string };
 
 export type ProductPrice = {
   currency: string;
@@ -23,48 +22,57 @@ export type ProductPrice = {
   saleAmount?: number;
 
   // for subscriptions
+  id?: number;
   planName?: string;
-  prices?: PlanPrice[]
-  features?: PlanFeature[]
-  configId: number
-}
+  prices?: PlanPrice[];
+  features?: PlanFeature[];
+  configId: number;
+};
 
 export type PlanFeature = {
-  text: string
-  html: string
-  description?: string
-}
+  text: string;
+  html: string;
+  description?: string;
+};
 
 export type PlanPrice = {
-  priceId: string
-  interval: "month" | "year"
-  intervalCount?: string
-  currency: string
-  amount: number
-  saleAmount?: number
-}
+  priceId: string;
+  interval: "month" | "year";
+  intervalCount?: string;
+  currency: string;
+  amount: number;
+  saleAmount?: number;
+};
 
 export enum ProductType {
-  Physical = 'Physical',
-  OnlineService = 'OnlineService'
+  Physical = "Physical",
+  OnlineService = "OnlineService",
 }
 
 export type ProductCategory = {
   id?: number;
   title: string;
   slug: string;
-}
+};
 
-export const productCategories: ProductCategory[] = ["Hardware", "Databases", "ERP", "CRM", "CMS", "Ecommerce", "Message Queueing"].map(c => ({
-  slug: c.toLowerCase().replaceAll(' ', '-'),
+export const productCategories: ProductCategory[] = [
+  "Hardware",
+  "Databases",
+  "ERP",
+  "CRM",
+  "CMS",
+  "Ecommerce",
+  "Message Queueing",
+].map((c) => ({
+  slug: c.toLowerCase().replaceAll(" ", "-"),
   title: c,
-}))
+}));
 
 export type CartItem = {
   productId: number;
   quantity: number;
+  planId?: number;
   priceId?: string;
-  isTrial?: boolean
-  configId?: number
-}
-
+  isTrial?: boolean;
+  configId?: number;
+};

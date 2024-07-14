@@ -1,8 +1,15 @@
-import { ProductType, ShippingMethod } from "@prisma/client";
-import { Type } from "class-transformer";
-import { ArrayMinSize, IsArray, IsEmail, IsNotEmpty, IsPhoneNumber, ValidateNested } from "class-validator";
-import { Price } from "./product.dto";
-import { Plan } from "./instances.dto";
+import { ProductType, ShippingMethod } from '@prisma/client';
+import { Type } from 'class-transformer';
+import {
+  ArrayMinSize,
+  IsArray,
+  IsEmail,
+  IsNotEmpty,
+  IsPhoneNumber,
+  ValidateNested,
+} from 'class-validator';
+import { Price } from './product.dto';
+import { Plan } from './instances.dto';
 
 class Address {
   @IsNotEmpty()
@@ -46,26 +53,30 @@ export class CreateOrderReq {
   orderNotes: string;
   shippingSameAsBilling: boolean;
 
-  shippingMethod: ShippingMethod
+  shippingMethod: ShippingMethod;
 
   @IsArray()
   @ArrayMinSize(1)
   items: CartItem[];
 
   @IsArray()
-  couponCodes: { id: number }[]
+  couponCodes: { id: number }[];
 }
 
 export type OrderItem = {
   product: {
-    id: number
-    name: string
-    prices: (Price & Plan)[]
-    productType: ProductType
-  }
-  priceId?: string
-  quantity: number
-  isTrial?: boolean
-}
+    id: number;
+    name: string;
+    prices: (Price & Plan)[];
+    productType: ProductType;
+  };
+  planId?: number;
+  priceId?: string;
+  quantity: number;
+  isTrial?: boolean;
+};
 
-export type CartItem = Omit<OrderItem, 'product'> & { productId: number }
+export type CartItem = Omit<OrderItem, 'product'> & {
+  productId: number;
+  planId?: number;
+};

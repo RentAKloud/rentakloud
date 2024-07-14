@@ -11,6 +11,7 @@ export class UsersController {
   @UseGuards(JwtAuthGuard)
   @Get()
   users() {
+    // TODO should be accessible only to admin/staff
     return this.usersService.users({})
   }
 

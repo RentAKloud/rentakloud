@@ -68,6 +68,9 @@
       if (p.saleAmount) {
         d.saleAmount = +p.saleAmount;
       }
+      if (p.id) {
+        d.id = +p.id;
+      }
       return d;
     });
 
@@ -76,6 +79,8 @@
 
   let isOnlineService: boolean;
   $: isOnlineService = product.productType === ProductType.OnlineService;
+
+  // TODO validate plan.id uniqueness
 </script>
 
 <form
@@ -141,6 +146,7 @@
             (product.prices = [
               ...product.prices,
               {
+                id: product.prices.length + 1,
                 currency: "USD",
                 amount: 0,
                 prices: [

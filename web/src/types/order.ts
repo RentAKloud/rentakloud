@@ -9,14 +9,14 @@ export type Address = {
   firstName: string;
   lastName: string;
   email: string;
-  phone: string
+  phone: string;
   address: string;
   address2: string;
   city: string;
   state: string;
   zip: string;
   country: string;
-}
+};
 
 export type Order = {
   id: number;
@@ -45,8 +45,8 @@ export type Order = {
 
   items: OrderItem[];
   coupons: CouponCode[];
-  shipping: ShippingMethod & { amount: string }
-  taxes: (Omit<Tax, 'amount'> & { amount: string })[]
+  shipping: ShippingMethod & { amount: string };
+  taxes: (Omit<Tax, "amount"> & { amount: string })[];
   status: OrderStatus;
   notes: string;
 
@@ -54,18 +54,19 @@ export type Order = {
   updatedAt: string;
 
   amount: number; // does not includes subscriptions total in create response
-}
+};
 
 export type OrderItem = {
-  priceId?: string
+  planId?: number;
+  priceId?: string;
   product: {
-    id: number
-    name: string
-    prices: ProductPrice[]
-    productType: ProductType
-  }
-  quantity: number
-}
+    id: number;
+    name: string;
+    prices: ProductPrice[];
+    productType: ProductType;
+  };
+  quantity: number;
+};
 
 export type CouponCode = {
   id: number;
@@ -75,71 +76,78 @@ export type CouponCode = {
   type: CouponType;
   flatDiscount: string; // Type Decimal is returned as string from backend
   percentageDiscount: number;
-  products: Product[] // to limit coupon usage to specific products
-}
+  products: Product[]; // to limit coupon usage to specific products
+};
 
 export enum CouponType {
-  Flat = 'Flat',
-  Percentage = 'Percentage'
+  Flat = "Flat",
+  Percentage = "Percentage",
 }
 
 export enum OrderStatus {
-  Pending = 'Pending',
-  Paid = 'Paid',
-  Shipped = 'Shipped',
-  Completed = 'Completed',
-  OnHold = 'OnHold',
-  Cancelled = 'Cancelled',
+  Pending = "Pending",
+  Paid = "Paid",
+  Shipped = "Shipped",
+  Completed = "Completed",
+  OnHold = "OnHold",
+  Cancelled = "Cancelled",
 }
 
 export const defaultAddress: Address = {
-  firstName: "", lastName: "", email: "", phone: "",
-  address: "", address2: "", city: "", state: "",
-  zip: "", country: ""
-}
+  firstName: "",
+  lastName: "",
+  email: "",
+  phone: "",
+  address: "",
+  address2: "",
+  city: "",
+  state: "",
+  zip: "",
+  country: "",
+};
 
 export type OrderStore = {
   billingAddress: Address;
   shippingAddress: Address;
   orderNotes: string;
   couponCodes: CouponCode[];
-  taxes: Tax[]
-  shippingMethod: ShippingMethod | null
-}
+  taxes: Tax[];
+  shippingMethod: ShippingMethod | null;
+};
 
 export type Tax = {
-  title: string
-  amount: number
-  rate: number
-}
+  title: string;
+  amount: number;
+  rate: number;
+};
 
 export type ShippingMethod = {
-  id: number
-  name: string
-  description: string
-  cost: number
-}
+  id: number;
+  name: string;
+  description: string;
+  cost: number;
+};
 
-export type CheckoutSteps = "address" | "shipping" | "payment" | "congrats"
+export type CheckoutSteps = "address" | "shipping" | "payment" | "congrats";
 export type Step = {
-  next?: CheckoutSteps
-  previous?: CheckoutSteps
-}
+  next?: CheckoutSteps;
+  previous?: CheckoutSteps;
+};
 
 export type CheckoutContextProps = {
-  isContinuingOrder: () => boolean
-  hasPhysical: () => boolean
-  order: Accessor<Order | undefined>
-  inReview: Accessor<boolean>
-  setInReview: Setter<boolean>
+  isContinuingOrder: () => boolean;
+  hasPhysical: () => boolean;
+  order: Accessor<Order | undefined>;
+  inReview: Accessor<boolean>;
+  setInReview: Setter<boolean>;
   step: () => CheckoutSteps;
   setStep: (step: CheckoutSteps) => void;
   shippingSameAsBilling: Accessor<boolean>;
   setShippingSameAsBilling: Setter<boolean>;
   orderStore: OrderStore;
-  countryOptions: Resource<SelectOption[]>
-  stateOptionsBilling: Resource<SelectOption[] | null>
-  stateOptionsShipping: Resource<SelectOption[] | null>
+  countryOptions: Resource<SelectOption[]>;
+  stateOptionsBilling: Resource<SelectOption[] | null>;
+  stateOptionsShipping: Resource<SelectOption[] | null>;
   availableShippingMethods: Accessor<ShippingMethod[]>;
   updateBilling: (key: Part<Address, keyof Address>, val: string) => void;
   updateShipping: (key: Part<Address, keyof Address>, val: string) => void;
@@ -152,13 +160,13 @@ export type CheckoutContextProps = {
   subClientSecrets: Accessor<string[] | undefined>;
   setPaymentSuccess: Setter<boolean>;
   setSubscriptionsPaid: Setter<boolean>;
-  isCardInfoComplete: Accessor<boolean>
-  setIsCardInfoComplete: Setter<boolean>
+  isCardInfoComplete: Accessor<boolean>;
+  setIsCardInfoComplete: Setter<boolean>;
   submit: () => void;
   inTransit: Accessor<boolean>;
   setInTransit: Setter<boolean>;
   formErrors: Accessor<string[]>;
-}
+};
 
 export const defaultCheckout: CheckoutContextProps = {
   isContinuingOrder: () => false,
@@ -166,21 +174,21 @@ export const defaultCheckout: CheckoutContextProps = {
   inReview: () => false,
   setInReview: (val: any) => val,
   step: () => "address",
-  setStep(step) { },
+  setStep(step) {},
   shippingSameAsBilling: () => true,
   setShippingSameAsBilling: (val: any) => val,
-  updateBilling() { },
-  updateShipping() { },
-  updateShippingMethod() { },
-  updateNotes() { },
-  updateCoupons() { },
+  updateBilling() {},
+  updateShipping() {},
+  updateShippingMethod() {},
+  updateNotes() {},
+  updateCoupons() {},
   orderStore: {
     billingAddress: defaultAddress,
     shippingAddress: defaultAddress,
     orderNotes: "",
     couponCodes: [],
     taxes: [],
-    shippingMethod: null
+    shippingMethod: null,
   },
   // TODO fix types for default value of Resource
   //@ts-ignore
@@ -197,11 +205,14 @@ export const defaultCheckout: CheckoutContextProps = {
   setSubscriptionsPaid: (val: any) => val,
   isCardInfoComplete: () => false,
   setIsCardInfoComplete: (val: any) => val,
-  submit() { },
+  submit() {},
   inTransit: () => false,
   setInTransit: (val: any) => val,
   formErrors: () => [],
-}
+};
 
-export type OrderRequest = OrderStore & { items: CartItem[], shippingSameAsBilling: boolean }
-export type OrderResponse = Order & { amount: number }
+export type OrderRequest = OrderStore & {
+  items: CartItem[];
+  shippingSameAsBilling: boolean;
+};
+export type OrderResponse = Order & { amount: number };

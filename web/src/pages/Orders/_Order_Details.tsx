@@ -19,42 +19,48 @@ const OrderDetails: Component<{ order: Order }> = (props) => {
       <tbody>
         <For each={props.order.items} fallback={"This order seems empty."}>
           {(item, i) => {
-            const product = item.product
-            const { interval, formattedPrice, formattedTotal } = orderItemDisplayData(item)
+            const product = item.product;
+            const { interval, formattedPrice, formattedTotal } =
+              orderItemDisplayData(item);
 
             return (
               <tr>
                 <td>{i() + 1}</td>
-                <td>{product.name} <Show when={interval}><span innerHTML={interval} /></Show></td>
+                <td>
+                  {product.name}{" "}
+                  <Show when={interval}>
+                    <span innerHTML={interval} />
+                  </Show>
+                </td>
                 <td>{formattedPrice}</td>
                 <td>{item.quantity}</td>
                 <td>{formattedTotal}</td>
               </tr>
-            )
+            );
           }}
         </For>
       </tbody>
     </table>
-  )
-}
+  );
+};
 
 export function orderItemDisplayData(item: OrderItem) {
-  const price = () => getProductPrice(item.product)
-  const planPrice = item.priceId ? getPlanPrice(price(), item.priceId) : null
-  const interval = planPrice ? ` - ${price().planName} ${planPrice.interval}ly` : ""
-  const formattedPrice = formatPrice(price().saleAmount || price().amount || planPrice!.amount)
+  const price = () => getProductPrice(item.product);
+  const planPrice = item.priceId ? getPlanPrice(price(), item.priceId) : null;
+  const interval = planPrice
+    ? ` - ${price().planName} ${planPrice.interval}ly`
+    : "";
+  const formattedPrice = formatPrice(
+    price().saleAmount || price().amount || planPrice!.amount,
+  );
   const formattedTotal = formatPrice(
-    (
-      price().saleAmount ||
-      price().amount ||
-      planPrice!.amount
-    ) * item.quantity
-  )
+    (price().saleAmount || price().amount || planPrice!.amount) * item.quantity,
+  );
   return {
     interval,
     formattedPrice,
-    formattedTotal
-  }
+    formattedTotal,
+  };
 }
 
-export default OrderDetails
+export default OrderDetails;

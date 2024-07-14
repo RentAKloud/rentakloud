@@ -8,7 +8,7 @@ type FormInputType = {
   placeholder?: string;
   type?: string;
   min?: number;
-  max?: number
+  max?: number;
   error?: string;
 
   ref?: (element: HTMLInputElement) => void;
@@ -16,16 +16,13 @@ type FormInputType = {
   onChange?: JSX.EventHandler<HTMLInputElement, Event>;
   onBlur?: JSX.EventHandler<HTMLInputElement, FocusEvent>;
 
-  inputClass?: string
-  required?: boolean
-  disabled?: boolean
-}
+  inputClass?: string;
+  required?: boolean;
+  disabled?: boolean;
+};
 
 const TextInput: Component<FormInputType> = (props) => {
-  const {
-    label,
-    placeholder,
-  } = props
+  const { label, placeholder } = props;
 
   return (
     <div class="form-control flex-1">
@@ -39,9 +36,9 @@ const TextInput: Component<FormInputType> = (props) => {
         {...props}
         placeholder={placeholder}
         value={props.value}
-        class={`input input-bordered ${props.inputClass || ''} placeholder:text-slate-500`}
+        class={`input input-bordered ${props.inputClass || ""} placeholder:text-slate-500 w-full`}
         classList={{
-          "input-error": !!props.error
+          "input-error": !!props.error,
         }}
         min={props.min}
         aria-invalid={!!props.error}
@@ -55,7 +52,7 @@ const TextInput: Component<FormInputType> = (props) => {
         </label>
       </Show>
     </div>
-  )
-}
+  );
+};
 
-export default TextInput
+export default TextInput;
