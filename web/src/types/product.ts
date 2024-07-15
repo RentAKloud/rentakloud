@@ -11,8 +11,15 @@ export type Product = {
   images: ProductImage[];
   productType: ProductType;
   weight: number;
-  meta: any;
+  meta: ProductMeta;
 };
+
+type ProductMeta = Object & {
+  tags: ProductTag[];
+  order: number;
+};
+
+type ProductTag = "featured" | "primary-nav" | "footer";
 
 type ProductImage = { alt: string; src: string; bg?: string };
 

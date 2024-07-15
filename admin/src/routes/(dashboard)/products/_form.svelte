@@ -74,6 +74,8 @@
       return d;
     });
 
+    data.meta.order = +data.meta.order;
+
     onSubmit(data);
   }
 
@@ -229,6 +231,22 @@
     {#if isOnlineService}
       <Meta {product} />
     {/if}
+
+    <div class="mb-6">
+      <Label for="tags" class="block mb-2">Tags</Label>
+      <MultiSelect
+        id="tags"
+        items={[
+          { name: "Featured", value: "featured" },
+          { name: "Primary Navigation Menu", value: "primary-nav" },
+          { name: "Footer", value: "footer" },
+        ]}
+        bind:value={product.meta.tags}
+      />
+
+      <Label for="order" class="block mb-2">Order</Label>
+      <Input id="order" type="number" min="0" bind:value={product.meta.order} />
+    </div>
   </section>
 
   <section>
