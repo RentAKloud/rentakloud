@@ -63,6 +63,7 @@
       <Checkbox />
     </TableHeadCell>
     <TableHeadCell>ID</TableHeadCell>
+    <TableHeadCell>User ID</TableHeadCell>
     <TableHeadCell>Display name</TableHeadCell>
     <TableHeadCell>Config</TableHeadCell>
     <TableHeadCell>Status</TableHeadCell>
@@ -78,8 +79,21 @@
           <Checkbox />
         </TableBodyCell>
         <TableBodyCell>{item.id} (vm{item.vmId})</TableBodyCell>
+        <TableBodyCell>
+          <a
+            href={`/users/${item.userId}`}
+            class="font-medium text-primary-600 hover:underline dark:text-primary-500"
+            >{item.userId}</a
+          >
+        </TableBodyCell>
         <TableBodyCell>{item.title}</TableBodyCell>
-        <TableBodyCell><a href="/configs/{item.configId}">{item.configId}</a></TableBodyCell>
+        <TableBodyCell>
+          <a
+            href="/configs/{item.configId}"
+            class="font-medium text-primary-600 hover:underline dark:text-primary-500"
+            >{item.configId}</a
+          >
+        </TableBodyCell>
         <TableBodyCell>{item.status}</TableBodyCell>
         <TableBodyCell>{item.vncPath}</TableBodyCell>
         <TableBodyCell tdClass="flex gap-4 items-center py-4">

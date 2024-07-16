@@ -160,6 +160,7 @@ const GridView: Component<{ instances: Instance[]; refetch: Function }> = (
                   <Link
                     href={`/instances/${instance.id}`}
                     class="link link-hover"
+                    title={`${instance.vmId}`}
                   >
                     {instance.title || instance.subscription.product.name}
                   </Link>
