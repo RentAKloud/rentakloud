@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { PrismaModule } from './modules/prisma.module';
 import { AppService } from './app.service';
@@ -36,16 +36,21 @@ import { ConfigsModule } from './modules/configs.module';
     EventEmitterModule.forRoot(),
     MailModule,
     PrometheusModule.register(),
-    BullModule.forRoot({
-      // we use valkey instead of redis
-      // redis: {
-      //   host: 'localhost',
-      //   port: 6379,
-      // },
-      defaultJobOptions: {
-        attempts: 5,
-        backoff: 1 * 60 * 1000, // retry after X ms
-      },
+    BullModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: async (config: ConfigService) => ({
+        // we use valkey instead of redis
+        redis: {
+          // host: 'localhost',
+          // port: 6379,
+          password: config.get('VALKEY_PASSWORD'),
+        },
+        defaultJobOptions: {
+          attempts: 5,
+          backoff: 1 * 60 * 1000, // retry after X ms
+        },
+      }),
     }),
     BullBoardModule.forRoot({
       route: '/queues',

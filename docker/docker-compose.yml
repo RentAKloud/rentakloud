@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 name: rentakloud-runtime
 
 services:
@@ -23,10 +23,14 @@ services:
 
   # opensource alternative for redis
   valkey:
-    image: valkey/valkey
+    image: bitnami/valkey
     restart: unless-stopped
     ports:
       - 6379:6379
+    environment:
+      VALKEY_PASSWORD: ${VALKEY_PASSWORD}
+    volumes:
+      - valkey-data:/bitnami/valkey/data
 
   # Monitoring Uptime & Public Status Pages
   uptime-kuma:
@@ -42,3 +46,4 @@ services:
 volumes:
   pg-data:
   uptime-kuma:
+  valkey-data:

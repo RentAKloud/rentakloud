@@ -9,7 +9,7 @@ docker compose --env-file ../api/.env up -d
 
 ## Production
 
-In product use the following:
+In production use the following:
 
 ```
 cd docker/
