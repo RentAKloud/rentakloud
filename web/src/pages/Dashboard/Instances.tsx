@@ -184,7 +184,7 @@ const GridView: Component<{ instances: Instance[]; refetch: Function }> = (
                 </div>
               }
               actionsAlign="left"
-              class={
+              bgClass={
                 isNew
                   ? "from-primary/20 to-primary/0 hover:to-primary/5 to-60% [background-image:linear-gradient(-35deg,var(--tw-gradient-stops))]"
                   : ""

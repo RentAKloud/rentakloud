@@ -20,9 +20,11 @@ const Card: Component<CardProps> = (props) => {
       }}
     >
       <div
-        class="z-0 rounded-2xl bg-base-100 h-full bg-cover"
+        class={`z-0 rounded-2xl h-full bg-cover bg-base-100 ${props.bgClass || ""}`}
         style={{
-          "background-image": props.bgImg ? `url(${props.bgImg})` : "none",
+          [props.bgImg ? "background-image" : ""]: props.bgImg
+            ? `url(${props.bgImg})`
+            : "none",
         }}
       >
         <Show when={img}>

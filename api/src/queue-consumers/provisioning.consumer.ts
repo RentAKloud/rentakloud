@@ -18,8 +18,12 @@ export class ProvisioningConsumer {
 
   @Process({ concurrency: 0 })
   async provision(job: Job<ProvisioningJob>) {
-    await this.instancesService.initProvisioning(job.data);
-    job.progress(100);
+    const n = await this.instancesService.initProvisioning(job.data);
+    job.progress(n);
+
+    if (n !== 100) {
+      throw new Error(`job failed at ${n}%`);
+    }
 
     return {};
   }

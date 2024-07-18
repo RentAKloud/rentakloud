@@ -34,6 +34,7 @@ export type CardProps = {
   actions?: JSXElement;
   center?: boolean;
   class?: string;
+  bgClass?: string;
   actionsAlign?: "center" | "left" | "right";
   hasGradientShadow?: boolean;
 };

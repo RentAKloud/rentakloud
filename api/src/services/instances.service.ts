@@ -1,13 +1,24 @@
-import { BadRequestException, Injectable, Logger } from "@nestjs/common";
-import { Config, Prisma, InstanceStatus, Instance, User, Subscription, Product } from "@prisma/client";
-import { PrismaService } from "./prisma.service";
-import { EventEmitter2 } from "@nestjs/event-emitter";
-import { spawn } from "child_process";
-import { CreateInstance, InstancesFindManyQuery } from "src/types/instances.dto";
-import { ConfigService } from "@nestjs/config";
-import { ProvisioningJob } from "src/queue-consumers/provisioning.consumer";
-import { Queue } from "bull";
-import { InjectQueue } from "@nestjs/bull";
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
+import {
+  Config,
+  Prisma,
+  InstanceStatus,
+  Instance,
+  User,
+  Subscription,
+  Product,
+} from '@prisma/client';
+import { PrismaService } from './prisma.service';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { spawn } from 'child_process';
+import {
+  CreateInstance,
+  InstancesFindManyQuery,
+} from 'src/types/instances.dto';
+import { ConfigService } from '@nestjs/config';
+import { ProvisioningJob } from 'src/queue-consumers/provisioning.consumer';
+import { Queue } from 'bull';
+import { InjectQueue } from '@nestjs/bull';
 
 @Injectable()
 export class InstancesService {
@@ -17,8 +28,9 @@ export class InstancesService {
     private prisma: PrismaService,
     private ee: EventEmitter2,
     private readonly config: ConfigService,
-    @InjectQueue('provisioning') private provisioningQueue: Queue<ProvisioningJob>
-  ) { }
+    @InjectQueue('provisioning')
+    private provisioningQueue: Queue<ProvisioningJob>,
+  ) {}
 
   async instances(params: InstancesFindManyQuery) {
     const { skip, take, cursor, where, orderBy } = params;
@@ -36,13 +48,13 @@ export class InstancesService {
                 id: true,
                 slug: true,
                 name: true,
-                images: true
-              }
-            }
-          }
+                images: true,
+              },
+            },
+          },
         },
-      }
-    })
+      },
+    });
   }
 
   async instance(where: Prisma.InstanceWhereUniqueInput) {
@@ -52,13 +64,13 @@ export class InstancesService {
         subscription: {
           include: {
             product: {
-              select: { name: true, images: true }
-            }
-          }
+              select: { name: true, images: true },
+            },
+          },
         },
-        config: true
-      }
-    })
+        config: true,
+      },
+    });
   }
 
   async createInstances(instances: CreateInstance[], userId: number) {
@@ -77,19 +89,19 @@ export class InstancesService {
             subscription: {
               include: {
                 product: {
-                  select: { slug: true }
-                }
-              }
-            }
-          }
-        })
-      )
-    )
+                  select: { slug: true },
+                },
+              },
+            },
+          },
+        }),
+      ),
+    );
 
     _instances.forEach((instance) => {
-      this.ee.emit('instance.created', instance)
-      this.provisioningQueue.add(instance)
-    })
+      this.ee.emit('instance.created', instance);
+      this.provisioningQueue.add(instance);
+    });
   }
 
   async updateInstance(params: {
@@ -97,7 +109,7 @@ export class InstancesService {
     data: Prisma.InstanceUpdateInput;
   }) {
     const { where, data } = params;
-    data.updatedAt = new Date()
+    data.updatedAt = new Date();
 
     const rv = await this.prisma.instance.update({
       data,
@@ -105,163 +117,178 @@ export class InstancesService {
       include: {
         subscription: {
           include: {
-            product: true
-          }
-        }
+            product: true,
+          },
+        },
       },
     });
 
     if (data.addons) {
-      this.ee.emit("instance.addons.updated", rv.subscriptionId, data.addons, rv.subscription.product.prices)
+      this.ee.emit(
+        'instance.addons.updated',
+        rv.subscriptionId,
+        data.addons,
+        rv.subscription.product.prices,
+      );
     }
 
-    return rv
+    return rv;
   }
 
   async deleteInstance(id: string) {
     const result = await this.prisma.instance.delete({
       where: { id },
-      include: { subscription: true }
-    })
+      include: { subscription: true },
+    });
 
-    this.ee.emit("instance.deleted", result)
+    this.ee.emit('instance.deleted', result);
 
-    return result
+    return result;
   }
 
   async count(params: InstancesFindManyQuery) {
-    return this.prisma.instance.count(params)
+    return this.prisma.instance.count(params);
   }
 
   async initIPSecTunnel(vmId: string) {
-    const cmd = `/sbin/ipsec down ${vmId}; /sbin/ipsec up ${vmId}`
-    const { status, output } = await this._script(cmd)
+    const cmd = `/sbin/ipsec down ${vmId}; /sbin/ipsec up ${vmId}`;
+    const { status, output } = await this._script(cmd);
 
-    if (status && output && output.includes("established successfully")) {
-      return true
+    if (status && output && output.includes('established successfully')) {
+      return true;
     } else {
-      return false
+      return false;
     }
   }
 
-  async initProvisioning(instance: Instance & {
-    config: Config, user: User, subscription: Subscription & { product: { slug: string } }
-  }) {
-
+  async initProvisioning(
+    instance: Instance & {
+      config: Config;
+      user: User;
+      subscription: Subscription & { product: { slug: string } };
+    },
+  ): Promise<number> {
     const d = {
-      id: instance.vmId, title: instance.title,
+      id: instance.vmId,
+      title: instance.title,
       cpus: instance.config.cpus,
       ram: instance.config.ram,
       ssd: instance.config.ssd,
       hdd: instance.config.hdd,
-    }
+    };
 
     // Step 1: Save VM info in db.json
-    const K = 1024
-    const vmType = instance.subscription.product.slug === "rak-daas" ? 'w10pro' : 'deb12'
-    const customerId = instance.user.id + 5000
-    const vmId = d.id
+    const K = 1024;
+    const vmType =
+      instance.subscription.product.slug === 'rak-daas' ? 'w10pro' : 'deb12';
+    const customerId = instance.user.id + 5000;
+    const vmId = d.id;
 
-    const cmd1 = `/home/scripts/crvminfo.sh ${vmId} ${customerId} ${d.cpus} ${d.ram * K} ${d.ssd * K} ${vmType}`
-    const { status, output } = await this._script(cmd1)
+    const cmd1 = `/home/scripts/crvminfo.sh ${vmId} ${customerId} ${d.cpus} ${d.ram * K} ${d.ssd * K} ${vmType}`;
+    const { status, output } = await this._script(cmd1);
 
     if (status) {
-      this.logger.debug("1. crvminfo.sh done")
+      this.logger.debug('1. crvminfo.sh done');
     } else {
-      this.logger.error("1. crvminfo failed", output)
-      return
+      this.logger.error('1. crvminfo failed', output);
+      return 0;
     }
 
     /** Step 2: Get provision target server and slot **/
-    const cmd2 = `/home/scripts/getavailslot.sh`
-    const { status: status2, output: output2 } = await this._script(cmd2)
+    const cmd2 = `/home/scripts/getavailslot.sh`;
+    const { status: status2, output: output2 } = await this._script(cmd2);
 
     if (status2) {
-      this.logger.debug("2. getavailslot.sh done")
+      this.logger.debug('2. getavailslot.sh done');
     } else {
-      this.logger.error("2. getavailslot failed")
-      return
+      this.logger.error('2. getavailslot failed');
+      return 25;
     }
 
     // slot is just an index used for ports
-    const [vmHost, hostIp, slot] = output2.split("\n")
+    const [vmHost, hostIp, slot] = output2.split('\n');
 
-    this.updateInstance({
-      where: { id: instance.id, vmId },
-      data: {
-        hostName: vmHost,
-        hostIp,
-        wsPort: 7000 + +slot,
-        vncPath: `/vm${vmId}`
-      }
-    })
+    try {
+      await this.updateInstance({
+        where: { id: instance.id, vmId },
+        data: {
+          hostName: vmHost,
+          hostIp,
+          wsPort: 7000 + +slot,
+          vncPath: `/vm${vmId}`,
+        },
+      });
+    } catch (err) {
+      return 50;
+    }
 
     // Step 3: Call distvms.sh
-    const cmd = `/home/scripts/distvms.sh ${vmId} ${vmHost} ${hostIp} ${slot}`
-    const { status: status3, output: output3 } = await this._script(cmd)
+    const cmd = `/home/scripts/distvms.sh ${vmId} ${vmHost} ${hostIp} ${slot}`;
+    const { status: status3, output: output3 } = await this._script(cmd);
 
     if (status3) {
-      this.logger.debug("3. distvms done", output3)
+      this.logger.debug('3. distvms done', output3);
     } else {
-      this.logger.error("3. distvms failed", output3)
-      return
+      this.logger.error('3. distvms failed', output3);
+      return 75;
     }
+
+    return 100;
   }
 
   _script(cmd: string): Promise<{
-    status: boolean
-    output: string
-    error?: string
+    status: boolean;
+    output: string;
+    error?: string;
   }> {
-    const isDev = this.config.get('NODE_ENV') === 'development'
+    const isDev = this.config.get('NODE_ENV') === 'development';
     // Assuming our SSH id is added to the target server, so we are not prompted for password
-    const remote = `rkadmin@rentakloud.com`
+    const remote = `rkadmin@rentakloud.com`;
 
     return new Promise((resolve, reject) => {
       const child = spawn(isDev ? `ssh ${remote} '${cmd}'` : cmd, {
-        shell: true
-      })
+        shell: true,
+      });
 
       child.on('exit', (code, signal) => {
-        const output: string = child.stdout.read()?.toString()
+        const output: string = child.stdout.read()?.toString();
         if (code === 0) {
-          resolve({ status: true, output })
+          resolve({ status: true, output });
         } else {
-          resolve({ status: false, output, error: "Non-zero exit code" })
+          resolve({ status: false, output, error: 'Non-zero exit code' });
         }
-      })
+      });
 
       child.on('error', (err) => {
-        this.logger.error(err)
-        reject(err)
-      })
-    })
+        this.logger.error(err);
+        reject(err);
+      });
+    });
   }
 
-  async action(id: string, action: "start" | "stop" | "restart" | "start-ssh") {
-    const { vmId } = (await this.instances({
-      where: {
-        OR: [
-          { id },
-          { vmId: +id || undefined }
-        ]
-      }
-    }))[0]
+  async action(id: string, action: 'start' | 'stop' | 'restart' | 'start-ssh') {
+    const { vmId } = (
+      await this.instances({
+        where: {
+          OR: [{ id }, { vmId: +id || undefined }],
+        },
+      })
+    )[0];
 
     const actions = {
-      "start": `/home/scripts/start-vm-onhost.sh ${vmId}`,
-      "stop": `/home/scripts/powerdown-vm-onhost.sh ${vmId}`,
-      "restart": `/home/scripts/reboot-vm-onhost.sh ${vmId}`,
-      "start-ssh": `/home/scripts/start-web-ssh.sh ${vmId}`,
-    }
+      start: `/home/scripts/start-vm-onhost.sh ${vmId}`,
+      stop: `/home/scripts/powerdown-vm-onhost.sh ${vmId}`,
+      restart: `/home/scripts/reboot-vm-onhost.sh ${vmId}`,
+      'start-ssh': `/home/scripts/start-web-ssh.sh ${vmId}`,
+    };
 
-    const { status, output, error } = await this._script(actions[action])
+    const { status, output, error } = await this._script(actions[action]);
 
     if (!status) {
-      this.logger.error(output, error)
-      throw new BadRequestException(error)
+      this.logger.error(output, error);
+      throw new BadRequestException(error);
     }
 
-    return { success: status }
+    return { success: status };
   }
 }
