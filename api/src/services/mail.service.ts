@@ -19,8 +19,8 @@ export class MailService {
   ) {}
 
   async _sendUserConfirmation(user: User, token: string) {
-    const dev = this.config.get('NODE_ENV') === 'development';
-    const url = `${dev ? 'http://localhost:3001' : 'https://rentakloud.com'}/confirm-email?token=${token}`;
+    const frontUrl = this.config.get('FRONT_URL');
+    const url = `${frontUrl}/confirm-email?token=${token}`;
 
     this.mailQueue.add({
       to: user.email,
@@ -46,8 +46,8 @@ export class MailService {
 
   @OnEvent('user.reset-password')
   async sendResetPasswordMail(user: User, token: string) {
-    const dev = this.config.get('NODE_ENV') === 'development';
-    const url = `${dev ? 'http://localhost:3001' : 'https://rentakloud.com'}/forgot-password?token=${token}`;
+    const frontUrl = this.config.get('FRONT_URL');
+    const url = `${frontUrl}/forgot-password?token=${token}`;
 
     await this.mailQueue.add({
       to: user.email,
@@ -94,10 +94,7 @@ export class MailService {
       },
     });
 
-    const dev = this.config.get('NODE_ENV') === 'development';
-    const adminUrl = dev
-      ? 'http://localhost:5137'
-      : 'https://admin.rentakloud.com';
+    const adminUrl = this.config.get('ADMIN_URL');
     const p2 = this.mailQueue.add({
       to: 'orders@rentakloud.com',
       subject: 'Order Received',

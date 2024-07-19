@@ -16,7 +16,9 @@ export class ProvisioningConsumer {
 
   constructor(private readonly instancesService: InstancesService) {}
 
-  @Process({ concurrency: 0 })
+  // By default `concurrency` is 1. Setting it
+  // to 0 stops all jobs from being processed at all
+  @Process({ concurrency: 1 })
   async provision(job: Job<ProvisioningJob>) {
     const n = await this.instancesService.initProvisioning(job.data);
     job.progress(n);

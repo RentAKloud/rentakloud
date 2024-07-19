@@ -9,12 +9,7 @@ async function bootstrap() {
   const configService = app.get(ConfigService);
 
   app.enableCors({
-    origin: [
-      'http://localhost:3001',
-      'http://localhost:5173',
-      'https://rentakloud.com',
-      'https://admin.rentakloud.com',
-    ],
+    origin: [configService.get('FRONT_URL'), configService.get('ADMIN_URL')],
   });
 
   app.useGlobalPipes(new ValidationPipe({ transform: true }));

@@ -4,12 +4,12 @@
   import { onMount } from "svelte";
 
   type AppSettings = {
-    isStripeTestMode: boolean
-    disableCheckout: boolean
+    isStripeTestMode: boolean;
+    disableCheckout: boolean;
     limits: {
-      "rak-daas": number
-    }
-  }
+      "rak-daas": number;
+    };
+  };
 
   let options: AppSettings;
   async function loadData() {
@@ -24,8 +24,13 @@
   });
 
   async function submit() {
-    const { result } = await Http.patch("/options/app-settings", options);
-    console.log(result);
+    options.limits["rak-daas"] = +options.limits["rak-daas"];
+
+    const { error } = await Http.patch("/options/app-settings", options);
+    if (error) {
+      alert("Couldnt save");
+      console.error(error);
+    }
   }
 </script>
 

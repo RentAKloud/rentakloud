@@ -87,8 +87,8 @@ export class AppController {
               title: 'Welcome to RentAKloud!',
             }),
           );
-          const dev = this.config.get('NODE_ENV') === 'development';
-          const url = `${dev ? 'http://localhost:3001' : 'https://rentakloud.com'}/confirm-email?token=${jwt}`;
+          const frontUrl = this.config.get('FRONT_URL');
+          const url = `${frontUrl}/confirm-email?token=${jwt}`;
           return this.loadTemplate('user_confirmation', {
             //@ts-ignore
             name: user.fullName,

@@ -1,14 +1,22 @@
-import { Component, Match, Switch, createEffect, createResource, createSignal } from "solid-js"
+import {
+  Component,
+  Match,
+  Switch,
+  createEffect,
+  createResource,
+  createSignal,
+} from "solid-js";
 //@ts-ignore
 // import RFB from "./novnc/core/rfb.js" // TODO Can we load this though a URL?
-import { useInstanceContext } from "./context"
-import InstancesApi from "~/api/instances.js"
-import Loader from "~/components/Loader.jsx"
-import { authStore } from "~/stores/auth.js"
-import { Icon } from "~/components/icons/index.js"
+import { useInstanceContext } from "./context";
+import InstancesApi from "~/api/instances.js";
+import Loader from "~/components/Loader.jsx";
+import { authStore } from "~/stores/auth.js";
+import { Icon } from "~/components/icons/index.js";
+import { MAIN_URL } from "~/config/constants";
 
 const VNC: Component<{}> = () => {
-  const { instance } = useInstanceContext()
+  const { instance } = useInstanceContext();
   // const [initialized, { refetch }] = createResource(async () => {
   //   if (!instance.latest?.vncPath) return null
   //   const { result, error } = await InstancesApi.initVNCTunnel(instance.latest!.vncPath)
@@ -21,7 +29,6 @@ const VNC: Component<{}> = () => {
   //     refetch()
   //   }
   // })
-
 
   // createEffect(() => {
   //   if (instance.latest && instance.latest.vncPath) {
@@ -139,36 +146,56 @@ const VNC: Component<{}> = () => {
   //   }
   // })
 
-  const base = import.meta.env.DEV ? "http://localhost:3001/novnc" : "https://rentakloud.com/novnc"
-  const [scale] = createSignal(true)
-  const url = `${base}/vnc_lite.html?host=rentakloud.com&port=443&scale=${scale()}&path=`
-  const path = () => encodeURIComponent(`${instance.latest!.vncPath!}?token=${authStore.access_token}`)
+  const base = `${MAIN_URL}/novnc`;
+  const [scale] = createSignal(true);
+  const url = `${base}/vnc_lite.html?host=rentakloud.com&port=443&scale=${scale()}&path=`;
+  const path = () =>
+    encodeURIComponent(
+      `${instance.latest!.vncPath!}?token=${authStore.access_token}`,
+    );
 
   function picInPicMode() {
-    const iFrame = document.querySelector('iframe')!
-    const iDoc = iFrame.contentDocument || iFrame.contentWindow!.document
-    const stream = iDoc.querySelector('canvas')!.captureStream()
-    const target = document.querySelector('video')!
-    target.srcObject = stream
-    target.onplay = target.requestPictureInPicture
+    const iFrame = document.querySelector("iframe")!;
+    const iDoc = iFrame.contentDocument || iFrame.contentWindow!.document;
+    const stream = iDoc.querySelector("canvas")!.captureStream();
+    const target = document.querySelector("video")!;
+    target.srcObject = stream;
+    target.onplay = target.requestPictureInPicture;
   }
 
   return (
     <>
       <section class="mb-4">
         <h2 class="text-4xl font-bold mb-5">Stream</h2>
-        <p class="mb-2">Your VM's GUI output will be streamed here using our optimized VNC technology.</p>
+        <p class="mb-2">
+          Your VM's GUI output will be streamed here using our optimized VNC
+          technology.
+        </p>
 
         <div class="flex gap-4">
-          <button class="btn" title="Fullscreen" onclick={() => document.getElementById("screen")?.requestFullscreen()}>
+          <button
+            class="btn"
+            title="Fullscreen"
+            onclick={() =>
+              document.getElementById("screen")?.requestFullscreen()
+            }
+          >
             <Icon.Fullscreen />
           </button>
 
-          <button class="btn" title="Open in new window" onclick={() => window.open(url + path())}>
+          <button
+            class="btn"
+            title="Open in new window"
+            onclick={() => window.open(url + path())}
+          >
             <Icon.External />
           </button>
 
-          <button class="btn" title="Picture-in-picture mode" onclick={picInPicMode}>
+          <button
+            class="btn"
+            title="Picture-in-picture mode"
+            onclick={picInPicMode}
+          >
             <Icon.PictureInPicture />
           </button>
         </div>
@@ -194,14 +221,23 @@ const VNC: Component<{}> = () => {
         <Match when={instance.latest!.vncPath}>
           {/* <div id="screen" /> */}
 
+          <iframe
+            id="screen"
+            src={url + path()}
+            width="100%"
+            style="aspect-ratio: 16 / 9;"
+          ></iframe>
 
-          <iframe id="screen" src={url + path()} width="100%" style="aspect-ratio: 16 / 9;"></iframe>
-
-          <video id="pip-target" controls autoplay style="display: none;"></video>
+          <video
+            id="pip-target"
+            controls
+            autoplay
+            style="display: none;"
+          ></video>
         </Match>
       </Switch>
     </>
-  )
-}
+  );
+};
 
-export default VNC
+export default VNC;
