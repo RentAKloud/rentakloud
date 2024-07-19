@@ -16,7 +16,7 @@ import { Icon } from "~/components/icons/index.js";
 import { MAIN_URL } from "~/config/constants";
 
 const VNC: Component<{}> = () => {
-  const { instance } = useInstanceContext();
+  const { instance, refetch: reload } = useInstanceContext();
   // const [initialized, { refetch }] = createResource(async () => {
   //   if (!instance.latest?.vncPath) return null
   //   const { result, error } = await InstancesApi.initVNCTunnel(instance.latest!.vncPath)
@@ -154,20 +154,33 @@ const VNC: Component<{}> = () => {
       `${instance.latest!.vncPath!}?token=${authStore.access_token}`,
     );
 
-  function picInPicMode() {
+  function _iframeSelector(selectors: any) {
     const iFrame = document.querySelector("iframe")!;
-    const iDoc = iFrame.contentDocument || iFrame.contentWindow!.document;
-    const stream = iDoc.querySelector("canvas")!.captureStream();
-    const target = document.querySelector("video")!;
-    target.srcObject = stream;
-    target.onplay = target.requestPictureInPicture;
+    const iDoc = iFrame?.contentDocument || iFrame?.contentWindow!.document;
+    return iDoc?.querySelector(selectors);
   }
+
+  function picInPicMode() {
+    const stream = _iframeSelector("canvas")?.captureStream();
+    if (stream) {
+      const target = document.querySelector("video")!;
+      target.srcObject = stream;
+      target.onplay = target.requestPictureInPicture;
+    }
+  }
+
+  window.onfocus = () => {
+    const status = _iframeSelector("#status")?.innerHTML;
+    if (status?.includes("Disconnected")) {
+      reload();
+    }
+  };
 
   return (
     <>
       <section class="mb-4">
         <h2 class="text-4xl font-bold mb-5">Stream</h2>
-        <p class="mb-2">
+        <p class="mb-4">
           Your VM's GUI output will be streamed here using our optimized VNC
           technology.
         </p>
@@ -197,6 +210,10 @@ const VNC: Component<{}> = () => {
             onclick={picInPicMode}
           >
             <Icon.PictureInPicture />
+          </button>
+
+          <button class="btn" onclick={() => reload()}>
+            Reload
           </button>
         </div>
       </section>
