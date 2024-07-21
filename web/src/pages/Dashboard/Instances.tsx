@@ -51,7 +51,7 @@ const Instances: Component = () => {
       <h2 class="text-4xl font-bold mb-2">
         Instances ({instances.latest?.length})
       </h2>
-      <p class="mb-5">Your active subscriptions.</p>
+      <p class="mb-5">Your active VMs.</p>
 
       <section class="mb-10">
         {/* <Link href="new" class="btn btn-outline">New</Link> */}
@@ -184,6 +184,7 @@ const GridView: Component<{ instances: Instance[]; refetch: Function }> = (
                 </div>
               }
               actionsAlign="left"
+              class="max-w-96"
               bgClass={
                 isNew
                   ? "from-primary/20 to-primary/0 hover:to-primary/5 to-60% [background-image:linear-gradient(-35deg,var(--tw-gradient-stops))]"

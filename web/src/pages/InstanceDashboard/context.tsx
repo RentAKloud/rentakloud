@@ -17,7 +17,11 @@ import { capitalize } from "~/utils";
 
 type InstanceContextProps = {
   instance: Resource<Instance | undefined>;
-  refetch: Function;
+  refetch: () =>
+    | (Instance | undefined)
+    | Promise<Instance | undefined>
+    | undefined
+    | null;
   inTransit: Accessor<boolean>;
   start: () => void;
   stop: () => void;

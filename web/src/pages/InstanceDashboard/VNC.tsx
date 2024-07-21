@@ -212,15 +212,17 @@ const VNC: Component<{}> = () => {
             <Icon.PictureInPicture />
           </button>
 
-          <button class="btn" onclick={() => reload()}>
-            Reload
+          <button class="btn" title="Reload" onclick={reload}>
+            <Icon.Refresh />
           </button>
         </div>
       </section>
 
       <Switch>
         <Match when={instance.loading}>
-          <Loader />
+          <div class="text-center">
+            <Loader />
+          </div>
         </Match>
 
         <Match when={instance.latest!.status !== "Active"}>

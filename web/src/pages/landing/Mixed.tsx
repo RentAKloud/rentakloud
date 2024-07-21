@@ -6,6 +6,7 @@ import { truncate } from "~/utils";
 import HeroWithBg from "~/components/Hero/HeroWithBg";
 import CardSkeleton from "~/components/Card/CardSkeleton";
 import { products } from "~/stores/products";
+import { Show } from "solid-js";
 
 const LandingMixed: Component = () => {
   return (
@@ -38,34 +39,35 @@ const LandingMixed: Component = () => {
           {/* <p class="text-center">Cutting-edge, high performance hardware. Intense computation with efficient energy usage.</p> */}
         </div>
         <div class="flex flex-wrap gap-10 justify-center items-stretch">
-          <For each={home().featuredServices}>
-            {(product) => (
-              <Switch>
-                <Match when={products.loading && product === undefined}>
-                  <CardSkeleton class="w-96" rowClass="h-8" rows={4} />
-                </Match>
-
-                <Match when={!!product}>
-                  <Card
-                    title={product!.name}
-                    description={truncate(product!.shortDescription || "", 120)}
-                    // img={{ uri: product!.images && product!.images[0] && product!.images![0].src || '', alt: `${product!.name} logo` }}
-                    actions={
-                      <Link
-                        href={`/our-products/${product!.slug}`}
-                        class="btn btn-primary"
-                      >
-                        Learn More
-                      </Link>
-                    }
-                    class="w-96"
-                    actionsAlign="left"
-                    hasGradientShadow
-                  />
-                </Match>
-              </Switch>
-            )}
-          </For>
+          <Show
+            when={!products.loading}
+            fallback={
+              <For each={[1, 2, 3]}>
+                {() => <CardSkeleton class="w-96" rowClass="h-8" rows={1} />}
+              </For>
+            }
+          >
+            <For each={home().featuredServices}>
+              {(product) => (
+                <Card
+                  title={product!.name}
+                  description={truncate(product!.shortDescription || "", 120)}
+                  // img={{ uri: product!.images && product!.images[0] && product!.images![0].src || '', alt: `${product!.name} logo` }}
+                  actions={
+                    <Link
+                      href={`/our-products/${product!.slug}`}
+                      class="btn btn-primary"
+                    >
+                      Learn More
+                    </Link>
+                  }
+                  class="w-96"
+                  actionsAlign="left"
+                  hasGradientShadow
+                />
+              )}
+            </For>
+          </Show>
         </div>
       </section>
 
@@ -81,39 +83,40 @@ const LandingMixed: Component = () => {
         </div>
 
         <div class="flex flex-wrap gap-10 justify-center items-stretch">
-          <For each={home().featuredHardware}>
-            {(product) => (
-              <Switch>
-                <Match when={product === undefined}>
-                  <CardSkeleton class="w-96" rowClass="h-8" rows={4} />
-                </Match>
-
-                <Match when={!!product}>
-                  <Card
-                    title={product!.name}
-                    description={truncate(product!.shortDescription || "", 120)}
-                    img={{
-                      uri:
-                        (product!.images &&
-                          product!.images[0] &&
-                          product!.images![0].src) ||
-                        "",
-                      alt: `${product!.name} logo`,
-                    }}
-                    actions={
-                      <Link
-                        href={`/our-products/${product!.slug}`}
-                        class="btn btn-primary"
-                      >
-                        Learn More
-                      </Link>
-                    }
-                    class="w-96"
-                  />
-                </Match>
-              </Switch>
-            )}
-          </For>
+          <Show
+            when={!products.loading}
+            fallback={
+              <For each={[1, 2, 3]}>
+                {() => <CardSkeleton class="w-96" rowClass="h-8" rows={4} />}
+              </For>
+            }
+          >
+            <For each={home().featuredHardware}>
+              {(product) => (
+                <Card
+                  title={product!.name}
+                  description={truncate(product!.shortDescription || "", 120)}
+                  img={{
+                    uri:
+                      (product!.images &&
+                        product!.images[0] &&
+                        product!.images![0].src) ||
+                      "",
+                    alt: `${product!.name} logo`,
+                  }}
+                  actions={
+                    <Link
+                      href={`/our-products/${product!.slug}`}
+                      class="btn btn-primary"
+                    >
+                      Learn More
+                    </Link>
+                  }
+                  class="w-96"
+                />
+              )}
+            </For>
+          </Show>
         </div>
       </section>
 

@@ -12,6 +12,7 @@ import EllipsesVertical from "./EllipsesVertical";
 import Windows from "./logos/Windows";
 import Search from "./Search";
 import Linux from "./logos/Linux";
+import Refresh from "./Refresh";
 
 export const Icon = {
   Bell,
@@ -25,7 +26,8 @@ export const Icon = {
   Mail,
   Menu,
   PictureInPicture,
+  Refresh,
   Search,
   UserCircle,
-  Windows
-}
+  Windows,
+};
