@@ -15,6 +15,7 @@ import { addServiceToCart } from "~/stores/cart";
 import Accordion from "~/components/Accordion/Accordion";
 import { SharedHosting } from "./_SharedHosting";
 import { VPS } from "./_VPS";
+import { BareMetal } from "./_BareMetal";
 
 export const ServiceProduct: Component<{ product: Product }> = (props) => {
   const [showYearly, setShowYearly] = createSignal(false);
@@ -157,8 +158,12 @@ export const ServiceProduct: Component<{ product: Product }> = (props) => {
         <SharedHosting product={product()} />
       </Match>
 
-      <Match when={product().slug === "vps"}>
+      <Match when={["vps"].includes(product().slug)}>
         <VPS product={product()} />
+      </Match>
+
+      <Match when={["bare-metal"].includes(product().slug)}>
+        <BareMetal product={product()} />
       </Match>
     </Switch>
   );

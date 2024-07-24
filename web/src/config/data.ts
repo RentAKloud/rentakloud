@@ -181,3 +181,14 @@ export const footer = () => ({
     )
     .sort((p1, p2) => (p1.meta.order < p2.meta.order ? -1 : 1)),
 });
+
+export const paymentMethods: any = {
+  visa: "/images/payment-methods/cards/visa.svg",
+  amex: "/images/payment-methods/cards/amex.svg",
+  discover: "/images/payment-methods/cards/discover.svg",
+  jcb: "/images/payment-methods/cards/jcb.svg",
+  maestro: "/images/payment-methods/cards/maestro.svg",
+  mastercard: "/images/payment-methods/cards/mastercard.svg",
+  "union-pay": "/images/payment-methods/cards/union-pay.svg",
+  dinersclub: "/images/payment-methods/cards/dinersclub.svg",
+};

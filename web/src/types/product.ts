@@ -14,7 +14,7 @@ export type Product = {
   meta: ProductMeta;
 };
 
-type ProductMeta = Object & {
+type ProductMeta = any & {
   tags: ProductTag[];
   order: number;
 };

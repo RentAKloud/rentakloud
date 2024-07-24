@@ -2,7 +2,7 @@ import { Component } from "solid-js";
 import { authStore } from "../../stores/auth";
 
 const Settings: Component = () => {
-  const { user } = authStore
+  const { user } = authStore;
 
   return (
     <>
@@ -14,9 +14,51 @@ const Settings: Component = () => {
             <span class="label-text">Email</span>
           </label>
           <input
-            type="email" placeholder="Email" class="input input-bordered input-primary"
-            onInput={(e) => { }}
+            type="email"
+            placeholder="Email"
+            class="input input-bordered input-primary"
+            onInput={(e) => {}}
             value={user?.email}
+            disabled
+          />
+        </div>
+
+        <div class="form-control mb-3">
+          <label class="label">
+            <span class="label-text">First Name</span>
+          </label>
+          <input
+            type="text"
+            placeholder="First Name"
+            class="input input-bordered input-primary"
+            onInput={(e) => {}}
+            value={user?.firstName}
+          />
+        </div>
+
+        <div class="form-control mb-3">
+          <label class="label">
+            <span class="label-text">Last Name</span>
+          </label>
+          <input
+            type="text"
+            placeholder="Last Name"
+            class="input input-bordered input-primary"
+            onInput={(e) => {}}
+            value={user?.lastName}
+          />
+        </div>
+
+        <div class="form-control mb-3">
+          <label class="label">
+            <span class="label-text">Company Name</span>
+          </label>
+          <input
+            type="email"
+            placeholder="RentAKloud Inc."
+            class="input input-bordered input-primary"
+            onInput={(e) => {}}
+            value={user?.profile?.companyName || ""}
           />
         </div>
 
@@ -25,8 +67,10 @@ const Settings: Component = () => {
             <span class="label-text">Password</span>
           </label>
           <input
-            type="password" placeholder="Password" class="input input-bordered input-primary"
-            onInput={(e) => { }}
+            type="password"
+            placeholder="Password"
+            class="input input-bordered input-primary"
+            onInput={(e) => {}}
           />
         </div>
       </section>
@@ -40,7 +84,7 @@ const Settings: Component = () => {
         </div>
       </section>
     </>
-  )
-}
+  );
+};
 
-export default Settings
+export default Settings;

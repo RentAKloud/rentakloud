@@ -1,40 +1,43 @@
 import { ApiResponse, HttpService } from "~/services/HttpService";
 import { Payment } from "~/types/payment";
 
-type CreatePaymentIntent = {
-  clientSecret: string,
-  ephemeralKey: string,
-  customer: string
-}
+export type CreatePaymentIntent = {
+  clientSecret: string;
+  ephemeralKey: string;
+  customer: string;
+};
 
-export type CreateSubscriptionResponse = CreatePaymentIntent & { subscriptionId: string }
+type PaymentMethod = {
+  card: {
+    brand: string;
+    exp_month: number;
+    exp_year: number;
+    last4: string;
+  };
+};
 
 class PaymentsApi {
   static async all(): ApiResponse<Payment[]> {
-    return await HttpService.get("/payments")
+    return await HttpService.get("/payments");
   }
 
   static async one(id: number): ApiResponse<Payment> {
-    return await HttpService.get(`/payment/${id}`)
+    return await HttpService.get(`/payment/${id}`);
   }
 
-  static async createPaymentIntent(userEmail: string, orderAmount: number): ApiResponse<CreatePaymentIntent> {
-    return await HttpService.post('/payments/create-payment-intent', {
+  static async createPaymentIntent(
+    userEmail: string,
+    orderAmount: number,
+  ): ApiResponse<CreatePaymentIntent> {
+    return await HttpService.post("/payments/create-payment-intent", {
       email: userEmail,
-      amount: orderAmount
-    })
+      amount: orderAmount,
+    });
   }
 
-  static async createSubscription(
-    userEmail: string, productId: number, priceId: string, isTrial: boolean
-  ): ApiResponse<CreateSubscriptionResponse> {
-    return await HttpService.post('/subscriptions', {
-      email: userEmail,
-      productId,
-      priceId,
-      isTrial
-    })
+  static async paymentMethods(): ApiResponse<PaymentMethod[]> {
+    return await HttpService.get("/payments/methods");
   }
 }
 
-export default PaymentsApi
+export default PaymentsApi;

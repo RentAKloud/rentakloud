@@ -1,49 +1,48 @@
 import { Component, Show, lazy } from "solid-js";
 import { Outlet, Route } from "@solidjs/router";
 
-const Checkout = lazy(() => import('~/pages/Checkout/Checkout'));
+const Checkout = lazy(() => import("~/pages/Checkout/Checkout"));
 
-import InstanceDashboard from '~/pages/InstanceDashboard/InstanceDashboard';
-import Overview from '~/pages/InstanceDashboard/Overview';
+import InstanceDashboard from "~/pages/InstanceDashboard/InstanceDashboard";
+import Overview from "~/pages/InstanceDashboard/Overview";
 const VNC = lazy(() => import("~/pages/InstanceDashboard/VNC"));
-import SSH from '~/pages/InstanceDashboard/SSH';
-import SiteAndSSL from '~/pages/InstanceDashboard/SiteAndSSL';
-import Database from '~/pages/InstanceDashboard/Database';
-import FileManager from '~/pages/InstanceDashboard/FileManager';
-import FTPS from '~/pages/InstanceDashboard/FTPS';
-import Metrics from '~/pages/InstanceDashboard/Metrics';
-import Snapshots from '~/pages/InstanceDashboard/Snapshots';
-import Events from '~/pages/InstanceDashboard/Events';
+import SSH from "~/pages/InstanceDashboard/SSH";
+import SiteAndSSL from "~/pages/InstanceDashboard/SiteAndSSL";
+import Database from "~/pages/InstanceDashboard/Database";
+import FileManager from "~/pages/InstanceDashboard/FileManager";
+import FTPS from "~/pages/InstanceDashboard/FTPS";
+import Metrics from "~/pages/InstanceDashboard/Metrics";
+import Snapshots from "~/pages/InstanceDashboard/Snapshots";
+import Events from "~/pages/InstanceDashboard/Events";
 import InstanceSettings from "~/pages/InstanceDashboard/InstanceSettings";
-import Guidance from '~/pages/InstanceDashboard/Guidance';
+import Guidance from "~/pages/InstanceDashboard/Guidance";
 
-import Dashboard from '~/pages/Dashboard/Dashboard';
-import DashboardHome from '~/pages/Dashboard/Home';
-import Orders from '~/pages/Dashboard/Orders';
+import Dashboard from "~/pages/Dashboard/Dashboard";
+import DashboardHome from "~/pages/Dashboard/Home";
+import Orders from "~/pages/Dashboard/Orders";
 import Order from "~/pages/Orders/Order";
-import Billing from '~/pages/Dashboard/Billing';
-import Settings from '~/pages/Dashboard/Settings';
-import Instances from '~/pages/Dashboard/Instances';
-import Images from '~/pages/Dashboard/Images';
-import Backups from '~/pages/Dashboard/Backups';
-import InstancesNew from '~/pages/Instances/New';
+import Billing from "~/pages/Dashboard/Billing/Billing";
+import Settings from "~/pages/Dashboard/Settings";
+import Instances from "~/pages/Dashboard/Instances";
+import Images from "~/pages/Dashboard/Images";
+import Backups from "~/pages/Dashboard/Backups";
+import InstancesNew from "~/pages/Instances/New";
 import { authStore } from "~/stores/auth";
 import Login from "~/pages/Login";
 
-export const protectedRoots = ["products", "dashboard", "checkout"]
+export const protectedRoots = ["products", "dashboard", "checkout"];
 
 const Protected = () => {
-  const isLoggedIn = () => !!authStore.user
+  const isLoggedIn = () => !!authStore.user;
 
   return (
     <Show when={isLoggedIn()} fallback={<Login />}>
       <Outlet />
     </Show>
-  )
-}
+  );
+};
 
 const ProtectedRoutes: Component = () => {
-
   return (
     <Route path="" component={Protected}>
       <Route path="/instances/:id" component={InstanceDashboard}>
@@ -79,7 +78,7 @@ const ProtectedRoutes: Component = () => {
 
       <Route path="/checkout" component={Checkout} />
     </Route>
-  )
-}
+  );
+};
 
-export default ProtectedRoutes
+export default ProtectedRoutes;

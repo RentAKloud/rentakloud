@@ -13,6 +13,7 @@ import Windows from "./logos/Windows";
 import Search from "./Search";
 import Linux from "./logos/Linux";
 import Refresh from "./Refresh";
+import Trash from "./Trash";
 
 export const Icon = {
   Bell,
@@ -28,6 +29,7 @@ export const Icon = {
   PictureInPicture,
   Refresh,
   Search,
+  Trash,
   UserCircle,
   Windows,
 };

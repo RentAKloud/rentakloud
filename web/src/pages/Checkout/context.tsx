@@ -34,6 +34,7 @@ import { CountryCode, StateCode } from "~/types/common";
 import { HttpService } from "~/services/HttpService";
 import { appSettings } from "~/stores/global";
 import InstancesApi from "~/api/instances";
+import SubscriptionsApi from "~/api/subscriptions";
 
 const CheckoutContext = createContext<CheckoutContextProps>(defaultCheckout);
 
@@ -287,9 +288,10 @@ export const CheckoutProvider: Component<{ children: JSXElement }> = (
     // TODO should be one bulk request
     if (subscriptionItems.length > 0) {
       const subResponsePromises = subscriptionItems.map((i) => {
-        return PaymentsApi.createSubscription(
+        return SubscriptionsApi.createSubscription(
           user!.email,
           i.productId,
+          i.planId!,
           i.priceId!,
           !!i.isTrial,
         );
