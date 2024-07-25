@@ -1,21 +1,17 @@
-import { Injectable } from "@nestjs/common";
-import { Prisma, Subscription } from "@prisma/client";
-import { PrismaService } from "./prisma.service";
+import { Injectable } from '@nestjs/common';
+import { Prisma, Subscription } from '@prisma/client';
+import { PrismaService } from './prisma.service';
 
 @Injectable()
 export class SubscriptionsService {
-  constructor(
-    private prisma: PrismaService,
-  ) { }
+  constructor(private prisma: PrismaService) {}
 
   async subscription(
     subscriptionWhereUniqueInput: Prisma.SubscriptionWhereUniqueInput,
   ): Promise<Subscription | null> {
     return this.prisma.subscription.findUnique({
       where: subscriptionWhereUniqueInput,
-      include: {
-        
-      }
+      include: {},
     });
   }
 
@@ -34,17 +30,19 @@ export class SubscriptionsService {
       where,
       orderBy,
       include: {
-        
-      }
+        product: true,
+      },
     });
   }
 
-  async createSubscription(data: Prisma.SubscriptionCreateInput): Promise<Subscription> {
+  async createSubscription(
+    data: Prisma.SubscriptionCreateInput,
+  ): Promise<Subscription> {
     const subscription = await this.prisma.subscription.create({
       data,
     });
 
-    return subscription
+    return subscription;
   }
 
   async updateSubscription(params: {
@@ -52,17 +50,19 @@ export class SubscriptionsService {
     data: Prisma.SubscriptionUpdateInput;
   }): Promise<Subscription> {
     const { where, data } = params;
-    data.updatedAt = new Date()
+    data.updatedAt = new Date();
 
     const subscription = await this.prisma.subscription.update({
       data,
       where,
     });
 
-    return subscription
+    return subscription;
   }
 
-  async deleteSubscription(where: Prisma.SubscriptionWhereUniqueInput): Promise<Subscription> {
+  async deleteSubscription(
+    where: Prisma.SubscriptionWhereUniqueInput,
+  ): Promise<Subscription> {
     return this.prisma.subscription.delete({
       where,
     });

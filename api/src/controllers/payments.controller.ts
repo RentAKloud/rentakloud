@@ -1,4 +1,13 @@
-import { Controller, Post, Body, UseGuards, Request, Get } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  UseGuards,
+  Request,
+  Get,
+  Delete,
+  Param,
+} from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 import { PaymentsService } from 'src/services/payments.service';
@@ -6,15 +15,24 @@ import { PaymentsService } from 'src/services/payments.service';
 @ApiTags('Payments')
 @Controller('payments')
 export class PaymentsController {
-  constructor(
-    private readonly paymentsService: PaymentsService,
-  ) { }
+  constructor(private readonly paymentsService: PaymentsService) {}
 
   @UseGuards(JwtAuthGuard)
   @Get()
   async payments(@Request() req) {
-    const customer = await this.paymentsService.findOrCreateCustomer(req.user.email)
-    return (await this.paymentsService.invoices(customer.id)).data
+    const customer = await this.paymentsService.findOrCreateCustomer(
+      req.user.email,
+    );
+    return (await this.paymentsService.invoices(customer.id)).data;
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('/methods')
+  async paymentMethods(@Request() req) {
+    const customer = await this.paymentsService.findOrCreateCustomer(
+      req.user.email,
+    );
+    return await this.paymentsService.paymentMethods(customer.id);
   }
 
   // NOTE Not called directly anymore. See subscriptions.controller
@@ -47,6 +65,12 @@ export class PaymentsController {
       ephemeralKey: ephemeralKey.secret,
       customer: customer.id,
     };
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete('/methods/:id')
+  async deletePaymentMethod(@Param('id') id: string) {
+    return await this.paymentsService.deletePaymentMethod(id);
   }
 
   @Post('webhook')

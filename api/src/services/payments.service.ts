@@ -1,12 +1,11 @@
-import { Injectable } from "@nestjs/common";
-import { ConfigService } from "@nestjs/config";
-import Stripe from "stripe";
-import { UsersService } from "./users.service";
-import { OnEvent } from "@nestjs/event-emitter";
-import { Instance, Subscription } from "@prisma/client";
-import { InstanceAddon, Plan } from "src/types/instances.dto";
-import { OptionsService } from "./options.service";
-
+import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import Stripe from 'stripe';
+import { UsersService } from './users.service';
+import { OnEvent } from '@nestjs/event-emitter';
+import { Instance, Subscription } from '@prisma/client';
+import { InstanceAddon, Plan } from 'src/types/instances.dto';
+import { OptionsService } from './options.service';
 
 @Injectable()
 export class PaymentsService {
@@ -16,13 +15,15 @@ export class PaymentsService {
     private configService: ConfigService,
     private userService: UsersService,
   ) {
-    this.loadStripe()
+    this.loadStripe();
   }
 
   @OnEvent('app-settings.changed')
   loadStripe() {
     const stripeKey = this.configService.get(
-      OptionsService.appSettings?.isStripeTestMode ? 'STRIPE_SECRET_KEY_TEST' : 'STRIPE_SECRET_KEY_LIVE'
+      OptionsService.appSettings?.isStripeTestMode
+        ? 'STRIPE_SECRET_KEY_TEST'
+        : 'STRIPE_SECRET_KEY_LIVE',
     );
     this.stripe = new Stripe(stripeKey, { apiVersion: '2024-04-10' });
   }
@@ -47,10 +48,10 @@ export class PaymentsService {
       payment_settings: { save_default_payment_method: 'on_subscription' },
       expand: ['latest_invoice.payment_intent'],
       metadata: { email },
-    }
+    };
 
     if (isTrial) {
-      data.trial_period_days = 7
+      data.trial_period_days = 7;
     }
 
     const subscription = await this.stripe.subscriptions.create(data);
@@ -59,71 +60,84 @@ export class PaymentsService {
       customer,
       ephemeralKey,
       subscriptionId: subscription.id,
-      //@ts-ignore
-      clientSecret: isTrial ? undefined : subscription.latest_invoice.payment_intent.client_secret,
+      clientSecret: isTrial
+        ? undefined
+        : //@ts-ignore
+          subscription.latest_invoice.payment_intent.client_secret,
+      currentPeriodEnd: subscription.current_period_end,
     };
   }
 
-  @OnEvent("instance.addons.updated")
+  @OnEvent('instance.addons.updated')
   async updateSubscription(id: string, addons: InstanceAddon[], plans: Plan[]) {
     try {
-      const sub = await this.stripe.subscriptions.retrieve(id)
-      const _selectedPlan = sub.items.data[0].price
-      const selectedPlan = plans.find(p => p.prices.find(pr => pr.priceId === _selectedPlan.id))
-      const addonsConfig = selectedPlan.addons
-      const interval = _selectedPlan.recurring.interval
+      const sub = await this.stripe.subscriptions.retrieve(id);
+      const _selectedPlan = sub.items.data[0].price;
+      const selectedPlan = plans.find((p) =>
+        p.prices.find((pr) => pr.priceId === _selectedPlan.id),
+      );
+      const addonsConfig = selectedPlan.addons;
+      const interval = _selectedPlan.recurring.interval;
 
       const items = addons
-        .filter(a => addonsConfig.map(c => c.id).includes(a.id))
-        .map(addon => {
-          const item: any = {}
-          const addonConfig = addonsConfig.find(a => a.id === addon.id)
-          const alreadyAdded = sub.items.data.find(si => !!addonConfig.prices.find(p => p.priceId === si.price.id))
+        .filter((a) => addonsConfig.map((c) => c.id).includes(a.id))
+        .map((addon) => {
+          const item: any = {};
+          const addonConfig = addonsConfig.find((a) => a.id === addon.id);
+          const alreadyAdded = sub.items.data.find(
+            (si) => !!addonConfig.prices.find((p) => p.priceId === si.price.id),
+          );
 
           // skip if no change in quantity
           // or if it doesnt exist and quantity is 0
           if (
-            alreadyAdded && addon.quantity === alreadyAdded.quantity ||
-            !alreadyAdded && addon.quantity === 0
+            (alreadyAdded && addon.quantity === alreadyAdded.quantity) ||
+            (!alreadyAdded && addon.quantity === 0)
           ) {
-            return undefined
+            return undefined;
           }
 
           // if price_id exists, use si_id to update quantity
           if (alreadyAdded) {
-            item.id = alreadyAdded.id
+            item.id = alreadyAdded.id;
           } else {
-            item.price = addonConfig.prices.find(p => p.interval === interval).priceId
+            item.price = addonConfig.prices.find(
+              (p) => p.interval === interval,
+            ).priceId;
           }
 
           // set deleted to true to remove
           if (addon.quantity === 0) {
-            item.deleted = true
+            item.deleted = true;
           } else {
-            item.quantity = addon.quantity
+            item.quantity = addon.quantity;
           }
 
-          return item
+          return item;
         })
-        .filter(i => !!i)
+        .filter((i) => !!i);
 
       if (items.length > 0) {
         await this.stripe.subscriptions.update(id, {
-          items
-        })
+          items,
+        });
       }
     } catch (err) {
-      console.error(err.message)
+      console.error(err.message);
     }
   }
 
-  @OnEvent("instance.deleted")
-  async cancelSubscription(instance: Instance & { subscription: Subscription }) {
+  @OnEvent('instance.deleted')
+  async cancelSubscription(
+    instance: Instance & { subscription: Subscription },
+  ) {
     // TODO refund logic?
     try {
-      return await this.stripe.subscriptions.cancel(instance.subscription.externalId)
+      return await this.stripe.subscriptions.cancel(
+        instance.subscription.externalId,
+      );
     } catch (err) {
-      console.log(err.message)
+      console.log(err.message);
       // TODO Send a notification? about an ActiveProduct getting deleted but failed
       // to cancel its subscription
     }
@@ -159,7 +173,9 @@ export class PaymentsService {
 
     let customer: Stripe.Response<Stripe.Customer | Stripe.DeletedCustomer>;
     if (user.profile.stripeCustomerId) {
-      customer = await this.stripe.customers.retrieve(user.profile.stripeCustomerId);
+      customer = await this.stripe.customers.retrieve(
+        user.profile.stripeCustomerId,
+      );
     }
 
     if (!customer) {
@@ -171,11 +187,11 @@ export class PaymentsService {
         data: {
           profile: {
             update: {
-              stripeCustomerId: customer.id
-            }
-          }
-        }
-      })
+              stripeCustomerId: customer.id,
+            },
+          },
+        },
+      });
     }
 
     return customer;
@@ -189,7 +205,17 @@ export class PaymentsService {
 
   async invoices(customerId: string) {
     return this.stripe.invoices.list({
-      customer: customerId
-    })
+      customer: customerId,
+    });
+  }
+
+  async paymentMethods(customerId: string) {
+    return this.stripe.paymentMethods.list({
+      customer: customerId,
+    });
+  }
+
+  async deletePaymentMethod(paymentMethodId: string) {
+    return this.stripe.paymentMethods.detach(paymentMethodId);
   }
 }

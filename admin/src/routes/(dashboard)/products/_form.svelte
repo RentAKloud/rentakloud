@@ -125,6 +125,12 @@
         bind:value={product.shortDescription}
         class="resize-none"
       />
+      <Helper id="short-description-help" class="pl-6 flex justify-between">
+        <span>Recommended number of characters is 100</span>
+        <span class:text-red-500={product.shortDescription.length > 100}
+          >{product.shortDescription.length}/100</span
+        ></Helper
+      >
     </div>
 
     <div class="mb-6">

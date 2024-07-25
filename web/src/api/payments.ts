@@ -1,4 +1,5 @@
 import { ApiResponse, HttpService } from "~/services/HttpService";
+import { Paginated } from "~/types/common";
 import { Payment } from "~/types/payment";
 
 export type CreatePaymentIntent = {
@@ -8,6 +9,7 @@ export type CreatePaymentIntent = {
 };
 
 type PaymentMethod = {
+  id: string;
   card: {
     brand: string;
     exp_month: number;
@@ -35,8 +37,12 @@ class PaymentsApi {
     });
   }
 
-  static async paymentMethods(): ApiResponse<PaymentMethod[]> {
+  static async paymentMethods(): ApiResponse<Paginated<PaymentMethod>> {
     return await HttpService.get("/payments/methods");
+  }
+
+  static async deletePaymentMethod(id: string): ApiResponse<PaymentMethod> {
+    return await HttpService.delete(`/payments/methods/${id}`);
   }
 }
 

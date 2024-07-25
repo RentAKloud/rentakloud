@@ -13,7 +13,7 @@ const InstanceSettings: Component = () => {
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] =
     createSignal<boolean>(false);
-  async function deleteActiveProduct(id: string) {
+  async function deleteInstance(id: string) {
     try {
       const { error } = await InstancesApi.delete(id);
       setIsDeleteModalOpen(false);
@@ -213,10 +213,7 @@ const InstanceSettings: Component = () => {
             <button class="btn" onclick={() => setIsDeleteModalOpen(false)}>
               Cancel
             </button>
-            <button
-              class="btn btn-error"
-              onclick={() => deleteActiveProduct(id)}
-            >
+            <button class="btn btn-error" onclick={() => deleteInstance(id)}>
               Yes
             </button>
           </>
