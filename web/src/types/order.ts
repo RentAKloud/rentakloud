@@ -6,6 +6,7 @@ import { User } from "./user";
 import { SelectOption } from "./ui";
 
 export type Address = {
+  id: number;
   firstName: string;
   lastName: string;
   email: string;
@@ -93,7 +94,7 @@ export enum OrderStatus {
   Cancelled = "Cancelled",
 }
 
-export const defaultAddress: Address = {
+export const defaultAddress: Omit<Address, "id"> = {
   firstName: "",
   lastName: "",
   email: "",
@@ -107,8 +108,8 @@ export const defaultAddress: Address = {
 };
 
 export type OrderStore = {
-  billingAddress: Address;
-  shippingAddress: Address;
+  billingAddress: Omit<Address, "id">;
+  shippingAddress: Omit<Address, "id">;
   orderNotes: string;
   couponCodes: CouponCode[];
   taxes: Tax[];

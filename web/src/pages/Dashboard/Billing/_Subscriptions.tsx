@@ -1,16 +1,36 @@
-import { Component, createResource, For } from "solid-js";
+import { Component, createResource, createSignal, For } from "solid-js";
 import SubscriptionsApi from "~/api/subscriptions";
 import Card from "~/components/Card/Card";
 import { DateTime } from "~/components/DateTime";
+import Modal from "~/components/Modal";
 import Pagination from "~/components/Pagination";
+import { NotificationService } from "~/services/NotificationService";
 import { Subscription } from "~/types/subscription";
 
 const Subscriptions: Component = () => {
-  const [subscriptions] = createResource(async () => {
+  const [subscriptions, { refetch }] = createResource(async () => {
     const { result, error } = await SubscriptionsApi.all();
     if (error) throw error;
     return result!.map((s) => new Subscription(s));
   });
+
+  const [isCancelModalOpen, setIsCancelModalOpen] = createSignal<string | null>(
+    null,
+  );
+  async function cancelSubscription(id: string) {
+    try {
+      const { error } = await SubscriptionsApi.cancelSubscription(id);
+      setIsCancelModalOpen(null);
+      if (!error) {
+        refetch();
+        NotificationService.success("Deleted successfully");
+      }
+    } catch (err) {
+      NotificationService.error(
+        "Could not delete. Please try again or contact support.",
+      );
+    }
+  }
 
   return (
     <div class="flex flex-col gap-4">
@@ -40,7 +60,12 @@ const Subscriptions: Component = () => {
             </div>
             <div>Renewal Price</div>
             <div>
-              <button class="btn btn-outline btn-error ">Cancel</button>
+              <button
+                class="btn btn-outline btn-error"
+                onclick={() => setIsCancelModalOpen(sub.id)}
+              >
+                Cancel
+              </button>
             </div>
           </div>
         )}
@@ -49,6 +74,26 @@ const Subscriptions: Component = () => {
       <div class="m-auto">
         <Pagination last={5} current={1} setPage={() => {}} />
       </div>
+
+      <Modal
+        isOpen={isCancelModalOpen() !== null}
+        onClose={() => setIsCancelModalOpen(null)}
+        title="Confirm Cancellation"
+        description={`Are you sure you want to cancel this?`}
+        actions={
+          <>
+            <button class="btn" onclick={() => setIsCancelModalOpen(null)}>
+              Cancel
+            </button>
+            <button
+              class="btn btn-error"
+              onclick={() => cancelSubscription(isCancelModalOpen()!)}
+            >
+              Yes
+            </button>
+          </>
+        }
+      />
     </div>
   );
 };

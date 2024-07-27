@@ -1,3 +1,5 @@
+import { Address } from "./order";
+
 export class User {
   firstName: string;
   lastName: string;
@@ -28,4 +30,5 @@ export type Profile = {
   preferredTheme: string;
   stripeCustomerId: string;
   companyName?: string;
+  addresses: Address[];
 };

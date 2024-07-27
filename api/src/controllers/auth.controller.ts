@@ -1,4 +1,12 @@
-import { BadRequestException, Body, Controller, Get, Post, Request, UseGuards } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Get,
+  Post,
+  Request,
+  UseGuards,
+} from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { JwtService } from '@nestjs/jwt';
 import { ApiBody, ApiTags } from '@nestjs/swagger';
@@ -18,12 +26,12 @@ export class AuthController {
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
     private readonly ee: EventEmitter2,
-  ) { }
+  ) {}
 
   @UseGuards(LocalAuthGuard)
   @Post('login')
   @ApiBody({
-    type: LoginReq
+    type: LoginReq,
   })
   login(@Request() req) {
     return this.authService.login(req.user);
@@ -34,9 +42,11 @@ export class AuthController {
     const rv = await validate({
       email: data.email,
       validateSMTP: false, // cause SMTP mail box check is unreliable (few servers allow it), and this lib doesnt even check ports other than 25
-    })
+    });
     if (!rv.valid) {
-      throw new BadRequestException([`Invalid email: ${rv.validators[rv.reason].reason}`])
+      throw new BadRequestException([
+        `Invalid email: ${rv.validators[rv.reason].reason}`,
+      ]);
     }
 
     return this.authService.register(data);
@@ -45,81 +55,99 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @Get('me')
   me(@Request() req) {
-    return this.usersService.user({ id: req.user.userId })
+    return this.usersService.user({ id: req.user.userId }, false, {
+      profile: {
+        include: { addresses: true },
+      },
+    });
   }
 
   @UseGuards(JwtAuthGuard)
   @Post('request-confirmation-email')
   async requestConfirmationEmail(@Request() req) {
     const user = await this.usersService.user({
-      id: req.user.userId
-    })
+      id: req.user.userId,
+    });
 
-    const payload: JwtPayload = { email: user.email, sub: user.id, expiresAt: nextDay() }
-    const jwt = this.jwtService.sign(payload)
+    const payload: JwtPayload = {
+      email: user.email,
+      sub: user.id,
+      expiresAt: nextDay(),
+    };
+    const jwt = this.jwtService.sign(payload);
 
-    this.ee.emit('user.resend-confirmation', user, jwt)
+    this.ee.emit('user.resend-confirmation', user, jwt);
 
-    return true
+    return true;
   }
 
   @Post('confirm-email')
   async confirmEmail(@Body() body) {
-    const { token } = body
+    const { token } = body;
 
     try {
       // TODO 1 day expiry for token
-      const payload = this.jwtService.verify(token) as { email: string, sub: number }
+      const payload = this.jwtService.verify(token) as {
+        email: string;
+        sub: number;
+      };
 
       await this.usersService.updateUser({
         where: {
           id: payload.sub,
-          emailVerifiedAt: null
+          emailVerifiedAt: null,
         },
         data: {
-          emailVerifiedAt: new Date()
-        }
-      })
+          emailVerifiedAt: new Date(),
+        },
+      });
 
-      return true
+      return true;
     } catch (err) {
-      return false
+      return false;
     }
   }
 
   @Post('request-password-reset')
   async requestPasswordReset(@Body() body: { email: string }) {
-    const { email } = body
+    const { email } = body;
 
     try {
       const user = await this.usersService.user({
-        email
-      })
+        email,
+      });
 
-      const payload: JwtPayload = { email: user.email, sub: user.id, expiresAt: nextDay() }
-      const jwt = this.jwtService.sign(payload)
+      const payload: JwtPayload = {
+        email: user.email,
+        sub: user.id,
+        expiresAt: nextDay(),
+      };
+      const jwt = this.jwtService.sign(payload);
 
-      this.ee.emit('user.reset-password', user, jwt)
+      this.ee.emit('user.reset-password', user, jwt);
 
-      return true
+      return true;
     } catch (err) {
-      return false
+      return false;
     }
   }
 
   @Post('reset-password')
-  async resetPassword(@Body() body: { password: string, token: string }) {
-    const { password, token } = body
+  async resetPassword(@Body() body: { password: string; token: string }) {
+    const { password, token } = body;
 
-    const payload = this.jwtService.verify(token) as { email: string, sub: number }
+    const payload = this.jwtService.verify(token) as {
+      email: string;
+      sub: number;
+    };
 
     this.usersService.updateUser({
       where: {
-        id: payload.sub
+        id: payload.sub,
       },
       data: {
-        password: await this.authService.hashPassword(password)
-      }
-    })
+        password: await this.authService.hashPassword(password),
+      },
+    });
   }
 }

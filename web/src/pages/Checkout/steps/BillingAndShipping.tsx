@@ -2,17 +2,19 @@ import { Component, Show } from "solid-js";
 import TextInput from "~/components/Inputs/TextInput";
 import { useCheckoutContext } from "../context";
 import SelectSearch from "~/components/Inputs/SelectSearch";
-import { createForm, email, required } from "@modular-forms/solid";
+import Select from "~/components/Inputs/Select";
+import { createForm, email, required, setValues } from "@modular-forms/solid";
 import { Address, Step } from "~/types/order";
-
+import { authStore } from "~/stores/auth";
 
 type BillingAndShippingForm = {
-  billingAddress: Address
-  shippingAddress: Address
-  shippingSameAsBilling: boolean
-}
+  billingAddress: Address;
+  shippingAddress: Address;
+  shippingSameAsBilling: boolean;
+};
 
 export const BillingAndShipping: Component<Step> = (props) => {
+  const { user } = authStore;
   const {
     hasPhysical,
     shippingSameAsBilling,
@@ -25,32 +27,66 @@ export const BillingAndShipping: Component<Step> = (props) => {
     updateShipping,
 
     formErrors,
-    setStep
-  } = useCheckoutContext()
+    setStep,
+  } = useCheckoutContext();
 
   const [addressForm, { Form, Field }] = createForm<BillingAndShippingForm>({
     initialValues: {
-      billingAddress: orderStore.billingAddress
+      billingAddress: orderStore.billingAddress,
+    },
+  });
+
+  function autoFill(addressId: number) {
+    const addr = user?.profile?.addresses.find((a) => a.id === addressId);
+    if (addr) {
+      setValues(addressForm, { billingAddress: addr, shippingAddress: addr });
     }
-  })
+  }
 
   const BillingAddressFields = () => (
     <>
+      <Show
+        when={user?.profile?.addresses && user.profile.addresses.length > 0}
+      >
+        <Select
+          placeholder="Select an address"
+          name="address"
+          options={user!.profile!.addresses.map((a) => ({
+            label: `${a.firstName} ${a.lastName} - ${a.address} ${a.address2} ${a.zip} ${a.country}`,
+            value: a.id.toString(),
+          }))}
+          onChange={(addrId) => {
+            autoFill(+addrId.value);
+          }}
+        />
+
+        <div class="divider" />
+      </Show>
       <div class="flex flex-col lg:flex-row md:gap-5">
-        <Field name="billingAddress.firstName" validate={[required("First name is required")]}>
+        <Field
+          name="billingAddress.firstName"
+          validate={[required("First name is required")]}
+        >
           {(field, props) => (
             <TextInput
               {...props}
               label="First Name"
               value={field.value}
-              onChange={(e) => updateBilling("firstName", e.currentTarget.value)}
-              error={formErrors().find(e => e.includes("billingAddress.firstName"))}
+              onChange={(e) =>
+                updateBilling("firstName", e.currentTarget.value)
+              }
+              error={formErrors().find((e) =>
+                e.includes("billingAddress.firstName"),
+              )}
               required
             />
           )}
         </Field>
 
-        <Field name="billingAddress.lastName" validate={[required("Last name is required")]}>
+        <Field
+          name="billingAddress.lastName"
+          validate={[required("Last name is required")]}
+        >
           {(field, props) => (
             <TextInput
               {...props}
@@ -63,7 +99,10 @@ export const BillingAndShipping: Component<Step> = (props) => {
         </Field>
       </div>
 
-      <Field name="billingAddress.email" validate={[required("Email is required"), email("Email is not valid")]}>
+      <Field
+        name="billingAddress.email"
+        validate={[required("Email is required"), email("Email is not valid")]}
+      >
         {(field, props) => (
           <TextInput
             {...props}
@@ -76,7 +115,10 @@ export const BillingAndShipping: Component<Step> = (props) => {
         )}
       </Field>
 
-      <Field name="billingAddress.address" validate={[required("Address is required")]}>
+      <Field
+        name="billingAddress.address"
+        validate={[required("Address is required")]}
+      >
         {(field, props) => (
           <TextInput
             {...props}
@@ -88,7 +130,11 @@ export const BillingAndShipping: Component<Step> = (props) => {
         )}
       </Field>
 
-      <TextInput label="Address 2 (optional)" value={orderStore.billingAddress.address2} onChange={(e) => updateBilling("address2", e.currentTarget.value)} />
+      <TextInput
+        label="Address 2 (optional)"
+        value={orderStore.billingAddress.address2}
+        onChange={(e) => updateBilling("address2", e.currentTarget.value)}
+      />
 
       <div class="flex flex-col lg:flex-row md:gap-5 justify-center">
         <SelectSearch
@@ -97,31 +143,40 @@ export const BillingAndShipping: Component<Step> = (props) => {
           options={countryOptions.latest || []}
           default={countryOptions.latest?.at(0)}
           value={orderStore.billingAddress.country}
-          onChange={() => { }}
-          onValueChange={(e) => { updateBilling("country", e); updateBilling("state", ""); }}
+          onChange={() => {}}
+          onValueChange={(e) => {
+            updateBilling("country", e);
+            updateBilling("state", "");
+          }}
         />
 
-        <Show when={stateOptionsBilling.latest} fallback={
-          <TextInput
-            label="State"
-            value={orderStore.billingAddress.state}
-            onChange={(e) => updateBilling("state", e.currentTarget.value)}
-          />
-        }>
+        <Show
+          when={stateOptionsBilling.latest}
+          fallback={
+            <TextInput
+              label="State"
+              value={orderStore.billingAddress.state}
+              onChange={(e) => updateBilling("state", e.currentTarget.value)}
+            />
+          }
+        >
           <SelectSearch
             name="state"
             label="State/Province"
             options={stateOptionsBilling.latest || []}
             default={stateOptionsBilling.latest?.at(0)}
             value={orderStore.billingAddress.state}
-            onChange={() => { }}
+            onChange={() => {}}
             onValueChange={(value) => updateBilling("state", value)}
           />
         </Show>
       </div>
 
       <div class="flex flex-col md:flex-row md:gap-5 justify-center">
-        <Field name="billingAddress.city" validate={[required("City is required")]}>
+        <Field
+          name="billingAddress.city"
+          validate={[required("City is required")]}
+        >
           {(field, props) => (
             <TextInput
               {...props}
@@ -133,7 +188,10 @@ export const BillingAndShipping: Component<Step> = (props) => {
           )}
         </Field>
 
-        <Field name="billingAddress.zip" validate={[required("Zip/Postal is required")]}>
+        <Field
+          name="billingAddress.zip"
+          validate={[required("Zip/Postal is required")]}
+        >
           {(field, props) => (
             <TextInput
               {...props}
@@ -146,7 +204,10 @@ export const BillingAndShipping: Component<Step> = (props) => {
         </Field>
       </div>
 
-      <Field name="billingAddress.phone" validate={[required("Contact number is required")]}>
+      <Field
+        name="billingAddress.phone"
+        validate={[required("Contact number is required")]}
+      >
         {(field, props) => (
           <TextInput
             {...props}
@@ -159,28 +220,69 @@ export const BillingAndShipping: Component<Step> = (props) => {
         )}
       </Field>
     </>
-  )
+  );
 
   const ShippingAddressFields = () => (
     <>
       <div class="flex flex-col md:flex-row md:gap-5">
-        <TextInput
-          label="First Name"
-          value={orderStore.shippingAddress.firstName}
-          onChange={(e) => updateShipping("firstName", e.currentTarget.value)}
-          error={formErrors().find(e => e.includes("shippingAddress.firstName"))}
-        />
+        <Field
+          name="shippingAddress.firstName"
+          validate={[required("First name is required")]}
+        >
+          {(field, props) => (
+            <TextInput
+              {...props}
+              label="First Name"
+              value={field.value}
+              onChange={(e) =>
+                updateShipping("firstName", e.currentTarget.value)
+              }
+              error={formErrors().find((e) =>
+                e.includes("shippingAddress.firstName"),
+              )}
+              required
+            />
+          )}
+        </Field>
 
-        <TextInput
-          label="Last Name"
-          value={orderStore.shippingAddress.lastName}
-          onChange={(e) => updateShipping("lastName", e.currentTarget.value)}
-        />
+        <Field
+          name="shippingAddress.lastName"
+          validate={[required("Last name is required")]}
+        >
+          {(field, props) => (
+            <TextInput
+              {...props}
+              label="Last Name"
+              value={field.value}
+              onChange={(e) =>
+                updateShipping("lastName", e.currentTarget.value)
+              }
+              required
+            />
+          )}
+        </Field>
       </div>
 
-      <TextInput label="Address 1" value={orderStore.shippingAddress.address} onChange={(e) => updateShipping("address", e.currentTarget.value)} />
+      <Field
+        name="shippingAddress.address"
+        validate={[required("Address is required")]}
+      >
+        {(field, props) => (
+          <TextInput
+            {...props}
+            label="Address 1"
+            value={field.value}
+            onChange={(e) => updateShipping("address", e.currentTarget.value)}
+            required
+          />
+        )}
+      </Field>
 
-      <TextInput label="Address 2 (optional)" value={orderStore.shippingAddress.address2} onChange={(e) => updateShipping("address2", e.currentTarget.value)} />
+      <TextInput
+        label="Address 2 (optional)"
+        value={orderStore.shippingAddress.address2}
+        onChange={(e) => updateShipping("address2", e.currentTarget.value)}
+      />
 
       <div class="flex gap-5 justify-center">
         <SelectSearch
@@ -190,46 +292,70 @@ export const BillingAndShipping: Component<Step> = (props) => {
           default={countryOptions.latest?.at(0)}
           value={orderStore.shippingAddress.country}
           onChange={(e) => updateShipping("country", e.currentTarget.value)}
-          onValueChange={(e) => { updateShipping("country", e); updateShipping("state", ""); }}
+          onValueChange={(e) => {
+            updateShipping("country", e);
+            updateShipping("state", "");
+          }}
         />
 
-        <Show when={stateOptionsShipping.latest} fallback={
-          <TextInput
-            label="State"
-            value={orderStore.shippingAddress.state}
-            onChange={(e) => updateShipping("state", e.currentTarget.value)}
-          />
-        }>
+        <Show
+          when={stateOptionsShipping.latest}
+          fallback={
+            <TextInput
+              label="State"
+              value={orderStore.shippingAddress.state}
+              onChange={(e) => updateShipping("state", e.currentTarget.value)}
+            />
+          }
+        >
           <SelectSearch
             name="state"
             label="State/Province"
             options={stateOptionsShipping.latest || []}
             default={stateOptionsShipping.latest?.at(0)}
             value={orderStore.shippingAddress.state}
-            onChange={() => { }}
+            onChange={() => {}}
             onValueChange={(e) => updateShipping("state", e)}
           />
         </Show>
       </div>
 
       <div class="flex flex-col md:flex-row md:gap-5 justify-center mb-10">
-        <TextInput
-          label="City"
-          value={orderStore.shippingAddress.city}
-          onChange={(e) => updateShipping("city", e.currentTarget.value)}
-        />
+        <Field
+          name="shippingAddress.city"
+          validate={[required("City is required")]}
+        >
+          {(field, props) => (
+            <TextInput
+              {...props}
+              label="City"
+              value={field.value}
+              onChange={(e) => updateShipping("city", e.currentTarget.value)}
+              required
+            />
+          )}
+        </Field>
 
-        <TextInput
-          label="Zip/Postal Code" value={orderStore.shippingAddress.zip}
-          onChange={(e) => updateShipping("zip", e.currentTarget.value)}
-          required
-        />
+        <Field
+          name="shippingAddress.zip"
+          validate={[required("Zip/Postal Code is required")]}
+        >
+          {(field, props) => (
+            <TextInput
+              {...props}
+              label="Zip/Postal Code"
+              value={field.value}
+              onChange={(e) => updateShipping("zip", e.currentTarget.value)}
+              required
+            />
+          )}
+        </Field>
       </div>
     </>
-  )
+  );
 
   return (
-    <Form onSubmit={() => setStep(props.next || 'shipping')}>
+    <Form onSubmit={() => setStep(props.next || "shipping")}>
       <BillingAddressFields />
 
       <div class="mb-5" />
@@ -238,9 +364,13 @@ export const BillingAndShipping: Component<Step> = (props) => {
         <div class="form-control mb-5">
           <label class="cursor-pointer label">
             <span class="label-text">Shipping Address Same As Billing?</span>
-            <input type="checkbox" class="toggle toggle-primary"
+            <input
+              type="checkbox"
+              class="toggle toggle-primary"
               checked={shippingSameAsBilling()}
-              onchange={() => setShippingSameAsBilling(!shippingSameAsBilling())}
+              onchange={() =>
+                setShippingSameAsBilling(!shippingSameAsBilling())
+              }
             />
           </label>
         </div>
@@ -253,7 +383,10 @@ export const BillingAndShipping: Component<Step> = (props) => {
       <button
         class="btn btn-primary"
         type="submit"
-        disabled={addressForm.invalid}>Next</button>
+        disabled={addressForm.invalid}
+      >
+        Next
+      </button>
     </Form>
-  )
-}
+  );
+};

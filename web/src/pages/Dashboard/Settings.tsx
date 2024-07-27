@@ -1,5 +1,6 @@
-import { Component } from "solid-js";
+import { Component, For } from "solid-js";
 import { authStore } from "../../stores/auth";
+import { Icon } from "~/components/icons";
 
 const Settings: Component = () => {
   const { user } = authStore;
@@ -75,13 +76,40 @@ const Settings: Component = () => {
         </div>
       </section>
 
-      <section class="w-96">
+      <section class="w-96 mb-10">
         <div class="form-control">
           <label class="cursor-pointer label">
             <span class="label-text">Receive Marketing Emails</span>
             <input type="checkbox" class="toggle toggle-primary" checked />
           </label>
         </div>
+      </section>
+
+      <section class="w-96">
+        <h2 class="text-3xl font-bold mb-4">Addresses</h2>
+        <For each={user?.profile?.addresses}>
+          {(addr) => {
+            return (
+              <div class="flex justify-between items-center mb-4">
+                <div>
+                  <div>
+                    {addr.firstName} {addr.lastName}
+                  </div>
+                  <div>{addr.address}</div>
+                  <div>{addr.address2}</div>
+                  <div>
+                    {addr.city}, {addr.state}, {addr.zip}, {addr.country}
+                  </div>
+                </div>
+                <div>
+                  <button class="btn btn-error btn-outline">
+                    <Icon.Trash />
+                  </button>
+                </div>
+              </div>
+            );
+          }}
+        </For>
       </section>
     </>
   );

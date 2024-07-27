@@ -2,7 +2,7 @@ import { Product } from "./product";
 import { getPlanPrice, getProductPrice } from "~/stores/products";
 
 export class Subscription {
-  id: number;
+  id: string;
   productId: number;
   product: Product;
   planId: number;

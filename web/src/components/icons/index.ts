@@ -14,9 +14,11 @@ import Search from "./Search";
 import Linux from "./logos/Linux";
 import Refresh from "./Refresh";
 import Trash from "./Trash";
+import Check from "./Check";
 
 export const Icon = {
   Bell,
+  Check,
   ChevronUpDown,
   Cross,
   EllipsesVertical,

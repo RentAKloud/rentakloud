@@ -1,44 +1,46 @@
-import { Injectable } from "@nestjs/common";
-import { Address, Order, Prisma, Profile, User } from "@prisma/client";
-import { PrismaService } from "./prisma.service";
-import { OnEvent } from "@nestjs/event-emitter";
+import { Injectable } from '@nestjs/common';
+import { Address, Order, Prisma, Profile, User } from '@prisma/client';
+import { PrismaService } from './prisma.service';
+import { OnEvent } from '@nestjs/event-emitter';
 
 @Injectable()
 export class UsersService {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService) {}
 
   private exclude<User, Key extends keyof User>(
     user: User,
-    keys: Key[]
+    keys: Key[],
   ): Omit<User, Key> {
     for (let key of keys) {
-      delete user[key]
+      delete user[key];
     }
-    return user
+    return user;
   }
 
   async user(
     userWhereUniqueInput: Prisma.UserWhereUniqueInput,
     withPassword = false,
+    include?: Prisma.UserInclude,
   ): Promise<User | null> {
     const user = await this.prisma.user.findUnique({
       where: userWhereUniqueInput,
+      include,
     });
 
     if (user && !withPassword) {
       //@ts-ignore
-      return this.exclude(user, ['password'])
+      return this.exclude(user, ['password']);
     }
 
-    return user
+    return user;
   }
 
   async userWithProfile(
     userWhereUniqueInput: Prisma.UserWhereUniqueInput,
-  ): Promise<User & { profile: Profile } | null> {
+  ): Promise<(User & { profile: Profile }) | null> {
     return this.prisma.user.findUnique({
       where: userWhereUniqueInput,
-      include: { profile: true }
+      include: { profile: true },
     });
   }
 
@@ -63,7 +65,7 @@ export class UsersService {
     return this.prisma.user.create({
       data: {
         ...data,
-        profile: { create: {} }
+        profile: { create: {} },
       },
     });
   }
@@ -73,7 +75,7 @@ export class UsersService {
     data: Prisma.UserUpdateInput;
   }): Promise<User> {
     const { where, data } = params;
-    data.updatedAt = new Date()
+    data.updatedAt = new Date();
 
     return this.prisma.user.update({
       data,
@@ -101,7 +103,7 @@ export class UsersService {
       email: order.billingEmail,
       // phone: order.billingPhone,
       profile: { connect: { userId: order.userId } },
-    }
+    };
     const shippingAddress: Prisma.AddressCreateInput = {
       firstName: order.shippingFirstName,
       lastName: order.shippingLastName,
@@ -113,19 +115,18 @@ export class UsersService {
       country: order.shippingCountry,
       email: null,
       profile: { connect: { userId: order.userId } },
-    }
+    };
 
     // NOTE: For some reason, we have to use await here otherwise
     // queries dont get executed. and errors block the process, so try catch
     // Error is deliberately thrown in case of duplicate address (or when shipping & billing are same)
     try {
       await this.prisma.address.create({
-        data: billingAddress
-      })
+        data: billingAddress,
+      });
       await this.prisma.address.create({
-        data: shippingAddress
-      })
-    } catch (err) {
-    }
+        data: shippingAddress,
+      });
+    } catch (err) {}
   }
 }

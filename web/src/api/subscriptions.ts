@@ -30,6 +30,9 @@ class SubscriptionsApi {
       isTrial,
     });
   }
+
+  //@ts-ignore
+  static async cancelSubscription(id: string): ApiResponse<Subscription> {}
 }
 
 export default SubscriptionsApi;
