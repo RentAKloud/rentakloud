@@ -58,8 +58,16 @@ function addToCart(item: Product, qty: number = 1) {
   localStorage.setItem("cart", JSON.stringify(cart));
 }
 
-function removeFromCart(item: Product) {
-  cart.items = cart.items.filter((p) => p.productId !== item.id);
+function removeFromCart(item: CartItem) {
+  cart.items = cart.items.filter((p) =>
+    p.planId
+      ? !(
+          p.productId === item.productId &&
+          p.planId === item.planId &&
+          p.priceId === item.priceId
+        )
+      : p.productId !== item.productId,
+  );
   localStorage.setItem("cart", JSON.stringify(cart));
 }
 

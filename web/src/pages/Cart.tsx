@@ -106,7 +106,7 @@ const Cart: Component = () => {
                         <td>
                           <button
                             class="btn btn-ghost btn-circle text-red-500"
-                            onclick={() => removeFromCart(product())}
+                            onclick={() => removeFromCart(item)}
                           >
                             <TrashIcon />
                           </button>
