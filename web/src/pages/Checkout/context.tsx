@@ -325,6 +325,7 @@ export const CheckoutProvider: Component<{ children: JSXElement }> = (
         planId: subscriptionItems[i].planId!,
         priceId: subscriptionItems[i].priceId!,
       }));
+      // TODO should create instance instantly or after verifying subscription status?
       await InstancesApi.createMany(subData);
       const secrets = subResponses.map((x) => x.result!.clientSecret);
       setSubClientSecrets(secrets);

@@ -49,18 +49,22 @@ export class PaymentsService {
         },
       ],
       // coupon: couponId,
-      default_payment_method,
       payment_behavior: 'default_incomplete',
       payment_settings: { save_default_payment_method: 'on_subscription' },
       expand: ['latest_invoice.payment_intent'],
       metadata: { email },
     };
 
+    if (default_payment_method) {
+      data.default_payment_method = default_payment_method;
+    }
+
     if (isTrial) {
       data.trial_period_days = 7;
     }
 
     const subscription = await this.stripe.subscriptions.create(data);
+    console.log(subscription);
 
     return {
       customer,

@@ -77,6 +77,7 @@ export class SubscriptionsController {
       data.email,
       data.priceId,
       data.isTrial,
+      data.paymentMethodId,
     );
 
     const subscription = await this.subscriptionsService.createSubscription({
