@@ -28,7 +28,12 @@ export class PaymentsService {
     this.stripe = new Stripe(stripeKey, { apiVersion: '2024-04-10' });
   }
 
-  async createSubscription(email: string, priceId: string, isTrial?: boolean) {
+  async createSubscription(
+    email: string,
+    priceId: string,
+    isTrial?: boolean,
+    default_payment_method?: string,
+  ) {
     const customer = await this.findOrCreateCustomer(email);
 
     const ephemeralKey = await this.stripe.ephemeralKeys.create(
@@ -44,6 +49,7 @@ export class PaymentsService {
         },
       ],
       // coupon: couponId,
+      default_payment_method,
       payment_behavior: 'default_incomplete',
       payment_settings: { save_default_payment_method: 'on_subscription' },
       expand: ['latest_invoice.payment_intent'],
@@ -143,7 +149,11 @@ export class PaymentsService {
     }
   }
 
-  async createPaymentIntent(email: string, amount: number) {
+  async createPaymentIntent(
+    email: string,
+    amount: number,
+    payment_method?: string,
+  ) {
     const customer = await this.findOrCreateCustomer(email);
     const ephemeralKey = await this.stripe.ephemeralKeys.create(
       { customer: customer.id },
@@ -153,6 +163,10 @@ export class PaymentsService {
     const paymentIntent = await this.stripe.paymentIntents.create({
       amount: Math.round(amount * 100),
       currency: 'usd',
+      payment_method,
+      return_url:
+        this.configService.get('FRONT_URL') + '/checkout?step=payment',
+      confirm: true,
       customer: customer.id,
       automatic_payment_methods: {
         enabled: true,
@@ -163,6 +177,7 @@ export class PaymentsService {
       customer,
       ephemeralKey,
       clientSecret: paymentIntent.client_secret,
+      status: paymentIntent.status,
     };
   }
 

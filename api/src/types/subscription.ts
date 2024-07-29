@@ -4,4 +4,5 @@ export class CreateSubscriptionReq {
   planId: number;
   priceId: string;
   isTrial?: boolean;
+  paymentMethodId?: string;
 }

@@ -150,6 +150,10 @@ export type CheckoutContextProps = {
   stateOptionsBilling: Resource<SelectOption[] | null>;
   stateOptionsShipping: Resource<SelectOption[] | null>;
   availableShippingMethods: Accessor<ShippingMethod[]>;
+  setAddress: (
+    key: "billingAddress" | "shippingAddress",
+    address: Address,
+  ) => void;
   updateBilling: (key: Part<Address, keyof Address>, val: string) => void;
   updateShipping: (key: Part<Address, keyof Address>, val: string) => void;
   updateShippingMethod: (val: ShippingMethod) => void;
@@ -163,6 +167,9 @@ export type CheckoutContextProps = {
   setSubscriptionsPaid: Setter<boolean>;
   isCardInfoComplete: Accessor<boolean>;
   setIsCardInfoComplete: Setter<boolean>;
+  selectedPaymentMethod: Accessor<string | null>;
+  setSelectedPaymentMethod: Setter<string | null>;
+
   submit: () => void;
   inTransit: Accessor<boolean>;
   setInTransit: Setter<boolean>;

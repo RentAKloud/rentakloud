@@ -188,7 +188,9 @@ export class OrdersController {
         (i) => i.quantity > products.find((p) => p.id === i.productId).stock,
       );
     if (outOfStock) {
-      return new BadRequestException(`${outOfStock.productId} is out of stock`);
+      return new BadRequestException(
+        `${products.find((p) => p.id === outOfStock.productId).name} is out of stock`,
+      );
     }
 
     // Calculate order total amount. This amount is used for confirmCardPayment at frontend.

@@ -85,6 +85,9 @@ export const CheckoutProvider: Component<{ children: JSXElement }> = (
   const [subscriptionsPaid, setSubscriptionsPaid] = createSignal<boolean>();
   const [isCardInfoComplete, setIsCardInfoComplete] =
     createSignal<boolean>(false);
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = createSignal<
+    string | null
+  >(null);
 
   const [countryOptions] = createResource(async () => {
     const { result, error } =
@@ -153,6 +156,15 @@ export const CheckoutProvider: Component<{ children: JSXElement }> = (
       checkoutSuccessful();
     }
   });
+
+  function setAddress(
+    key: "billingAddress" | "shippingAddress",
+    address: Address,
+  ) {
+    setOrderStore({
+      [key]: address,
+    });
+  }
 
   function updateBilling(key: Part<Address, keyof Address>, val: string) {
     setOrderStore({
@@ -267,9 +279,18 @@ export const CheckoutProvider: Component<{ children: JSXElement }> = (
       const resp2 = await PaymentsApi.createPaymentIntent(
         user!.email,
         order()!.amount!,
+        selectedPaymentMethod(),
       );
+
+      // succeeded means we dont need to confirmCardPayment
       if (!resp2.error) {
-        setClientSecret(resp2.result!.clientSecret);
+        if (resp2.result?.status !== "succeeded") {
+          setClientSecret(resp2.result!.clientSecret);
+        } else {
+          setPaymentSuccess(true);
+        }
+      } else {
+        setInTransit(false);
       }
     }
 
@@ -294,6 +315,7 @@ export const CheckoutProvider: Component<{ children: JSXElement }> = (
           i.planId!,
           i.priceId!,
           !!i.isTrial,
+          selectedPaymentMethod(),
         );
       });
       const subResponses = await Promise.all(subResponsePromises);
@@ -333,6 +355,7 @@ export const CheckoutProvider: Component<{ children: JSXElement }> = (
         stateOptionsBilling,
         stateOptionsShipping,
         availableShippingMethods,
+        setAddress,
         updateBilling,
         updateShipping,
         updateShippingMethod,
@@ -346,6 +369,9 @@ export const CheckoutProvider: Component<{ children: JSXElement }> = (
         setSubscriptionsPaid,
         isCardInfoComplete,
         setIsCardInfoComplete,
+        selectedPaymentMethod,
+        setSelectedPaymentMethod,
+
         submit,
         inTransit,
         setInTransit,

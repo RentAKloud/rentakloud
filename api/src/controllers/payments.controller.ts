@@ -55,15 +55,20 @@ export class PaymentsController {
 
   @Post('create-payment-intent')
   async createPaymentIntent(@Body() body) {
-    const { email, amount } = body;
+    const { email, amount, paymentMethodId } = body;
 
-    const { clientSecret, ephemeralKey, customer } =
-      await this.paymentsService.createPaymentIntent(email, amount);
+    const { clientSecret, ephemeralKey, customer, status } =
+      await this.paymentsService.createPaymentIntent(
+        email,
+        amount,
+        paymentMethodId,
+      );
 
     return {
       clientSecret,
       ephemeralKey: ephemeralKey.secret,
       customer: customer.id,
+      status,
     };
   }
 

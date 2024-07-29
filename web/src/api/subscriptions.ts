@@ -21,6 +21,7 @@ class SubscriptionsApi {
     planId: number,
     priceId: string,
     isTrial: boolean,
+    paymentMethodId?: string | null,
   ): ApiResponse<CreateSubscriptionResponse> {
     return await HttpService.post("/subscriptions", {
       email: userEmail,
@@ -28,6 +29,7 @@ class SubscriptionsApi {
       planId,
       priceId,
       isTrial,
+      paymentMethodId,
     });
   }
 

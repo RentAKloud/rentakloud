@@ -25,6 +25,7 @@ export const BillingAndShipping: Component<Step> = (props) => {
     stateOptionsShipping,
     updateBilling,
     updateShipping,
+    setAddress,
 
     formErrors,
     setStep,
@@ -40,6 +41,8 @@ export const BillingAndShipping: Component<Step> = (props) => {
     const addr = user?.profile?.addresses.find((a) => a.id === addressId);
     if (addr) {
       setValues(addressForm, { billingAddress: addr, shippingAddress: addr });
+      setAddress("billingAddress", addr);
+      setAddress("shippingAddress", addr);
     }
   }
 

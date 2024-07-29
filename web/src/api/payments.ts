@@ -6,6 +6,7 @@ export type CreatePaymentIntent = {
   clientSecret: string;
   ephemeralKey: string;
   customer: string;
+  status: "succeeded" | "requires_action";
 };
 
 type PaymentMethod = {
@@ -30,10 +31,12 @@ class PaymentsApi {
   static async createPaymentIntent(
     userEmail: string,
     orderAmount: number,
+    paymentMethodId?: string | null,
   ): ApiResponse<CreatePaymentIntent> {
     return await HttpService.post("/payments/create-payment-intent", {
       email: userEmail,
       amount: orderAmount,
+      paymentMethodId,
     });
   }
 
