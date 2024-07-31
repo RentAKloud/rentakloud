@@ -25,6 +25,7 @@ import { BullModule } from '@nestjs/bull';
 import { BullBoardModule } from '@bull-board/nestjs';
 import { ExpressAdapter } from '@bull-board/express';
 import { ConfigsModule } from './modules/configs.module';
+import { RedisModule } from '@liaoliaots/nestjs-redis';
 
 @Module({
   imports: [
@@ -36,6 +37,22 @@ import { ConfigsModule } from './modules/configs.module';
     EventEmitterModule.forRoot(),
     MailModule,
     PrometheusModule.register(),
+    RedisModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: async (config: ConfigService) => ({
+        config: [
+          {
+            namespace: 'pub',
+            password: config.get('VALKEY_PASSWORD'),
+          },
+          {
+            namespace: 'sub',
+            password: config.get('VALKEY_PASSWORD'),
+          },
+        ],
+      }),
+    }),
     BullModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],

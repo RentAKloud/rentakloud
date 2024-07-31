@@ -1,36 +1,55 @@
-import { Injectable } from "@nestjs/common";
-import { Prisma, Option } from "@prisma/client";
-import { PrismaService } from "./prisma.service";
-import { JsonValue } from "@prisma/client/runtime/library";
-import { AppSettings } from "src/types/common.dto";
-import { EventEmitter2 } from "@nestjs/event-emitter";
+import { Injectable } from '@nestjs/common';
+import { Prisma, Option } from '@prisma/client';
+import { PrismaService } from './prisma.service';
+import { JsonValue } from '@prisma/client/runtime/library';
+import { AppSettings } from 'src/types/common.dto';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { RedisService } from '@liaoliaots/nestjs-redis';
+import Redis from 'ioredis';
 
 @Injectable()
 export class OptionsService {
-  static appSettings: AppSettings
+  static appSettings: AppSettings;
+  private publisher: Redis;
+  private subscriber: Redis;
+
   private async loadAppSettings(appSettings?: AppSettings) {
     if (!appSettings) {
-      appSettings = await this.option({ key: 'app-settings' }) as AppSettings
+      appSettings = (await this.option({ key: 'app-settings' })) as AppSettings;
     }
-    OptionsService.appSettings = appSettings
-    this.ee.emit('app-settings.changed')
+    OptionsService.appSettings = appSettings;
+    this.ee.emit('app-settings.changed');
   }
 
   constructor(
     private prisma: PrismaService,
     private ee: EventEmitter2,
-    ) {
-    this.loadAppSettings()
+    private readonly redisService: RedisService,
+  ) {
+    this.publisher = this.redisService.getClient('pub');
+    this.subscriber = this.redisService.getClient('sub');
+
+    this.subscriber.subscribe('options');
+    this.subscriber.on('message', (channel, message) => {
+      if (channel === 'options') {
+        const o = JSON.parse(message);
+        if (o.key === 'app-settings') {
+          this.loadAppSettings(o.value as AppSettings);
+        }
+      }
+    });
+
+    this.loadAppSettings();
   }
 
   private exclude<Option, Key extends keyof Option>(
     option: Option,
-    keys: Key[]
+    keys: Key[],
   ): Omit<Option, Key> {
     for (let key of keys) {
-      delete option[key]
+      delete option[key];
     }
-    return option
+    return option;
   }
 
   async option(
@@ -38,14 +57,14 @@ export class OptionsService {
   ): Promise<JsonValue | null> {
     const option = await this.prisma.option.findUnique({
       where: optionWhereUniqueInput,
-      select: { value: true }
+      select: { value: true },
     });
 
     if (!option) {
-      return null
+      return null;
     }
 
-    return option.value
+    return option.value;
   }
 
   async options(params: {
@@ -67,7 +86,7 @@ export class OptionsService {
 
   async createOption(data: Prisma.OptionCreateInput): Promise<Option> {
     return this.prisma.option.create({
-      data
+      data,
     });
   }
 
@@ -82,12 +101,15 @@ export class OptionsService {
       where,
     });
 
-    // TODO will have to do it using redis pub/sub so multi threading using pm2 doesnt causes inconsistency
     if (where.key === 'app-settings') {
-      this.loadAppSettings(rv.value as AppSettings)
+      this.publisher.publish(
+        'options',
+        JSON.stringify({ key: 'app-settings', value: rv.value }),
+      );
+      // this.loadAppSettings(rv.value as AppSettings);
     }
 
-    return rv
+    return rv;
   }
 
   async deleteOption(where: Prisma.OptionWhereUniqueInput): Promise<Option> {
