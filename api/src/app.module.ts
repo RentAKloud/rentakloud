@@ -26,6 +26,7 @@ import { BullBoardModule } from '@bull-board/nestjs';
 import { ExpressAdapter } from '@bull-board/express';
 import { ConfigsModule } from './modules/configs.module';
 import { RedisModule } from '@liaoliaots/nestjs-redis';
+import { SseModule } from './modules/sse.module';
 
 @Module({
   imports: [
@@ -88,6 +89,7 @@ import { RedisModule } from '@liaoliaots/nestjs-redis';
     UsersModule,
     OptionsModule,
     StatsModule,
+    SseModule,
   ],
   controllers: [AppController, PublicController],
   providers: [AppService],

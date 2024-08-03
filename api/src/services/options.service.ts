@@ -6,6 +6,7 @@ import { AppSettings } from 'src/types/common.dto';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { RedisService } from '@liaoliaots/nestjs-redis';
 import Redis from 'ioredis';
+import { SseService } from './sse.service';
 
 @Injectable()
 export class OptionsService {
@@ -25,6 +26,7 @@ export class OptionsService {
     private prisma: PrismaService,
     private ee: EventEmitter2,
     private readonly redisService: RedisService,
+    private readonly sseService: SseService,
   ) {
     this.publisher = this.redisService.getClient('pub');
     this.subscriber = this.redisService.getClient('sub');
@@ -106,7 +108,7 @@ export class OptionsService {
         'options',
         JSON.stringify({ key: 'app-settings', value: rv.value }),
       );
-      // this.loadAppSettings(rv.value as AppSettings);
+      this.sseService.emit({ type: 'update', data: 'app-settings' });
     }
 
     return rv;
