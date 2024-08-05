@@ -15,6 +15,8 @@ import Linux from "./logos/Linux";
 import Refresh from "./Refresh";
 import Trash from "./Trash";
 import Check from "./Check";
+import Reload from "./Reload";
+import Power from "./Power";
 
 export const Icon = {
   Bell,
@@ -29,7 +31,9 @@ export const Icon = {
   Mail,
   Menu,
   PictureInPicture,
+  Power,
   Refresh,
+  Reload,
   Search,
   Trash,
   UserCircle,

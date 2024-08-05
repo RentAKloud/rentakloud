@@ -11,30 +11,31 @@ import { LoginForm } from "~/types/auth";
 import TextInput from "~/components/Inputs/TextInput";
 
 const Login: Component = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   async function loginHandler(values: LoginForm) {
-
-    const error = await login(values.email, values.password)
+    const error = await login(values.email, values.password);
 
     if (error) {
       if (error.message === "Unauthorized") {
-        throw new FormError<LoginForm>("Invalid email or password")
+        throw new FormError<LoginForm>("Invalid email or password");
       } else {
-        throw new FormError("Something went wrong. Please contact support or try again later.")
+        throw new FormError(
+          "Something went wrong. Please contact support or try again later.",
+        );
       }
     }
   }
 
   createEffect(() => {
-    const { user } = authStore
+    const { user } = authStore;
     if (user) {
-      const [params] = useSearchParams()
-      navigate(params.next || "/dashboard")
+      const [params] = useSearchParams();
+      navigate(params.next || "/dashboard");
     }
-  })
+  });
 
-  const [loginForm, { Form, Field }] = createForm<LoginForm>()
+  const [loginForm, { Form, Field }] = createForm<LoginForm>();
 
   return (
     <DefaultLayout>
@@ -78,17 +79,26 @@ const Login: Component = () => {
           </Field>
 
           <label>
-            <Link href="/forgot-password" class="label-text link link-hover">Forgot password?</Link>
+            <Link href="/forgot-password" class="label-text link link-hover">
+              Forgot password?
+            </Link>
           </label>
 
           <label>
-            Don't have an account? <Link href={`/register${location.search}`} class="link link-hover">Register now</Link>.
+            Don't have an account?{" "}
+            <Link href={`/register${location.search}`} class="link link-hover">
+              Register now
+            </Link>
+            .
           </label>
 
           <div class="form-control mt-6">
             <button
-              class="btn btn-primary" type="submit"
-              disabled={!loginForm.dirty || loginForm.invalid || loginForm.submitting}
+              class="btn btn-primary"
+              type="submit"
+              disabled={
+                !loginForm.dirty || loginForm.invalid || loginForm.submitting
+              }
             >
               Login
             </button>
@@ -104,14 +114,15 @@ const Login: Component = () => {
 
         <Link
           href={`https://github.com/login/oauth/authorize?client_id=${oauth.github.CLIENT_ID}`}
-          target="_blank" class="btn btn-ghost border-black gap-2"
+          target="_blank"
+          class="btn btn-ghost border-black gap-2"
         >
           <GithubIcon classList="w-7" />
           Login
         </Link>
       </HeroWithForm>
     </DefaultLayout>
-  )
-}
+  );
+};
 
-export default Login
+export default Login;

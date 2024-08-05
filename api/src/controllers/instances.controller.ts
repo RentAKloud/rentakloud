@@ -55,7 +55,7 @@ export class InstancesController {
   @Get('')
   async myInstances(
     @Request() req,
-    @Query() { sortBy, page, pageSize, q }: InstancesQuery,
+    @Query() { sortBy, sortOrder, page, pageSize, q }: InstancesQuery,
   ) {
     const user = await this.usersService.user({ id: req.user.userId });
 
@@ -76,7 +76,7 @@ export class InstancesController {
     };
 
     if (sortBy) {
-      query.orderBy = { [sortBy]: 'asc' };
+      query.orderBy = { [sortBy]: sortOrder || 'asc' };
     }
 
     return this.instancesService.instances(query);

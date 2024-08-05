@@ -7,6 +7,7 @@ import {
   createEffect,
   createResource,
   createSignal,
+  onMount,
 } from "solid-js";
 import { Link, useSearchParams } from "@solidjs/router";
 import Card from "~/components/Card/Card";
@@ -24,27 +25,33 @@ import { action } from "../InstanceDashboard/context";
 import { dateToDaysAgo } from "~/utils";
 
 const Instances: Component = () => {
-  const q = new URLSearchParams([["sort-by", "createdAt"]]);
   const [params, setParams] = useSearchParams();
-  const searchQuery = () => params.q || "";
 
-  createEffect(() => {
-    // if search query has changed, we also want to reset to first page
-    if (q.get("q") !== searchQuery()) {
-      q.set("q", searchQuery());
-    }
-
-    q.set("sort-by", params["sort-by"]);
-
-    refetch();
+  setParams({
+    "sort-by": params["sort-by"] || "createdAt",
+    "sort-order": params["sort-order"] || "desc",
   });
 
-  const [instances, { refetch }] = createResource(async () => {
-    const { result, error } = await InstancesApi.all(q);
+  const searchQuery = () => params.q || "";
+  const paramChangeSig = () =>
+    params.q + params["sort-by"] + params["sort-order"];
+
+  const [instances, { refetch }] = createResource(paramChangeSig, async () => {
+    const { result, error } = await InstancesApi.all(
+      new URLSearchParams(params),
+    );
     if (error) throw error;
     return result;
   });
   const [activeView, setActiveView] = createSignal<"grid" | "list">("grid");
+
+  function updateSort(value: string) {
+    const values = value.split("-");
+    setParams({
+      "sort-by": values[0],
+      "sort-order": values[1],
+    });
+  }
 
   return (
     <>
@@ -86,15 +93,15 @@ const Instances: Component = () => {
 
               <select
                 class="select select-bordered w-full max-w-xs"
-                onchange={(e) =>
-                  setParams({ "sort-by": e.currentTarget.value })
-                }
+                onchange={(e) => updateSort(e.currentTarget.value)}
+                value={`${params["sort-by"]}-${params["sort-order"]}`}
               >
                 <option disabled selected>
                   Sort By
                 </option>
-                <option value="createdAt">Created At</option>
-                <option value="title">Name</option>
+                <option value="createdAt-desc">Newest</option>
+                <option value="createdAt-asc">Oldest</option>
+                <option value="title-asc">Name</option>
               </select>
 
               {/* View mode */}
@@ -208,6 +215,8 @@ const GridView: Component<{ instances: Instance[]; refetch: Function }> = (
                   >
                     {instance.status}
                   </span>
+                  <span>&bull;</span>
+                  <span>{instance.hostName}</span>
                 </div>
                 {/* <p>Instance ID: {instance.id}</p> */}
                 {/* <p>{instance.product.shortDescription}</p> */}
@@ -323,10 +332,16 @@ const ListView: Component<{ instances: Instance[] }> = (props) => {
                     <div class="flex items-center space-x-3">
                       <div class="avatar">
                         <div class="mask mask-squircle w-12 h-12">
-                          <img
+                          {/* <img
                             src={instance.subscription.product.images[0]?.src}
                             alt={instance.subscription.product.images[0]?.alt}
-                          />
+                          /> */}
+                          <Show
+                            when={os === "windows"}
+                            fallback={<Icon.Linux class="w-7 h-7" />}
+                          >
+                            <Icon.Windows />
+                          </Show>
                         </div>
                       </div>
                       <div>

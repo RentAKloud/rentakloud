@@ -50,6 +50,11 @@ export class InstancesQuery {
   )
   sortBy: string;
 
+  @Expose({ name: 'sort-order' })
+  @IsOptional()
+  @Transform(({ value }) => (['asc', 'desc'].includes(value) ? value : ''))
+  sortOrder: string;
+
   @IsOptional()
   @Transform(({ value }) => +value)
   page: number;
