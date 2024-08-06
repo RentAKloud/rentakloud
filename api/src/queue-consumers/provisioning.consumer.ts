@@ -7,7 +7,7 @@ import { InstancesService } from '../services/instances.service';
 export type ProvisioningJob = Instance & {
   config: Config;
   user: User;
-  subscription: Subscription & { product: { slug: string } };
+  subscription: Subscription & { product: { slug: string; name: string } };
 };
 
 @Processor('provisioning')

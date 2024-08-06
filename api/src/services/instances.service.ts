@@ -6,7 +6,6 @@ import {
   Instance,
   User,
   Subscription,
-  Product,
 } from '@prisma/client';
 import { PrismaService } from './prisma.service';
 import { EventEmitter2 } from '@nestjs/event-emitter';
@@ -89,7 +88,7 @@ export class InstancesService {
             subscription: {
               include: {
                 product: {
-                  select: { slug: true },
+                  select: { slug: true, name: true },
                 },
               },
             },
@@ -165,7 +164,7 @@ export class InstancesService {
     instance: Instance & {
       config: Config;
       user: User;
-      subscription: Subscription & { product: { slug: string } };
+      subscription: Subscription & { product: { slug: string; name: string } };
     },
   ): Promise<number> {
     const d = {
@@ -212,6 +211,7 @@ export class InstancesService {
       await this.updateInstance({
         where: { id: instance.id, vmId },
         data: {
+          title: `${instance.subscription.product.name} ${vmId}`,
           hostName: vmHost,
           hostIp,
           wsPort: 7000 + +slot,
