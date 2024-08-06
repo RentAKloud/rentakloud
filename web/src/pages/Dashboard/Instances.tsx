@@ -4,10 +4,8 @@ import {
   Match,
   Show,
   Switch,
-  createEffect,
   createResource,
   createSignal,
-  onMount,
 } from "solid-js";
 import { Link, useSearchParams } from "@solidjs/router";
 import Card from "~/components/Card/Card";
