@@ -183,7 +183,7 @@ export class InstancesService {
     const customerId = instance.user.id + 5000;
     const vmId = d.id;
 
-    const cmd1 = `/home/scripts/crvminfo.sh ${vmId} ${customerId} ${d.cpus} ${d.ram * K} ${d.ssd * K} ${vmType}`;
+    const cmd1 = `rk-crvminfo.sh ${vmId} ${customerId} ${d.cpus} ${d.ram * K} ${d.ssd * K} ${vmType}`;
     const { status, output } = await this._script(cmd1);
 
     if (status) {
@@ -194,7 +194,7 @@ export class InstancesService {
     }
 
     /** Step 2: Get provision target server and slot **/
-    const cmd2 = `/home/scripts/getavailslot.sh`;
+    const cmd2 = `rk-getavailslot.sh`;
     const { status: status2, output: output2 } = await this._script(cmd2);
 
     if (status2) {
@@ -223,7 +223,7 @@ export class InstancesService {
     }
 
     // Step 3: Call distvms.sh
-    const cmd = `/home/scripts/distvms.sh ${vmId} ${vmHost} ${hostIp} ${slot}`;
+    const cmd = `rk-distvms.sh ${vmId} ${vmHost} ${hostIp} ${slot}`;
     const { status: status3, output: output3 } = await this._script(cmd);
 
     if (status3) {
@@ -276,10 +276,10 @@ export class InstancesService {
     )[0];
 
     const actions = {
-      start: `/home/scripts/start-vm-onhost.sh ${vmId}`,
-      stop: `/home/scripts/powerdown-vm-onhost.sh ${vmId}`,
-      restart: `/home/scripts/reboot-vm-onhost.sh ${vmId}`,
-      'start-ssh': `/home/scripts/start-web-ssh.sh ${vmId}`,
+      start: `rk-start-vm-onhost.sh ${vmId}`,
+      stop: `rk-powerdown-vm-onhost.sh ${vmId}`,
+      restart: `rk-reboot-vm-onhost.sh ${vmId}`,
+      'start-ssh': `rk-start-web-ssh.sh ${vmId}`,
     };
 
     const { status, output, error } = await this._script(actions[action]);
