@@ -64,7 +64,6 @@ export class PaymentsService {
     }
 
     const subscription = await this.stripe.subscriptions.create(data);
-    console.log(subscription);
 
     return {
       customer,

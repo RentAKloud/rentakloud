@@ -8,6 +8,10 @@ export type ProvisioningJob = Instance & {
   config: Config;
   user: User;
   subscription: Subscription & { product: { slug: string; name: string } };
+  //
+  hostName?: string;
+  hostIp?: string;
+  slot?: number;
 };
 
 @Processor('provisioning')
@@ -20,8 +24,12 @@ export class ProvisioningConsumer {
   // to 0 stops all jobs from being processed at all
   @Process({ concurrency: 1 })
   async provision(job: Job<ProvisioningJob>) {
-    const n = await this.instancesService.initProvisioning(job.data);
-    job.progress(n);
+    const n = await this.instancesService.initProvisioning(
+      job.data,
+      job.progress(),
+      job.update,
+    );
+    await job.progress(n);
 
     if (n !== 100) {
       throw new Error(`job failed at ${n}%`);

@@ -161,12 +161,12 @@ export class InstancesService {
   }
 
   async initProvisioning(
-    instance: Instance & {
-      config: Config;
-      user: User;
-      subscription: Subscription & { product: { slug: string; name: string } };
-    },
+    instance: ProvisioningJob,
+    progress: number,
+    update: (data: Partial<ProvisioningJob>) => Promise<void>,
   ): Promise<number> {
+    this.logger.debug(`Provisioning ${instance.vmId} progress=${progress}`);
+
     const d = {
       id: instance.vmId,
       title: instance.title,
@@ -176,64 +176,86 @@ export class InstancesService {
       hdd: instance.config.hdd,
     };
 
-    // Step 1: Save VM info in db.json
-    const K = 1024;
     const vmType =
       instance.subscription.product.slug === 'rak-daas' ? 'w10pro' : 'deb12';
     const customerId = instance.user.id + 5000;
     const vmId = d.id;
 
-    const cmd1 = `rk-crvminfo.sh ${vmId} ${customerId} ${d.cpus} ${d.ram * K} ${d.ssd * K} ${vmType}`;
-    const { status, output } = await this._script(cmd1);
+    // Step 1: Save VM info in db.json
+    if (progress === 0) {
+      const K = 1024;
+      const cmd1 = `rk-crvminfo.sh ${vmId} ${customerId} ${d.cpus} ${d.ram * K} ${d.ssd * K} ${vmType}`;
+      const { status, output } = await this._script(cmd1);
 
-    if (status) {
-      this.logger.debug('1. crvminfo.sh done');
-    } else {
-      this.logger.error('1. crvminfo failed', output);
-      return 0;
+      if (status) {
+        this.logger.debug(`1. crvminfo.sh done ${vmId}`);
+        progress = 25;
+      } else {
+        this.logger.error('1. crvminfo failed', output);
+        return progress;
+      }
     }
 
     /** Step 2: Get provision target server and slot **/
-    const cmd2 = `rk-getavailslot.sh`;
-    const { status: status2, output: output2 } = await this._script(cmd2);
+    let availSlotOutput: string;
+    let vmHost: string, hostIp: string, slot: string;
+    if (progress === 25) {
+      const cmd2 = `rk-getavailslot.sh`;
+      const { status: status2, output: _output } = await this._script(cmd2);
+      availSlotOutput = _output;
 
-    if (status2) {
-      this.logger.debug('2. getavailslot.sh done');
-    } else {
-      this.logger.error('2. getavailslot failed');
-      return 25;
+      if (status2) {
+        // slot is just an index used for ports
+        [vmHost, hostIp, slot] = availSlotOutput?.split('\n');
+        update({ hostName: vmHost, hostIp, slot: +slot });
+
+        this.logger.debug(`2. getavailslot.sh done ${vmId}`);
+        progress = 50;
+      } else {
+        this.logger.error('2. getavailslot failed', availSlotOutput);
+        return progress;
+      }
     }
 
-    // slot is just an index used for ports
-    const [vmHost, hostIp, slot] = output2.split('\n');
+    if (progress === 50) {
+      try {
+        if (!availSlotOutput) {
+          vmHost = instance.hostName;
+          hostIp = instance.hostIp;
+          slot = instance.slot.toString();
+        }
 
-    try {
-      await this.updateInstance({
-        where: { id: instance.id, vmId },
-        data: {
-          title: `${instance.subscription.product.name} ${vmId}`,
-          hostName: vmHost,
-          hostIp,
-          wsPort: 7000 + +slot,
-          vncPath: `/vm${vmId}`,
-        },
-      });
-    } catch (err) {
-      return 50;
+        await this.updateInstance({
+          where: { id: instance.id, vmId },
+          data: {
+            title: `${instance.subscription.product.name} ${vmId}`,
+            hostName: vmHost,
+            hostIp,
+            wsPort: 7000 + +slot,
+            vncPath: `/vm${vmId}`,
+          },
+        });
+        progress = 75;
+      } catch (err) {
+        return progress;
+      }
     }
 
     // Step 3: Call distvms.sh
-    const cmd = `rk-distvms.sh ${vmId} ${vmHost} ${hostIp} ${slot}`;
-    const { status: status3, output: output3 } = await this._script(cmd);
+    if (progress === 75) {
+      const cmd = `rk-distvms.sh ${vmId} ${vmHost} ${hostIp} ${slot}`;
+      const { status: status3, output: output3 } = await this._script(cmd);
 
-    if (status3) {
-      this.logger.debug('3. distvms done', output3);
-    } else {
-      this.logger.error('3. distvms failed', output3);
-      return 75;
+      if (status3) {
+        this.logger.debug(`3. distvms done ${vmId}`);
+        progress = 100;
+      } else {
+        this.logger.error('3. distvms failed', output3);
+        return progress;
+      }
     }
 
-    return 100;
+    return progress;
   }
 
   _script(cmd: string): Promise<{
