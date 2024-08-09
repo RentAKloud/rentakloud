@@ -17,10 +17,18 @@ import Trash from "./Trash";
 import Check from "./Check";
 import Reload from "./Reload";
 import Power from "./Power";
+import Cart from "./Cart";
+import ChevronDown from "./ChevronDown";
+import ChevronLeft from "./ChevronLeft";
+import ChevronRight from "./ChevronRight";
 
 export const Icon = {
   Bell,
+  Cart,
   Check,
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
   ChevronUpDown,
   Cross,
   EllipsesVertical,

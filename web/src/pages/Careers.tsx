@@ -9,11 +9,11 @@ import HeroWithBg from "~/components/Hero/HeroWithBg";
 import { Icon } from "~/components/icons";
 
 type ContactForm = {
-  email: string
-  name: string
-  subject: string
-  body: string
-}
+  email: string;
+  name: string;
+  subject: string;
+  body: string;
+};
 
 const Careers: Component<{}> = () => {
   async function submitHandler(values: ContactForm) {
@@ -21,14 +21,16 @@ const Careers: Component<{}> = () => {
       // await login(values.email, values.name)
     } catch (err: any) {
       if (err.message === "Unauthorized") {
-        NotificationService.error("Invalid email or password")
+        NotificationService.error("Invalid email or password");
       } else {
-        NotificationService.error("Something went wrong. Please contact Careers or try again later.")
+        NotificationService.error(
+          "Something went wrong. Please contact Careers or try again later.",
+        );
       }
     }
   }
 
-  const [contactForm, { Form, Field }] = createForm<ContactForm>()
+  const [contactForm, { Form, Field }] = createForm<ContactForm>();
 
   return (
     <DefaultLayout>
@@ -40,19 +42,27 @@ const Careers: Component<{}> = () => {
         notFullScreen
       />
 
-      <section class="container flex justify-between mt-10 px-10 mb-10">
-        <div class="w-1/3">
+      <section class="container flex flex-col md:flex-row gap-6 justify-between mt-10 px-10 mb-10">
+        <div class="md:w-1/3">
           <h3 class="font-bold text-4xl mb-4">No Available Positions</h3>
-          <p class="mb-6">Unfortunately, we do not have any open jobs right. Please check back later to see if we have any.</p>
-          <p class="mb-6">Or just send us your resume, who knows what fate has in store for you :)</p>
+          <p class="mb-6">
+            Unfortunately, we do not have any open jobs right. Please check back
+            later to see if we have any.
+          </p>
+          <p class="mb-6">
+            Or just send us your resume, who knows what fate has in store for
+            you :)
+          </p>
 
           <div class="flex gap-4 items-center">
             <Icon.Mail />
-            <a href="mailto:info@rentakloud.com" class="font-bold text-2xl">careers@rentakloud.com</a>
+            <a href="mailto:info@rentakloud.com" class="font-bold text-2xl">
+              careers@rentakloud.com
+            </a>
           </div>
         </div>
 
-        <Card title="Apply Now" hasGradientShadow class="w-1/2">
+        <Card title="Apply Now" hasGradientShadow class="md:w-1/2">
           <Form onSubmit={submitHandler} class="flex flex-col gap-2">
             <Field name="email">
               {(field, props) => (
@@ -115,8 +125,13 @@ const Careers: Component<{}> = () => {
 
             <div class="form-control mt-6">
               <button
-                class="btn btn-primary" type="submit"
-                disabled={!contactForm.dirty || contactForm.invalid || contactForm.submitting}
+                class="btn btn-primary"
+                type="submit"
+                disabled={
+                  !contactForm.dirty ||
+                  contactForm.invalid ||
+                  contactForm.submitting
+                }
               >
                 Submit
               </button>
@@ -125,7 +140,7 @@ const Careers: Component<{}> = () => {
         </Card>
       </section>
     </DefaultLayout>
-  )
-}
+  );
+};
 
-export default Careers
+export default Careers;

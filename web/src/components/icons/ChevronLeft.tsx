@@ -1,10 +1,8 @@
 import { Component } from "solid-js";
-import ChevronRightIcon from "./ChevronRight";
+import ChevronRight from "./ChevronRight";
 
-const ChevronLeftIcon: Component = () => {
-  return (
-    <ChevronRightIcon left={true} />
-  )
-}
+const ChevronLeft: Component = () => {
+  return <ChevronRight class="rotate-180" />;
+};
 
-export default ChevronLeftIcon
+export default ChevronLeft;

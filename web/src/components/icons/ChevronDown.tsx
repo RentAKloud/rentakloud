@@ -1,10 +1,8 @@
-import { Component } from "solid-js";
-import ChevronRightIcon from "./ChevronRight";
+import ChevronRight from "./ChevronRight";
+import Icon from "./Icon";
 
-const ChevronDownIcon: Component<{class?: string}> = (props) => {
-  return (
-    <ChevronRightIcon down={true} class={props.class} />
-  )
-}
+const ChevronDown: typeof Icon = (props) => {
+  return <ChevronRight class={`${props.class || ""} rotate-90`} />;
+};
 
-export default ChevronDownIcon
+export default ChevronDown;

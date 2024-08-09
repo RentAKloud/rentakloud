@@ -13,29 +13,31 @@ import PublicApi from "~/api/public";
 import { Icon } from "~/components/icons";
 
 type ContactForm = {
-  email: string
-  name: string
-  subject: string
-  message: string
-}
+  email: string;
+  name: string;
+  subject: string;
+  message: string;
+};
 
 const Support: Component<{}> = () => {
   async function submitHandler(values: ContactForm) {
     try {
-      await PublicApi.contactForm(values)
+      await PublicApi.contactForm(values);
       // console.log("sending", values)
     } catch (err: any) {
       if (err.message === "Unauthorized") {
-        NotificationService.error("Invalid email or password")
+        NotificationService.error("Invalid email or password");
       } else {
-        NotificationService.error("Something went wrong. Please contact support or try again later.")
+        NotificationService.error(
+          "Something went wrong. Please contact support or try again later.",
+        );
       }
     }
   }
 
   const [contactForm, { Form, Field }] = createForm<ContactForm>({
-    validateOn: 'input'
-  })
+    validateOn: "input",
+  });
 
   return (
     <DefaultLayout>
@@ -47,18 +49,28 @@ const Support: Component<{}> = () => {
         notFullScreen
       />
 
-      <section class="container flex justify-between mt-10 px-10 mb-10">
-        <div class="w-1/3">
-          <h3 class="font-bold text-4xl mb-4">Need Help or Have Any Queries?</h3>
-          <p class="mb-6">Feel free to contact us any time using the contact form, or just shoot us an email directly.</p>
+      <section class="container flex flex-col md:flex-row gap-6 justify-between mt-10 px-10 mb-10">
+        <div class="md:w-1/3">
+          <h3 class="font-bold text-4xl mb-4">
+            Need Help or Have Any Queries?
+          </h3>
+          <p class="mb-6">
+            Feel free to contact us any time using the contact form, or just
+            shoot us an email directly.
+          </p>
 
           <div class="flex flex-col gap-4">
             <div class="flex gap-4 items-center">
               <Icon.Mail />
-              <a href="mailto:info@rentakloud.com" class="font-bold text-2xl">info@rentakloud.com</a>
+              <a href="mailto:info@rentakloud.com" class="font-bold text-2xl">
+                info@rentakloud.com
+              </a>
             </div>
 
-            <a href="https://www.facebook.com/profile.php?id=61558489845466" target="_blank">
+            <a
+              href="https://www.facebook.com/profile.php?id=61558489845466"
+              target="_blank"
+            >
               <div class="flex gap-4 items-center">
                 <FacebookIcon class="fill-current" />
                 <span class="font-bold text-2xl">@RentAKloud</span>
@@ -81,13 +93,13 @@ const Support: Component<{}> = () => {
           </div>
         </div>
 
-        <Card title="Contact Us" hasGradientShadow class="w-1/2">
+        <Card title="Contact Us" hasGradientShadow class="md:w-1/2">
           <Form onSubmit={submitHandler} class="flex flex-col gap-2">
             <Field
               name="email"
               validate={[
-                required('Please enter your email.'),
-                email('Please enter a valid email address.'),
+                required("Please enter your email."),
+                email("Please enter a valid email address."),
               ]}
             >
               {(field, props) => (
@@ -104,12 +116,7 @@ const Support: Component<{}> = () => {
               )}
             </Field>
 
-            <Field
-              name="name"
-              validate={[
-                required('Please enter your name.'),
-              ]}
-            >
+            <Field name="name" validate={[required("Please enter your name.")]}>
               {(field, props) => (
                 <TextInput
                   {...props}
@@ -125,10 +132,8 @@ const Support: Component<{}> = () => {
             </Field>
 
             <Field
-            name="subject"
-            validate={[
-              required('Please enter a subject.'),
-            ]}
+              name="subject"
+              validate={[required("Please enter a subject.")]}
             >
               {(field, props) => (
                 <TextInput
@@ -146,9 +151,7 @@ const Support: Component<{}> = () => {
 
             <Field
               name="message"
-              validate={[
-                required('A message is required.'),
-              ]}
+              validate={[required("A message is required.")]}
             >
               {(field, props) => (
                 <Textarea
@@ -165,8 +168,13 @@ const Support: Component<{}> = () => {
 
             <div class="form-control mt-6">
               <button
-                class="btn btn-primary" type="submit"
-                disabled={!contactForm.dirty || contactForm.invalid || contactForm.submitting}
+                class="btn btn-primary"
+                type="submit"
+                disabled={
+                  !contactForm.dirty ||
+                  contactForm.invalid ||
+                  contactForm.submitting
+                }
               >
                 Submit
               </button>
@@ -175,7 +183,7 @@ const Support: Component<{}> = () => {
         </Card>
       </section>
     </DefaultLayout>
-  )
-}
+  );
+};
 
-export default Support
+export default Support;
